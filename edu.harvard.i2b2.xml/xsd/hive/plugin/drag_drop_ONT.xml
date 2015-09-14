@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plug:plugin_drag_drop xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:plug="http://www.i2b2.org/xsd/hive/plugin/"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/v2/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/hive/plugin/ ./drag_drop.xsd
+                        http://www.i2b2.org/xsd/cell/ont/v2/ ../../cell/ont/ONT_LITE_RESP.xsd">
+    <ont:concepts>
+        <concept>
+            <level>1</level>
+            <key>\\testrpdr\RPDR\Transfusions</key>
+            <name>Transfusion Services</name>
+            <synonym_cd>N</synonym_cd>
+            <visualattributes>FA </visualattributes>
+            <totalnum>0</totalnum>
+            <basecode/>
+            <metadataxml/>
+            <facttablecolumn>concept_cd</facttablecolumn>
+            <tablename>concept_dimension</tablename>
+            <columnname>concept_path</columnname>
+            <columndatatype>T</columndatatype>
+            <operator>LIKE</operator>
+            <dimcode>\RPDR\Transfusions</dimcode>
+            <comment/>
+            <tooltip>Transfusion Services</tooltip>     
+            <update_date>2002-12-23T00:00:00</update_date>
+            <download_date>2002-12-23T00:00:00</download_date>
+            <import_date>2002-12-23T00:00:00</import_date>
+            <sourcesystem_cd/>
+            <valuetype_cd/>           
+        </concept>
+    </ont:concepts>
+</plug:plugin_drag_drop>

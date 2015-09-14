@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i2b2:i2b2 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/message 
+    ./i2b2.xsd">
+    <version>3</version>
+    <info url="http://">Info message here.</info>
+    <result_status>
+        <status type="DONE">Status message here.</status>
+        <polling_url interval_ms="3">http://</polling_url>
+        <conditions>
+            <condition type="WARNING" coding_system="i2b2">Condition message here.</condition>
+        </conditions>
+    </result_status>
+    <sending_application/>
+    <sending_facility/>
+    <receiving_application/>
+    <receiving_facility/>
+    <datetime_of_message/>
+    <security/>
+    <request_info>
+        <request_cd/> <!-- some id that means this is a publish -->
+    </request_info>
+    <message_control_id/>
+    <processing_info>
+        <environment>P</environment> <!-- production -->
+        <mode>I</mode> <!-- initial load -->
+    </processing_info>
+    <sequence_number/>
+    <continuation_pointer/>
+    <accept_acknowledgement_type/>
+    <application_acknowledgement_type/>
+    <country_code>US</country_code>
+    <message_control_id/>
+    <expected_sequence_number/>
+    <body>
+        <identity:publish xmlns:identity="http://i2b2.mgh.harvard.edu/identity_management_cell"
+            xsi:schemaLocation="http://i2b2.mgh.harvard.edu/identity_management_cell 
+            ./ID_publish.xsd">
+            <request session="x">
+                <master_record id="1">
+                    <local_record id="a" site="lmr" status="active">
+                        <string concept_cd="first_name">Raj</string>
+                        <string concept_cd="last_name">Kuttan-Kuttan</string>
+                        <date concept_cd="birthdate">2000-02-29</date>
+                        <datetime concept_cd="start_date">2002-02-28T13:59:59</datetime>
+                        <number concept_cd="test_result">25.0</number>
+                    </local_record>
+                    <local_record id="b" site="mgh" status="inactive">
+                        <string concept_cd="first_name">rajesh</string>
+                        <string concept_cd="last_name">kuttan</string>
+                    </local_record>
+                </master_record>
+                <master_record>
+                    <local_record id="c" site="bwh">
+                        <string concept_cd="first_name">Kristel</string>
+                        <string concept_cd="last_name">Hackett</string>
+                    </local_record>
+                </master_record>
+            </request>
+            <response>
+                <publish_master id="1">
+                    <message status="error">There was some kind of error.</message>
+                    <publish_local id="a" site="lmr">
+                        <message status="error">There was an error with date type.</message>
+                    </publish_local>
+                    <publish_local id="b" site="mgh">
+                        <message status="updated_existing"/>
+                    </publish_local>
+                </publish_master>
+                <publish_master>
+                    <message status="no_master_created"/>
+                    <publish_local id="c" site="bwh">
+                        <message status="inserted_new"/>
+                    </publish_local>
+                </publish_master>
+            </response>
+        </identity:publish>
+
+    </body>
+</i2b2:i2b2>

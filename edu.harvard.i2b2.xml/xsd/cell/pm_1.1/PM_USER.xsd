@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/" targetNamespace="http://www.i2b2.org/xsd/cell/pm/1.1/">
+	<!--
+		<xs:element name="message_body_example"> <xs:complexType>
+		<xs:sequence> <xs:any namespace="http://www.i2b2.org/xsd/cell/pm/1.1/"
+		minOccurs="0" maxOccurs="unbounded"/> </xs:sequence> </xs:complexType>
+		</xs:element>
+	-->
+	<xs:element name="get_user_configuration" type="pm:get_user_configurationType" />
+	<xs:element name="configure" type="pm:configureType" />
+	<xs:element name="user" type="pm:userType" />
+	<xs:element name="set_user" type="pm:userType" />
+	<xs:element name="delete_user" type="xs:string" />
+	<xs:element name="get_all_user" type="xs:string" />
+	<xs:element name="users" type="pm:usersType" />
+	<xs:element name="get_user" type="xs:string" />
+
+	<xs:element name="set_project_request" type="pm:project_requestType" />
+	<xs:element name="get_project_request" type="xs:string" />
+	<xs:element name="get_all_project_request" type="xs:string" />
+	<xs:element name="project_request" type="pm:project_requestType" />
+	<xs:element name="project_requests" type="pm:project_requestsType" />
+
+	<xs:element name="set_password" type="xs:string" />
+	<xs:element name="response" type="xs:string" />
+	
+	<xs:element name="set_approval" type="pm:approvalType" />
+	<xs:element name="delete_approval" type="pm:approvalType" />
+	<xs:element name="get_all_approval" type="pm:approvalType" />
+	<xs:element name="approval" type="pm:approvalType" />
+	<xs:element name="approvals" type="pm:approvalsType" />
+	<xs:element name="get_approval" type="pm:approvalType" />
+
+	<xs:element name="set_approval_param" type="pm:approvalType" />
+	<xs:element name="delete_approval_param" type="xs:string" />
+	<xs:element name="get_all_approval_param" type="pm:approvalType" />
+	<xs:element name="get_approval_param" type="xs:string" />
+
+	<xs:element name="set_project" type="pm:projectType" />
+	<xs:element name="delete_project" type="pm:projectType" />
+	<xs:element name="get_all_project" type="pm:projectType" />
+	<xs:element name="project" type="pm:projectType" />
+	<xs:element name="projects" type="pm:projectsType" />
+	<xs:element name="get_project" type="pm:projectType" />
+
+	<xs:element name="set_project_param" type="pm:projectType" />
+	<xs:element name="delete_project_param" type="xs:string" />
+	<xs:element name="get_all_project_param" type="xs:string" />
+	<xs:element name="get_project_param" type="xs:string" />
+
+	<xs:element name="set_project_user_param" type="pm:projectType" />
+	<xs:element name="delete_project_user_param" type="xs:string" />
+	<xs:element name="get_all_project_user_param" type="pm:projectType" />
+	<xs:element name="get_project_user_param" type="xs:string" />
+	
+	<xs:element name="set_cell" type="pm:cell_dataType" />
+	<xs:element name="delete_cell" type="pm:cell_dataType" />
+	<xs:element name="get_all_cell" type="xs:string" />
+	<xs:element name="cell" type="pm:cell_dataType" />
+	<xs:element name="cells" type="pm:cell_datasType" />
+	<xs:element name="get_cell" type="pm:cell_dataType" />
+
+	<xs:element name="set_role" type="pm:roleType" />
+	<xs:element name="delete_role" type="pm:roleType" />
+	<xs:element name="get_all_role" type="pm:roleType" />
+	<xs:element name="role" type="pm:roleType" />
+	<xs:element name="roles" type="pm:rolesType" />
+	<xs:element name="get_role" type="pm:roleType" />
+
+	<xs:element name="set_hive" type="pm:configureType" />
+	<xs:element name="delete_hive" type="xs:string" />
+	<xs:element name="get_all_hive" type="xs:string" />
+	<xs:element name="hive" type="pm:configureType" />
+	<xs:element name="hives" type="pm:configuresType" />
+	<xs:element name="get_hive" type="pm:configureType" />
+
+	<xs:element name="set_hive_param" type="pm:configureType" />
+	<xs:element name="delete_hive_param" type="xs:string" />
+	<xs:element name="get_all_hive_param" type="xs:string" />
+	<xs:element name="get_hive_param" type="xs:string" />
+
+	
+	<xs:element name="set_cell_param" type="pm:cell_dataType" />
+	<xs:element name="delete_cell_param" type="xs:string" />
+	<xs:element name="get_all_cell_param" type="pm:cell_dataType" />
+	<xs:element name="get_cell_param" type="xs:string" />
+	
+	<xs:element name="set_user_param" type="pm:userType" />
+	<xs:element name="delete_user_param" type="xs:string" />
+	<xs:element name="get_all_user_param" type="pm:userType" />
+	<xs:element name="get_user_param" type="xs:string" />
+		
+	<xs:element name="set_global" type="pm:global_dataType" />
+	<xs:element name="delete_global" type="xs:string" />
+	<xs:element name="get_all_global" type="xs:string" />
+	<xs:element name="global" type="pm:global_dataType" />
+	<xs:element name="globals" type="pm:global_datasType" />
+	<xs:element name="get_global" type="xs:string" />	
+	
+	<xs:element name="param" type="pm:paramType" />	
+	<xs:element name="params" type="pm:paramsType" />	
+		
+	<xs:complexType name="paramsType">
+		<xs:sequence>
+			<xs:element name="param" type="pm:paramType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" />
+	</xs:complexType>		
+	<xs:complexType name="approvalsType">
+		<xs:sequence>
+			<xs:element name="approval" type="pm:approvalType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="projectsType">
+		<xs:sequence>
+			<xs:element name="project" type="pm:projectType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>		
+	<xs:complexType name="usersType">
+		<xs:sequence>
+			<xs:element name="user" type="pm:userType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="get_user_configurationType">
+		<xs:sequence>
+			<xs:element name="project" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="data_needed" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+		<xs:complexType name="configuresType">
+		<xs:sequence>
+			<xs:element name="hive" type="pm:configureType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="configureType">
+		<xs:sequence>
+			<xs:element name="environment" type="xs:string" />
+			<xs:element name="helpURL" type="xs:string" />
+			<xs:element name="user" type="pm:userType" />
+			<xs:element name="domain_name" type="xs:string" minOccurs="0"/>
+			<xs:element name="domain_id" type="xs:string" minOccurs="0"/>
+			<xs:element name="active" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="cell_datas" type="pm:cell_datasType" />
+			<xs:element name="global_data" type="pm:global_dataType" />
+			<xs:element name="param" type="pm:paramType" minOccurs="0"
+				maxOccurs="unbounded" />            
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+		<xs:complexType name="configureType"> <xs:sequence> <xs:element
+		name="environment" type="xs:string"/> <xs:element name="helpURL"
+		type="xs:string"/> <xs:element name="user" type="pm:userType"/>
+		<xs:element name="cell_datas" type="pm:cell_datasType"/> <xs:element
+		name="global_data" type="pm:global_dataType"/> </xs:sequence>
+		</xs:complexType>
+	-->
+	
+	<xs:complexType name="blobType" mixed="true">
+		<xs:annotation>
+			<xs:documentation>
+				A string with all whitespace preserved. This string
+				could also contain xml so the type is anyType in order
+				for complex element content to be valid.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="xs:anyType">
+				<xs:sequence>
+					<xs:any minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>	
+	
+	<xs:complexType name="userType">
+		<xs:sequence>
+			<xs:element name="full_name" type="xs:string" />
+			<xs:element name="user_name" type="xs:string" />
+			<xs:element name="email" type="xs:string" minOccurs="0" />
+			<xs:element name="password" type="pm:passwordType" />
+			<xs:element name="domain" type="xs:string" />
+			<xs:element name="is_admin" type="xs:boolean" />
+			<xs:element name="key" type="xs:string" minOccurs="0" />
+			<xs:element name="param" type="pm:paramType" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="project" type="pm:projectType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="passwordType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="is_token" type="xs:boolean"
+					default="false" />
+				<xs:attribute name="token_ms_timeout" type="xs:int" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="searchType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="by" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>	
+	<xs:complexType name="approvalType">
+		<xs:sequence>
+			<xs:element name="approval_id" type="xs:string" />
+			<xs:element name="name" type="xs:string"  minOccurs="0" />
+			<xs:element name="description" type="xs:string" minOccurs="0" />
+			<xs:element name="activation_date" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="expiration_date" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="object_cd" type="xs:string" minOccurs="0" />
+			<xs:element name="search" type="pm:searchType"  minOccurs="0" 
+				maxOccurs="unbounded" />
+			
+			<xs:element name="param" type="pm:paramType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required" />
+	</xs:complexType>	
+	<xs:complexType name="projectType">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" />
+			<xs:element name="key" type="xs:string" />
+			<xs:element name="wiki" type="xs:string" minOccurs="0" />
+			<xs:element name="description" type="xs:string" minOccurs="0" />
+			<xs:element name="path" type="xs:string" minOccurs="0" />
+			<xs:element name="user_name" type="xs:string" />			
+			<xs:element name="role" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="param" type="pm:paramType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="rolesType">
+		<xs:sequence>
+			<xs:element name="role" type="pm:roleType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="roleType">
+		<xs:sequence>
+			<xs:element name="project_id" type="xs:string" />
+			<xs:element name="user_name" type="xs:string" />
+			<xs:element name="role" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="project_requestsType">
+		<xs:sequence>
+			<xs:element name="project_request" type="pm:project_requestType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="project_requestType">
+		<xs:sequence>
+			<xs:element name="title" type="xs:string" />
+			<xs:element name="request_xml" type="xs:string" />
+			<xs:element name="project_id" type="xs:string" />
+			<xs:element name="change_date" type="xs:dateTime" />			
+			<xs:element name="entry_date" type="xs:dateTime" />			
+			<xs:element name="changeby_char" type="xs:string" />		
+			<xs:element name="status_cd" type="xs:string" />		
+			<xs:element name="submit_char" type="xs:string" />
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="cell_datasType">
+		<xs:sequence>
+			<xs:element name="cell_data" type="pm:cell_dataType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="cell_dataType">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" />
+			<xs:element name="url" type="xs:string" />
+			<xs:element name="project_path" type="xs:string" />
+			<xs:element name="method" type="xs:string" />
+			<xs:element name="can_override" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="special" type="xs:string" />
+			<xs:element name="param" type="pm:paramType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="global_dataType">
+		<xs:sequence>
+			<xs:element name="can_override" type="xs:boolean" minOccurs="0" />
+			<xs:element name="project_path" type="xs:string" />
+			<xs:element name="param" type="pm:paramType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="global_datasType">
+		<xs:sequence>
+			<xs:element name="global_data" type="pm:global_dataType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="paramType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string" />
+				<xs:attribute name="id" type="xs:int" />
+				<xs:attribute name="datatype" type="xs:string" />				
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>

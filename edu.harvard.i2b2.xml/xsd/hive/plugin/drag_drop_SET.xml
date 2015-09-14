@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plug:plugin_drag_drop xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:plug="http://www.i2b2.org/xsd/hive/plugin/"
+    xmlns:set="http://www.i2b2.org/xsd/cell/crc/psm/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/hive/plugin/ ./drag_drop.xsd
+                        http://www.i2b2.org/xsd/cell/crc/psm/ ../../cell/crc/psm/CRC_PSM_QRY.xsd">
+    
+    <!-- this example xml is currently not valid, there would need to be 
+         a change in the CRC_PSM_QRY.xsd or CRC_PSM_OBJ.xsd -->
+    
+    <set:query_result_instance>
+        <result_instance_id>0</result_instance_id>
+        <query_instance_id>0</query_instance_id>
+        <query_result_type>
+            <result_type_id>0</result_type_id>
+            <name>PATIENT_SET</name>
+            <description/>
+        </query_result_type>
+        <set_size>0</set_size>
+        <start_date>2000-12-30T00:00:00</start_date>
+        <end_date>2000-12-30T00:00:00</end_date>
+        <query_status_type>
+            <status_type_id>0</status_type_id>
+            <name>finished</name>
+            <description/>
+        </query_status_type>
+    </set:query_result_instance>
+</plug:plugin_drag_drop>

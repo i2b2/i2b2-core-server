@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<body>
+		<div id='ExampComm-mainDiv'>
+
+
+			<div id="ExampComm-TABS" class="yui-navset">
+				<ul class="yui-nav">
+					<li id="ExampComm-TAB0" class="selected"><a href="#ExampComm-TAB0"><em>Message Setup</em></a></li>
+					<li id="ExampComm-TAB1"><a href="#ExampComm-TAB1"><em>View Results</em></a></li>
+					<li id="ExampComm-TAB2"><a href="#ExampComm-TAB2"><em>Help</em></a></li>
+				</ul>
+				
+				
+				
+				<div class="yui-content" id="ExampComm-CONTENT">
+					<div>
+						<div class="ExampComm-MainContent">
+							<div class="ExampComm-MainContentPad">
+								<input type="button" style="float:right; margin-right:4px;position:relative; top: 50px; width:90px; height:60px" value="Load Grid" onclick="i2b2.ExampComm.createTemplateGrid()" />
+								<div>Select a communicator object and populate its input data below, and then click the "View Results" tab for the resulting XML messages sent and recieved.</div>
+								<div><br /></div>
+								<div class="selector" style="width:550px"><input class="addComm" type="button" value="Add" style="width:46px" onclick="i2b2.ExampComm.addCommObj()"><select id="ExampComm-objList" onchange="i2b2.ExampComm.loadCalls(this.value)"></select><div>Communicator Object:</div></div>
+								<div class="selector"><select id="ExampComm-funcList"></select><div></>Function Call:</div></div>
+							</div>
+							<div class="taglist" style="display:none"></div>
+							<div>&nbsp;</div>
+							<div class="tagrow" style="display:none" id="ExampComm-tagrowTEMPLATE">
+								<textarea>template value</textarea>
+								<div class="fieldname">qwerqwe_asdf</div>
+								<div class="escaped">(Escaped)</div>
+								<div class="bline"></div>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="ExampComm-MainContent">
+							<div class="results-directions">You must first setup a Communicator-based AJAX call.<br />Please return to the "Message Setup" tab.</div>
+							<div class="results-msgs" style="display:none;">
+								<table><tbody>
+									<tr><th>PDO Request</th>
+									<td class="InfoPDO-Request">
+										<div class="originalXML"><pre></pre></div>
+									</td></tr>
+									<tr><th>PDO Response</th>
+									<td class="InfoPDO-Response">
+										<div class="originalXML"><pre></pre></div>
+									</td></tr>
+								</tbody></table>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="ExampComm-MainContent">
+							<div class="ExampComm-MainContentPad">
+								<h1>Example #5 - Communicator Test Tool</h1>
+								<hr size="1" noshade>
+								<h2>Introduction</h2>
+								This plugin demonstrates provides an interface to interact with Cell Communicator objects based on the web client's standardized i2b2 communicator objects.
+								The this plugin will search all loaded plugins and core modules within the web client looking for a standard Cell Communicator object at the namespace <span style="font-family:monospace">i2b2.<i>PLUGINCODE</i>.ajax</span>.
+								<h2>Instructions</h2>
+								Navigate to the "Specify Data" tab. Then, drag and drop an i2b2 object such as a search term or previous query onto the input box. Finally, click the "View Results" tab for information about that object.
+								<h2>About Us</h2>
+								This plugin was created by Nick Benik and Griffin Weber, MD, PhD.
+								<h2>Terms of Use</h2>
+								This example plugin is distributed with the i2b2 web client framework and may be used free of charge.
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</body>
+</html>

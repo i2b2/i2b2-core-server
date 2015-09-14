@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:i2b2="http://i2b2.mgh.harvard.edu/message" xmlns:crc="http://i2b2.mgh.harvard.edu/crc"
+    targetNamespace="http://i2b2.mgh.harvard.edu/crc">
+    
+    <xs:include schemaLocation="./CRC.xsd"/>
+    <xs:include schemaLocation="./CRC_PDO_QRY_request.xsd"/>
+    <xs:include schemaLocation="./CRC_PDO_QRY_response.xsd"/>
+    
+    <xs:element name="message_body">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="crc:header"/>
+                <xs:element ref="crc:request"/>
+                <xs:element ref="crc:response"/>
+                <xs:element ref="crc:sql"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="header" type="crc:pdo_qry_headerType"/>
+    <xs:element name="sql" type="xs:string"/>
+    
+    <xs:complexType name="pdo_qry_headerType">
+        <xs:complexContent>
+            <xs:extension base="crc:headerType">
+                <xs:sequence>
+                    <xs:element name="request_type" type="crc:request_typeType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:simpleType name="request_typeType">
+        <xs:annotation>
+            <xs:documentation>Enumerated list of codes that define what kind of request is being
+                made. This informs the specific kind of request and response element that should be
+                expected. Whether the request type and response type match with this string is not
+                enforced, however.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="getPDO_fromPatientSet">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>patient_set_requestType</requestType>
+                        <responseType>patient_dataType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerydef]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="getPDO_fromObservationFact">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>observation_fact_requestType</requestType>
+                        <responseType>patient_dataType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerydef]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="getPDO_fromVisitSet">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>visit_set_requestType</requestType>
+                        <responseType>patient_dataType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerydef]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

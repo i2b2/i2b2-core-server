@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema id="i2b2patientdata_fields" targetNamespace="http://i2b2.mgh.harvard.edu/repository_cell"
+    xmlns:repository="http://i2b2.mgh.harvard.edu/repository_cell"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:include schemaLocation="./patient_data_types.xsd"/>
+    <!-- Shared Fields used by more than one table. -->
+    <xs:simpleType name="Name_CharType">
+        <xs:annotation>
+            <xs:documentation>A string name that represents this concept, idea or
+            person.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Concept_CdType">
+        <xs:annotation>
+            <xs:documentation>A unique code that represents a concpet.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Start_DateType">
+        <xs:annotation>
+            <xs:documentation>The date that the observation was made, or that the observation
+                started. If the data is derived or calculated from another observation (like a
+                report) then the start date is the same as the observation it was derived or
+                calculated from.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="End_DateType">
+        <xs:annotation>
+            <xs:documentation>The date that the observation was made, or that the observation ended.
+                If the data is derived or calculated from another observation (like a report) then
+                the end_date is the same as the observation it was derived or calculated
+            from.</xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="xs:dateTime repository:nullType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Location_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing the hospital associated with this
+            visit.</xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="repository:nullType">
+            <xs:simpleType>
+                <xs:restriction base="repository:tokenType">
+                    <xs:enumeration value="MGH">
+                        <xs:annotation>
+                            <xs:documentation>Massachusetts General Hospital</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="SRH">
+                        <xs:annotation>
+                            <xs:documentation>Spaulding Rehabilitation Hospital</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="FH">
+                        <xs:annotation>
+                            <xs:documentation>Faulkner Hosptial</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="BWH">
+                        <xs:annotation>
+                            <xs:documentation>Brigham and Women's Hospital</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="NWH">
+                        <xs:annotation>
+                            <xs:documentation>Newton-Wellesley Hospital</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+    <xs:simpleType name="Provider_IdType">
+        <xs:annotation>
+            <xs:documentation>An ID that represents the provider, which could be a physician or a
+                machine such as an MRI machine.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Encounter_NumType">
+        <xs:annotation>
+            <xs:documentation>An integer that is unique to each Encounter.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:complexType name="Encounter_IdType">
+        <xs:annotation>
+            <xs:documentation>A code and a sourcesystem that is unique to each
+            Encounter.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:restriction base="repository:mappingType"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="Encounter_IdeType">
+        <xs:annotation>
+            <xs:documentation>An encrypted code and a sourcesystem that is unique to each
+            Encounter.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:restriction base="repository:mappingType"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="Patient_NumType">
+        <xs:annotation>
+            <xs:documentation>An integer that is unique to each Patient.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:complexType name="Patient_IdeType">
+        <xs:annotation>
+            <xs:documentation>An encrypted code and a sourcesystem that is unique to each
+            Patient.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:restriction base="repository:mappingType"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="Patient_IdType">
+        <xs:annotation>
+            <xs:documentation>A code and a sourcesystem that is unique to each
+            Patient.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:restriction base="repository:mappingType"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <!-- Visit Fields -->
+    <xs:simpleType name="InOut_CdType">
+        <xs:annotation>
+            <xs:documentation>A code classifying a vist by inpatient/outpatient
+            status.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType">
+            <xs:enumeration value="I">
+                <xs:annotation>
+                    <xs:documentation>inpatient</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="O">
+                <xs:annotation>
+                    <xs:documentation>outpatient</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="U">
+                <xs:annotation>
+                    <xs:documentation>unknown</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="@">
+                <xs:annotation>
+                    <xs:documentation>no data (null)</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Location_PathType">
+        <xs:annotation>
+            <xs:documentation>A path that represents the hierarchical specification of the
+            location.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:complexType name="Visit_BlobType">
+        <xs:annotation>
+            <xs:documentation>XML data that includes partially structured and unstructured data
+                about a visit.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="repository:clobType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- Concept Fields -->
+    <xs:simpleType name="Concept_PathType">
+        <xs:annotation>
+            <xs:documentation>A string representing the unique position of a concept in a
+                hierarchical concept tree. The last concept in the path is the concept and the 2nd
+                to last concept in the path is the parent, etc.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:complexType name="Concept_BlobType">
+        <xs:annotation>
+            <xs:documentation>XML data that includes partially structured and unstructured data
+                about a concept.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="repository:clobType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- Provider Fields -->
+    <xs:simpleType name="Provider_PathType">
+        <xs:annotation>
+            <xs:documentation>A string representing the unique position of a provider in a
+                hierarchical department tree.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:complexType name="Provider_BlobType">
+        <xs:complexContent>
+            <xs:restriction base="repository:clobType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- Patient Fields -->
+    <xs:simpleType name="Vital_Status_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing the vital status of a patient.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType">
+            <xs:enumeration value="Y">
+                <xs:annotation>
+                    <xs:documentation>deceased</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="N">
+                <xs:annotation>
+                    <xs:documentation>alive</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Birth_DateType">
+        <xs:annotation>
+            <xs:documentation>The day, month and year of birth, time can default to
+            midnight.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="Death_DateType">
+        <xs:annotation>
+            <xs:documentation>The day, month and year of death, time can default to
+            midnight.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="Sex_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing the sex of an individual.</xs:documentation>
+        </xs:annotation>
+        <xs:union>
+            <xs:annotation>
+                <xs:documentation>Union of enumerated male/female with unrestricted token for
+                    alternate descriptions.</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="repository:tokenType">
+                    <xs:enumeration value="M">
+                        <xs:annotation>
+                            <xs:documentation>male</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="F">
+                        <xs:annotation>
+                            <xs:documentation>female</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType>
+                <xs:restriction base="repository:tokenType"/>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+    <xs:simpleType name="Age_In_Years_NumType">
+        <xs:annotation>
+            <xs:documentation>Age of patient in years within 1 year of their actual
+            age.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="Language_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing a language of communication.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Race_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing race.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Marital_Status_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing marital status.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Religion_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing religious affiliation.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Zip_CdType">
+        <xs:annotation>
+            <xs:documentation>A zipcode with 5 base digits, optionally including a hyphen and 4
+                extended digits.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType">
+            <xs:pattern value="[0-9]{5}(-[0-9]{4})?"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="StateCityZip_PathType">
+        <xs:annotation>
+            <xs:documentation>A path type that includes the state, city and
+            zipcode.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:complexType name="Patient_BlobType">
+        <xs:annotation>
+            <xs:documentation>XML data that includes partially structured and unstructured data
+                about a patient.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="repository:clobType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- Observation Fields -->
+    <xs:simpleType name="Modifier_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing whether a diagnosis is an admitting or whether a
+                diagnosis or procedure is primary or secondary..</xs:documentation>
+        </xs:annotation>
+        <xs:union>
+            <xs:annotation>
+                <xs:documentation>Union of diagnosis modifier codes plus unrestricted tokenType in
+                    case new codes become available.</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="repository:tokenType">
+                    <xs:enumeration value="@">
+                        <xs:annotation>
+                            <xs:documentation>no info (null)</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="0">
+                        <xs:annotation>
+                            <xs:documentation>Admitting Diagnosis</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="1">
+                        <xs:annotation>
+                            <xs:documentation>Primary Diagnosis or Procedure</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="2">
+                        <xs:annotation>
+                            <xs:documentation>Secondary Diagnosis or Procedure</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType>
+                <xs:restriction base="repository:tokenType"/>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+    <xs:simpleType name="ValType_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing whether a value is stored in the TVal column or
+                NVal column.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="TVal_CharType">
+        <xs:annotation>
+            <xs:documentation>A text value.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="nullType">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="NVal_NumType">
+        <xs:annotation>
+            <xs:documentation>A numerical value.</xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="xs:decimal repository:nullType"/>
+    </xs:simpleType>
+    <xs:simpleType name="ValueFlag_CdType">
+        <xs:annotation>
+            <xs:documentation>A code that represents the type of value present in the NVal_Num or
+                the TVal_Char.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Quantity_NumType">
+        <xs:annotation>
+            <xs:documentation>The number of observations represented by this
+            fact.</xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="xs:decimal repository:nullType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Units_CdType">
+        <xs:annotation>
+            <xs:documentation>A textual description of the units associated with a
+            value.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Confidence_NumType">
+        <xs:annotation>
+            <xs:documentation>A code or number representing the confidence in the accuracy of the
+                data.</xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="xs:decimal repository:nullType"/>
+    </xs:simpleType>
+
+    <xs:complexType name="Observation_BlobType">
+        <xs:annotation>
+            <xs:documentation>XML data that includes partially structured and unstructured data
+                about an observation.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="repository:clobType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- Annotation Typesvalue -->
+    <xs:simpleType name="Update_DateType">
+        <xs:annotation>
+            <xs:documentation>The date the data was last updated according to the source system from
+                which the data was obtained. If the source system does not supply this data, it
+                defaults to the download_date.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="Download_DateType">
+        <xs:annotation>
+            <xs:documentation>The date that the data was obtained from the source system. If the
+                data is derived or calculated from other data, then the download_date is the date of
+                the calculation.</xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="xs:dateTime repository:nullType"></xs:union>
+    </xs:simpleType>
+    <xs:simpleType name="Import_DateType">
+        <xs:annotation>
+            <xs:documentation>The date the data is placed into the table of the data
+            mart.</xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="xs:dateTime repository:nullType"></xs:union>
+    </xs:simpleType>
+    <xs:simpleType name="Sourcesystem_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing the source system that provided the
+            data.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="repository:tokenType"/>
+    </xs:simpleType>
+    <xs:simpleType name="Upload_IdType">
+        <xs:annotation>
+            <xs:documentation>Tracking number assigned to any file uploaded.</xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="xs:int repository:nullType"/>
+    </xs:simpleType>
+</xs:schema>

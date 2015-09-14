@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:fr="http://www.i2b2.org/xsd/cell/fr/1.0/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/fr/1.0/">
+
+    <xs:element name="sendfile_request" type="fr:sendfile_request_type"/>
+    <xs:element name="recvfile_request" type="fr:recvfile_request_type"/>
+    
+    <xs:complexType name="recvfile_request_type">
+        <xs:all>
+            <xs:element name="filename" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>    
+    
+    <xs:complexType name="sendfile_request_type">
+        <xs:all>
+            <xs:element name="upload_file" type="fr:file"/>
+        </xs:all>
+    </xs:complexType>
+
+
+
+
+  
+</xs:schema>

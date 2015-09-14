@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hive:request xmlns:hive="http://www.i2b2.org/xsd/hive/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/hive/ ./i2b2_request.xsd
+                        http://www.i2b2.org/xsd/hive/pdo/ ./i2b2_PDO.xsd">
+    <message_header>
+        <i2b2_version_compatible>0.3</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name>i2b2 QueryTool</application_name>
+            <application_version>0.1</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>LCS</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>NLP Tools</application_name>
+            <application_version>0.1</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name>DSG</facility_name>
+        </receiving_facility>
+        <datetime_of_message>2006-08-31T23:59:59.222</datetime_of_message>
+        <security> <!-- <ticket/> -->
+            <domain/>
+            <username/>
+            <password/>
+        </security>
+        <message_type>
+            <message_code/>
+            <event_type/>
+            <message_structure/>
+        </message_type>
+        <message_control_id>
+            <session_id>2006-08-31T23:59:59.222</session_id>
+            <message_num>1234</message_num>
+            <instance_num>0</instance_num>
+        </message_control_id>
+        <processing_id>
+            <processing_id>P</processing_id>
+            <processing_mode>I</processing_mode>
+        </processing_id>
+        <accept_acknowledgement_type>AL</accept_acknowledgement_type>
+        <application_acknowledgement_type>AL</application_acknowledgement_type>
+        <country_code>US</country_code>   
+    </message_header>
+    <request_header>
+        <result_waittime_ms>120000</result_waittime_ms>
+    </request_header>
+    <message_body>
+        <pdo:patient_data>
+            <observation_fact_set>
+                <!-- Group all observation_fact elements together -->
+                <observation_fact>
+                    <encounter_num>10000001</encounter_num>
+                    <patient_num>1234567</patient_num>
+                    <concept_cd>LCS-I2B2:c1009c<!-- (LMR Note) --></concept_cd>
+                    <provider_id>12345</provider_id>
+                    <start_date>2003-09-07T00:00:00</start_date>
+                    <modifier_cd/>
+                    <observation_blob>
+                        <![CDATA[
+Mrs. Doe is a 72 yr. F who walks in.
+
+HPI: 
+1. Hypertension: I have not seen her for over a year. She has spent most of her time with Dr. Lahive (pulmonary) and her respiratory status. She says she saw Dr. Lahive today and when they took her blood pressure they told her to rush right over here. She says she has been faithfully taking her Nifedipine XL and Atenolol.
+2. Hypoxia/COPD: See previous notes-she had a hypoxic event March 2001 with hallucinations. After that then her O2 sats. were over 90%, without treatment essentially (she did not use her inhalers). On her  visit in Jan. 03 her O2 sat was in the 88-90% range. I asked her to use her inhalers faithfully and RTC. Her sat. on return was still upper 80's. I referred her to Dr. Lahive (pulmonary) who put her on Advair and again recommended she use supplemental O2. She is now on Advair and Combivent and continuous NC O2.
+
+Problems
+Hypertension 
+Benign breast disease 
+PAST smoking : quit 1997 after 50 pack years
+Hypoxia 
+
+Medications
+Calcium CARBONATE + VIT D 1 TAB PO BID 
+Advair DISKUS 500/50 (FLUTICASONE PROPION... 1 PUFF INH BID 
+Atenolol 100 MG PO QD 
+Nifedipine XL 90 MG PO QD 
+Combivent (IPRATROPIUM AND ALBUTEROL SULFATE) 2 PUFF INH QID 
+Oxygen liters NC 2 LITERS TOP 
+
+Allergies
+PENICILLINS - RASH 
+
+SH: she had been at BWH over the summer with her husband who apparently had some difficult abdominal surgery. He has recovered now. She is a current smoker. She denies smoking. She never smoked. She is a past smoker.
+
+Habits: no cigarettes, drugs or alcohol;
+
+ROS: denies weight change, fever, chills, fatigue, blurry vision, chest pains, palpitations, dyspnea, cough, abdominal pain, nausea, vomiting, change in bowel/bladder habits, joint pain, dizziness, exanthem, edema. 
+
+PE notable for:
+Well nourished well appearing F;
+Vital signs
+BP 160/90 Left Arm, P 64 Regular, O2 SAT 97 %
+HEENT: sclera clear white OU, EOMI, ear canals and TMs wnl AU; oropharynx without lesions.
+LN: No palpable neck or SC LN;
+Cardiac: RRR, rate 64, no extra sounds
+Resp.: reduced air movement, no accessory muscle use, no adventitious sounds;
+
+Plan:
+1. Hypertension: renewed her Nifedipine XL. Added Maxzide to her Atenolol and Nifedipine XL; she has had unexplained hypokalemia at times before, so K will need to be checked on RTC.
+2. COPD/hypoxia: being followed by Dr. XXXXXX.
+3. RTC 1 month. Discussed reasons to call or come back sooner.
+]]>
+                    </observation_blob>
+                    <update_date>2005-12-23T09:41:03</update_date>
+                    <download_date>2005-12-21T09:41:03</download_date>
+                    <import_date>2005-12-22T09:41:03</import_date>
+                    <sourcesystem_cd>RPDR</sourcesystem_cd>
+                </observation_fact>
+            </observation_fact_set>
+        </pdo:patient_data>
+    </message_body>
+</hive:request>

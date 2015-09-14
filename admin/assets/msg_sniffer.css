@@ -1,0 +1,83 @@
+#commViewerSingleMsg-body PRE.msgXML.msgSent {
+	border-left: 8px solid #FFAFAF;
+	padding: 4px;
+}
+
+#commViewerSingleMsg-body PRE.msgXML.msgReceive {
+	border-left: 8px solid #AFFFAF;
+	padding: 4px;
+}
+
+
+BODY.msgSnifferViewer {
+	margin:0px; 
+	padding:0px; 
+	background:#BCE
+}
+
+BODY.msgSnifferViewer DIV.IndexRecord {
+	font-size:10px !important;
+	clear:both;
+	padding:2px;
+	cursor: pointer;
+	width:250px;
+}
+
+BODY.msgSnifferViewer DIV.IndexRecord.selected { background-color: #FFD }
+
+BODY.msgSnifferViewer DIV.msgChan,
+BODY.msgSnifferViewer DIV.msgAction,
+BODY.msgSnifferViewer DIV.msgOrigin,
+BODY.msgSnifferViewer DIV.msgTime,
+{
+	line-height: 10px;
+	font-size: 10px !important;
+}
+
+BODY.msgSnifferViewer DIV.recvStatus,
+BODY.msgSnifferViewer DIV.sentStatus {
+	height: 12px;
+	width:22px;
+	float: left;
+	border: 1px solid #000;
+	text-align: center;
+	line-height:10px;
+	font-size:10px;
+}
+
+BODY.msgSnifferViewer DIV.sentStatus {
+	background: #E99;
+	border-bottom: none;
+}
+BODY.msgSnifferViewer DIV.recvStatus {
+	background: #9E9;
+	clear:both;
+}
+
+
+BODY.msgSnifferViewer DIV.msgXML {
+	background:#FFFFFF;
+	border:1px solid #678;
+	border-top:none;
+	xheight:100%;
+	xoverflow:scroll;
+	xwidth:100%;
+}
+BODY.msgSnifferViewer pre.msgXML {
+	border-left:8px solid;
+	padding:4px;
+}
+BODY.msgSnifferViewer pre.msgXML.msgSent {
+	border-color:#FFAFAF;
+}
+BODY.msgSnifferViewer pre.msgXML.msgRcvd {
+	border-color:#AFFFAF;
+}
+
+BODY.msgSnifferViewer DIV.recvStatus.msgError {
+	background:#FFFF90 !important;
+}
+
+body.msgSnifferViewer pre.msgXML.msgError {
+	border-color:#FFFF90 !important;
+}

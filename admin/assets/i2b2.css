@@ -1,0 +1,481 @@
+body {
+	margin:0;
+	padding:0;
+	font-family:arial,helvetica;
+	font-size:12px;
+	line-height:16px;
+	background:url('images/background.gif');
+	background-color:#D9ECF0;
+}
+
+.yui-skin-sam .yui-dialog .ft span.default button {
+    color: #000000;
+}
+
+/* this overrides the background color for the ContextMenu */
+DIV.yuimenu DIV.bd {
+	background: #EFEFFF !important;
+}
+
+.hd,
+.yui-panel .hd, 
+.yui-skin-sam .yui-panel .hd  {	
+	color: #FFFFFF !important; 
+	background: transparent !important;
+	background-image: url(images/top_hive.gif) !important;
+	background-repeat: repeat-x !important;
+	font-size:14px !important; 
+	font-weight:bold !important;
+	cursor: move !important;
+}
+
+#horizBGDiv {
+	position:relative;
+	left:0px;
+	top:0px;
+	background:url('images/horizBg.gif') no-repeat;
+	height:18px;
+	width:125px;
+	zindex:5
+	overflow:hidden;
+	float:left;
+}
+#horizHandleDiv {
+    position:absolute;
+    cursor:default;
+    top:0px;
+    left:4px;
+    width:16px;
+    height:18px;
+}
+.horizLabelDiv {
+	position:relative;
+	font-size:11px;
+	float:left;
+	line-height:17px;
+	padding:0px 3px;
+}
+
+
+.droptargValid {
+		border: 2px #00AA00 solid;
+}
+.droptargInvalid {
+		border: 2px #FF0000 solid;
+}
+
+.itemConcept, .itemQM, .itemQI, .itemPRS {
+	font-family:arial,helvetica;
+	font-size:12px;
+	white-space:nowrap;
+	vertical-align:bottom;
+	zcursor:pointer;
+}
+.itemConcept img, .itemQM img, .itemQI img, .itemPRS img {
+	height:16px;
+	width:16px;
+	border:none;
+	padding-right:3px;
+	vertical-align:bottom;
+}
+.itemConcept a, .itemQM a, .itemQI a, .itemPRS a {
+	color:#000000;
+	text-decoration:none;
+}
+.itemConcept a:hover, .itemQM a:hover, .itemQI a:hover, .itemPRS a:hover {
+	text-decoration:underline;
+}
+
+.queryMasterLink {
+	cursor:pointer;
+	text-decoration:none;
+	display:block;
+	color:#000;
+}
+
+#itemPrevQueryTabs {
+	position:absolute;
+	top:300px;
+	left:14px;
+	z-index:2;
+	overflow:hidden;
+}
+#itemPrevQueryBox {
+	background:#BBCCEE;
+	border:1px solid #667788;
+	width:200px;
+	height:50px;
+	padding:5px;
+	white-space:nowrap;
+	overflow:hidden;
+	position:absolute;
+	top:325px;
+	left:14px;
+}
+#itemQueryMastersBox {
+	background:#FFFFFF;
+	border:1px solid #667788;
+	width:192px;
+	height:42px;
+	padding:3px;
+	white-space:nowrap;
+	overflow:auto;
+	font-size:12px;
+	line-height:12px;
+}
+
+
+#itemQueryBuildTabs {
+	position:absolute;
+	top:75px;
+	left:241px;
+	z-index:2;
+	overflow:hidden;
+}
+
+
+#standardQuery {
+	padding-left:19px;
+	background:url('images/icon_db.gif') no-repeat;
+	font-weight:bold;
+}
+#queryBuildBox {
+	background:#BBCCEE;
+	border:1px solid #667788;
+	width:524px;
+	height:280px;
+	overflow:hidden;
+	position:absolute;
+	top:100px;
+	left:241px;
+}
+.queryPanelTitle {
+	position:absolute;
+	top:31px;
+	width:166px;
+	height:13px;
+	background:#6677AA;
+	border:1px solid #667788;
+	overflow:hidden;
+	color:#FFFFFF;
+	font-size:11px;
+	font-weight:bold;
+	text-align:center;
+	line-height:12px;
+}
+.queryPanelDisabled {
+	background:#DBE8FF !important;	
+}
+.queryPanelClear {
+	position:absolute;
+	top:33px;
+	width:12px;
+	height:12px;
+}
+.queryPanelDate {
+	position:absolute;
+	top:45px;
+	width:38px;
+	height:16px;
+	background:#CBD8EF;
+	border:1px solid #667788;
+	overflow:hidden;
+	line-height:16px;
+	text-align:center;	
+}
+.queryPanelOccurs {
+	position:absolute;
+	top:45px;
+	width:80px;
+	height:16px;
+	background:#CBD8EF;
+	border:1px solid #667788;
+	overflow:hidden;
+	line-height:16px;
+	text-align:center;
+}
+.dateBorder {
+	border: solid 1px #667788;
+}
+.dateBorder > TD > A > IMG {
+	position:relative;
+	top:4px;
+	border: 0px;
+}
+
+#XconstraintDateStart, #XconstraintDateEnd {
+	position:relative;
+	top:-2px;
+}
+
+#calendarDiv {
+	position:absolute;
+	z-index:600;
+}
+
+.queryPanelExclude {
+	position:absolute;
+	top:45px;
+	width:46px;
+	height:16px;
+	background:#CBD8EF;
+	border:1px solid #667788;
+	overflow:hidden;
+	line-height:16px;
+	text-align:center;
+}
+.queryPanelButtonHover:hover {
+	background:#DBE8FF;
+}
+.queryPanelButton {
+	color:#000;
+	font-size:11px;
+	text-decoration:none;
+	display:block;
+	height:16px;
+	line-height:16px;
+}
+.queryPanelButtonSelected {
+	text-decoration:underline !important;
+}
+
+#infoBox {
+	position:absolute;
+	top:375px;
+	left:241px;
+	width:524px;
+	height:181px;
+	xborder:1px solid #667788;
+}
+#infoTabs {
+	position:absolute;
+	z-index:2;
+	overflow:hidden;
+}
+#infoItemBox {
+	position:absolute;
+	top:25px;
+	left:0px;
+	width:514px;
+	height:146px;
+	background:#BBCCEE;
+	border:1px solid #667788;
+	padding:5px;
+	overflow:hidden;
+}
+
+#infoItemText {
+	position:relative;
+	top:-91px;
+	left:155px;
+	width:347px;
+	height:86px;
+	background:#FFFFFF;
+	border:1px solid #667788;
+	padding:1px 5px;
+	overflow:hidden;
+}
+
+
+#infoQueryStatusBox {
+	position:absolute;
+	top:25px;
+	left:0px;
+	width:514px;
+	height:148px;
+	background:#BBCCEE;
+	border:1px solid #667788;
+	padding:5px;
+	overflow:hidden;
+	display:block;
+}
+#infoQueryStatusText {
+	width:503px;
+	height:144px;
+	background:#FFFFFF;
+	border:1px solid #667788;
+	padding:1px 5px;
+	overflow:hidden;
+}
+
+#infoRuntimeOptionsBox {
+	position:absolute;
+	top:25px;
+	left:0px;
+	width:514px;
+	height:146px;
+	background:#BBCCEE;
+	border:1px solid #667788;
+	padding:5px;
+	overflow:hidden;
+	display:none;
+}
+
+#queryNameLabel {
+	line-height:15px;
+	height:15px;
+	overflow:hidden;
+	font-size:12px;
+}
+#queryNameText {
+	font-size:11px;
+	padding:0 5px;
+	width:428px;
+	overflow:hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	line-height:15px;
+	height:15px;
+	background-color:#cbd8ef;
+	border:1px solid #63758c;
+	color:#4c5676;
+}
+#queryName {
+	text-overflow:ellipsis;
+	line-height:15px;
+	height:15px;
+	overflow:hidden;
+}
+
+
+
+#queryOptionsBar {
+	background:#BBCCEE;
+	border-bottom:1px solid #667788;
+	width:100%;
+	height:25px;
+	line-height:25px;
+	overflow:hidden;
+	padding-left:5px;
+}
+#queryOptionsForm {
+	margin:0;
+	padding:0;
+}
+#joinType {
+	background:#6677AA;
+	color:#FFFFFF;
+	font-size:9px;
+	margin:3px;
+}
+
+#itemOptions {
+	position:absolute;
+	width:110px;
+	height:18px;
+	border:1px solid #667788;
+	background:#BBCCEE;
+	z-index:501;
+	display:none;
+	line-height:18px;
+}
+#itemOptions a {
+	display:block;
+	background:#BBCCEE;
+	color:#000000;
+	font-size:12px;
+	padding:0px 3px;
+	text-decoration:none;
+	line-height:18px;
+	height:18px;
+}
+#itemOptions a:hover {
+	background:#DDEEFF;
+}
+#itemConstraints {
+	position:absolute;
+	width:500px;
+	height:300px;
+	top:65px;
+	left:50px;
+	border:3px solid #667788;
+	background:#BBCCEE;
+	z-index:502;
+	display:none;
+	line-height:18px;
+}
+.dialogButton {
+	background:#6677AA;
+	color:#FFFFFF;
+	font-weight:bold;
+	width:80px;
+}
+
+p.infoIndent {
+	margin:0 0 0 20px;
+	text-indent:-20px;
+}
+
+#runtimeOptionsForm {
+	margin:0;
+	padding:0;
+}
+
+
+
+#querySaveButton {
+	width:41px;
+	height:14px;
+	font-size:9px;
+	background:#BBCCEE;
+	border:1px solid #667788;
+	padding:4px 5px;
+	line-height:16px;
+	position:relative;
+	top:-28px;
+	z-index:10;
+	overflow:hidden;
+	margin-left:458px;
+	display:none;
+}
+#querySaveButton img {
+	vertical-align:middle;
+	padding-right:4px;
+	position:relative;
+	top:-1px;
+}
+#querySaveButton a {
+	color:#000000;
+	text-decoration:none;
+}
+#querySaveButton a:hover {
+	text-decoration:underline;
+}
+
+
+
+
+
+
+#loginBox {
+	margin-top:130px;
+	border:3px solid #667788;
+	background:#BBCCEE;
+	width:300px;
+	padding:20px 0px;
+	color:#445588;
+	font-size:12px;
+}
+#loginBox td {
+	color:#445588;
+	font-size:12px;
+}
+#loginMessage {
+	font-weight:bold;
+	color:#000000;
+	margin-bottom:10px;
+	display:none;
+}
+.rXML {
+	position:absolute;
+	top:80px;
+	left:180px;
+}
+.rXML a {
+	disply:block;
+	width:16px;
+	height:16px;
+	margin:0px 1px;
+}
+
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+$Id: data_build.xml,v 1.2 2008/10/01 20:17:12 lcp5 Exp $
+-->
+<project name="Ontology data" basedir=".">
+
+	<property environment="env" />
+
+	<property file="./etc/scripts/db.properties" />
+
+	<!-- =================================================================== -->
+	<!-- 								INIT 								 -->
+	<!-- =================================================================== -->
+	<target name="init"  description="Prepare for build">
+		<path id="classpath">
+			<pathelement location="./etc/scripts/ojdbc14.jar" />
+			<pathelement location="./etc/scripts/sqljdbc.jar"/>
+		</path>
+	</target>
+
+	
+
+	<!-- =================================================================== -->
+	<!-- 			DATABASE SETUP TARGETS						 			 -->
+	<!-- =================================================================== -->
+	<target name="db_create_user" depends="init">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="continue" print="true">
+					CREATE USER  i2b2metadata IDENTIFIED BY   i2b2metadata;
+				</sql>
+	</target>
+
+	<target name="db_metadata_release_1-3" depends="init">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="continue" print="true">
+			<transaction src="./etc/scripts/METADATA_RELEASE_1-3/create_${db.type}_i2b2metadata_tables.sql" />
+		</sql>
+	</target>
+
+	<target name="db_metadata_upgrade_1-3" depends="init">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="continue" print="true">
+			<transaction src="./etc/scripts/METADATA_UPGRADE_1-3/upgrade_${db.type}_i2b2metadata_tables.sql" />
+		</sql>
+	</target>
+	
+	<target name="db_grant_metadata" depends="init">
+			<sql driver="${db.driver}" url="${db.url}" userid="${db.username}" password="${db.password}" classpathref="classpath" onerror="continue" print="true">
+				GRANT SELECT ON i2b2 to  i2b2demodata ;
+				GRANT SELECT ON labs to  i2b2demodata ;
+				GRANT SELECT ON schemes to  i2b2demodata ;
+				GRANT SELECT ON table_access to  i2b2demodata ;
+			</sql>
+	</target>
+
+</project>
+
+

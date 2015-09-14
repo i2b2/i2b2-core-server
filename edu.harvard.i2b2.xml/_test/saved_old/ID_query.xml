@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i2b2:i2b2 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/message 
+    ./i2b2.xsd">
+    <version>3</version>
+    <info url="http://">Info message here.</info>
+    <result_status>
+        <status type="DONE">Status message here.</status>
+        <polling_url interval_ms="3">http://</polling_url>
+        <conditions>
+            <condition type="WARNING" coding_system="i2b2">Condition message here.</condition>
+        </conditions>
+    </result_status>
+    <sending_application/>
+    <sending_facility/>
+    <receiving_application/>
+    <receiving_facility/>
+    <datetime_of_message/>
+    <security/>
+    <request_info>
+        <request_cd>QRY</request_cd> <!-- this is a query -->
+    </request_info>
+    <message_control_id/>
+    <processing_info>
+        <environment>T</environment> <!-- training -->
+        <mode/>
+    </processing_info>
+    <sequence_number/>
+    <continuation_pointer/>
+    <accept_acknowledgement_type/>
+    <application_acknowledgement_type/>
+    <country_code>US</country_code>
+    <message_control_id/>
+    <expected_sequence_number/>
+    <body>
+
+        <identity:query xmlns:identity="http://i2b2.mgh.harvard.edu/identity_management_cell"
+            xsi:schemaLocation="http://i2b2.mgh.harvard.edu/identity_management_cell 
+            ./ID_query.xsd">
+
+            <request return="master_id" max="10" session="x" include_meta="true">
+
+                <search_by_local>
+                    <match_id site="MGH">03AT58349</match_id>
+                    <match_string pattern="left">
+                        <!-- exact|left|right|substring -->
+                        <string concept_cd="first_name">Raj</string>
+                    </match_string>
+                    <match_date pattern="on_or_before">
+                        <!-- on|before|after|on_or_before|on_or_after -->
+                        <date concept_cd="birthdate">2000-02-29</date>
+                    </match_date>
+                    <match_datetime pattern="on">
+                        <datetime concept_cd="start_date">2002-02-28T13:59:59</datetime>
+                    </match_datetime>
+                    <match_number pattern="less_than">
+                        <!-- equal|less_than|greater_than|less_or_equal|greater_or_equal -->
+                        <number concept_cd="test_result">25.0</number>
+                    </match_number>
+                    <match xsi:type="identity:match_stringType" pattern="exact">
+                        <string concept_cd="last_name">Kuttan</string>
+                    </match>
+                </search_by_local>
+
+                <!--
+                <search_by_master/>
+                -->
+
+            </request>
+            <response>
+
+                <!-- return="master_id" -->
+                <master_record id="1"/>
+
+                <!-- return="local_id" -->
+                <master_record id="1" status="active">
+                    <local_record id="a" site="lmr" status="active"/>
+                    <local_record id="b" site="mgh" status="inactive"/>
+                </master_record>
+                <master_record>
+                    <local_record id="c" site="bwh"/>
+                </master_record>
+
+                <!-- return="master_data" -->
+                <master_record id="1">
+                    <string concept_cd="first_name">Raj</string>
+                    <string concept_cd="last_name">Kuttan</string>
+                </master_record>
+
+                <!-- return="local_data" -->
+                <master_record id="1">
+                    <local_record id="a" site="lmr">
+                        <string concept_cd="first_name">Raj</string>
+                        <string concept_cd="last_name">Kuttan-Kuttan</string>
+                    </local_record>
+                    <local_record id="b" site="mgh">
+                        <string concept_cd="first_name">rajesh</string>
+                        <string concept_cd="last_name">kuttan</string>
+                    </local_record>
+                </master_record>
+                <master_record>
+                    <local_record id="c" site="bwh">
+                        <string concept_cd="first_name">Kristel</string>
+                        <string concept_cd="last_name">Hackett</string>
+                    </local_record>
+                </master_record>
+
+                <!-- return="local_history" -->
+                <master_record id="1" status="inactive">
+                    <local_record id="a" site="lmr" status="inactive">
+                        <string concept_cd="first_name" update_date="2002-02-28T13:59:59"
+                            download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                            sourcesystem_cd="LMR">Raj</string>
+                        <string concept_cd="last_name" update_date="2002-02-28T13:59:59"
+                            download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                            sourcesystem_cd="LMR">Kuttan</string>
+                        <string concept_cd="last_name" update_date="2003-02-28T13:59:59"
+                            download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                            sourcesystem_cd="LMR">Kuttan-Kuttan</string>
+                    </local_record>
+                    <local_record id="b" site="mgh" status="active">
+                        <string concept_cd="first_name" update_date="2003-02-28T13:59:59"
+                            download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                            sourcesystem_cd="LMR">rajesh</string>
+                        <string concept_cd="first_name" update_date="2002-02-28T13:59:59"
+                            download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                            sourcesystem_cd="LMR">rajeshh</string>
+                        <string concept_cd="last_name" update_date="2002-02-28T13:59:59"
+                            download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                            sourcesystem_cd="LMR">kuttan</string>
+                    </local_record>
+                </master_record>
+
+            </response>
+
+        </identity:query>
+    </body>
+</i2b2:i2b2>

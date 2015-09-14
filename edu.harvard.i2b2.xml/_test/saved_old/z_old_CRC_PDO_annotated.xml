@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i2b2:i2b2 xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/message 
+    ./i2b2.xsd">
+    <version>3</version>
+    <info url="http://">Info message here.</info>
+    <result_status>
+        <status type="DONE">Status message here.</status>
+        <polling_url interval_ms="3">http://</polling_url>
+        <conditions>
+            <condition type="WARNING">Condition message here.</condition>
+        </conditions>
+    </result_status>
+    <body>
+        <!-- The root element that holds data from the patient data tables.
+    May contain any number of visit_dimension, concept_dimension,
+    provider_dimension, patient_dimension and observation_fact elements.
+    They can occur in any order. -->
+        <repository:patient_data xmlns:repository="http://i2b2.mgh.harvard.edu/repository_cell"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://i2b2.mgh.harvard.edu/repository_cell ./patient_data.xsd">
+            <visit_dimension_set>
+                <!--  -->
+                <!-- A full row of data from the visit_dimension table. -->
+                <!--  -->
+                <visit_dimension>
+                    <encounter_ide source="PULENCTMAP">XDFD45HSDG9578FDFG</encounter_ide>
+                    <patient_num>12345</patient_num>
+                    <inout_cd>I</inout_cd>
+                    <location_cd>MGH</location_cd>
+                    <location_path>Clinics\MGH\Oral Surgury</location_path>
+                    <start_date>1999-02-28T13:59:00</start_date>
+                    <end_date>1999-02-28T13:59:00</end_date>
+                    <visit_blob/>
+                    <update_date>1999-02-28T13:59:00</update_date>
+                    <download_date>1999-02-28T13:59:00</download_date>
+                    <import_date>1999-02-28T13:59:00</import_date>
+                    <sourcesystem_cd>RPDRASTHMA</sourcesystem_cd>
+                    <upload_id>123</upload_id>
+                </visit_dimension>
+                <!--  -->
+                <!-- Only required fields from visit_dimension table. -->
+                <!--  -->
+                <visit_dimension>
+                    <encounter_num>1234567</encounter_num>
+                    <patient_id source="EMP">123456789</patient_id>
+                </visit_dimension>
+            </visit_dimension_set>
+            <concept_dimension_set>
+                <!--  -->
+                <!-- A full row of data from the concept_dimension table. -->
+                <!--  -->
+                <concept_dimension>
+                    <concept_path>i2b2\Diagnoses\C0004096</concept_path>
+                    <concept_cd>C0004096</concept_cd>
+                    <name_char>Asthma</name_char>
+                    <concept_blob/>
+                    <update_date>1999-02-28T13:59:00</update_date>
+                    <download_date>1999-02-28T13:59:00</download_date>
+                    <import_date>1999-02-28T13:59:00</import_date>
+                    <sourcesystem_cd>ASTHMADICT</sourcesystem_cd>
+                    <upload_id>234</upload_id>
+                </concept_dimension>
+                <!--  -->
+                <!-- Only required fields from concept_dimension table. -->
+                <!--  -->
+                <concept_dimension>
+                    <concept_path>i2b2\Diagnoses\C0004096</concept_path>
+                </concept_dimension>
+            </concept_dimension_set>
+            <provider_dimension_set>
+                <!--  -->
+                <!-- A full row of data from the provider_dimension table. -->
+                <!--  -->
+                <provider_dimension>
+                    <provider_path>BWH\Pathology\B001234567\12345</provider_path>
+                    <provider_id>B001234567</provider_id>
+                    <name_char>Doctor, John A., MD</name_char>
+                    <provider_blob/>
+                    <update_date>1999-02-28T13:59:00</update_date>
+                    <download_date>1999-02-28T13:59:00</download_date>
+                    <import_date>1999-02-28T13:59:00</import_date>
+                    <sourcesystem_cd>token</sourcesystem_cd>
+                    <upload_id>345</upload_id>
+                </provider_dimension>
+                <!--  -->
+                <!-- Only required fields from provider_dimension table. -->
+                <!--  -->
+                <provider_dimension>
+                    <provider_path>BWH\Pathology\B001234567\12345</provider_path>
+                    <provider_id>B001234567</provider_id>
+                </provider_dimension>
+            </provider_dimension_set>
+            <patient_dimension_set>
+                <!--  -->
+                <!-- A full row of data from the patient_dimension table. -->
+                <!--  -->
+                <patient_dimension>
+                    <patient_id source="EMP">123456789</patient_id>
+                    <vital_status_cd>Y</vital_status_cd>
+                    <birth_date>1930-02-28T13:59:00</birth_date>
+                    <death_date>2001-02-28T13:59:00</death_date>
+                    <sex_cd>F</sex_cd>
+                    <age_in_years_num>71</age_in_years_num>
+                    <language_cd>ENGL</language_cd>
+                    <race_cd>B</race_cd>
+                    <marital_status_cd>M</marital_status_cd>
+                    <religion_cd>CA</religion_cd>
+                    <zip_cd>12345-1234</zip_cd>
+                    <statecityzip_path>Zip codes\Massachusetts\Boston\02120\</statecityzip_path>
+                    <patient_blob/>
+                    <update_date>1999-02-28T13:59:00</update_date>
+                    <download_date>1999-02-28T13:59:00</download_date>
+                    <import_date>1999-02-28T13:59:00</import_date>
+                    <sourcesystem_cd>token</sourcesystem_cd>
+                    <upload_id>456</upload_id>
+                </patient_dimension>
+                <!--  -->
+                <!-- Only required fields from patient_dimension table. -->
+                <!--  -->
+                <patient_dimension>
+                    <patient_num>1234</patient_num>
+                </patient_dimension>
+            </patient_dimension_set>
+            <observation_fact_set>
+                <!--  -->
+                <!-- A full row of data from the observation_fact table. -->
+                <!--  -->
+                <observation_fact>
+                    <encounter_num>1234567</encounter_num>
+                    <patient_ide source="EMP">XRTU8GT9FKIS35DSVB</patient_ide>
+                    <concept_cd>V450</concept_cd>
+                    <provider_id>12345</provider_id>
+                    <start_date>1999-02-28T13:59:00</start_date>
+                    <modifier_cd>2</modifier_cd>
+                    <valtype_cd>N</valtype_cd>
+                    <tval_char>Some Text Value</tval_char>
+                    <nval_num>1.0</nval_num>
+                    <valueflag_cd>float (or some code)</valueflag_cd>
+                    <quantity_num>1.0</quantity_num>
+                    <units_cd>ml</units_cd>
+                    <end_date>1999-02-28T13:59:00</end_date>
+                    <location_cd>MGH</location_cd>
+                    <confidence_num>95</confidence_num>
+                    <observation_blob/>
+                    <update_date>1999-02-28T13:59:00</update_date>
+                    <download_date>1999-02-28T13:59:00</download_date>
+                    <import_date>1999-02-28T13:59:00</import_date>
+                    <sourcesystem_cd>RPDRASTHMA</sourcesystem_cd>
+                    <upload_id>567</upload_id>
+                </observation_fact>
+                <!--  -->
+                <!-- Only required fields from observation_fact table. -->
+                <!--  -->
+                <observation_fact>
+                    <encounter_id source="PULENCTMAP">123456</encounter_id>
+                    <patient_num>1234</patient_num>
+                    <concept_cd>V450</concept_cd>
+                    <provider_id>12345</provider_id>
+                    <start_date>1999-02-28T13:59:00</start_date>
+                    <modifier_cd>2</modifier_cd>
+                </observation_fact>
+            </observation_fact_set>
+
+        </repository:patient_data>
+
+    </body>
+</i2b2:i2b2>

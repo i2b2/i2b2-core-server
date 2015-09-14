@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i2b2:i2b2 xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/message 
+    ./i2b2.xsd">
+    <version>3.09</version>
+    <info url="http://i2b2...">Some information here.</info>
+    <result_status>
+        <status type="DONE">Message here.</status>
+        <polling_url interval_ms="1">http://i2b2/polling</polling_url>
+        <conditions>
+            <condition type="FATAL_ERROR" coding_system="i2b2">Message here.</condition>
+            <condition type="ERROR" coding_system="i2b2">Message here.</condition>
+        </conditions>
+    </result_status>
+    <sending_application/>
+    <sending_facility/>
+    <receiving_application/>
+    <receiving_facility/>
+    <datetime_of_message/>
+    <security/>
+    <request_info>
+        <request_cd>QRY</request_cd>
+        <!-- this is a query -->
+    </request_info>
+    <message_control_id/>
+    <processing_info>
+        <environment>T</environment>
+        <!-- training -->
+        <mode/>
+    </processing_info>
+    <sequence_number/>
+    <continuation_pointer/>
+    <accept_acknowledgement_type/>
+    <application_acknowledgement_type/>
+    <country_code>US</country_code>
+    <message_control_id/>
+    <expected_sequence_number/>
+    <body>
+        <ontology:concept xmlns:ontology="http://i2b2.mgh.harvard.edu/ontology_cell"
+            xsi:schemaLocation="http://i2b2.mgh.harvard.edu/ontology_cell ./ontology.xsd">
+            <hlevel>2</hlevel>                                       <!-- c_hlevel -->
+            <concept_path>\i2b2\diagnosis\asthma</concept_path>      <!-- c_fullname -->
+            <concept_cd>i2b2:asthma</concept_cd>                     <!-- c_basecode -->
+            <name_char>Asthma</name_char>                            <!-- c_name -->
+            <synonym_cd>N</synonym_cd>                               <!-- c_synonym_cd -->
+            <visual_cd>FA</visual_cd>                                <!-- c_visualattributes -->
+            <metadata_xml/>                                          <!-- c_metadataxml -->
+            <select_column>concept_cd</select_column>                <!-- c_facttablecolumn -->
+            <from_table>concept_dimension</from_table>               <!-- c_tablename -->
+            <where_column>concept_path</where_column>                <!-- c_columnname -->
+            <operator_cd>LIKE</operator_cd>                          <!-- c_operator -->
+            <match_pattern>\i2b2\diagnosis\asthma</match_pattern>    <!-- c_dimcode -->
+            <datatype_cd>T</datatype_cd>                             <!-- c_columndatatype -->
+            <comment/>                                               <!-- c_comment -->
+            <tooltip>i2b2 / diagnosis / asthma</tooltip>             <!-- c_tooltip -->
+                                                                     <!-- c_totalnum -->
+        </ontology:concept>
+    </body>
+</i2b2:i2b2>

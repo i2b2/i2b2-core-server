@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<xs:schema id="repository_cell" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:crc="http://i2b2.mgh.harvard.edu/crc"
+    targetNamespace="http://i2b2.mgh.harvard.edu/crc">
+
+    <xs:import schemaLocation="./i2b2.xsd" namespace="http://i2b2.mgh.harvard.edu/message"/>
+    <xs:include schemaLocation="./CRC_PDO_OBJ_fields.xsd"/>
+
+    <xs:element name="patient_data" type="crc:patient_dataType">
+        <xs:annotation>
+            <xs:documentation>The root element that holds data from the patient data
+            tables.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="patient_dataType">
+        <xs:annotation>
+            <xs:documentation>May contain any number of visit_dimension, concept_dimension,
+                provider_dimension, patient_dimension and observation_fact elements. They can occur
+                in any order.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="visit_dimension_set" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="visit_dimension" maxOccurs="unbounded"
+                            type="crc:visit_dimensionType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="concept_dimension_set" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="concept_dimension" maxOccurs="unbounded"
+                            type="crc:concept_dimensionType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="provider_dimension_set" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="provider_dimension" maxOccurs="unbounded"
+                            type="crc:provider_dimensionType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="patient_dimension_set" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="patient_dimension" maxOccurs="unbounded"
+                            type="crc:patient_dimensionType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="observation_fact_set" minOccurs="0" maxOccurs="unbounded">
+            <xs:complexType>
+				<xs:sequence>
+                <xs:element name="observation_fact" maxOccurs="unbounded"
+                            type="crc:observation_factType"/>
+                </xs:sequence>
+                <xs:attribute name="concept_path" type="xs:string"/>
+	   	        <xs:attribute name="concept_name" type="xs:string"/>
+
+            </xs:complexType>
+              
+            </xs:element>
+            </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="visit_dimensionType">
+        <xs:annotation>
+            <xs:documentation>One row of data from the visit_dimension table.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="crc:encounter_idChoice"/>
+            <xs:group ref="crc:patient_idChoice"/>
+            <xs:element name="inout_cd" type="crc:InOut_CdType" minOccurs="0"/>
+            <xs:element name="location_cd" type="crc:Location_CdType" minOccurs="0"/>
+            <xs:element name="location_path" type="crc:Location_PathType" minOccurs="0"/>
+            <xs:element name="start_date" type="crc:Start_DateType" minOccurs="0"/>
+            <xs:element name="end_date" type="crc:End_DateType" minOccurs="0"/>
+            <xs:element name="visit_blob" type="crc:Visit_BlobType" minOccurs="0"/>
+            <xs:group ref="crc:annotationGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="concept_dimensionType">
+        <xs:annotation>
+            <xs:documentation>One row of data from the concept_dimension table.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="concept_path" type="crc:Concept_PathType"/>
+            <xs:element name="concept_cd" type="crc:Concept_CdType" minOccurs="0"/>
+            <xs:element name="name_char" type="crc:Name_CharType" minOccurs="0"/>
+            <xs:element name="concept_blob" type="crc:Concept_BlobType" minOccurs="0"/>
+            <xs:group ref="crc:annotationGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="provider_dimensionType">
+        <xs:annotation>
+            <xs:documentation>One row of data from the provider_dimension table.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="provider_path" type="crc:Provider_PathType"/>
+            <xs:element name="provider_id" type="crc:Provider_IdType"/>
+            <xs:element name="name_char" type="crc:Name_CharType" minOccurs="0"/>
+            <xs:element name="provider_blob" type="crc:Provider_BlobType" minOccurs="0"/>
+            <xs:group ref="crc:annotationGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="patient_dimensionType">
+        <xs:annotation>
+            <xs:documentation>One row of data from the patient_dimension table.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="crc:patient_idChoice"/>
+            <xs:element name="vital_status_cd" type="crc:Vital_Status_CdType" minOccurs="0"/>
+            <xs:element name="birth_date" type="crc:Birth_DateType" minOccurs="0"/>
+            <xs:element name="death_date" type="crc:Death_DateType" minOccurs="0"/>
+            <xs:element name="sex_cd" type="crc:Sex_CdType" minOccurs="0"/>
+            <xs:element name="age_in_years_num" type="crc:Age_In_Years_NumType" minOccurs="0"/>
+            <xs:element name="language_cd" type="crc:Language_CdType" minOccurs="0"/>
+            <xs:element name="race_cd" type="crc:Race_CdType" minOccurs="0"/>
+            <xs:element name="marital_status_cd" type="crc:Marital_Status_CdType"
+                minOccurs="0"/>
+            <xs:element name="religion_cd" type="crc:Religion_CdType" minOccurs="0"/>
+            <xs:element name="zip_cd" type="crc:Zip_CdType" minOccurs="0"/>
+            <xs:element name="statecityzip_path" type="crc:StateCityZip_PathType"
+                minOccurs="0"/>
+            <xs:element name="patient_blob" type="crc:Patient_BlobType" minOccurs="0"/>
+            <xs:group ref="crc:annotationGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    
+     <!-- 
+    <xs:complexType name="observation_fact_groupType">
+      <xs:sequence>
+        <xs:element name="observation_fact" maxOccurs="unbounded"
+                            type="crc:observation_factType"/>
+	   </xs:sequence>                         
+	   <xs:attribute name="concept_path" type="xs:string"/>
+	   <xs:attribute name="concept_name" type="xs:string"/>
+     </xs:complexType>
+    --> 
+    
+    <xs:complexType name="observation_factType">
+        <xs:annotation>
+            <xs:documentation>One row of data from the observation_fact table.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="crc:encounter_idChoice" minOccurs="1"/>
+            <xs:group ref="crc:patient_idChoice" minOccurs="1"/>
+            <xs:element name="concept_cd" type="crc:Concept_CdType"/>
+            <xs:element name="provider_id" type="crc:Provider_IdType"/>
+            <xs:element name="start_date" type="crc:Start_DateType"/>
+            <xs:element name="modifier_cd" type="crc:Modifier_CdType"/>
+            <xs:element name="valtype_cd" type="crc:ValType_CdType" minOccurs="0"/>
+            <xs:element name="tval_char" type="crc:TVal_CharType" minOccurs="0"/>
+            <xs:element name="nval_num" type="crc:NVal_NumType" minOccurs="0"/>
+            <xs:element name="valueflag_cd" type="crc:ValueFlag_CdType" minOccurs="0"/>
+            <xs:element name="quantity_num" type="crc:Quantity_NumType" minOccurs="0"/>
+            <xs:element name="units_cd" type="crc:Units_CdType" minOccurs="0"/>
+            <xs:element name="end_date" type="crc:End_DateType" minOccurs="0"/>
+            <xs:element name="location_cd" type="crc:Location_CdType" minOccurs="0"/>
+            <xs:element name="confidence_num" type="crc:Confidence_NumType" minOccurs="0"/>
+            <!--
+            <xs:element name="observation_blob" type="crc:Observation_BlobType" minOccurs="0"/>
+            -->
+            <xs:element name="observation_blob" type="xs:anyType" minOccurs="0"/>
+            <xs:group ref="crc:annotationGroup" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:group name="patient_idChoice">
+        <xs:annotation>
+            <xs:documentation>A choice between one of three patient identifiers.</xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="patient_num" type="crc:Patient_NumType"/>
+            <xs:element name="patient_id" type="crc:Patient_IdType"/>
+            <xs:element name="patient_ide" type="crc:Patient_IdeType"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="encounter_idChoice">
+        <xs:annotation>
+            <xs:documentation>A choice between one of three encounter
+            identifiers.</xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="encounter_num" type="crc:Encounter_NumType"/>
+            <xs:element name="encounter_id" type="crc:Encounter_IdType"/>
+            <xs:element name="encounter_ide" type="crc:Encounter_IdeType"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="annotationGroup">
+        <xs:annotation>
+            <xs:documentation>A group of fields that always appear together at the end of a table
+                and store annotation or administrative information.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="update_date" type="crc:Update_DateType" minOccurs="0"/>
+            <xs:element name="download_date" type="crc:Download_DateType" minOccurs="0"/>
+            <xs:element name="import_date" type="crc:Import_DateType" minOccurs="0"/>
+            <xs:element name="sourcesystem_cd" type="crc:Sourcesystem_CdType" minOccurs="0"/>
+            <xs:element name="upload_id" type="crc:Upload_IdType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:group>
+</xs:schema>

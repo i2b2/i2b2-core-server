@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:qt="http://i2b2.mgh.harvard.edu/querytool"
+    targetNamespace="http://i2b2.mgh.harvard.edu/querytool">
+
+    <xs:include schemaLocation="./CRC_QRY_query_definition.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation>This schema defines abstract requestType and concrete requestTypes. It
+            also defines a request element of type requestType. the specific requestType of request
+            must be declared in the instance document using the xsi:type
+        attribute.</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="request" type="qt:requestType"/>
+
+    <xs:complexType name="requestType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>requestType is abstract so a concrete type must be declared in the
+                instance document using the xsi:type attribute.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence/>
+    </xs:complexType>
+
+    <xs:complexType name="user_requestType">
+        <xs:complexContent>
+            <xs:extension base="qt:requestType">
+                <xs:sequence>
+                    <xs:element name="user_id" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="master_requestType">
+        <xs:complexContent>
+            <xs:extension base="qt:requestType">
+                <xs:sequence>
+                    <xs:element name="query_master_id" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="instance_requestType">
+        <xs:complexContent>
+            <xs:extension base="qt:requestType">
+                <xs:sequence>
+                    <xs:element name="query_instance_id" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="result_requestType">
+        <xs:complexContent>
+            <xs:extension base="qt:requestType">
+                <xs:sequence>
+                    <xs:element name="query_result_instance_id" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="query_definition_requestType">
+        <xs:complexContent>
+            <xs:extension base="qt:requestType">
+                <xs:sequence>
+                    <xs:element name="query_definition" type="qt:query_definitionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

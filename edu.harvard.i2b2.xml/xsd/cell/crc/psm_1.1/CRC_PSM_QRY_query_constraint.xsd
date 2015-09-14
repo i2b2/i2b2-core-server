@@ -1,0 +1,88 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:qc="http://www.i2b2.org/xsd/cell/crc/psm/queryconstraint/1.1/">
+    
+     
+    <xs:annotation>
+        <xs:documentation>this schema defines xml representation of a query constraint</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="query_constraints" type="queryConstraintsType"/>
+    
+    <xs:complexType name="queryConstraintsType">
+		<xs:sequence>
+			<xs:element name="query_constraint" type="queryConstraintType" minOccurs = "1" maxOccurs="unbounded"/>
+		</xs:sequence>	
+	</xs:complexType>
+
+    <xs:element name="query_constraint" type="queryConstraintType"/>
+
+ 	<xs:complexType name="queryConstraintType">
+		<xs:sequence>
+			<xs:element name="constraint_type" type="xs:string" maxOccurs="1" minOccurs="0" />
+			<xs:element name="first_query" type="queryJoinType" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="operator" type="queryOperatorType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="second_query" type="queryJoinType" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="span" type="querySpanConstraintType" maxOccurs="unbounded"  minOccurs="0"/>	
+		</xs:sequence>	
+	</xs:complexType>
+
+	<xs:complexType name="queryJoinType">
+		<xs:sequence>
+			<xs:element name="query_id" type="xs:string" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="join_column" type="queryJoinColumnType" maxOccurs="1"
+				minOccurs="1" />
+			<xs:element name="aggregate_operator" type="queryAggregateOperatorType" maxOccurs="1"
+				minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+		
+	<xs:complexType name="querySpanConstraintType">
+		<xs:sequence>
+			<xs:element name="operator" type="queryOperatorType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="span_value" type="xs:int" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="units" maxOccurs="1" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="YEAR"></xs:enumeration>
+						<xs:enumeration value="MONTH"></xs:enumeration>
+						<xs:enumeration value="DAY"></xs:enumeration>
+						<xs:enumeration value="HOUR"></xs:enumeration>
+						<xs:enumeration value="MINUTE"></xs:enumeration>
+						<xs:enumeration value="SECOND"></xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>	
+	</xs:complexType>
+	
+	<xs:simpleType name="queryAggregateOperatorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FIRST"></xs:enumeration>
+			<xs:enumeration value="LAST"></xs:enumeration>
+			<xs:enumeration value="ANY"></xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="queryJoinColumnType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PATIENT"></xs:enumeration>
+			<xs:enumeration value="ENCOUNTER"></xs:enumeration>
+			<xs:enumeration value="INSTANCE"></xs:enumeration>
+			<xs:enumeration value="STARTDATE"></xs:enumeration>
+			<xs:enumeration value="ENDDATE"></xs:enumeration>
+			<xs:enumeration value="ENCOUNTER_STARTDATE"></xs:enumeration>
+			<xs:enumeration value="ENCOUNTER_ENDDATE"></xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+ 
+	<xs:simpleType name="queryOperatorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="EQUAL"></xs:enumeration>
+			<xs:enumeration value="GREATEREQUAL"></xs:enumeration>
+			<xs:enumeration value="GREATER"></xs:enumeration>
+			<xs:enumeration value="LESSEQUAL"></xs:enumeration>
+			<xs:enumeration value="LESS"></xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+  
+</xs:schema>

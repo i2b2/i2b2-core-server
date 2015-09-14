@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns2:load_data_response xmlns:ns1="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+ xmlns:ns2="http://www.i2b2.org/xsd/cell/crc/loader/1.1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.i2b2.org/xsd/cell/crc/loader/1.1/ file:/Users/rk903/Documents/Development_Uploader/edu.harvard.i2b2.xml/xsd/cell/crc/loader_1.1/CRC_UPLOADER_QRY_response.xsd" uplod_id="uplod_id0" user_id="user_id0" load_status="load_status0" data_file_location_uri="data_file_location_uri0">
+        <status>
+            <condition type="ERROR" coding_system="coding_system0">condition0</condition>
+            <condition type="ERROR" coding_system="coding_system1">condition1</condition>
+            <condition type="ERROR" coding_system="coding_system2">condition2</condition>
+        </status>
+        <observation_set inserted_record="2147483647" ignored_record="2147483647"/>
+        <patient_set inserted_record="2147483647" ignored_record="2147483647"/>
+        <event_set inserted_record="2147483647" ignored_record="2147483647"/>
+        <observer_set inserted_record="2147483647" ignored_record="2147483647"/>
+        <concept_set inserted_record="2147483647" ignored_record="2147483647"/>
+        <ns1:patient_data>
+            <ns1:event_set>
+                <event update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd0" upload_id="upload_id0">
+                    <event_id source="source0">event_id0</event_id>
+                    <patient_id source="source1">patient_id0</patient_id>
+                    <param column="column0" name="name0">param0</param>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <event_blob>
+                    </event_blob>
+                </event>
+                <event update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd1" upload_id="upload_id1">
+                    <event_id source="source2">event_id1</event_id>
+                    <patient_id source="source3">patient_id1</patient_id>
+                    <param column="column1" name="name1">param1</param>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <event_blob>
+                    </event_blob>
+                </event>
+                <event update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd2" upload_id="upload_id2">
+                    <event_id source="source4">event_id2</event_id>
+                    <patient_id source="source5">patient_id2</patient_id>
+                    <param column="column2" name="name2">param2</param>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <event_blob>
+                    </event_blob>
+                </event>
+            </ns1:event_set>
+            <ns1:concept_set>
+                <concept update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd3" upload_id="upload_id3">
+                    <concept_path>concept_path0</concept_path>
+                    <concept_cd>concept_cd0</concept_cd>
+                    <name_char>name_char0</name_char>
+                    <concept_blob>
+                    </concept_blob>
+                </concept>
+                <concept update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd4" upload_id="upload_id4">
+                    <concept_path>concept_path1</concept_path>
+                    <concept_cd>concept_cd1</concept_cd>
+                    <name_char>name_char1</name_char>
+                    <concept_blob>
+                    </concept_blob>
+                </concept>
+                <concept update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd5" upload_id="upload_id5">
+                    <concept_path>concept_path2</concept_path>
+                    <concept_cd>concept_cd2</concept_cd>
+                    <name_char>name_char2</name_char>
+                    <concept_blob>
+                    </concept_blob>
+                </concept>
+            </ns1:concept_set>
+            <ns1:observer_set>
+                <observer update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd6" upload_id="upload_id6">
+                    <observer_path>observer_path0</observer_path>
+                    <observer_cd>observer_cd0</observer_cd>
+                    <name_char>name_char3</name_char>
+                    <observer_blob>
+                    </observer_blob>
+                </observer>
+                <observer update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd7" upload_id="upload_id7">
+                    <observer_path>observer_path1</observer_path>
+                    <observer_cd>observer_cd1</observer_cd>
+                    <name_char>name_char4</name_char>
+                    <observer_blob>
+                    </observer_blob>
+                </observer>
+                <observer update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd8" upload_id="upload_id8">
+                    <observer_path>observer_path2</observer_path>
+                    <observer_cd>observer_cd2</observer_cd>
+                    <name_char>name_char5</name_char>
+                    <observer_blob>
+                    </observer_blob>
+                </observer>
+            </ns1:observer_set>
+            <ns1:pid_set>
+                <pid>
+                    <patient_id source="source6">patient_id3</patient_id>
+                    <patient_map_id source="source7" kind="kind0" status="status0" update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z"
+                         import_date="2006-05-04T18:13:51.0Z" sourcesystem_cd="sourcesystem_cd9" upload_id="upload_id9">patient_map_id0</patient_map_id>
+                </pid>
+                <pid>
+                    <patient_id source="source8">patient_id4</patient_id>
+                    <patient_map_id source="source9" kind="kind1" status="status1" update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z"
+                         import_date="2006-05-04T18:13:51.0Z" sourcesystem_cd="sourcesystem_cd10" upload_id="upload_id10">patient_map_id1</patient_map_id>
+                </pid>
+                <pid>
+                    <patient_id source="source10">patient_id5</patient_id>
+                    <patient_map_id source="source11" kind="kind2" status="status2" update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z"
+                         import_date="2006-05-04T18:13:51.0Z" sourcesystem_cd="sourcesystem_cd11" upload_id="upload_id11">patient_map_id2</patient_map_id>
+                </pid>
+            </ns1:pid_set>
+            <ns1:patient_set>
+                <patient update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd12" upload_id="upload_id12">
+                    <patient_id source="source12">patient_id6</patient_id>
+                    <param column="column3" name="name3">param3</param>
+                    <patient_blob>
+                    </patient_blob>
+                </patient>
+                <patient update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd13" upload_id="upload_id13">
+                    <patient_id source="source13">patient_id7</patient_id>
+                    <param column="column4" name="name4">param4</param>
+                    <patient_blob>
+                    </patient_blob>
+                </patient>
+                <patient update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd14" upload_id="upload_id14">
+                    <patient_id source="source14">patient_id8</patient_id>
+                    <param column="column5" name="name5">param5</param>
+                    <patient_blob>
+                    </patient_blob>
+                </patient>
+            </ns1:patient_set>
+            <ns1:observation_set panel_name="panel_name0">
+                <observation update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd15" upload_id="upload_id15">
+                    <event_id source="source15">event_id3</event_id>
+                    <patient_id source="source16">patient_id9</patient_id>
+                    <concept_cd name="name6">concept_cd3</concept_cd>
+                    <observer_cd soruce="soruce0">observer_cd3</observer_cd>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <modifier_cd name="name7">modifier_cd0</modifier_cd>
+                    <valuetype_cd>valuetype_cd0</valuetype_cd>
+                    <tval_char>tval_char0</tval_char>
+                    <nval_num units="units0">3.141592653589</nval_num>
+                    <valueflag_cd name="name8">valueflag_cd0</valueflag_cd>
+                    <quantity_num>3.141592653589</quantity_num>
+                    <units_cd>units_cd0</units_cd>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <location_cd name="name9">location_cd0</location_cd>
+                    <observation_blob>
+                    </observation_blob>
+                </observation>
+                <observation update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd16" upload_id="upload_id16">
+                    <event_id source="source17">event_id4</event_id>
+                    <patient_id source="source18">patient_id10</patient_id>
+                    <concept_cd name="name10">concept_cd4</concept_cd>
+                    <observer_cd soruce="soruce1">observer_cd4</observer_cd>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <modifier_cd name="name11">modifier_cd1</modifier_cd>
+                    <valuetype_cd>valuetype_cd1</valuetype_cd>
+                    <tval_char>tval_char1</tval_char>
+                    <nval_num units="units1">3.141592653589</nval_num>
+                    <valueflag_cd name="name12">valueflag_cd1</valueflag_cd>
+                    <quantity_num>3.141592653589</quantity_num>
+                    <units_cd>units_cd1</units_cd>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <location_cd name="name13">location_cd1</location_cd>
+                    <observation_blob>
+                    </observation_blob>
+                </observation>
+                <observation update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd17" upload_id="upload_id17">
+                    <event_id source="source19">event_id5</event_id>
+                    <patient_id source="source20">patient_id11</patient_id>
+                    <concept_cd name="name14">concept_cd5</concept_cd>
+                    <observer_cd soruce="soruce2">observer_cd5</observer_cd>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <modifier_cd name="name15">modifier_cd2</modifier_cd>
+                    <valuetype_cd>valuetype_cd2</valuetype_cd>
+                    <tval_char>tval_char2</tval_char>
+                    <nval_num units="units2">3.141592653589</nval_num>
+                    <valueflag_cd name="name16">valueflag_cd2</valueflag_cd>
+                    <quantity_num>3.141592653589</quantity_num>
+                    <units_cd>units_cd2</units_cd>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <location_cd name="name17">location_cd2</location_cd>
+                    <observation_blob>
+                    </observation_blob>
+                </observation>
+            </ns1:observation_set>
+            <ns1:observation_set panel_name="panel_name1">
+                <observation update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd18" upload_id="upload_id18">
+                    <event_id source="source21">event_id6</event_id>
+                    <patient_id source="source22">patient_id12</patient_id>
+                    <concept_cd name="name18">concept_cd6</concept_cd>
+                    <observer_cd soruce="soruce3">observer_cd6</observer_cd>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <modifier_cd name="name19">modifier_cd3</modifier_cd>
+                    <valuetype_cd>valuetype_cd3</valuetype_cd>
+                    <tval_char>tval_char3</tval_char>
+                    <nval_num units="units3">3.141592653589</nval_num>
+                    <valueflag_cd name="name20">valueflag_cd3</valueflag_cd>
+                    <quantity_num>3.141592653589</quantity_num>
+                    <units_cd>units_cd3</units_cd>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <location_cd name="name21">location_cd3</location_cd>
+                    <observation_blob>
+                    </observation_blob>
+                </observation>
+                <observation update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd19" upload_id="upload_id19">
+                    <event_id source="source23">event_id7</event_id>
+                    <patient_id source="source24">patient_id13</patient_id>
+                    <concept_cd name="name22">concept_cd7</concept_cd>
+                    <observer_cd soruce="soruce4">observer_cd7</observer_cd>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <modifier_cd name="name23">modifier_cd4</modifier_cd>
+                    <valuetype_cd>valuetype_cd4</valuetype_cd>
+                    <tval_char>tval_char4</tval_char>
+                    <nval_num units="units4">3.141592653589</nval_num>
+                    <valueflag_cd name="name24">valueflag_cd4</valueflag_cd>
+                    <quantity_num>3.141592653589</quantity_num>
+                    <units_cd>units_cd4</units_cd>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <location_cd name="name25">location_cd4</location_cd>
+                    <observation_blob>
+                    </observation_blob>
+                </observation>
+                <observation update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd20" upload_id="upload_id20">
+                    <event_id source="source25">event_id8</event_id>
+                    <patient_id source="source26">patient_id14</patient_id>
+                    <concept_cd name="name26">concept_cd8</concept_cd>
+                    <observer_cd soruce="soruce5">observer_cd8</observer_cd>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <modifier_cd name="name27">modifier_cd5</modifier_cd>
+                    <valuetype_cd>valuetype_cd5</valuetype_cd>
+                    <tval_char>tval_char5</tval_char>
+                    <nval_num units="units5">3.141592653589</nval_num>
+                    <valueflag_cd name="name28">valueflag_cd5</valueflag_cd>
+                    <quantity_num>3.141592653589</quantity_num>
+                    <units_cd>units_cd5</units_cd>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <location_cd name="name29">location_cd5</location_cd>
+                    <observation_blob>
+                    </observation_blob>
+                </observation>
+            </ns1:observation_set>
+            <ns1:observation_set panel_name="panel_name2">
+                <observation update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd21" upload_id="upload_id21">
+                    <event_id source="source27">event_id9</event_id>
+                    <patient_id source="source28">patient_id15</patient_id>
+                    <concept_cd name="name30">concept_cd9</concept_cd>
+                    <observer_cd soruce="soruce6">observer_cd9</observer_cd>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <modifier_cd name="name31">modifier_cd6</modifier_cd>
+                    <valuetype_cd>valuetype_cd6</valuetype_cd>
+                    <tval_char>tval_char6</tval_char>
+                    <nval_num units="units6">3.141592653589</nval_num>
+                    <valueflag_cd name="name32">valueflag_cd6</valueflag_cd>
+                    <quantity_num>3.141592653589</quantity_num>
+                    <units_cd>units_cd6</units_cd>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <location_cd name="name33">location_cd6</location_cd>
+                    <observation_blob>
+                    </observation_blob>
+                </observation>
+                <observation update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd22" upload_id="upload_id22">
+                    <event_id source="source29">event_id10</event_id>
+                    <patient_id source="source30">patient_id16</patient_id>
+                    <concept_cd name="name34">concept_cd10</concept_cd>
+                    <observer_cd soruce="soruce7">observer_cd10</observer_cd>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <modifier_cd name="name35">modifier_cd7</modifier_cd>
+                    <valuetype_cd>valuetype_cd7</valuetype_cd>
+                    <tval_char>tval_char7</tval_char>
+                    <nval_num units="units7">3.141592653589</nval_num>
+                    <valueflag_cd name="name36">valueflag_cd7</valueflag_cd>
+                    <quantity_num>3.141592653589</quantity_num>
+                    <units_cd>units_cd7</units_cd>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <location_cd name="name37">location_cd7</location_cd>
+                    <observation_blob>
+                    </observation_blob>
+                </observation>
+                <observation update_date="2006-05-04T18:13:51.0Z" download_date="2006-05-04T18:13:51.0Z" import_date="2006-05-04T18:13:51.0Z"
+                     sourcesystem_cd="sourcesystem_cd23" upload_id="upload_id23">
+                    <event_id source="source31">event_id11</event_id>
+                    <patient_id source="source32">patient_id17</patient_id>
+                    <concept_cd name="name38">concept_cd11</concept_cd>
+                    <observer_cd soruce="soruce8">observer_cd11</observer_cd>
+                    <start_date>2006-05-04T18:13:51.0Z</start_date>
+                    <modifier_cd name="name39">modifier_cd8</modifier_cd>
+                    <valuetype_cd>valuetype_cd8</valuetype_cd>
+                    <tval_char>tval_char8</tval_char>
+                    <nval_num units="units8">3.141592653589</nval_num>
+                    <valueflag_cd name="name40">valueflag_cd8</valueflag_cd>
+                    <quantity_num>3.141592653589</quantity_num>
+                    <units_cd>units_cd8</units_cd>
+                    <end_date>2006-05-04T18:13:51.0Z</end_date>
+                    <location_cd name="name41">location_cd8</location_cd>
+                    <observation_blob>
+                    </observation_blob>
+                </observation>
+            </ns1:observation_set>
+        </ns1:patient_data>
+</ns2:load_data_response>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- i2b2 result message envelope, contains the header and body elements -->
+<!-- $Id: i2b2_result_msg.xsd,v 1.1 2008/05/05 17:17:34 rk903 Exp $ -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:i2b2result="http://www.i2b2.org/xsd/hive/msg/result/1.1/"
+    xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/hive/msg/result/1.1/">
+
+    <xsd:element name="i2b2_result_envelope" type="i2b2result:result_envelopeType"/>
+
+    <xsd:complexType name="result_envelopeType" final="extension">
+        <xsd:sequence>
+            <xsd:element name="header" type="i2b2result:headerType"> </xsd:element>
+            <xsd:element name="body" type="i2b2result:bodyType"> </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="headerType">
+        <xsd:sequence>
+            <xsd:element name="version" type="xsd:decimal"/>
+            <xsd:element name="type" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="bodyType">
+        <xsd:sequence>
+            <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##any"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+
+    <xsd:element name="result" type="i2b2result:resultType"/>
+
+    <xsd:complexType name="resultType">
+
+        <xsd:sequence>
+            <xsd:element name="data" type="i2b2result:dataType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+
+    </xsd:complexType>
+
+
+    <xsd:complexType name="dataType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="column" type="xsd:string"/>
+                <xsd:attribute name="type" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+
+</xsd:schema>

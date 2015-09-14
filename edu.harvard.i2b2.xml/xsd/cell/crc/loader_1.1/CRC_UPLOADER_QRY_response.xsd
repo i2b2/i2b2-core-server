@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:loader="http://www.i2b2.org/xsd/cell/crc/loader/1.1/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/loader/1.1/">
+    
+    <!--
+    <xs:import schemaLocation="../../../hive/pdo_1.1/i2b2_PDO.xsd"
+        namespace="http://www.i2b2.org/xsd/hive/pdo/1.1/"/>
+    -->
+    
+    <xs:element name="load_data_response" type="loader:load_data_responseType" />
+    <xs:element name="load_data_list_response" type="loader:load_data_list_responseType" />
+    <xs:element name="missing_term_report_response" type="loader:missing_term_report_responseType" />
+    
+    
+    
+    <xs:complexType name="load_data_list_responseType">
+        <xs:sequence>
+        <xs:element name="load_data_response" type="loader:load_data_responseType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>    
+    
+    
+    <xs:complexType name="load_data_responseType" >
+        <xs:complexContent>
+            <xs:extension base="loader:responseType">
+                <xs:sequence>
+                    <xs:element name="upload_id" type="xs:string"/>
+                    <xs:element name="user_id" type="xs:string"/>
+                    <xs:element name="data_file_location_uri" >
+                        <xs:complexType>
+                            <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                    <xs:attribute name="protocol_name" type="xs:string"/>
+                                </xs:extension>
+                            </xs:simpleContent>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="load_status" type="xs:string"/>
+                    <xs:element name="transformer_name" type="xs:string"/>
+                    <xs:element name="start_date" type="xs:dateTime"/>
+                    <xs:element name="end_date" type="xs:dateTime"/>
+                    <xs:element name="message" type="xs:string"/>
+                    <xs:element name="observation_set" type="loader:set_statusType" minOccurs="0"/>
+                    <xs:element name="patient_set" type="loader:set_statusType" minOccurs="0"/>
+                    <xs:element name="event_set" type="loader:set_statusType" minOccurs="0"/>
+                    <xs:element name="observer_set" type="loader:set_statusType" minOccurs="0"/>
+                    <xs:element name="concept_set" type="loader:set_statusType" minOccurs="0"/>
+                    <xs:element name="pid_set" type="loader:set_statusType" minOccurs="0"/>
+                    <xs:element name="eventid_set" type="loader:set_statusType" minOccurs="0"/>
+                    <xs:element name="modifier_set" type="loader:set_statusType" minOccurs="0"/>
+                    <!--
+                    <xs:element ref="pdo:patient_data"/>
+                    -->
+                </xs:sequence>
+           
+                
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="set_statusType">
+        <xs:sequence>
+            <xs:element name="ignored_patient_data_file_uri" >
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="protocol_name" type="xs:string"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="inserted_patient_data_file_uri">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="protocol_name" type="xs:string"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="message" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="inserted_record" type="xs:int"/>
+        <xs:attribute name="ignored_record" type="xs:int"/>
+        <xs:attribute name="total_record" type="xs:int"/>
+        
+    </xs:complexType>
+    
+  
+    
+    <xs:complexType name="responseType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>responseType is abstract so a concrete type must be declared in the
+                instance document using the xsi:type attribute.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="status" type="loader:statusType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="statusType">
+        <xs:sequence>
+            <xs:element name="condition" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="type" use="required">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="ERROR"/>
+                                        <xs:enumeration value="FATAL_ERROR"/>
+                                        <xs:enumeration value="WARNING"/>
+                                        <xs:enumeration value="INFO"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="coding_system" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="missing_term_report_responseType">
+        <xs:sequence>
+            <xs:element name="missing_term_report" >
+                    <xs:complexType>
+                    	<xs:sequence>
+             				<xs:element name="concept_set" type="loader:missing_term_set_reportType"/> 
+             				<xs:element name="observer_set" type="loader:missing_term_set_reportType"/>
+             				<xs:element name="modifier_set" type="loader:missing_term_set_reportType"/>
+                    	</xs:sequence>
+                        <xs:attribute name="upload_id" type="xs:int"/>
+                    </xs:complexType>
+            </xs:element>
+            <xs:element name="missing_codes">
+                <xs:complexType>
+            		<xs:sequence>
+            			<xs:element name="concept_set"  type="loader:missing_codes_concept_setType" /> 
+             			<xs:element name="observer_set" type="loader:missing_codes_observer_setType" />
+             			<xs:element name="modifier_set" type="loader:missing_codes_modifier_setType" />
+            		</xs:sequence>        
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+	 <xs:complexType name="missing_term_set_reportType">
+		<xs:attribute name="mapped" type="xs:int"/>
+		<xs:attribute name="unmapped" type="xs:int"/>
+	 </xs:complexType>
+	 
+ 	<xs:complexType name="missing_codes_concept_setType">
+		<xs:sequence>
+			<xs:element name="concept" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="concept_cd" type="xs:string"/>
+					</xs:sequence>							
+					<xs:attribute name="missing_total" type="xs:int"/>	
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	 </xs:complexType>
+
+	<xs:complexType name="missing_codes_observer_setType">
+		<xs:sequence>
+			<xs:element name="observer" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="observer_cd" type="xs:string"/>
+					</xs:sequence>							
+					<xs:attribute name="missing_total" type="xs:int"/>	
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	 </xs:complexType>
+	 
+	 <xs:complexType name="missing_codes_modifier_setType">
+		<xs:sequence>
+			<xs:element name="modifier" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="modifier_cd" type="xs:string"/>
+					</xs:sequence>							
+					<xs:attribute name="missing_total" type="xs:int"/>	
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	 </xs:complexType>
+	 
+</xs:schema>

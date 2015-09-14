@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:loader="http://www.i2b2.org/xsd/cell/crc/loader/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/loader/1.1/">
+
+    <xs:element name="publish_data_request" type="loader:publish_data_request_type"/>
+    <xs:element name="get_upload_info_request" type="loader:get_upload_info_request_type"/>
+    <xs:element name="get_missing_term_report_request" type="loader:get_missing_term_request_type"/>
+    <xs:element name="bulk_load_request" type="loader:bulk_load_request_type"/>
+    <xs:element name="get_bulk_load_info_request" type="loader:get_bulk_load_info_request_type"/>
+ 
+    <xs:complexType name="bulk_load_request_type">
+        <xs:all>
+            <xs:element name="file_name" type="xs:string"/>
+            <xs:element name="file_type" type="xs:string"/>
+            <xs:element name="source_system_cd" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>
+    
+    
+    <xs:complexType name="get_missing_term_request_type">
+       <xs:sequence>
+            <xs:element name="concept_set"  type="loader:missingreport_optionType" />
+            <xs:element name="observer_set" type="loader:missingreport_optionType" />
+            <xs:element name="modifier_set" type="loader:missingreport_optionType" />
+        </xs:sequence>
+        <xs:attribute name="upload_id" type="xs:string"/>
+        <xs:attribute name="detail" type="xs:boolean" default="false"/>
+    </xs:complexType>
+    
+    <xs:complexType name="get_upload_info_request_type">
+        <xs:all>
+            <xs:element name="user_id" type="xs:string"/>
+            <xs:element name="load_id" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>    
+    
+    <xs:complexType name="get_bulk_load_info_request_type">
+        <xs:all>
+            <xs:element name="user_id" type="xs:string"/>
+            <xs:element name="load_id" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>    
+    
+    
+    
+    <xs:complexType name="publish_data_request_type">
+        <xs:all>
+            <xs:element name="input_list" type="loader:input_option_listType"/>
+            <xs:element name="load_list" type="loader:loadType"/>
+            <xs:element name="output_list" type="loader:output_option_listType"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="input_option_listType">
+        <xs:all>
+            <xs:element name="data_file" type="loader:data_listType" maxOccurs="1"/>
+        </xs:all>
+    </xs:complexType>
+    
+   
+    <xs:complexType name="data_listType">
+        <xs:sequence>
+            <xs:element name="location_uri">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="protocol_name" type="xs:string"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+                
+            </xs:element>
+            <xs:element name="data_format_type" type="loader:dataFormatType" default="PDO"/>
+            <xs:element name="source_system_cd" type="xs:string"/>
+            <xs:element name="load_label" type="xs:string"/>
+            <xs:element name="transform_name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="loadType">
+        <xs:sequence>
+            <xs:element name="load_observation_set" type="loader:fact_load_optionType"/>
+            <xs:element name="load_event_set" type="loader:load_optionType"/>
+            <xs:element name="load_patient_set" type="loader:load_optionType"/>
+            <xs:element name="load_observer_set" type="loader:load_optionType"/>
+            <!--
+            <xs:element name="load_eventid_set" type="loader:load_optionType"/>
+            -->
+            <xs:element name="load_pid_set" type="loader:load_optionType"/>
+            <xs:element name="load_eid_set" type="loader:load_optionType"/>
+            <xs:element name="load_concept_set" type="loader:load_optionType"/>
+            <xs:element name="load_modifier_set" type="loader:load_optionType"/>
+        </xs:sequence>
+        <xs:attribute name="commit_flag" type="xs:boolean" default="true"/>
+        <xs:attribute name="clear_temp_load_tables" type="xs:boolean" default="false"/>
+    </xs:complexType>
+    
+    <xs:complexType name="load_optionType">
+        <xs:attribute name="encrypt_blob" type="xs:boolean" default="false"/>
+        <xs:attribute name="ignore_bad_data" type="xs:boolean" default="true"/>
+        <xs:attribute name="delete_existing_data" type="xs:boolean" default="false"/>
+    </xs:complexType>
+    
+    <xs:complexType name="fact_load_optionType">
+        <xs:complexContent>
+            <xs:extension base="loader:load_optionType">
+                <xs:attribute name="append_flag" type="xs:boolean" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:simpleType name="dataFormatType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="PDO"/>
+            <xs:enumeration value="CSV"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+
+    <xs:complexType name="output_option_listType">
+        <xs:all>
+            <xs:element name="observation_set" type="loader:output_optionType" minOccurs="0"/>
+            <xs:element name="patient_set" type="loader:output_optionType" minOccurs="0"/>
+            <xs:element name="event_set" type="loader:output_optionType" minOccurs="0"/>
+            <xs:element name="observer_set" type="loader:output_optionType" minOccurs="0"/>
+            <xs:element name="concept_set" type="loader:output_optionType" minOccurs="0"/>
+            <xs:element name="modifier_set" type="loader:output_optionType" minOccurs="0"/>
+            <xs:element name="pid_set" type="loader:output_optionType" minOccurs="0"/>
+            <xs:element name="eid_set" type="loader:output_optionType" minOccurs="0"/>
+            <!--
+            <xs:element name="eventid_set" type="loader:output_optionType" minOccurs="0"/>
+            -->
+        </xs:all>
+        <xs:attribute name="detail" type="xs:boolean" default="true"/>
+    </xs:complexType>
+
+    <xs:complexType name="output_optionType">
+        <!-- the key is always returned by default -->
+        <xs:attribute name="onlykeys" type="xs:boolean" default="true"/>
+        <xs:attribute name="blob" type="xs:boolean" default="false"/>
+        <xs:attribute name="techdata" type="xs:boolean" default="false"/>
+    </xs:complexType>
+
+    <xs:complexType name="fact_output_optionType">
+        <xs:complexContent>
+            <xs:extension base="loader:output_optionType">
+                <xs:attribute name="append_observation" type="xs:boolean" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+  
+    <xs:complexType name="missingreport_optionType">
+        <xs:attribute name="start" type="xs:int"/>
+        <xs:attribute name="stop" type="xs:int"/>
+        <xs:attribute name="detail" type="xs:boolean"/>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,60 @@
+DIV#crcHistoryBox {
+	position: absolute;
+}
+
+	
+DIV#crcHistoryBox DIV.bodyBox {
+	background:#BBCCEE none repeat scroll 0% 50%;
+	border:1px solid #667788;
+	clear:both;
+	display:block;
+	overflow:hidden;
+	padding:5px;
+	position:relative;
+	top:-1px;
+	height:auto;
+	width:auto;
+	z-index:0;
+}
+
+DIV#crcHistoryBox DIV#crcHistoryData, DIV#crcSearchNamesResults {
+	background: #FFFFFF none repeat scroll 0%;
+	border: 1px solid #667788;
+	font-size: 12px;
+	line-height: 12px;
+	width: auto;
+	whitespace: nowrap;
+	xheight:100px;
+	overflow-x: auto;
+	overflow-y: auto;
+	padding:1px 5px;
+}
+
+
+.crcFindButton {
+	position:relative;
+	top:0px;
+	left:0px;
+	background:#6677aa;
+	border:1px solid #667788;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-family:arial,helvetica;
+	font-size:11px;
+	height:16px;
+	line-height:16px;
+	text-align:center;
+	width:45px;
+	color:#FFF;
+	cursor:pointer;
+	float:left;
+	margin-right:10px;
+}
+.crcFindButton a {
+	color:#FFF;
+	display:block;
+	text-decoration:none;
+}
+.crcFindButton a:hover {
+	background-color:#7687bf;
+}

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ont/">
+    
+    <xs:include schemaLocation="./ONT.xsd"/>
+    <xs:include schemaLocation="./ONT_VDO_OBJ.xsd"/>
+
+    <xs:element name="examples">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="message_body" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="ont:request"/>
+                            <xs:element ref="ont:response"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="request" type="ont:vdo_qry_requestType"/>
+    <xs:element name="response" type="ont:vdo_qry_responseType"/>
+
+    <xs:complexType name="vdo_qry_requestType">
+        <xs:sequence>
+            <xs:element name="vocab_data" type="ont:vocab_data_requestType"/>
+        </xs:sequence>
+        <xs:attribute name="echo" type="xs:boolean" default="false"/>
+        <xs:attribute name="sql" type="xs:boolean" default="false"/>
+    </xs:complexType>
+    
+    <xs:complexType name="vdo_qry_responseType">
+        <xs:sequence>
+            <xs:element name="vocab_data" type="ont:vocab_data_responseType" maxOccurs="unbounded"/>
+            <xs:element name="sql" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="vocab_data_requestType">
+        <xs:sequence>
+            <xs:element name="return_list" type="ont:vdo_return_listType" minOccurs="0"/>
+            <xs:choice>
+                <xs:element name="search_list" type="ont:search_listType"/>
+                <xs:element name="create_list" type="ont:create_listType"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="table" type="xs:string" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="vocab_data_responseType">
+        <xs:complexContent>
+            <xs:extension base="ont:vocab_dataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="vdo_return_listType">
+        <xs:complexContent>
+            <xs:extension base="ont:return_listType">
+                <xs:attribute name="target" default="self">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="self"/>
+                            <xs:enumeration value="parents"/>
+                            <xs:enumeration value="siblings"/>
+                            <xs:enumeration value="children"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="max" type="xs:int"/>
+                <xs:attribute name="max_response">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="error"/>
+                            <xs:enumeration value="warning"/>
+                            <xs:enumeration value="ignore"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="search_listType">
+        <xs:sequence>
+            <xs:element name="search" type="ont:searchType" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="hiddens" type="xs:boolean" default="false"/>
+        <xs:attribute name="synonyms" type="xs:boolean" default="false"/>
+    </xs:complexType>
+    
+    <xs:complexType name="create_listType">
+        <xs:sequence>
+            <xs:element name="group" type="ont:groupType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="searchType">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="match_str" type="ont:match_strType"/>
+            <xs:element name="match_int" type="ont:match_intType"/>
+            <xs:element name="match_date" type="ont:match_dateType"/>
+        </xs:choice>
+        <xs:attribute name="item" type="xs:string" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="groupType">
+        <xs:sequence>
+            <xs:element name="concept_path" type="ont:concept_pathType" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="match_strType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="strategy" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="exact"/>
+                            <xs:enumeration value="left"/>
+                            <xs:enumeration value="right"/>
+                            <xs:enumeration value="contains"/>
+                            <!-- could have wildcard, regex, etc. -->
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    
+    <xs:complexType name="match_intType">
+        <xs:simpleContent>
+            <xs:extension base="xs:int">
+                <xs:attribute name="strategy" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="equal"/>
+                            <xs:enumeration value="less_than"/>
+                            <xs:enumeration value="greater_than"/>
+                            <xs:enumeration value="less_or_equal"/>
+                            <xs:enumeration value="greater_or_equal"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    
+    <xs:complexType name="match_dateType">
+        <xs:simpleContent>
+            <xs:extension base="xs:dateTime">
+                <xs:attribute name="strategy" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="on"/>
+                            <xs:enumeration value="before"/>
+                            <xs:enumeration value="after"/>
+                            <xs:enumeration value="on_or_before"/>
+                            <xs:enumeration value="on_or_after"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+</xs:schema>

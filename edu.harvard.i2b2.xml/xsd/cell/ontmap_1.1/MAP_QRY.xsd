@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:map="http://www.i2b2.org/xsd/cell/ontmap/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ontmap/1.1/">
+    
+
+    <xs:element name="get_mapping_by_basecode" type="map:getMappingsType"/>
+    <xs:element name="get_mapped_children_by_hierarchy" type="map:getMappedChildrenType"/>
+    <xs:element name="add_map" type="map:hierarchyMapType"/>
+    <xs:element name="add_unmapped_terms" type="map:mappingsType"/>
+	<xs:element name="delete_map" type="map:hierarchyMapType"/>
+	<xs:element name="delete_unmapped_term" type="map:hierarchyMapType"/>
+   	<xs:element name="move_map" type="map:hierarchyMapType"/>
+   	<xs:element name="verify_map" type="map:hierarchyMapType"/>
+   	<xs:element name="verify_all" type="map:verifyAllType"/>
+    <xs:element name="get_unmapped_terms" type="map:getTermsType"/>
+     <xs:element name="get_unmapped_terms_by_name" type="map:getUnmappedTermsByNameType"/>
+    <xs:element name="get_unmapped_terms_by_code" type="map:getUnmappedTermsByCodeType"/>
+    <xs:element name="get_mapped_terms" type="map:getOntologyType"/>
+     <xs:element name="get_mapped_terms_by_name" type="map:getMappedTermsByNameType"/>
+    <xs:element name="get_mapped_terms_by_code" type="map:getMappedTermsByCodeType"/>
+
+     <xs:element name="integrate_mapped_data" type="map:integrationType"/>
+     <xs:element name="get_integration_status" type="map:getStatusType"/>
+     <xs:element name="get_mapped_ontology" type="map:getOntologyType"/>
+     <xs:element name="get_mapped_ontology_count" type="map:getOntologyType"/>
+    <xs:element name="updateMappedTableCodes" type="map:updateMappedTableCodesType"/>
+    
+    <xs:complexType name="getMappingsType">
+        <xs:sequence>
+            <xs:element name="mapping" type="map:mapType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="getTermsType">
+        <xs:sequence>               
+            <xs:element name="coding_system_type" type="xs:string" default = "ALL"/> 
+            <xs:element name="coding_system" type="xs:string" default = "ALL"/>
+            <xs:element name="number_of_terms" type="xs:int"/>
+            <xs:element name="number_of_verified_terms" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+   	<xs:complexType name="getUnmappedTermsByNameType">
+        <xs:sequence>
+            <xs:element name="source_coding_system" type="xs:string" default = "ALL"/>
+			<xs:element name="match_str" type="map:match_strType"/>
+			<xs:element name="maxTerms" type="xs:int" default = "100"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+        
+   	<xs:complexType name="getUnmappedTermsByCodeType">
+        <xs:sequence>
+            <xs:element name="source_coding_system" type="xs:string" default = "ALL"/>
+			<xs:element name="match_str" type="map:match_strType"/>
+			<xs:element name="maxTerms" type="xs:int" default = "100"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+       	<xs:complexType name="getMappedTermsByNameType">
+        <xs:sequence>
+            <xs:element name="system" type="map:getTermsType"/>
+			<xs:element name="match_str" type="map:match_strType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+        
+   	<xs:complexType name="getMappedTermsByCodeType">
+        <xs:sequence>
+            <xs:element name="system" type="map:getTermsType"/>
+			<xs:element name="match_str" type="map:match_strType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    
+	<xs:complexType name="mapType">
+        <xs:sequence>
+            <xs:element name="source_coding_system" type = "xs:string"/>
+            <xs:element name="source_basecode" type = "xs:string"/>
+             <xs:element name="source_name" type="xs:string"/>
+             <xs:element name="source_fullname" type="xs:string"/>
+ 			 <xs:element name="destination_coding_system" type="xs:string"/>
+ 			 <xs:element name="destination_basecode" type="xs:string"/>
+ 			 <xs:element name="destination_name" type="xs:string"/>
+ 			 <xs:element name="source_tooltip" type="xs:string"/>
+ 			 <xs:element name="flag" type="xs:string"/>
+ 			 <xs:element name="totalnum" nillable="true" type="xs:int" />
+        </xs:sequence>
+    </xs:complexType>
+    
+
+    <xs:complexType name="getMappedChildrenType">
+        <xs:sequence>
+            <xs:element name="parent" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="hierarchyMapType">
+        <xs:sequence>
+            <xs:element name="name" type = "xs:string"/>
+            <xs:element name="i2b2_basecode" type = "xs:string"/>
+            <xs:element name="source_coding_system" type = "xs:string"/>
+            <xs:element name="source_fullname" type="xs:string"/>
+ 			 <xs:element name="destination_fullname" type="xs:string"/>
+ 			 <xs:element name="symbol" type="xs:string"/>
+ 			 <xs:element name="prior_fullname" type="xs:string"/>
+	 		 <xs:element name="destination_name" type="xs:string"/>
+ 			 <xs:element name="destination_basecode" type="xs:string"/>
+ 			 <xs:element name="destination_coding_system" type="xs:string"/>
+ 			 <xs:element name="source_tooltip" type="xs:string"/>
+ 			 <xs:element name="flag" type="xs:string"/>
+ 			 <xs:element name="status_code" type="xs:string"/>
+ 			  <xs:element name="totalnum" nillable="true" type="xs:int" />
+        </xs:sequence>
+    </xs:complexType>
+ 
+     <xs:complexType name="match_strType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="strategy" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="exact"/>
+                            <xs:enumeration value="left"/>
+                            <xs:enumeration value="right"/>
+                            <xs:enumeration value="contains"/>
+                            <!-- could have wildcard, regex, etc. -->
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+ 
+ <xs:complexType name="integrationType">
+        <xs:all>
+            <xs:element name="pathFormat" type="xs:string" default = "M"/>
+            <xs:element name="cancelProcess" type="xs:string" default = "false"/>
+        </xs:all>
+    </xs:complexType> 
+    
+   	<xs:complexType name="getStatusType">
+        <xs:all>
+            <xs:element name="process_id" type="xs:int"/>
+            <xs:element name="user_id" type="xs:string"/>
+        </xs:all>
+    </xs:complexType> 
+    
+    <xs:complexType name="getOntologyType">
+        <xs:all>
+	        <xs:element name="type" type="xs:string"/>
+	        <xs:element name="delimiter" type="xs:string"/>
+	        <xs:element name="stringQualifier" type="xs:string"/>
+            <xs:element name="start" type="xs:long"/>
+            <xs:element name="end" type="xs:long"/>
+        </xs:all>
+    </xs:complexType> 
+    
+   <xs:element name="mappings" type="map:mappingsType"/>
+   <xs:complexType name="mappingsType">
+        <xs:sequence>
+            <xs:element name="mapping" type="map:hierarchyMapType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="verifyAllType">
+    	<xs:sequence>
+            <xs:element name="destination_fullname" type="xs:string"/>
+            <xs:element name="destination_coding_system" type="xs:string"/>
+            <xs:element name="status_cd" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+     <xs:complexType name="updateMappedTableCodesType">
+    </xs:complexType>
+    
+ 
+</xs:schema>

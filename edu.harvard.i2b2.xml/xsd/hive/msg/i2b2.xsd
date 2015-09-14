@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/" 
+    xmlns:docs="http://i2b2.mgh.harvard.edu/schema_docs"
+    targetNamespace="http://www.i2b2.org/xsd/hive/msg/">
+
+    <xs:complexType name="message_headerType">
+        <xs:annotation>
+            <xs:appinfo>
+                <docs:comment>message_headerType contains info used for generic message
+                processing</docs:comment>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="i2b2_version_compatible" type="i2b2:decimal" minOccurs="1"/>                   
+            <xs:element name="hl7_version_compatible" type="i2b2:decimal" minOccurs="1"/>
+            <xs:element name="sending_application" type="i2b2:applicationType"/>
+            <xs:element name="sending_facility" type="i2b2:facilityType"/>
+            <xs:element name="receiving_application" type="i2b2:applicationType"/>
+            <xs:element name="receiving_facility" type="i2b2:facilityType"/>
+            <xs:element name="datetime_of_message" type="i2b2:dateTime"/>
+            <xs:element name="security" type="i2b2:securityType"/>
+            <xs:element name="message_type" type="i2b2:message_typeType"/>
+            <xs:element name="message_control_id" type="i2b2:message_control_idType"/>
+            <xs:element name="processing_id" type="i2b2:processing_idType"/>
+            <xs:element name="accept_acknowledgement_type" type="xs:string"/>
+            <xs:element name="application_acknowledgement_type" type="xs:string"/>
+            <xs:element name="country_code" type="xs:string"/>
+            <xs:element name="project_id" type="xs:string" nillable="true" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="bodyType" final="extension">
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="applicationType">
+        <xs:sequence>
+            <xs:element name="application_name" type="xs:string"/>
+            <xs:element name="application_version" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="facilityType">
+        <xs:sequence>
+            <xs:element name="facility_name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="message_typeType">
+        <xs:sequence>
+            <xs:element name="message_code" type="xs:string"/>
+            <xs:element name="event_type" type="xs:string"/>
+            <xs:element name="message_structure" type="xs:string"/>
+            <!-- ACK, QRY -->
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="message_control_idType">
+        <xs:sequence>
+            <xs:element name="session_id" type="xs:string">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <docs:comment>session id if session is used, otherwise date-time</docs:comment>
+                        <docs:example>1XSNFJ5JKJ74_2002-01-23</docs:example>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="message_num" type="xs:string">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <docs:example>4</docs:example>
+                        <docs:comment>counter in sending application</docs:comment>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="instance_num" type="xs:int">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <docs:comment>incremented by 1 from corresponding message_num</docs:comment>
+                        <docs:example>1</docs:example>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="processing_idType">
+        <xs:sequence>
+            <xs:element name="processing_id">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:appinfo>
+                            <docs:comment>D:debugging, P:production, T:training</docs:comment>
+                            <docs:example>P</docs:example>
+                        </xs:appinfo>
+                    </xs:annotation>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="D"/>
+                        <xs:enumeration value="P"/>
+                        <xs:enumeration value="T"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="processing_mode">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:appinfo>
+                            <docs:comment>A:archive, R:restore from archive, I:initial load, not
+                                present: - default - current processing</docs:comment>
+                            <docs:example>I</docs:example>
+                        </xs:appinfo>
+                    </xs:annotation>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="A"/>
+                        <xs:enumeration value="R"/>
+                        <xs:enumeration value="I"/>
+                        <xs:enumeration value=""/>
+                    </xs:restriction>
+                </xs:simpleType>
+
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="sequence_numberType">
+        <xs:union>
+            <xs:simpleType>
+                <xs:restriction base="xs:int"/>
+            </xs:simpleType>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:length value="0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:complexType name="securityType">
+        <xs:annotation>
+            <xs:appinfo>
+                <docs:comment>securityType may contain (domain,username,password) or
+                ticket</docs:comment>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:choice>
+            <xs:sequence>
+                <xs:element name="domain" type="xs:string"/>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="password" type="xs:string"/>
+            </xs:sequence>
+        </xs:choice>
+    </xs:complexType>
+  
+    <xs:simpleType name="int">
+        <xs:annotation>
+            <xs:appinfo>
+                <docs:example>0</docs:example>
+                <docs:comment>xs:int</docs:comment>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    
+    <xs:simpleType name="decimal">
+        <xs:annotation>
+            <xs:appinfo>
+                <docs:example>0.0</docs:example>
+                <docs:comment>xs:decimal</docs:comment>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal"/>
+    </xs:simpleType>
+      
+    <xs:simpleType name="date">
+        <xs:annotation>
+            <xs:appinfo>
+                <docs:example>2004-01-31</docs:example>
+                <docs:comment>xs:date</docs:comment>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="xs:date"/>
+    </xs:simpleType>
+    
+    <xs:simpleType name="dateTime">
+        <xs:annotation>
+            <xs:appinfo>
+                <docs:example>2003-01-31T23:59:59.222</docs:example>
+                <docs:comment>xs:dateTime</docs:comment>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+
+</xs:schema>

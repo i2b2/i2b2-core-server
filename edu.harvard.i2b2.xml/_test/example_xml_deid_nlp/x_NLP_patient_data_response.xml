@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hive:response xmlns:hive="http://www.i2b2.org/xsd/hive/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/hive/ ./i2b2_response.xsd
+                        http://www.i2b2.org/xsd/hive/pdo/ ./i2b2_PDO.xsd">
+    <message_header>
+        <i2b2_version_compatible>0.3</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name>NLP Tools</application_name>
+            <application_version>0.1</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>DSG</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>i2b2 QueryTool</application_name>
+            <application_version>0.1</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name>LCS</facility_name>
+        </receiving_facility>
+        <datetime_of_message>2006-09-01T23:59:59.222</datetime_of_message>
+        <security> <!-- <ticket/> -->
+            <domain/>
+            <username/>
+            <password/>
+        </security>
+        <message_type>
+            <message_code/>
+            <event_type/>
+            <message_structure/>
+        </message_type>
+        <message_control_id>
+            <session_id>2006-08-31T23:59:59.222</session_id>
+            <message_num>1234</message_num>
+            <instance_num>0</instance_num>
+        </message_control_id>
+        <processing_id>
+            <processing_id>P</processing_id>
+            <processing_mode>I</processing_mode>
+        </processing_id>
+        <accept_acknowledgement_type>AL</accept_acknowledgement_type>
+        <application_acknowledgement_type>AL</application_acknowledgement_type>
+        <country_code>US</country_code>
+    </message_header>
+    <response_header>
+        <info url="http://i2b2...">Some information here.</info>
+        <result_status>
+            <status type="DONE">Message here.</status>
+            <polling_url interval_ms="25">http://i2b2/polling</polling_url>
+            <conditions>
+                <condition type="WARNING" coding_system="i2b2">Message here.</condition>
+                <condition type="ERROR" coding_system="i2b2">Message here.</condition>
+                <condition type="FATAL_ERROR" coding_system="i2b2">Message here.</condition>
+                <condition type="INFO" coding_system="i2b2">Message here.</condition>
+            </conditions>
+        </result_status>
+    </response_header>
+    <message_body>
+        <pdo:patient_data xmlns:repository="http://i2b2.mgh.harvard.edu/repository_cell"
+            xsi:schemaLocation="http://i2b2.mgh.harvard.edu/repository_cell ./i2b2_PDO.xsd">
+            <observation_fact_set>
+                <observation_fact>
+                    <encounter_num>10000001</encounter_num>
+                    <patient_num>1234567</patient_num>
+                    <concept_cd>DSG-NLP:current_smoker</concept_cd>
+                    <provider_id>12345</provider_id>
+                    <start_date>2003-09-07T00:00:00</start_date>
+                    <modifier_cd/>
+                    <observation_blob>
+                        <concept_cd type="smokingStatus">
+                            <code>DSG-NLP:current_smoker</code>
+                            <section>
+                                <sectionName><![CDATA[SH:]]></sectionName>
+                                <sectionCategs>
+                                    <sectionCateg name="HIST"/>
+                                    <sectionCateg name="PRE-ADM"/>
+                                    <sectionCateg name="HIST-SOC"/>
+                                </sectionCategs>
+                            </section>
+                        </concept_cd>
+                    </observation_blob>
+                    <update_date>2005-12-24T09:41:03</update_date>
+                    <sourcesystem_cd>DSG-NLP</sourcesystem_cd>
+                </observation_fact>
+            </observation_fact_set>
+        </pdo:patient_data>
+    </message_body>
+</hive:response>

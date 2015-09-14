@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:qd="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"
+	targetNamespace="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/">
+
+	<xs:include schemaLocation="./CRC_PANEL.xsd" />
+	<xs:include schemaLocation="./CRC_PSM_QRY_query_constraint.xsd" />
+	
+	<xs:annotation>
+		<xs:documentation>
+			this schema defines xml representation of a query definition
+		</xs:documentation>
+	</xs:annotation>
+
+	<!-- query definition is made top level elment to marshall/unmarshall this element -->
+	<xs:element name="query_definition" type="qd:query_definitionType" />
+
+	<xs:complexType name="query_definitionType">
+		<xs:sequence>
+			<xs:element name="query_id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="query_type" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="query_name" type="xs:string" />
+			<xs:element name="query_description" type="xs:string" />
+			<xs:element name="query_timing" type="xs:string" default="ANY" />
+			<xs:element name="specificity_scale" type="xs:int" />
+			<xs:element name="panel" type="qd:panelType" maxOccurs="unbounded" />
+			<xs:element name="subquery_constraint" type="qd:queryConstraintType" minOccurs="0" maxOccurs="unbounded"></xs:element>			
+            <xs:element name="subquery" type="qd:query_definitionType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+
+</xs:schema>

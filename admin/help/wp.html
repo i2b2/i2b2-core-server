@@ -1,0 +1,890 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Untitled Document</title>
+		<link href="i2b2Style.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<h1><a name="wpView" id="wpView"></a>i2b2 Workplace View</h1>
+		<p>Information in the <b>Workplace view</b> is related to the most common concepts and queries that an individual uses and in essence becomes their personal workspace. The main objectives of this view are:
+		</p>
+		<p>&nbsp;</p>
+		<ul>
+			<li>Save and organize user specific items.</li>
+			<li>Share information with other project users.</li>
+			<li>Project managers can view the workplace for individual team members.</li>
+		</ul>
+		<p>&nbsp;</p>
+		<p>The items stored in the Workplace view can be used in many of the i2b2 views and plug-ins, such as the <i>Query Tool view</i> <i>plug-in</i>.
+		</p>
+		<h2><a name="wpIntro" id="wpIntro"></a>Introduction</h2>
+		<p>This section describes the layout and contents of this view.</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpLayout" id="wpLayout"></a>Layout of the Workplace View</h3>
+		<p>As stated above the <b>Workplace view</b> is a place for users to store and organize those items they use on a regular basis. It is also a way to share these items with other users by placing them in the <i>SHARED</i> folder.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/wpView.png" alt="wpView" width="296" height="164" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>The Workplace view is hierarchical display of the items added by the user. There are three main branches or components of the tree that displays.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpUserFolder" id="wpUserFolder"></a>User Folder</h4>
+		<p>The highest level is the individual user folder <span style="color:#CCCCCC">(<img src="images/container.png" alt="container" />)</span>. This folder is automatically created with the user's name and it is used to store items added by the individual user. This level cannot be used when creating a query.
+		</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>This also includes the shared folder.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpFolders" id="wpFolders"></a>Folders</h4>
+		<p>A <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folderWP.png" alt="folder" />)</span> in the workplace view contains other folders and / or items added by the user. It can be expanded and collapsed by clicking on the <i>plus sign</i> <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> or <i>negative sign</i> <span style="color:#CCCCCC">(<img src="images/minusSign.png" alt="minusSign" />)</span> next to it. A user defined folder can not be dragged to other i2b2 views. It can be moved around within the Workplace view.
+		</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpItems" id="wpItems"></a>Items</h4>
+		<p>Items are the lowest level of the hierarchy. They can not be expanded further. Some examples of items are listed below.
+		</p>
+		<p>&nbsp;</p>
+		<ul>
+			<li>Concepts <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span>
+			</li>
+			<li>Group of concepts (ontology folder) <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folderConcepts" />)</span>
+			</li>
+			<li>Modifiers <span style="color:#CCCCCC">(<img src="images/modifier.png" alt="modifier" />)</span>
+			</li>
+			<li>Group of modifiers (modifier folder) <span style="color:#CCCCCC">(<img src="images/modifierFolder.png" alt="folderModifier" />)</span>
+			</li>
+			<li>Patient set <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span>
+			</li>
+			<li>Encounter set <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span>
+			</li>
+		</ul>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h2><a name="wpNavigation" id="wpNavigation"></a>Navigation</h2>
+		<h3><a name="wpExpCollFolder" id="wpExpCollFolder"></a>Expand / Collapse a Folder</h3>
+		<p>Users can expand or collapse a folder by clicking on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> or negative sign <span style="color:#CCCCCC">(<img src="images/minusSign.png" alt="minusSign" />)</span> next to the folder icon.
+		</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpExpFolder" id="wpExpFolder"></a>Expand (Open) a Folder</h4>
+		<ol>
+			<li>Click on the <b>plus sign</b> <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the folder in the <i>Workplace view.</i>
+			</li>
+			<li>The folder will open and all the items in the folder will display.</li>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpCollFolder" id="wpCollFolder"></a>Collapse (Close) a Folder</h4>
+		<ol>
+			<li>Click on the <b>negative sign</b> <span style="color:#CCCCCC">(<img src="images/minusSign.png" alt="minusSign" />)</span> next to the folder in the <i> Workplace view.</i>
+			</li>
+			<li>The folder will close and all the items in the folder will display.</li>
+		</ol>
+		<p></p>
+		<p></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpAddWpFolder" id="wpAddWpFolder"></a>Add a Workplace Folder</h3>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on your user folder in the <b> Workplace view</b>.</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpFolderAddNew.png" alt="wpAddNewFolder" width="296" height="164" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>New Folder</b>.</li>
+			<li>A new window will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpFolderAddNewWindow.png" alt="wpAddNewFolderWindow" width="488" height="133" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the name you want to be displayed.</li>
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The new folder will appear in the Workplace view.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpFolderAdded.png" alt="wpFolderAdded" width="296" height="164" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpRenameFolder" id="wpRenameFolder"></a>Rename a Folder</h3>
+		<p>Users can easily <b>rename</b> an existing folder.</p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the folder you want to rename.</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpMenuFolder.png" alt="wpMenuFolder" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b><i>Rename</i></b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpFolderRenameSelect.png" alt="wpFolderRenameSelect" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>A new window will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpFolderRenameWindow.png" alt="wpFolderRenameWindow" width="488" height="133" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box change the current name to the new name.</li>
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The  folder will appear in the Workplace view with the new name.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpFolderRenamed.png" alt="wpFolderRenamed" width="296" height="164" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpAnnotateFolder" id="wpAnnotateFolder"></a>Annotate a Folder</h3>
+		<p>Users can change the default <b>annotation</b> for any of their folders in  the Workplace view.</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>The annotation is what is displayed in the tool tip.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the folder you want to annotate.</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpMenuFolder.png" alt="wpMenuFolder" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b><i>Annotate</i></b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpFolderAnnotateSelect.png" alt="wpAnnotateSelect"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>A new window will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpFolderAnnotateWindow.png" alt="wpFolderAnnotateWindow" width="488" height="133" />
+			</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the text you want to appear when the tooltip is displayed.</li>
+			<li>Click on the <b>OK button</b>.</li>
+			<li>Using the <i>mouse</i>, hover over the folder you just annotated.</li>
+			<li>The text you entered will display as a tool tip.</li>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpDeleteFolder" id="wpDeleteFolder"></a>Delete a Folder</h3>
+		<p>Users can remove a folder from the Workplace view.</p>
+		<p>&nbsp;</p>
+		<table id=warning>
+			<tr>
+				<td>
+					<p class=WarningHeading>WARNING: </p>
+					<p class=WarningParagraph>All items in the folder will be deleted when the folder is removed. It is recommended that you move those items you want to keep to another folder.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the folder you want to delete.</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpMenuFolder.png" alt="wpMenuFolder" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b><i>Delete</i></b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpFolderDeleteSelect.png" alt="wpFolderDeleteSelect"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>A message box will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpFolderDeleteWarning.png" alt="wpFolderDeleteWarning" width="488" height="126" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The folder and all of its contents will no longer appear in the Workplace view.</li>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpRenameItem" id="wpRenameItem"></a>Rename Items</h3>
+		<p>Users can easily <b>rename</b> an item in the Workplace view.</p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the item you want to rename.</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpMenuItem.png" alt="wpMenuItem" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b><i>Rename</i></b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpItemRenameSelect.png" alt="wpItemRenameSelect" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>A new window will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpItemRenameWindow.png" alt="wpItemRenameWindow" width="488" height="133" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box change the current name to the new name.</li>
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The  item will appear in the Workplace view with the new name.</li>
+		</ol>
+		<p>&nbsp;</p>
+		<h3><a name="wpAnnotateItem" id="wpAnnotateItem"></a>Annotate Items</h3>
+		<p>Users can change the default <b>annotation</b> for any of the items in their Workplace folder.</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>The annotation is what is displayed in the tool tip.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the item you want to annotate.</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpMenuItem.png" alt="wpMenuItem" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b><i>Annotate</i></b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpItemAnnotateSelect.png" alt="wpItemAnnotateSelect"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>A new window will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpItemAnnotateWindow.png" alt="wpItemAnnotateWindow" width="488" height="133" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the text you want to appear when the tooltip is displayed.</li>
+			<li>Click on the <b>OK button</b>.</li>
+			<li>Using the <i>mouse</i>, hover over the item you just annotated.</li>
+			<li>The text you entered will display as a tool tip.</li>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpDeleteItem" id="wpDeleteItem"></a>Delete Items</h3>
+		<p>Users can remove items from the Workplace view.</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the item you want to delete.</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpMenuItem.png" alt="wpMenuItem" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b><i>Delete</i></b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpItemDeleteSelect.png" alt="wpItemDeleteSelect"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>A message box will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpItemDeleteMsg.png" alt="wpItemDeleteMsg" width="312" height="126" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The item will no longer appear in the Workplace view.</li>
+		</ol>
+		<p></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h2><a name="wpAddToWp" id="wpAddToWp"></a>Adding Items to Workplace View</h2>
+		<p>This section describes how to add items to the Workplace view.</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpDragItemsToWp" id="wpDragItemsToWp"></a>Items Draggable to Workplace</h3>
+		<p>Items can be dragged and dropped (copied) into the Workplace view from other views in the i2b2 Web Client.
+		</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Folder</li>
+			<p>A <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span> and all its concepts (children) can be added to <b>Workplace</b> by dragging the folder name from one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Find Terms view</b></li>
+				<li><b>Navigate Terms view</b></li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Modifier Folder</li>
+			<p>A <b>modifier folder</b> <span style="color:#CCCCCC">(<img src="images/modifierFolder.png" alt="modifierFolder" />)</span> and all its modifiers (children) can be added to <b>Workplace</b> by dragging the folder name from one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Find Terms view</b></li>
+				<li><b>Navigate Terms view</b></li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Concept</li>
+			<p> A <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> can be added to <b>Workplace</b> by dragging the name of the concept from one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Find Terms view</b>.</li>
+				<li><b>Navigate Terms view</b></li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Modifier</li>
+			<p> A <b>modifier</b> <span style="color:#CCCCCC">(<img src="images/modifier.png" alt="modifier" />)</span> can be added to <b>Workplace</b> by dragging the name of the modifier from one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Find Terms view</b>.</li>
+				<li><b>Navigate Terms view</b></li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Patient Set </li>
+			<p>A <b>Patient set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> can be added to <b>Workplace</b> by dragging the name of the patient set from the following view.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Previous Query view</b>.</li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Encounter Set </li>
+			<p>An <b>Encounter set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> can be added to <b>Workplace</b> by dragging the name of the encounter set from the following view.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Previous Query view</b>.</li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Previous Query</li>
+			<p>A <b>previous query</b> <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="previousQuery" />)</span> can be added to <b>Workplace</b> by dragging the name of the previous query from the following view.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Previous Query view</b>.</li>
+			</ul>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpAddFolder" id="wpAddFolder"></a>Add Folders and Concept to Workplace View</h3>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddFromFtConcept" id="wpAddFromFtConcept"></a>Find Terms View</h4>
+		<p>The <b>Find Terms view</b> provides a way to search for a particular concept.</p>
+		<p>&nbsp;</p>
+		<p><img src="images/ftView.png" alt="ftView" width="303" height="174" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>For detailed information on how to search for terms, please see the i2b2 Find Terms help.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p></p>
+		<h4><a name="wpAddFolderFromFt" id="wpAddFolderFromFt"></a>Add Folder / Concept From Find Terms View</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>In the <b>Find Terms view</b>, search for the item(s) you want to add.</li>
+			<li>Highlight the <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span> or <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Workplace view</b>.</li>
+			<li>Drop the item into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragFolder.png" alt="wpDragFolder" width="303" height="170" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The item will now display in the <b>Workplace view</b> with the same name.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropFolder.png" alt="wpDropFolder" width="304" height="171" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddFromNtConcept" id="wpAddFromNtConcept"></a>Navigate Terms View</h4>
+		<p>The <b>Navigate Terms view </b>contains a hierarchical display of all the concepts and modifiers that can be used to search the database.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/ntView.png" alt="ntView" width="303" height="174" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>How the items are grouped and displayed is dependent on how the database is setup.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddFolderFromNt" id="wpAddFolderFromNt"></a>Add Folder / Concept From Navigate Terms View</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>In the <b>Navigate Terms view</b>, expand the folder(s) that contains the concept or grouping of concepts you want to add.
+			</li>
+			<li>Highlight the <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span> or <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Workplace view</b>.</li>
+			<li>Drop the item into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragConcept.png" alt="wpDragConcept" width="303" height="170" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The item will now display in the <b>Workplace view</b> with the same name.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropConcept.png" alt="wpDropConcept" width="304" height="171" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpAddModFolder" id="wpAddModFolder"></a>Add Modifier Folders and Modifiers to Workplace View</h3>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddModFromFtConcept" id="wpAddModFromFtConcept"></a>Find Terms View</h4>
+		<p>The <b>Find Terms view</b> provides a way to search for a particular concept.</p>
+		<p>&nbsp;</p>
+		<p><img src="images/ftView.png" alt="ftView" width="303" height="174" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>For detailed information on how to search for terms and modifiers, please see the i2b2 Find Terms help.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="wpAddModFolderFromFt" id="wpAddModFolderFromFt"></a>Add Modifier Folder / Modifiers From Find Terms View</h5>
+		<p>&nbsp;</p>
+		<ol>
+			<li>In the <b>Find Terms view</b>, search for the item(s) you want to add.</li>
+			<li>Highlight the <b>modifier folder</b> <span style="color:#CCCCCC">(<img src="images/modifierFolder.png" alt="modiferFolder" />)</span> or <b>modifier</b> <span style="color:#CCCCCC">(<img src="images/modifier.png" alt="modifier" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Workplace view</b>.</li>
+			<li>Drop the item into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragModifier.png" alt="wpDragModifier" width="303" height="170" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The item will now display in the <b>Workplace view</b> with the same name.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropModifier.png" alt="wpDropModifier" width="304" height="171" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddModFromNtConcept" id="wpAddModFromNtConcept"></a>Navigate Terms View</h4>
+		<p>The <b>Navigate Terms view </b>contains a hierarchical display of all the concepts and modifiers that can be used to search the database.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/ntView.png" alt="ntView" width="303" height="174" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>How the items are grouped and displayed is dependent on how the database is setup.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="wpAddFolderFromNt" id="wpAddFolderFromNt2"></a>Add Modifier Folder / Modifier From Navigate Terms View</h5>
+		<p>&nbsp;</p>
+		<ol>
+			<li>In the <b>Navigate Terms view</b>, expand the folder(s) that contains the modifiers or grouping of modifiers you want to add.
+			</li>
+			<li>Highlight the <b>modifier folder</b> <span style="color:#CCCCCC">(<img src="images/modifierFolder.png" alt="modifierFolder" />)</span> or <b>modifier</b> <span style="color:#CCCCCC">(<img src="images/modifier.png" alt="modifier" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Workplace view</b>.</li>
+			<li>Drop the item into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragModifier.png" alt="wpDragModifer"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The item will now display in the <b>Workplace view</b> with the same name.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropModifier.png" alt="wpDropModifier" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpAddPq" id="wpAddPq"></a>Add Previous Query, Patient Set and Encounter Set to Workplace View</h3>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddPq" id="wpAddPq"></a>Previous Query View</h4>
+		<p>The <b>Previous Query view</b> displays the queries that were run by the user. Each previous query contains a set of results; within these results are the result options that were selected when the query was originally run. The result options include Patient set, Encounter set, Number of patients as well as various other patient breakdowns
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/pqView.png" alt="pqView"  /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="wpAddPqFromPq" id="wpAddPqFromPq"></a>Add Previous Query From Previous Query View</h5>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Highlight the <b>previous query</b> <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="prevQuery" />)</span> by clicking on the name of the query.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item   to the <b>Workplace view</b>.</li>
+			<li>Drop the previous query into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragPq.png" alt="dragPqToWp" width="296" height="164" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The previous query will now appear in the workplace with the same name<b></b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropPq.png" alt="dropPqInWp" width="296" height="164" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="wpAddPtSetFromPq" id="wpAddPtSetFromPq"></a>Add Patient Set From Previous Query View</h5>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the name of the previous query that contains the patient set.
+			</li>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the results folder.
+			</li>
+			<li>Highlight the <b>Patient set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the <b>Patient Set</b> to the <b>Workplace view</b>.
+			</li>
+			<li>Drop the patient set into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragPtSet.png" alt="dragPtSetToWp" width="296" height="164" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The patient set will now appear in the workplace.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropPtSet.png" alt="dropPtSetInWp" width="296" height="164" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="wpAddPtSetFromPq" id="wpAddPtSetFromPq2"></a>Add Encounter Set From Previous Query View</h5>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the name of the previous query that contains the encounter set.
+			</li>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the results folder.
+			</li>
+			<li>Highlight the <b>Encounter set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the <b>Encounter Set</b> to the <b>Workplace view</b>.
+			</li>
+			<li>Drop the encounter set into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragEncSet.png" alt="dragEncSetToWp" width="296" height="164" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The encounter set will now appear in the workplace.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropEncSet.png" alt="dropEncSetInWp" width="296" height="164" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h2><a name="wpUseItems" id="wpUseItems"></a>Using Items in Workplace View</h2>
+		<p>This section describes how to use items in the Workplace view.</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpDragItemsFromWp" id="wpDragItemsFromWp"></a>Items Draggable from Workplace</h3>
+		<p>Items can be dragged and dropped (copied) from the Workplace view to other views in the i2b2 Web client.
+		</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Ontology Folder</li>
+			<p>An <b>ontology folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span> and all its concepts (children) can be added to other views by dragging the folder name from <b>Workplace</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool view;</b> drop in the <i>panel</i>.</li>
+			</ul>
+			<p>&nbsp;</p>
+			<table id=note>
+				<tr>
+					<td>
+						<p class=NoteHeading>NOTE: </p>
+						<p class=NoteParagraph>User folders can not be dragged from the Workplace view.
+						</p>
+					</td>
+				</tr>
+			</table>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Modifier Folder</li>
+			<p>A <b>modifier folder</b> <span style="color:#CCCCCC">(<img src="images/modifierFolder.png" alt="modifierFolder" />)</span> and all its modifiers (children) can be added to other views by dragging the modifier folder name from <b>Workplace</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool view</b>; drop in the <i>panel</i>.</li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Concept</li>
+			<p> A <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> can be added to other views by dragging the name of the concept from <b>Workplace</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool view;</b> drop in the <i>panel</i>.</li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Modifier</li>
+			<p> A <b>modifier</b> <span style="color:#CCCCCC">(<img src="images/modifier.png" alt="modifier" />)</span> can be added to other views by dragging the name of the modifier from <b>Workplace</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool view;</b> drop in the <i>panel</i>.</li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Previous Query</li>
+			<p>A <b>previous query</b> <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="prevQuery" />)</span> can be added to other views by dragging the previous query name from <b>Workplace</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool view;</b> drop in the <i>panel</i> or <i>Query Name</i>.</li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Patient Set </li>
+			<p>A specific set of patients can be added to other views by dragging the <b>Patient set </b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> from <b>Workplace</b> to one of the following view.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool view;</b> drop in the <i>panel</i>.</li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Encounter Set </li>
+			<p>A specific set of encounters (visit list) can be added to the other views by dragging the <b>Encounter set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> from <b>Workplace</b> to one of the following view.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool view;</b> drop in the <i>panel</i>.</li>
+			</ul>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpUseConceptFolder" id="wpUseConceptFolder"></a>Using Concepts and Folders</h3>
+		<p>&nbsp;</p>
+		<p>A folder or individual concept can be added to the query tool view by simply dragging the item from <b>Workplace view</b> and dropping it into one of the panels in the <b>Query Tool view</b>.
+		</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddFolderToQt" id="wpAddFolderToQt"></a>Add Folder to Query Tool View</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Highlight the <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span> by clicking on the name of the folder.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Query Tool view</b>.</li>
+			<li>Drop the item into the <b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragFolderMI.png" alt="qtDragFolderMI" width="526" height="362" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The folder will now display in the panel for Group 1.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropFolderMI.png" alt="qtDropFolderMI" width="172" height="232" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddConceptToQt" id="wpAddConceptToQt"></a>Add Concept to Query Tool View</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Highlight the <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> by clicking on the name of the folder.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Query Tool view</b>.</li>
+			<li>Drop the item into the <b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragConceptMI.png" alt="qtDragConceptMI" width="524" height="359" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The concept will now display in the panel for Group 1.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropConceptMI.png" alt="qtDropConceptMI" width="172" height="232" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpUsePq" id="wpUsePq2"></a>Using Modifiers and Modifier Folders</h3>
+		<p>A modifier folder or individual modifier can be added to the query tool view by simply dragging the item from the <b>Workplace view</b> and dropping it into one of the panel in the <b>Query Tool view</b>.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddModToQt" id="wpAddModToQt"></a>Add Modifier to Query Tool View</h4>
+		<ol>
+			<li>Highlight the <b>modifier</b> <span style="color:#CCCCCC">(<img src="images/modifier.png" alt="modifier" />)</span> by clicking on the name of the modifier.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Query Tool view</b>.</li>
+			<li>Drop the item into the <b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragModPrincDx.png" alt="qtDragModPrincDx" width="524" height="359" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The name of the concept associated to the modifier plus the modifier will now display in the panel for Group 1.
+			</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropModPrincDx.png" alt="qtDropModPrincDx"  /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpUsePq" id="wpUsePq"></a>Using Previous Query</h3>
+		<p>A <b>previous query</b> can be used to run a new query or as an item within a query (query-in-query). To add a previous query to the <b>Query Tool view</b> simply drag the query name from the <b>Workplace view</b>.
+		</p>
+		<p>&nbsp;</p>
+		<p>Within the Query Tool view, the previous query can be added to one of the following two locations.</p>
+		<p>&nbsp;</p>
+		<table width="85%" border="1" cellspacing="1" cellpadding="1">
+			<tr>
+				<td><b>Query Name field</b></td>
+				<td>The items and constraints from the original query will be used to create a new query. This information can be edited to make a new query or can be used as is to run the query again.
+				</td>
+			</tr>
+			<tr>
+				<td><b>Panel (Group)</b></td>
+				<td>Used within a new query (query-in-query). The information associated with the previous query can not be edited. Add additional search criteria (items) to be used in the new query.
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>The process of adding a previous query to the Query Tool view is the same for both standard i2b2 queries <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="prevQuery" />)</span>  and temporal queries <span style="color:#CCCCCC">(<img src="images/iconTemporalQry.png" />)</span>.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddPqToQt" id="wpAddPqToQt"></a>Add Previous Query to Query Name (New Query)</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Highlight the <b>previous query</b> <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="prevQuery" /> / <img src="images/iconTemporalQry.png" />)</span> by clicking on the name of the query.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item  to the <b>Query Tool view</b>.</li>
+			<li>Drop the item into the <b>Query Name field</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragPqIschemicHrt.png" alt="dragPq" width="524" height="353" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The item(s) associated with the previous query will  display in the appropriate group(s),  the name of the query will appear at <b>Query Name</b>, and any constraints that were defined when the original query was run will now default with the new query.
+			</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropPqIschemicHrt.png" alt="dropPq" width="524" height="353" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>When you run the query it will receive a new name. This is to distinguish the first previous query from the second.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p></p>
+		<p>&nbsp;</p>
+		<h4><a name="wpAddPqToQtPanel" id="wpAddPqToQtPanel"></a>Add Previous Query to Query Name (Query-in-Query)</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Highlight the <b>previous query</b> <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="prevQuery" /> / <img src="images/iconTemporalQry.png" />)</span> by clicking on the name of the query.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item  to the <b>Query Tool view</b>.</li>
+			<li>Drop the item into the <b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragPqIschemicHrtPanel.png" alt="qtDragPqIschemicHrtPanel" width="524" height="353" />
+			</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The previous query will now display in the panel for Group 1.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropPqIschemicHrtPanel.png" alt="qtDropPqIschemicHrtPanel"  /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpUsePtSet" id="wpUsePtSet"></a>Using Patient Set</h3>
+		<p>A <b>Patient set</b> can be used as an item within a query. To add a patient set to the <b>Query Tool view</b> simply drag the name of the patient set from the <b>Workplace view</b>.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="qtAddPtListFromPq" id="qtAddPtListFromPq"></a>Add Patient Set From  Workplace View</h4>
+		<ol>
+			<li>In the <b>Workplace  view</b>, expand the folder(s) that contains the list of patients you want to add.
+			</li>
+			<li>Highlight the <b>Patient set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Query Tool view</b></li>
+			<li>Drop the item into the<strong> </strong><b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragPtSet.png" alt="qtDragPtSet" width="524" height="353" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The item will now display in the panel for Group 1.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropPtSet.png" alt="qtDropPtSet" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="wpUseEncSet" id="wpUseEncSet"></a>Using Encounter Set</h3>
+		<p>An <b>Encounter set</b> can be used as an item within a query. To add an encounter set to the <b>Query Tool view</b> simply drag the name of the encounter set from the <b>Workplace view</b>.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="qtAddEncSetFromPq" id="qtAddEncSetFromPq"></a>Add Encounter Set From  Workplace View</h4>
+		<ol>
+			<li>In the <b>Workplace  view</b>, expand the folder(s) that contains the list of patients you want to add.
+			</li>
+			<li>Highlight the <b>Encounter set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Query Tool view</b></li>
+			<li>Drop the item into the<strong> </strong><b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragEncSet.png" alt="qtDragEncSet" width="524" height="353" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The item will now display in the panel for Group 1.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropEncSet.png" alt="qtDropEncSet" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p class="NoteHeading"></p>
+		<p class="NoteHeading">&nbsp;</p>
+	</body>
+</html>

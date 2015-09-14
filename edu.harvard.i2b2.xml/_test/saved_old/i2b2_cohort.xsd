@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="cohort" type="cohortType"/>
+    <xs:element name="patient_set" type="cohortType" substitutionGroup="cohort"/>
+    
+    <xs:complexType name="cohortType">
+        <xs:sequence>
+            <!-- is ID going to be an element or an attribute? -->
+            <xs:element name="cohort_id" type="xs:int"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="count" type="xs:int"/>
+            <xs:element name="cohort_type" type="cohort_typeType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="cohort_typeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="control"/>
+            <xs:enumeration value="random"/>
+            <xs:enumeration value="longitudinal"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!--
+    case subject
+    control subject
+    prospective
+    retrospective
+    
+    =========================================
+    types of control groups:
+    =========================================
+    placebo concurrent control group
+    dose-response concurrent control group
+    active concurrent control group
+    no treatment concurrent control group
+    external / historical control
+    
+        =========================================
+        types of treatment used:
+        =========================================    
+        placebo
+        no treatment
+        different dose or regimen
+        different active treatment
+        =========================================
+        method of determining who is in control:
+        =========================================  
+        randomization
+        external/historical control
+    
+    =========================================
+    types of randomization: this may be more related to study than group
+    =========================================
+    complete randomization
+    permuted block randomization
+    run randomization
+    covariate-adaptive randomization
+    outcome-adaptive randomization
+    
+    
+    
+    
+    
+    -->
+    <!-- Might want to relate two control groups if going to do some statistics on them?
+    Or maybe it's just up to the message to pass the right two groups together. -->
+
+    <!-- 
+    <cohort>
+        <name>My Diabetes Cohort</name>
+        <description>People diagnosed with diabetes from 2002-2005.</description>
+        <count>52</count>
+        <type> control | random </type>
+    </cohort>
+    <patient_set>
+        <name>My Diabetes Control Group</name>
+        <description>People not diagnosed with diabetes before 2005.</description>
+        <count>52</count>
+        <type> control | random </type>
+    </patient_set>
+     -->
+
+</xs:schema>

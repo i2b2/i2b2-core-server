@@ -1,0 +1,14 @@
+<jxb:bindings version="1.0"
+               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <jxb:bindings schemaLocation="../../../edu.harvard.i2b2.xml/xsd/hive/msg_1.1/i2b2_result_msg.xsd" node="/xs:schema">
+  
+        <jxb:schemaBindings>
+	           <jxb:package name="edu.harvard.i2b2.crc.datavo.i2b2result">
+	  	     </jxb:package>
+	  	     
+    </jxb:schemaBindings>
+  </jxb:bindings> 
+  
+
+</jxb:bindings> 

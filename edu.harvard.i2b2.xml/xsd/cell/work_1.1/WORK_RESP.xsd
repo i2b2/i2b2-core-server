@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:work="http://www.i2b2.org/xsd/cell/work/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/work/1.1/">
+<!--    <xs:element name="examples">
+        <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="message_body">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:any namespace="##targetNamespace"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>   
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>-->
+
+    <xs:element name="requestXML" type="xs:string"/>
+
+    
+    <xs:element name="folders" type="work:foldersType"/>
+
+    <xs:complexType name="foldersType">
+        <xs:sequence>
+            <xs:element name="folder" type="work:folderType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="add_child" type="work:folderType"/>
+    
+    <xs:complexType name="folderType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="user_id" type="xs:string" />
+            <xs:element name="group_id" type="xs:string" />
+            <xs:element name="protected_access" type="xs:string" />
+            <xs:element name="share_id" type="xs:string" />
+            <xs:element name="index" type="xs:string" />
+            <xs:element name="parent_index" type="xs:string" />
+            <xs:element name="entry_date" type="xs:dateTime" />
+            <xs:element name="change_date" type="xs:dateTime" />
+            <xs:element name="status_cd" type="xs:string" />
+            <xs:element name="visual_attributes" type="xs:string" />
+            <xs:element name="tooltip" type="xs:string" />
+            <xs:element name="work_xml" type="work:xml_valueType" /> 
+            <xs:element name="work_xml_schema" type="work:xml_valueType" /> 
+            <xs:element name="work_xml_i2b2_type" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    
+</xs:schema>

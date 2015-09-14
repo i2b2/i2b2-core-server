@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<crc:examples xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:crc="http://www.i2b2.org/xsd/cell/crc/pdo/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/crc/pdo/ ./CRC_PDO_QRY.xsd">
+    
+    <!-- DISCLAIMER: I have not reviewed to see if this example makes any sense. -->
+    
+    <message_body>
+        <crc:header>
+            <user login=""></user>
+            <data_source></data_source>
+            <patient_set_limit>0</patient_set_limit>
+            <estimated_time>0</estimated_time>
+            <create_date>2002-12-23T00:00:00</create_date>
+            <submit_date>2002-12-23T00:00:00</submit_date>
+            <complete_date>2002-12-23T00:00:00</complete_date>
+            <!--<request_type>getPDO_fromPatientSet</request_type>-->
+            <request_type>getPDO_fromInputList</request_type>
+        </crc:header>       
+        <!--<crc:request xsi:type="crc:patient_set_requestType">-->
+        <crc:request xsi:type="crc:GetPDOFromInputList_requestType">
+            <input_list>
+                <patient_list>
+                    <patient_num index="1">30</patient_num>
+                </patient_list>
+            </input_list>
+            <!--
+            <select_option_list>
+                <observation_fact blob="true" before="2005-12-30T00:00:00" after="2003-12-30T00:00:00"/>
+                <patient_dimension fact_related="false"/>
+                <provider_dimension/>
+                <visit_dimension detail="false"/>
+                <concept_dimension status="true"/>
+            </select_option_list>
+            -->
+            <filter_list>
+                <concept_list>
+                    <concept_path>/i2b2/notes/lmr note</concept_path>
+                    <concept_path>/i2b2/medications</concept_path>
+                </concept_list>
+                <provider_list>
+                    <provider_path>/i2b2/providers/neurology/</provider_path>
+                </provider_list>
+            </filter_list>
+            <!--
+            <patient_list min="1" max="10">
+                <patient_num index="1">50</patient_num>
+                <patient_num index="2">24</patient_num>
+                <patient_num index="3">78</patient_num> -->
+                <!--
+                    <entire_patient_set/>
+                    <patient_set_coll_id>0</patient_set_coll_id>
+                 -->
+            <!-- </patient_list> -->
+            <ouput_option_list>
+                <observation_fact/>
+                <concept_dimension_from_fact/>
+            </ouput_option_list>
+        </crc:request>
+        <crc:response xsi:type="crc:patient_data_responseType">
+            <pdo:patient_data>
+                <patient_dimension_set>
+                    <patient_dimension>
+                        <patient_num>0</patient_num>
+                    </patient_dimension>
+                </patient_dimension_set>
+                <observation_fact_set>
+                    <observation_fact>
+                        <encounter_num>0</encounter_num>
+                        <patient_num>0</patient_num>
+                        <concept_cd>SCHEME:note_code</concept_cd>
+                        <provider_id></provider_id>
+                        <start_date>2002-12-23T00:00:00</start_date>
+                        <modifier_cd></modifier_cd>
+                    </observation_fact>
+                </observation_fact_set>
+            </pdo:patient_data>
+        </crc:response>
+        <crc:sql></crc:sql>
+    </message_body>
+    
+    <message_body>
+        <crc:header>
+            <user login=""></user>
+            <data_source></data_source>
+            <patient_set_limit>0</patient_set_limit>
+            <estimated_time>0</estimated_time>
+            <create_date>2002-12-23T00:00:00</create_date>
+            <submit_date>2002-12-23T00:00:00</submit_date>
+            <complete_date>2002-12-23T00:00:00</complete_date>
+            <!--<request_type>getPDO_fromVisitSet</request_type>-->
+            <request_type>getPDO_fromInputList</request_type>
+        </crc:header>       
+        <!-- <crc:request xsi:type="crc:visit_set_requestType"> -->
+        <crc:request xsi:type="crc:GetPDOFromInputList_requestType">
+            <input_list>
+                <visit_list>
+                    <encounter_num index="1">0</encounter_num>
+                </visit_list>
+            </input_list>
+            <!-- <select_option_list>
+                <observation_fact blob="true"/>
+                <patient_dimension fact_related="false"/>
+                <provider_dimension/>
+                <visit_dimension detail="false"/>
+                <concept_dimension status="true"/>
+            </select_option_list> -->
+            <filter_list>
+                <concept_list>
+                    <concept_path>/i2b2/notes/lmr note</concept_path>
+                    <concept_path>/i2b2/medications</concept_path>
+                </concept_list>
+                <provider_list>
+                    <provider_path>/i2b2/providers/neurology/</provider_path>
+                </provider_list>
+            </filter_list>
+            <!--<visit_list min="1" max="2">
+                <encounter_num index="1">50</encounter_num>
+                <encounter_num index="2">24</encounter_num>
+                <encounter_num index="3">78</encounter_num>-->
+                <!--
+                    <entire_visit_set/>
+                    <patient_enc_coll_id>0</patient_enc_coll_id>
+                -->
+            <!--</visit_list>-->
+            <ouput_option_list>
+                <observation_fact/>
+                <provider_dimension_from_fact blob="true"/>
+            </ouput_option_list>
+        </crc:request>
+        <crc:response xsi:type="crc:patient_data_responseType">
+            <pdo:patient_data>
+                <patient_dimension_set>
+                    <patient_dimension>
+                        <patient_num>0</patient_num>
+                    </patient_dimension>
+                </patient_dimension_set>
+                <observation_fact_set>
+                    <observation_fact>
+                        <encounter_num>0</encounter_num>
+                        <patient_num>0</patient_num>
+                        <concept_cd>SCHEME:note_code</concept_cd>
+                        <provider_id></provider_id>
+                        <start_date>2002-12-23T00:00:00</start_date>
+                        <modifier_cd></modifier_cd>
+                    </observation_fact>
+                </observation_fact_set>
+            </pdo:patient_data>
+        </crc:response>
+        <crc:sql></crc:sql>
+    </message_body>
+    
+    <message_body>
+        <crc:header>
+            <user login=""></user>
+            <data_source></data_source>
+            <patient_set_limit>0</patient_set_limit>
+            <estimated_time>0</estimated_time>
+            <create_date>2002-12-23T00:00:00</create_date>
+            <submit_date>2002-12-23T00:00:00</submit_date>
+            <complete_date>2002-12-23T00:00:00</complete_date>
+            <!--<request_type>getPDO_fromObservationFact</request_type>-->
+            <request_type>get_observationfact_by_primary_key</request_type>
+        </crc:header>       
+        <!--<crc:request xsi:type="crc:observation_fact_set_requestType">-->
+        <crc:request xsi:type="crc:GetObservationFactByPrimaryKey_requestType">
+            <fact_primary_key>
+                <encounter_num>0</encounter_num>
+                <patient_num>0</patient_num>
+                <concept_cd></concept_cd>
+                <provider_id></provider_id>
+                <start_date>2000-12-30T00:00:00</start_date>
+                <modifier_cd>1</modifier_cd>
+            </fact_primary_key>
+            <!--<select_option_list>
+                <observation_fact blob="true"/>
+                <patient_dimension fact_related="false"/>
+                <provider_dimension/>
+                <visit_dimension detail="false"/>
+                <concept_dimension status="true"/>
+            </select_option_list>
+            <filter_list>
+                <concept_list>
+                    <concept_path>/i2b2/notes/lmr note</concept_path>
+                    <concept_path>/i2b2/medications</concept_path>
+                </concept_list>
+                <provider_list>
+                    <provider_path>/i2b2/providers/neurology/</provider_path>
+                </provider_list>
+            </filter_list>
+            <observation_fact_list>
+                <observation_fact>
+                    <encounter_num>0</encounter_num>
+                    <patient_num>0</patient_num>
+                    <concept_cd></concept_cd>
+                    <provider_id></provider_id>
+                    <start_date>2000-12-30T00:00:00</start_date>
+                    <modifier_cd>1</modifier_cd>
+                </observation_fact>
+            </observation_fact_list>-->
+            <fact_output_option/>
+        </crc:request>
+        <crc:response xsi:type="crc:patient_data_responseType">
+            <pdo:patient_data>
+                <patient_dimension_set>
+                    <patient_dimension>
+                        <patient_num>0</patient_num>
+                    </patient_dimension>
+                </patient_dimension_set>
+                <observation_fact_set>
+                    <observation_fact>
+                        <encounter_num>0</encounter_num>
+                        <patient_num>0</patient_num>
+                        <concept_cd>SCHEME:note_code</concept_cd>
+                        <provider_id></provider_id>
+                        <start_date>2002-12-23T00:00:00</start_date>
+                        <modifier_cd></modifier_cd>
+                    </observation_fact>
+                </observation_fact_set>
+            </pdo:patient_data>
+        </crc:response>
+        <crc:sql></crc:sql>
+    </message_body>
+    
+</crc:examples>

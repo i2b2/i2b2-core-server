@@ -1,0 +1,19 @@
+<project name="edu.harvard.i2b2.pm">
+
+	<import file="build.xml" />
+
+	<target name="build-all" depends="common_clean" description="Build this and all its dependent projects">
+		<!-- build i2b2common -->
+		<subant target="dist">
+			<fileset dir="../${i2b2CommonProject}" includes="build.xml" />
+		</subant>
+		<!-- copy lib to genlib -->
+		<copy_genlibs module="${i2b2CommonProject}" />
+		<!-- call build.xml -->
+		<subant target="dist">
+			<fileset dir="." includes="build.xml" />
+			</subant>
+	</target>
+
+
+</project>

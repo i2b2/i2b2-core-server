@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:repository="http://rpdr.partners.org/repository_cell" 
+	targetNamespace="http://rpdr.partners.org/repository_cell" >
+	
+	<xs:include  schemaLocation="./RPDR_PDODataType.xsd"/>
+
+	<xs:element name="patient_data" type="repository:table_patient_dataType">
+		<xs:annotation>
+			<xs:documentation>The root element that holds data from the patient data
+				tables.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+		
+	<xs:complexType name="table_patient_dataType"> 
+			<xs:sequence>
+				<xs:element ref="repository:event_set" />
+				<xs:element ref="repository:concept_set"/>
+				<xs:element ref="repository:observer_set" />
+				<xs:element ref="repository:patient_set"/>
+				<xs:element ref="repository:observation_set" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	
+</xs:schema>

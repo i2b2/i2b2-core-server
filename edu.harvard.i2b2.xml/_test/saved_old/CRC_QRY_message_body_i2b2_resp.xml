@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i2b2:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:qt="http://i2b2.mgh.harvard.edu/querytool"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/message ./i2b2_response.xsd http://i2b2.mgh.harvard.edu/querytool 
+    ./CRC_QRY_message_body.xsd">
+    <message_header>
+        <i2b2_version_compatible>0.3</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name/>
+            <application_version/>
+        </sending_application>
+        <sending_facility>
+            <facility_name/>
+        </sending_facility>
+        <receiving_application>
+            <application_name/>
+            <application_version/>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name/>
+        </receiving_facility>
+        <datetime_of_message>2000-01-31T23:59:59.222</datetime_of_message>
+        <security>
+            <domain/>
+            <username/>
+            <password/>
+        </security>
+        <message_type>
+            <message_code/>
+            <event_type/>
+            <message_structure/>
+        </message_type>
+        <message_control_id>
+            <session_id>session id or date</session_id>
+            <!-- if session is used, otherwise is date-time -->
+            <message_num>1234</message_num>
+            <!-- counter in sending application -->
+            <instance_num>0</instance_num>
+            <!-- incremented by 1 from corresponding message_num -->
+        </message_control_id>
+        <processing_id>
+            <processing_id>P</processing_id>
+            <processing_mode>I</processing_mode>
+        </processing_id>
+        <accept_acknowledgement_type/>
+        <application_acknowledgement_type/>
+        <country_code>US</country_code>
+    </message_header>
+    <response_header>
+        <info url="http://i2b2...">Some information here.</info>
+        <result_status>
+            <status type="DONE">Message here.</status>
+            <polling_url interval_ms="25">http://i2b2/polling</polling_url>
+            <conditions>
+                <condition type="WARNING" coding_system="i2b2">Message here.</condition>
+                <condition type="ERROR" coding_system="i2b2">Message here.</condition>
+                <condition type="FATAL_ERROR" coding_system="i2b2">Message here.</condition>
+                <condition type="INFO" coding_system="i2b2">Message here.</condition>
+            </conditions>
+        </result_status>
+    </response_header>
+    <message_body>
+        <qt:header>
+            <user login="partners\j1931">Jennifer Luttrell</user>
+            <data_source>I2B2</data_source>
+            <patient_set_limit>20000</patient_set_limit>
+            <estimated_time>20</estimated_time>
+            <create_date>2006-06-15T16:57:42</create_date>
+            <submit_date>2006-06-16T19:11:34</submit_date>
+            <complete_date>2006-06-16T20:47:28</complete_date>
+            <request_type>CRC_QRY_runQueryInstance_fromQueryDefinition</request_type>
+        </qt:header>
+        <qt:request xsi:type="qt:query_definition_requestType">
+            <query_definition>
+                <query_name>Asthma/HTN</query_name>
+                <query_description>Patients with Asthma and Hypertension</query_description>
+                <query_timing>ANY</query_timing>
+                <specificity_scale>0</specificity_scale>
+                <query_date_from>2000-02-29T13:59:59</query_date_from>
+                <query_date_to>2000-02-29T13:59:59</query_date_to>
+                <panel>
+                    <panel_number>1</panel_number>
+                    <panel_date_from>2000-02-29T13:59:59</panel_date_from>
+                    <panel_date_to>2000-02-29T13:59:59</panel_date_to>
+                    <invert>0</invert>
+                    <total_item_occurrences>1</total_item_occurrences>
+                    <item>
+                        <hlevel>3</hlevel>
+                        <item_name>HCT (Group:HCT)</item_name>
+                        <item_table>RPDR</item_table>
+                        <item_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood
+                            Count\HCT</item_key>
+                        <item_icon>FA</item_icon>
+                        <tooltip>Labtests \ Hematology \ Complete Blood Count \ HCT (Group:HCT)</tooltip>
+                        <class/>
+                        <constrain_by_value>
+                            <value_operator>&gt;=<!-- &lt;= | = | in --></value_operator>
+                            <value_constraint>60<!-- 80 | yellow | 'a','b','c' --></value_constraint>
+                            <value_unit_of_measure>%</value_unit_of_measure>
+                            <value_type>N</value_type>
+                        </constrain_by_value>
+                        <constrain_by_date>
+                            <date_from>2000-02-29T13:59:59</date_from>
+                            <date_to>2000-02-29T13:59:59</date_to>
+                        </constrain_by_date>
+                        <constrain_by_modifier>
+                            <modifier_name>primary</modifier_name>
+                            <modifier_key>primary</modifier_key>
+                        </constrain_by_modifier>
+                    </item>
+                </panel>
+                <panel>
+                    <panel_number>1</panel_number>
+                    <panel_date_from>2000-02-29T13:59:59</panel_date_from>
+                    <panel_date_to>2000-02-29T13:59:59</panel_date_to>
+                    <invert>0</invert>
+                    <total_item_occurrences>1</total_item_occurrences>
+                    <item>
+                        <hlevel>3</hlevel>
+                        <item_name>HCT (Group:HCT)</item_name>
+                        <item_table>RPDR</item_table>
+                        <item_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood
+                            Count\HCT</item_key>
+                        <item_icon>FA</item_icon>
+                        <tooltip>Labtests \ Hematology \ Complete Blood Count \ HCT (Group:HCT)</tooltip>
+                        <class/>
+                        <constrain_by_value>
+                            <value_operator>&gt;=</value_operator>
+                            <value_constraint>60</value_constraint>
+                            <value_unit_of_measure>%</value_unit_of_measure>
+                            <value_type>N</value_type>
+                        </constrain_by_value>
+                        <constrain_by_date>
+                            <date_from>2000-02-29T13:59:59</date_from>
+                            <date_to>2000-02-29T13:59:59</date_to>
+                        </constrain_by_date>
+                        <constrain_by_modifier>
+                            <modifier_name>primary</modifier_name>
+                            <modifier_key>primary</modifier_key>
+                        </constrain_by_modifier>
+                    </item>
+                    <item>
+                        <hlevel>3</hlevel>
+                        <item_name>HCT (Group:HCT)</item_name>
+                        <item_table>RPDR</item_table>
+                        <item_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood
+                            Count\HCT</item_key>
+                        <item_icon>FA</item_icon>
+                        <tooltip>Labtests \ Hematology \ Complete Blood Count \ HCT (Group:HCT)</tooltip>
+                        <class/>
+                        <constrain_by_value>
+                            <value_operator>&gt;=</value_operator>
+                            <value_constraint>60</value_constraint>
+                            <value_unit_of_measure>%</value_unit_of_measure>
+                            <value_type>N</value_type>
+                        </constrain_by_value>
+                        <constrain_by_date>
+                            <date_from>2000-02-29T13:59:59</date_from>
+                            <date_to>2000-02-29T13:59:59</date_to>
+                        </constrain_by_date>
+                        <constrain_by_modifier>
+                            <modifier_name>primary</modifier_name>
+                            <modifier_key>primary</modifier_key>
+                        </constrain_by_modifier>
+                    </item>
+                </panel>
+            </query_definition>
+        </qt:request>
+        <qt:response xsi:type="qt:master_instance_result_responseType">
+            <query_master>
+                <query_master_id>0</query_master_id>
+                <name></name>
+                <user_id></user_id>
+                <group_id></group_id>
+                <create_date>2000-02-29T13:59:59</create_date>
+                <delete_date>2000-02-29T13:59:59</delete_date>
+                <request_xml/>
+                <generated_sql></generated_sql>
+            </query_master>
+            <query_result_instance>
+                <result_instance_id>0</result_instance_id>
+                <query_instance_id>0</query_instance_id>
+                <query_result_type>
+                    <result_type_id>1</result_type_id>
+                    <name>QT_PATIENT_ENC_COLLECTION</name>
+                    <description/>
+                </query_result_type>
+                <set_size>0</set_size>
+                <start_date>2000-02-29T13:59:59</start_date>
+                <end_date>2000-02-29T13:59:59</end_date>
+                <status_type_id>0</status_type_id>
+            </query_result_instance>
+            <query_result_instance>
+                <result_instance_id>0</result_instance_id>
+                <query_instance_id>0</query_instance_id>
+                <query_result_type>
+                    <result_type_id>0</result_type_id>
+                    <name>QT_PATIENT_SET_COLLECTION</name>
+                    <description/>
+                </query_result_type>
+                <set_size>0</set_size>
+                <start_date>2000-02-29T13:59:59</start_date>
+                <end_date>2000-02-29T13:59:59</end_date>
+                <status_type_id>0</status_type_id>
+            </query_result_instance>
+            <query_result_instance>
+                <result_instance_id>0</result_instance_id>
+                <query_instance_id>0</query_instance_id>
+                <query_result_type>
+                    <result_type_id>1</result_type_id>
+                    <name>QT_PATIENT_ENC_COLLECTION</name>
+                    <description/>
+                </query_result_type>
+                <set_size>0</set_size>
+                <start_date>2000-02-29T13:59:59</start_date>
+                <end_date>2000-02-29T13:59:59</end_date>
+                <status_type_id>0</status_type_id>
+            </query_result_instance>
+        </qt:response>
+        <qt:sql/>
+    </message_body>
+</i2b2:response>

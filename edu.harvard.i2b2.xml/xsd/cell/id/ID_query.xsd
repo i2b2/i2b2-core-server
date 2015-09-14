@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema id="identity_managment_cell" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:id="http://www.i2b2.org/xsd/cell/id/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/id/">
+
+    <!-- <xs:import schemaLocation="i2b2.xsd" namespace="http://i2b2.mgh.harvard.edu/message"/> -->
+    <xs:include schemaLocation="ID_identity.xsd"/>
+
+    <xs:element name="query">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="request" type="id:query_requestType"/>
+                <xs:element name="response" type="id:query_responseType"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="query_requestType">
+        <xs:choice>
+            <xs:element name="search_by_master" type="id:searchType"/>
+            <xs:element name="search_by_local" type="id:searchType"/>
+        </xs:choice>
+        <xs:attribute name="session" type="xs:string" use="optional"/>
+        <xs:attribute name="return" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="master_id"/>
+                    <xs:enumeration value="local_id"/>
+                    <xs:enumeration value="master_data"/>
+                    <xs:enumeration value="local_data"/>
+                    <xs:enumeration value="local_history"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="max" type="xs:int"/>
+        <xs:attribute name="include_meta" type="xs:boolean" default="false"/>
+    </xs:complexType>
+
+    <xs:complexType name="searchType">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="match" type="id:matchType"/>
+            <xs:element name="match_id" type="id:match_idType"/>
+            <xs:element name="match_string" type="id:match_stringType"/>
+            <xs:element name="match_date" type="id:match_dateType"/>
+            <xs:element name="match_datetime" type="id:match_datetimeType"/>
+            <xs:element name="match_number" type="id:match_numberType"/>
+            <xs:element name="match_concept" type="id:matchType"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="matchType" abstract="true"/>
+
+    <xs:complexType name="match_idType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="site" use="required" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="match_valueType" abstract="true">
+        <xs:complexContent>
+            <xs:extension base="id:matchType">
+                <xs:sequence>
+                    <xs:any/>
+                </xs:sequence>
+                <xs:attribute name="pattern" use="required" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="match_stringType">
+        <xs:complexContent>
+            <xs:restriction base="id:match_valueType">
+                <xs:sequence>
+                    <xs:element name="string" type="id:stringType"/>
+                </xs:sequence>
+                <xs:attribute name="pattern" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="exact"/>
+                            <xs:enumeration value="left"/>
+                            <xs:enumeration value="right"/>
+                            <xs:enumeration value="substring"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="match_dateType">
+        <xs:complexContent>
+            <xs:restriction base="id:match_valueType">
+                <xs:sequence>
+                    <xs:element name="date" type="id:dateType"/>
+                </xs:sequence>
+                <xs:attribute name="pattern" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="on"/>
+                            <xs:enumeration value="before"/>
+                            <xs:enumeration value="after"/>
+                            <xs:enumeration value="on_or_before"/>
+                            <xs:enumeration value="on_or_after"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="match_datetimeType">
+        <xs:complexContent>
+            <xs:restriction base="id:match_valueType">
+                <xs:sequence>
+                    <xs:element name="datetime" type="id:datetimeType"/>
+                </xs:sequence>
+                <xs:attribute name="pattern" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="on"/>
+                            <xs:enumeration value="before"/>
+                            <xs:enumeration value="after"/>
+                            <xs:enumeration value="on_or_before"/>
+                            <xs:enumeration value="on_or_after"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="match_numberType">
+        <xs:complexContent>
+            <xs:restriction base="id:match_valueType">
+                <xs:sequence>
+                    <xs:element name="number" type="id:numberType"/>
+                </xs:sequence>
+                <xs:attribute name="pattern" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="equals"/>
+                            <xs:enumeration value="less_than"/>
+                            <xs:enumeration value="greater_than"/>
+                            <xs:enumeration value="less_than_or_equal"/>
+                            <xs:enumeration value="greater_than_or_equal"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="query_responseType">
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="master_record" type="id:master_recordType"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:group name="recordGroup">
+        <xs:choice>
+            <xs:element name="string" type="id:stringType"/>
+            <xs:element name="date" type="id:dateType"/>
+        </xs:choice>
+    </xs:group>
+
+    <xs:complexType name="master_recordType">
+        <xs:choice minOccurs="0" maxOccurs="1">
+            <xs:group ref="id:recordGroup" maxOccurs="unbounded"/>
+            <xs:element name="local_record" type="id:local_recordType" maxOccurs="unbounded"/>
+        </xs:choice>
+        <xs:attribute name="id" type="xs:string" use="optional"/>
+        <xs:attribute name="status" type="id:statusType"/>
+    </xs:complexType>
+
+
+
+    <xs:complexType name="local_recordType">
+        <xs:group ref="id:recordGroup" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:attribute name="site" type="xs:string" use="required"/>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="status" type="id:statusType"/>
+    </xs:complexType>
+
+</xs:schema>

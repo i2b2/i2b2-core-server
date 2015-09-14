@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ont:examples xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/ont/ ./ONT_VMO_QRY.xsd">  
+  
+    <!-- REQUEST METADATA TABLE NAMES -->
+    <message_body>
+        <ont:request echo="true" sql="true">
+            <vocab_meta>
+                <return_list>
+                    <return item="tablename"/>
+                    <return item="tablesize"/>
+                </return_list>
+            </vocab_meta>
+        </ont:request>
+        <ont:response>
+            <vocab_meta>
+                <table_name>i2b2</table_name>
+                <table_size>500</table_size>
+            </vocab_meta>
+            <vocab_meta>
+                <table_name>testrpdr</table_name>
+                <table_size>200000</table_size>
+            </vocab_meta>
+        </ont:response>
+    </message_body>
+ 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <!-- BASIC ONTOLOGY REQUEST -->
+    <!--
+        <request>
+        <return target="parents|(self)|siblings|children" echo="true|(false)">
+        <fullname/>
+        <name_char/>
+        <base_cd/>
+        <standard_cd/>
+        <modifier_cd_list/>
+        <value_constraint_list/>
+        <sql/>
+        </return>
+        <search hidden="true|(false)" synonym="true|(false)" >
+        <fullname>
+        <match_str strategy="left">\i2b2\diagnosis</match_str>
+        </fullname>
+        </search>
+        </request>
+        <request>
+        <return target="parents|(self)|siblings|children" echo="true|(false)">
+        <item>fullname</item>
+        <item>name_char</item>
+        <item>base_cd</item>
+        <item>standard_cd</item>
+        <item>modifier_cd_list</item>
+        <item>value_constraint_list</item>
+        <item>sql</item>
+        </return>
+        <search hidden="true|(false)" synonym="true|(false)" >
+        <item name="fullname">
+        <match_str strategy="left">\i2b2\diagnosis</match_str>
+        </item>
+        </search>
+        </request>
+        <request>
+        <return target="parents|(self)|siblings|children" echo="true|(false)">
+        <item name="fullname"/>
+        <item name="name_char"/>
+        <item name="base_cd"/>
+        <item>standard_cd</item>
+        <item>modifier_cd_list</item>
+        <item>value_constraint_list</item>
+        <item>sql</item>
+        </return>
+        <search hidden="true|(false)" synonym="true|(false)" >
+        <item name="fullname">
+        <match_str strategy="left">\i2b2\diagnosis</match_str>
+        </item>
+        </search>
+        </request>
+    -->
+
+</ont:examples>

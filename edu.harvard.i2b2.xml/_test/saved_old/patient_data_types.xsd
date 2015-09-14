@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema id="i2b2patientdata_types" targetNamespace="http://i2b2.mgh.harvard.edu/repository_cell"
+    xmlns:repository="http://i2b2.mgh.harvard.edu/repository_cell"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:simpleType name="tokenType">
+        <xs:annotation>
+            <xs:documentation>A token or string without leading and trailing whitespace, tabs,
+                linebreaks or repeating whitespace.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token"/>
+    </xs:simpleType>
+
+    <!-- not used currently, types that use this should be anyType -->
+    <xs:complexType name="clobType" mixed="true">
+        <xs:annotation>
+            <xs:documentation>A string with all whitespace preserved. This string could also contain
+                xml so the type is anyType in order for complex element content to be
+            valid.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="xs:anyType">
+                <xs:sequence>
+                    <xs:any minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!--
+    <xs:simpleType name="clobType">
+        <xs:annotation>
+            <xs:documentation>A string with all whitespace preserved.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:whiteSpace value="preserve"/>
+        </xs:restriction>
+    </xs:simpleType>
+    -->
+    <xs:complexType name="mappingType">
+        <xs:annotation>
+            <xs:documentation>An element that has an identifier as data that is also required to
+                include an attribute called "source" to make the identifier
+            unique.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="repository:tokenType">
+                <xs:attribute name="source" type="repository:tokenType" use="required">
+                    <xs:annotation>
+                        <xs:documentation>The code that represents the source system that generated
+                            this identifier.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+</xs:schema>

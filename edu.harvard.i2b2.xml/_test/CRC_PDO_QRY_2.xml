@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<crc:examples xmlns:crc="http://i2b2.mgh.harvard.edu/crc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/crc ./CRC_PDO_QRY.xsd">
+    
+    <message_body>
+        <crc:header>
+            <user login=""></user>
+            <data_source></data_source>
+            <patient_set_limit>0</patient_set_limit>
+            <estimated_time>0</estimated_time>
+            <create_date>2002-12-23T00:00:00</create_date>
+            <submit_date>2002-12-23T00:00:00</submit_date>
+            <complete_date>2002-12-23T00:00:00</complete_date>
+            <request_type>getPDO_fromPatientSet</request_type>
+        </crc:header>
+        <crc:request>
+            <patient_data_request>
+                <fact_request getblob="true|false" getstatus="true|false">
+                    <patient_list detail="false">
+                        <patient_set_coll_id/>
+                        <patient_num/>
+                        <patient_num/>
+                        <patient_num/>
+                    </patient_list>
+                    <visit_list detail="true">
+                        <patient_enc_coll_id/>
+                        <encounter_num/>
+                        <encounter_num/>
+                        <encounter_num/>
+                    </visit_list>
+                    <provider_list detail="false">
+                        <provider_path/>
+                        <provider_id/>
+                        <provider_id/>
+                        <provider_id/>
+                    </provider_list>
+                    <concept_list detail="true">
+                        <concept_path/>
+                        <concept_cd/>
+                        <concept_cd/>
+                        <concept_cd/>
+                    </concept_list>
+                    <start_date_constraint>
+                        <after></after>
+                        <before></before>
+                    </start_date_constraint>
+                    <end_date_constraint>
+                        <after></after>
+                        <before></before>
+                    </end_date_constraint>
+                </fact_request>
+                <dimension_request getblob="true|false" getstatus="true|false" getdetail="true|false">
+                    <patient_list>
+                        <patient_set_coll_id/>
+                        <patient_num/>
+                        <patient_num/>
+                        <patient_num/>
+                    </patient_list>
+                    <visit_list>
+                        <patient_enc_coll_id/>
+                        <encounter_num/>
+                        <encounter_num/>
+                        <encounter_num/>
+                    </visit_list>
+                    <provider_list>
+                        <provider_path/>
+                        <provider_id/>
+                        <provider_id/>
+                        <provider_id/>
+                    </provider_list>
+                    <concept_list>
+                        <concept_path/>
+                        <concept_cd/>
+                        <concept_cd/>
+                        <concept_cd/>
+                    </concept_list>
+                </dimension_request>     
+            </patient_data_request>
+        </crc:request>    
+        <crc:request xsi:type="crc:patient_set_requestType">
+            <select_option_list>
+                <observation_fact blob="true" before="2005-12-30T00:00:00" after="2003-12-30T00:00:00"/> <!-- include the blob -->
+                <patient_dimension fact_related="false"/> <!-- get all patient demographics even if they have no facts -->
+                <provider_dimension/>
+                <visit_dimension detail="false"/> <!-- do not get the detail, just the primary key -->
+                <concept_dimension status="true"/> <!-- get all status fields such as update_date, etc. -->
+                
+                <!-- DEFAULTS: detail="true" blob="false" status"false" fact_related="true"-->
+            </select_option_list>
+            <filter_list>
+                <concept_list>
+                    <concept_path>/i2b2/notes/lmr note</concept_path>
+                    <concept_path>/i2b2/medications</concept_path>
+                </concept_list>
+                <provider_list>
+                    <provider_path>/i2b2/providers/neurology/</provider_path>
+                </provider_list>
+            </filter_list>
+            <patient_list min="1" max="10">
+                <patient_num index="1">50</patient_num>
+                <patient_num index="2">24</patient_num>
+                <patient_num index="3">78</patient_num>
+                <!--
+                    <entire_patient_set/>
+                    <patient_set_coll_id>0</patient_set_coll_id>
+                 -->
+            </patient_list>
+        </crc:request>
+        <crc:response>
+            <crc:patient_data>
+                <patient_dimension_set>
+                    <patient_dimension>
+                        <patient_num>0</patient_num>
+                    </patient_dimension>
+                </patient_dimension_set>
+                <observation_fact_set>
+                    <observation_fact>
+                        <encounter_num>0</encounter_num>
+                        <patient_num>0</patient_num>
+                        <concept_cd>SCHEME:note_code</concept_cd>
+                        <provider_id></provider_id>
+                        <start_date>2002-12-23T00:00:00</start_date>
+                        <modifier_cd></modifier_cd>
+                    </observation_fact>
+                </observation_fact_set>
+            </crc:patient_data>
+        </crc:response>
+        <crc:sql></crc:sql>
+    </message_body>
+    
+    <message_body>
+        <crc:header>
+            <user login=""></user>
+            <data_source></data_source>
+            <patient_set_limit>0</patient_set_limit>
+            <estimated_time>0</estimated_time>
+            <create_date>2002-12-23T00:00:00</create_date>
+            <submit_date>2002-12-23T00:00:00</submit_date>
+            <complete_date>2002-12-23T00:00:00</complete_date>
+            <request_type>getPDO_fromVisitSet</request_type>
+        </crc:header>       
+        <crc:request xsi:type="crc:visit_set_requestType">
+            <select_option_list>
+                <observation_fact blob="true"/> <!-- include the blob -->
+                <patient_dimension fact_related="false"/> <!-- get all patient demographics even if they have no facts -->
+                <provider_dimension/>
+                <visit_dimension detail="false"/> <!-- do not get the detail, just the primary key -->
+                <concept_dimension status="true"/> <!-- get all status fields such as update_date, etc. -->
+                
+                <!-- DEFAULTS: detail="true" blob="false" status"false" fact_related="true"-->
+            </select_option_list>
+            <filter_list>
+                <concept_list>
+                    <concept_path>/i2b2/notes/lmr note</concept_path>
+                    <concept_path>/i2b2/medications</concept_path>
+                </concept_list>
+                <provider_list>
+                    <provider_path>/i2b2/providers/neurology/</provider_path>
+                </provider_list>
+            </filter_list>
+            <visit_list min="1" max="2">
+                <encounter_num index="1">50</encounter_num>
+                <encounter_num index="2">24</encounter_num>
+                <encounter_num index="3">78</encounter_num>
+                <!--
+                    <entire_visit_set/>
+                    <patient_enc_coll_id>0</patient_enc_coll_id>
+                -->
+            </visit_list>
+        </crc:request>
+        <crc:response>
+            <crc:patient_data>
+                <patient_dimension_set>
+                    <patient_dimension>
+                        <patient_num>0</patient_num>
+                    </patient_dimension>
+                </patient_dimension_set>
+                <observation_fact_set>
+                    <observation_fact>
+                        <encounter_num>0</encounter_num>
+                        <patient_num>0</patient_num>
+                        <concept_cd>SCHEME:note_code</concept_cd>
+                        <provider_id></provider_id>
+                        <start_date>2002-12-23T00:00:00</start_date>
+                        <modifier_cd></modifier_cd>
+                    </observation_fact>
+                </observation_fact_set>
+            </crc:patient_data>
+        </crc:response>
+        <crc:sql></crc:sql>
+    </message_body>
+    
+    <message_body>
+        <crc:header>
+            <user login=""></user>
+            <data_source></data_source>
+            <patient_set_limit>0</patient_set_limit>
+            <estimated_time>0</estimated_time>
+            <create_date>2002-12-23T00:00:00</create_date>
+            <submit_date>2002-12-23T00:00:00</submit_date>
+            <complete_date>2002-12-23T00:00:00</complete_date>
+            <request_type>getPDO_fromObservationFact</request_type>
+        </crc:header>       
+        <crc:request xsi:type="crc:observation_fact_set_requestType">
+            <select_option_list>
+                <observation_fact blob="true"/> <!-- include the blob -->
+                <patient_dimension fact_related="false"/> <!-- get all patient demographics even if they have no facts -->
+                <provider_dimension/>
+                <visit_dimension detail="false"/> <!-- do not get the detail, just the primary key -->
+                <concept_dimension status="true"/> <!-- get all status fields such as update_date, etc. -->
+                
+                <!-- DEFAULTS: detail="true" blob="false" status"false" fact_related="true"-->
+            </select_option_list>
+            <filter_list>
+                <concept_list>
+                    <concept_path>/i2b2/notes/lmr note</concept_path>
+                    <concept_path>/i2b2/medications</concept_path>
+                </concept_list>
+                <provider_list>
+                    <provider_path>/i2b2/providers/neurology/</provider_path>
+                </provider_list>
+            </filter_list>
+            <observation_fact_list>
+                <observation_fact>
+                    <encounter_num>0</encounter_num>
+                    <patient_num>0</patient_num>
+                    <concept_cd></concept_cd>
+                    <provider_id></provider_id>
+                    <start_date>2000-12-30T00:00:00</start_date>
+                    <modifier_cd>1</modifier_cd>
+                </observation_fact>
+            </observation_fact_list>
+        </crc:request>
+        <crc:response>
+            <crc:patient_data>
+                <patient_dimension_set>
+                    <patient_dimension>
+                        <patient_num>0</patient_num>
+                    </patient_dimension>
+                </patient_dimension_set>
+                <observation_fact_set>
+                    <observation_fact>
+                        <encounter_num>0</encounter_num>
+                        <patient_num>0</patient_num>
+                        <concept_cd>SCHEME:note_code</concept_cd>
+                        <provider_id></provider_id>
+                        <start_date>2002-12-23T00:00:00</start_date>
+                        <modifier_cd></modifier_cd>
+                    </observation_fact>
+                </observation_fact_set>
+            </crc:patient_data>
+        </crc:response>
+        <crc:sql></crc:sql>
+    </message_body>
+    
+</crc:examples>

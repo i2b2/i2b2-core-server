@@ -1,0 +1,35 @@
+<service name="QueryToolService">
+    <description>
+        This is a sample Web Service for Query Tool Processor
+    </description>
+    <parameter name="ServiceClass" locked="false">edu.harvard.i2b2.querytool.axis2.QueryService</parameter>
+    <operation name="queryPatient">
+        <actionMapping>urn:queryToolService</actionMapping>
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="getResultSet">
+        <actionMapping>urn:queryToolService</actionMapping>
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="request">
+	    <actionMapping>urn:queryToolService</actionMapping>
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    
+    <operation name="pdorequest">
+	    <actionMapping>urn:queryToolService</actionMapping>
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <!--
+    <operation name="findXmlDefinition">
+        <actionMapping>urn:queryToolService</actionMapping>
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    
+    <operation name="queryManager">
+        <actionMapping>urn:queryToolService</actionMapping>
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    -->
+</service>
+

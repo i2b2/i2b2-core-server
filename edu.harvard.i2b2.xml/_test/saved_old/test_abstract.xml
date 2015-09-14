@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test:test xmlns:test="http://i2b2.mgh.harvard.edu/test"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/test file:/Users/kristel/Documents/EclipseWorkspace/i2b2_xml/test_abstract.xsd">
+    <request xsi:type="test:special_requestType">
+        <hello/>
+        <goodbye/>
+    </request>
+    <special_request>
+        <hello/>
+        <goodbye/>
+    </special_request>
+</test:test>

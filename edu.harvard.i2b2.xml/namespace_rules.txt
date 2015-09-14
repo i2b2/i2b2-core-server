@@ -1,0 +1,25 @@
+===========================================================================
+HIVE RESOURCES - released versions have a date/version
+===========================================================================
+http://www.i2b2.org/xsd/hive/<hive_object>/<date_version>/
+
+http://www.i2b2.org/xsd/hive/msg/
+http://www.i2b2.org/xsd/hive/pdo/
+
+http://www.i2b2.org/xsd/hive/msg/2007jan/
+http://www.i2b2.org/xsd/hive/pdo/2007jan/
+
+===========================================================================
+CELL RESOURCES - released versions have a date/version
+===========================================================================
+http://www.i2b2.org/xsd/cell/<cell_name>/<date_version>/
+
+http://www.i2b2.org/xsd/cell/crc/
+http://www.i2b2.org/xsd/cell/ont/
+http://www.i2b2.org/xsd/cell/id/
+http://www.i2b2.org/xsd/cell/pft/
+
+http://www.i2b2.org/xsd/cell/crc/2007jan/
+http://www.i2b2.org/xsd/cell/ont/2007jan/
+http://www.i2b2.org/xsd/cell/id/2007jan/
+http://www.i2b2.org/xsd/cell/pft/2007jan/

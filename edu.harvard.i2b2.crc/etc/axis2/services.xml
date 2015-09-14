@@ -1,0 +1,24 @@
+<!--
+    This is Axis2 service file for crc app
+    It contain two operation, a)setfinder request and b)pdo request
+    $Id: services.xml,v 1.7 2008/09/08 14:13:47 rk903 Exp $ 
+-->
+<service name="QueryToolService" scope="request">
+    <description>
+        This is a Web Service for edu.harvard.i2b2.crc
+    </description>
+     <parameter name="ServiceClass">edu.harvard.i2b2.crc.axis2.QueryService</parameter> 
+    <operation name="request">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="pdorequest">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="publishDataRequest">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="getLoadDataStatusRequest">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+</service>
+

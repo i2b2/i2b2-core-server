@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ont/">
+    
+    <xs:complexType name="return_listType">
+        <xs:sequence>
+            <xs:element name="return" type="ont:returnType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="returnType">
+        <xs:attribute name="item" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation> vocab_mata: tablename tablesize</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    
+</xs:schema>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.i2b2.org/xsd/hive/msg/ ../edu.harvard.i2b2.xml/xsd/hive/msg/i2b2_request.xsd">
+    <message_header>
+        <i2b2_version_compatible>3.141592653589</i2b2_version_compatible>
+        <hl7_version_compatible>3.141592653589</hl7_version_compatible>
+        <sending_application>
+            <application_name>application_name0</application_name>
+            <application_version>application_version0</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>facility_name0</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>application_name1</application_name>
+            <application_version>application_version1</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name>facility_name1</facility_name>
+        </receiving_facility>
+        <datetime_of_message>2006-05-04T18:13:51.0Z</datetime_of_message>
+        <security>
+                <domain>domain0</domain>
+                <username>username0</username>
+                <password>password0</password>
+        </security>
+        <message_type>
+            <message_code>message_code0</message_code>
+            <event_type>event_type0</event_type>
+            <message_structure>message_structure0</message_structure>
+        </message_type>
+        <message_control_id>
+            <session_id>session_id0</session_id>
+            <message_num>message_num0</message_num>
+            <instance_num>2147483647</instance_num>
+        </message_control_id>
+        <processing_id>
+            <processing_id>D</processing_id>
+            <processing_mode>A</processing_mode>
+        </processing_id>
+        <accept_acknowledgement_type>accept_acknowledgement_type0</accept_acknowledgement_type>
+        <application_acknowledgement_type>application_acknowledgement_type0</application_acknowledgement_type>
+        <country_code>country_code0</country_code>
+    </message_header>
+    <request_header>
+        <result_waittime_ms>2147483647</result_waittime_ms>
+    </request_header>
+    <message_body>
+        <pm:request xmlns:pm="http://www.i2b2.org/xsd/cell/pm/"
+            xsi:schemaLocation="http://www.i2b2.org/xsd/cell/pm/ ./PM_USER.xsd">
+            <get_services xmlns="">
+                <username>username0</username>
+                <password>password0</password>
+            </get_services>
+        </pm:request>
+    </message_body>
+</i2b2:request>

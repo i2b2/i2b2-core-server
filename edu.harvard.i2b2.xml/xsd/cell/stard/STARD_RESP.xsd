@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:stard="http://www.i2b2.org/xsd/cell/stard/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/stard/1.1/">
+
+    <xs:element name="study_headers" type="stard:study_headersType"/>
+
+    <xs:complexType name="study_headersType">
+        <xs:sequence>
+            <xs:element name="study_header" type="stard:study_headerType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="study_headerType">
+        <xs:sequence>
+        	<xs:element name="study_date" type="xs:string" />
+        	<xs:element name="study_time" type="xs:string" />
+        	<xs:element name="accession_number" type="xs:string" />
+        	<xs:element name="retrieve_level" type="xs:string" />
+        	<xs:element name="ae_title" type="xs:string" />
+        	<xs:element name="availability" type="xs:string" />
+        	<xs:element name="patient_name" type="xs:string" />
+        	<xs:element name="patient_id" type="xs:string" />
+        	<xs:element name="study_instance_uid" type="xs:string" />
+        	<xs:element name="study_id" type="xs:string" />
+        	<xs:element name="num_study_related_series" type="xs:string" />
+        	<xs:element name="num_study_related_instances" type="xs:string" />        
+        	<xs:element name="modalities_in_study" type="xs:string" />        
+        </xs:sequence>
+    </xs:complexType>
+    
+</xs:schema>

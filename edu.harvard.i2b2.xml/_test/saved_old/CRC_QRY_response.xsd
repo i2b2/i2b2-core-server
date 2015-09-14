@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:qt="http://i2b2.mgh.harvard.edu/querytool"
+    targetNamespace="http://i2b2.mgh.harvard.edu/querytool">
+
+    <xs:include schemaLocation="./CRC_QRY_data_object.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation>This schema defines abstract responseType and concrete responseTypes. It
+            also defines a response element of type responseType. the specific responseType of
+            response must be declared in the instance document using the xsi:type
+        attribute.</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="response" type="qt:responseType"/>
+
+    <xs:complexType name="responseType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>responseType is abstract so a concrete type must be declared in the
+                instance document using the xsi:type attribute.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence/>
+    </xs:complexType>
+
+    <xs:complexType name="patient_set_responseType">
+        <xs:complexContent>
+            <xs:extension base="qt:responseType">
+                <xs:sequence>
+                    <xs:element name="patient_set" type="qt:patient_setType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="request_xml_responseType">
+        <xs:complexContent>
+            <xs:extension base="qt:responseType">
+                <xs:sequence>
+                    <xs:any processContents="skip"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="master_responseType">
+        <xs:complexContent>
+            <xs:extension base="qt:responseType">
+                <xs:sequence>
+                    <xs:element name="query_master" type="qt:query_masterType" maxOccurs="unbounded"
+                    />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="instance_responseType">
+        <xs:complexContent>
+            <xs:extension base="qt:responseType">
+                <xs:sequence>
+                    <xs:element name="query_instance" type="qt:query_instanceType"
+                        maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="result_responseType">
+        <xs:complexContent>
+            <xs:extension base="qt:responseType">
+                <xs:sequence>
+                    <xs:element name="query_result_instance" type="qt:query_result_instanceType"
+                        maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="instance_result_responseType">
+        <xs:complexContent>
+            <xs:extension base="qt:responseType">
+                <xs:sequence>
+                    <xs:element name="query_instance" type="qt:query_instanceType"/>
+                    <xs:element name="query_result_instance" type="qt:query_result_instanceType"
+                        minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="master_instance_result_responseType">
+        <xs:complexContent>
+            <xs:extension base="qt:responseType">
+                <xs:sequence>
+                    <xs:element name="query_master" type="qt:query_masterType"/>
+                    <xs:element name="query_instance" type="qt:query_instanceType" minOccurs="0"/>
+                    <xs:element name="query_result_instance" type="qt:query_result_instanceType"
+                        minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

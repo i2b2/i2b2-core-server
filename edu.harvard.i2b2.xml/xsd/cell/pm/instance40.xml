@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns="http://www.i2b2.org/xsd/cell/pm/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.i2b2.org/xsd/cell/pm/ file:/Users/mem61/Documents/workspace-FEB-25/edu.harvard.i2b2.xml/xsd/cell/pm/PM_USER.xsd">
+    <get_services xmlns="">
+        <username>username0</username>
+        <password>password0</password>
+    </get_services>
+</request>

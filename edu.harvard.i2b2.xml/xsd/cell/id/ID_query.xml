@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<id:query xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:id="http://www.i2b2.org/xsd/cell/id/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/id/ ./ID_query.xsd">
+
+    <request return="master_id" max="10" session="x" include_meta="true">
+
+        <search_by_local>
+            <match_id site="MGH">03AT58349</match_id>
+            <match_string pattern="left">
+                <!-- exact|left|right|substring -->
+                <string concept_cd="first_name">Raj</string>
+            </match_string>
+            <match_date pattern="on_or_before">
+                <!-- on|before|after|on_or_before|on_or_after -->
+                <date concept_cd="birthdate">2000-02-29</date>
+            </match_date>
+            <match_datetime pattern="on">
+                <datetime concept_cd="start_date">2002-02-28T13:59:59</datetime>
+            </match_datetime>
+            <match_number pattern="less_than">
+                <!-- equal|less_than|greater_than|less_or_equal|greater_or_equal -->
+                <number concept_cd="test_result">25.0</number>
+            </match_number>
+            <match xsi:type="id:match_stringType" pattern="exact">
+                <string concept_cd="last_name">Kuttan</string>
+            </match>
+        </search_by_local>
+
+        <!--
+                <search_by_master/>
+                -->
+
+    </request>
+    <response>
+
+        <!-- return="master_id" -->
+        <master_record id="1"/>
+
+        <!-- return="local_id" -->
+        <master_record id="1" status="active">
+            <local_record id="a" site="lmr" status="active"/>
+            <local_record id="b" site="mgh" status="inactive"/>
+        </master_record>
+        <master_record>
+            <local_record id="c" site="bwh"/>
+        </master_record>
+
+        <!-- return="master_data" -->
+        <master_record id="1">
+            <string concept_cd="first_name">Raj</string>
+            <string concept_cd="last_name">Kuttan</string>
+        </master_record>
+
+        <!-- return="local_data" -->
+        <master_record id="1">
+            <local_record id="a" site="lmr">
+                <string concept_cd="first_name">Raj</string>
+                <string concept_cd="last_name">Kuttan-Kuttan</string>
+            </local_record>
+            <local_record id="b" site="mgh">
+                <string concept_cd="first_name">rajesh</string>
+                <string concept_cd="last_name">kuttan</string>
+            </local_record>
+        </master_record>
+        <master_record>
+            <local_record id="c" site="bwh">
+                <string concept_cd="first_name">Kristel</string>
+                <string concept_cd="last_name">Hackett</string>
+            </local_record>
+        </master_record>
+
+        <!-- return="local_history" -->
+        <master_record id="1" status="inactive">
+            <local_record id="a" site="lmr" status="inactive">
+                <string concept_cd="first_name" update_date="2002-02-28T13:59:59"
+                    download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                    sourcesystem_cd="LMR">Raj</string>
+                <string concept_cd="last_name" update_date="2002-02-28T13:59:59"
+                    download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                    sourcesystem_cd="LMR">Kuttan</string>
+                <string concept_cd="last_name" update_date="2003-02-28T13:59:59"
+                    download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                    sourcesystem_cd="LMR">Kuttan-Kuttan</string>
+            </local_record>
+            <local_record id="b" site="mgh" status="active">
+                <string concept_cd="first_name" update_date="2003-02-28T13:59:59"
+                    download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                    sourcesystem_cd="LMR">rajesh</string>
+                <string concept_cd="first_name" update_date="2002-02-28T13:59:59"
+                    download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                    sourcesystem_cd="LMR">rajeshh</string>
+                <string concept_cd="last_name" update_date="2002-02-28T13:59:59"
+                    download_date="2002-02-28T13:59:59" import_date="2002-02-28T13:59:59"
+                    sourcesystem_cd="LMR">kuttan</string>
+            </local_record>
+        </master_record>
+
+    </response>
+
+</id:query>

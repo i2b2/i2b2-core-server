@@ -1,0 +1,74 @@
+<ns5:response xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:tns="http://axis2.crc.i2b2.harvard.edu" xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/">
+  <message_header>
+    <i2b2_version_compatible>1.1</i2b2_version_compatible>
+    <hl7_version_compatible>2.4</hl7_version_compatible>
+    <sending_application>
+      <application_name>CRC Cell</application_name>
+      <application_version>1.6</application_version>
+    </sending_application>
+    <sending_facility>
+      <facility_name>i2b2 Hive</facility_name>
+    </sending_facility>
+    <receiving_application>
+      <application_name>Workplace Cell</application_name>
+      <application_version>1.601</application_version>
+    </receiving_application>
+    <receiving_facility>
+      <facility_name>i2b2 Hive</facility_name>
+    </receiving_facility>
+    <message_control_id>
+      <instance_num>1</instance_num>
+    </message_control_id>
+    <project_id>Demo3</project_id>
+  </message_header>
+  <response_header>
+    <info>Log information</info>
+    <result_status>
+      <status type="DONE">DONE</status>
+      <polling_url interval_ms="100" />
+    </result_status>
+  </response_header>
+  <message_body>
+    <ns4:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:master_responseType">
+      <status>
+        <condition type="DONE">DONE</condition>
+      </status>
+      <query_master>
+        <query_master_id>1428</query_master_id>
+        <name>Visit Notes@11:03:43</name>
+        <user_id>demo</user_id>
+        <request_xml>
+          <ns3:query_definition xmlns:ns2="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/">
+            <query_name>Visit Notes@11:03:43</query_name>
+            <query_timing>ANY</query_timing>
+            <specificity_scale>0</specificity_scale>
+            <panel>
+              <panel_number>1</panel_number>
+              <panel_timing>ANY</panel_timing>
+              <panel_accuracy_scale>100</panel_accuracy_scale>
+              <invert>0</invert>
+              <total_item_occurrences>1</total_item_occurrences>
+              <item>
+                <hlevel>2</hlevel>
+                <item_name>Visit Notes</item_name>
+                <item_key>\\i2b2_REP\i2b2\Reports\Visit Notes\</item_key>
+                <item_icon>FA</item_icon>
+                <tooltip>\ i2b2 \ Reports \ Visit Notes \</tooltip>
+                <class>ENC</class>
+                <constrain_by_value>
+                  <value_operator>CONTAINS[database]</value_operator>
+                  <value_constraint>
+                    <![CDATA[TPO Ab <10.0]]>
+                  </value_constraint>
+                  <value_unit_of_measure></value_unit_of_measure>
+                  <value_type>LARGETEXT</value_type>
+                </constrain_by_value>
+                <item_is_synonym>false</item_is_synonym>
+              </item>
+            </panel>
+          </ns3:query_definition>
+        </request_xml>
+      </query_master>
+    </ns4:response>
+  </message_body>
+</ns5:response>

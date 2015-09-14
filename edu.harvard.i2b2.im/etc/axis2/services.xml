@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service name="IMService" scope="request">
+    <description>
+        IM Processing Service
+    </description>
+    <operation name="pdorequest">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="setKey">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="isKeySet">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="getAudit">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="validateSiteId">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <parameter name="ServiceClass">edu.harvard.i2b2.im.ws.IMService</parameter>
+</service>

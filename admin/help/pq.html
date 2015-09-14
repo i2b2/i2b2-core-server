@@ -1,0 +1,527 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Untitled Document</title>
+		<link href="i2b2Style.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<h1><a name="pqView" id="pqView"></a>i2b2 Previous Query View</h1>
+		<p>The <b>Previous Query view</b> is designed to display the most recent queries run by a user. The results associated to the query are also available for viewing.
+		</p>
+		<p>&nbsp;</p>
+		<h2><a name="pqIntro" id="pqIntro"></a>Introduction</h2>
+		<p>This section describes the layout and contents of the <b>Previous Query view</b>.</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						There are two types of queries that can be run in the i2b2 Web Client;
+					</p>
+					<ol>
+						<li class=NoteParagraph>
+							A standard i2b2 query <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="previousQuery" />)</span>
+						</li>
+						<li class=NoteParagraph>
+							A Temporal query <span style="color:#CCCCCC">(<img src="images/iconTemporalQry.png" alt="temporalQuery" />)</span>
+						</li>
+					</ol>
+					<p class=NoteParagraph>&nbsp;</p>
+					<p class=NoteParagraph>
+						Both of these types of queries will appear in the Previous Query view and throughout this document they will both be referred to as a "Previous query".
+					</p>
+					<p class=NoteParagraph>&nbsp;</p>
+					<p class=NoteParagraph>
+						For more detailed information on the distinction of these two types of queries please see the Query Tool help.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="pqLayout" id="pqLayout"></a>Layout of the Previous Query View</h3>
+		<p>A <b>previous query</b> <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="previousQuery" /> / <img src="images/iconTemporalQry.png" alt="temporalQuery"/>)</span> is created when a query is run from the <i>Query Tool</i>.
+			The query is stored and displayed in the <b>Previous Query view</b>. These previous queries can be used to run new queries or to easily populate other views.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p><img src="images/pqView.png" alt="pqView" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>The query in the previous query view is comprised of multiple hierarchical levels that can be seen by expanding each level of the tree. These levels are outlined below.
+		</p>
+		<p>&nbsp;</p>
+		<h4><a name="pqName" id="pqName"></a>Previous Query Name</h4>
+		<p>The name of the previous query is the top level of the hierarchal tree and is comprised of these three components.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li><b>Query Name</b> - the name given at the time the query was created. The default name contains an abbreviated description and the time the query was run.
+			</li>
+			<li><b>Date</b> - the date the query was created.</li>
+			<li><b>User Id</b> - the user who created (ran) the query.</li>
+		</ol>
+		<p>&nbsp;</p>
+		<p><img src="images/pqNameLayout.png" alt="pqNameLayout" width="309" height="99" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="pqResultsFolder" id="pqResultsFolder"></a>Results Folder</h4>
+		<p>The <b>Results folder</b> <span style="color:#CCCCCC">(<img src="images/pqResultsFolder.png" alt="pqResultsFolder" width="16" height="16" />)</span> contains the results of the query. To see the query results simply expand the folder by clicking on the <i>plus sign</i> <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> located next to the result name.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="pqResults" id="pqResults"></a>Results</h4>
+		<p>The results associated with a <b>previous query</b> are determined by the <b>query result type(s)</b> that are selected when the query is run in the <b>Query Tool view</b>.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="pqPtSet" id="pqPtSet"></a>Patient Set</h5>
+		<p>The <b>Patient set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> appears if <i>Patient set</i> or <i>Timeline</i> was checked at the time the query was run. The set contains all the patients who met the defined search criteria.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/pqPtSet.png" alt="pqPtSet" width="425" height="141" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="ptEncSet" id="ptEncSet"></a>Encounter Set</h5>
+		<p>The <b>Encounter Set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> appears if <i>Encounter set</i> was checked at the time the query was run. The set contains all the patients whose encounters met the defined search criteria.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/pqEncSet.png" alt="pqEncSet" width="425" height="140" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="pqPtCount" id="pqPtCount"></a>Number of Patients</h5>
+		<p>The <b>Number of Patients</b> <span style="color:#CCCCCC">(<img src="images/ptCount.png" alt="ptCount" />)</span> appears if <i>Number of Patients</i> was checked at the time the query was run. The results are a total count for those patients who met the defined criteria.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/pqPtCount.png" alt="pqPtCount"  /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="pqGender" id="pqGender"></a>Gender Patient Breakdown</h5>
+		<p>The <b>Gender patient breakdown</b> <span style="color:#CCCCCC">(<img src="images/ptBreakdowns.png" alt="ptBreakdowns" />)</span> appears if <i>Gender patient breakdown</i> was checked at the time the query was run. The results are a breakdown by gender for those patient who met the defined criteria.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/pqGender.png" alt="pqGender"  /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="pqVitals" id="pqVitals"></a>Vital Status Patient Breakdown</h5>
+		<p>The <b>Vital Status patient breakdown</b> <span style="color:#CCCCCC">(<img src="images/ptBreakdowns.png" alt="ptBreakdowns" />)</span> appears if <i>Vital Status patient breakdown</i> was checked at the time the query was run. The results are a breakdown by vital status for those patient who met the defined criteria.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/pqGender.png" alt="pqGender"  /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="pqRace" id="pqRace"></a>Race Patient Breakdown</h5>
+		<p>The <b>Race patient breakdown</b> <span style="color:#CCCCCC">(<img src="images/ptBreakdowns.png" alt="ptBreakdowns" />)</span> appears if <i>Race patient breakdown</i> was checked at the time the query was run. The results are a breakdown by race for those patient who met the defined criteria.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/pqGender.png" alt="pqGender"  /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="pqAge" id="pqAge"></a>Age Patient Breakdown</h5>
+		<p>The <b>Age patient breakdown</b> <span style="color:#CCCCCC">(<img src="images/ptBreakdowns.png" alt="ptBreakdowns" />)</span> appears if <i>Age patient breakdown</i> was checked at the time the query was run. The results are a breakdown by age for those patient who met the defined criteria.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/pqGender.png" alt="pqGender" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h2><a name="pqNavigation" id="pqNavigation"></a>Navigation</h2>
+		<h3><a name="pqRenamePq" id="pqRenamePq"></a>Rename a Previous Query</h3>
+		<p>Users can rename a previous query from the list by selecting <b>Rename</b> from the <i>popup menu</i>.
+		</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the <b>Previous Query</b> to be renamed.</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/pqMenu.png" alt="pqMenu" width="96" height="56" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Rename</b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/pqMenuRename.png" alt="pqMenuRename" width="96" height="56" /></p>
+			<p>&nbsp;</p>
+			<li>The rename query dialog box will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/pqRenameQuery.png" alt="pqRenameQuery" width="402" height="160" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Enter the new name of the previous query and click on the <b>OK button</b>.</li>
+			<li>The previous query will now display in the view with the new name.</li>
+			<p>&nbsp;</p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						When dragging a previous query to another view the new name will appear when it is dropped.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="pqDeletePq" id="pqDeletePq"></a>Delete / Remove a Previous Query</h3>
+		<p>Users can rename a previous query from the list by selecting <b>Delete</b> from the <i>pop-up menu</i>.
+		</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the <b>Previous Query</b> to be deleted.</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/pqMenu.png" alt="pqMenu" width="96" height="56" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Delete</b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/pqMenuDelete.png" alt="pqMenuDelete" width="96" height="56" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>A message box will open asking if you are sure you want to delete the query.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/pqDeleteQueryMsg.png" alt="pqDeleteQueryMsg" width="381" height="126" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>OK button</b> to delete the query</li>
+			<p>&nbsp;</p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=warning>
+			<tr>
+				<td>
+					<p class=WarningHeading>WARNING: </p>
+					<p class=WarningParagraph>
+						Once you click on Delete, the previous query will be removed from the view and there is no way to restore it. Therefore you need to make sure you want to remove it from the list.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="pqRefresh" id="pqRefresh"></a>Refresh the List</h3>
+		<p>Users can refresh the list of previous queries from the list by selecting <b>Refresh All</b> from the <i>pop-up menu</i>.
+		</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on any of the previous queries in the list.</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/pqMenu.png" alt="pqMenu" width="96" height="56" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Refresh All</b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/pqMenuRename.png" alt="pqMenuRename" width="96" height="56" /></p>
+			<p>&nbsp;</p>
+			<li>The list of previous queries and their status will be refreshed.</li>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="pqOptions" id="pqOptions"></a>Options</h3>
+		<p>Users can define how many previous queries to display and the order in which they will appear in the list. The display options are set in the Options for Previous Queries window, which can be accessed by clicking on the <b>Show Options button</b> <span style="color:#CCCCCC">(<img src="images/options.png" alt="options" />)</span>.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/pqOptions.png" alt="pqOptions" width="402" height="285" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ptDisplayMax" id="ptDisplayMax"></a>Maximum to Display</h4>
+		<h5><a name="pqDisplayMaxQueries" id="pqDisplayMaxQueries"></a>Queries to Display</h5>
+		<p>The <b>Maximum number of queries to display</b> defines how many previous queries will be visible in the <b>Previous Query view</b>. Once the maximum number is reached the oldest query will no longer appear in the view.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=tip>
+			<tr>
+				<td>
+					<p class=TipHeading>TIP: </p>
+					<p class=TipParagraph>
+						Recommendation: Use the Workplace view to save those previous queries that will be used often. In addition to being more convenient it will also prevent you from loosing a common query if the maximum number to display has been reached.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="pqSortQueries" id="pqSortQueries"></a>Sort Queries</h4>
+		<h5><a name="pqSortDate" id="pqSortDate"></a>Sort by Create Date</h5>
+		<p>Selecting to sort <b>By Create Date</b> will sort the queries in the <b>Previous Query view</b> by the date and time the query was created. Once you select to sort by the creation date, you need to define whether or not it will be in ascending or descending order.
+		</p>
+		<p>&nbsp;</p>
+		<p><b>Ascending:</b> displays the <i>oldest</i> query <i>first</i>.</p>
+		<p>&nbsp;</p>
+		<p><b>Descending:</b> displays the <i>newest</i> query <i>first</i>.</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						Renaming a query will not affect the sort order as the date and time is stored with the previous query.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="pqSortName" id="pqSortName"></a>Sort by Name</h5>
+		<p>Selecting to sort <b>By Query Name</b> will sort the queries in the <b>Previous Query view</b> alphabetically by the name of the query. Once you select to sort by name, you need to define whether or not it will be in ascending or descending order.
+		</p>
+		<p>&nbsp;</p>
+		<p><b>Ascending:</b> queries are displayed in alphabetical order with the <i>beginning</i> of the <i>alphabet</i> at the <i>beginning</i> of the list. (A to Z)
+		</p>
+		<p>&nbsp;</p>
+		<p><b>Descending: </b>queries are displayed in alphabetical order with the <i>beginning</i> of the <i>alphabet</i> at the <i>end</i> of the list. (Z to A)
+		</p>
+		<p>&nbsp;</p>
+		<h2><a name="pqUsePq" id="pqUsePq"></a>Using a Previous Query</h2>
+		<p>This section describes how to use a previous query.</p>
+		<h3><a name="pqDragItems" id="pqDragItems"></a>Draggable Items</h3>
+		<p>Different parts of the previous query can be dragged and dropped (copied) from the <b>Previous Query view</b> to other views in the i2b2 Web Client.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Previous Query</li>
+			<p>Associated with each <b>previous query</b> <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="previousQuery" /> / <img src="images/iconTemporalQry.png" alt="temporalQuery"/>)</span> are the items used to run the query, any constraints that were defined, and the results. A previous query can be added to other views by dragging the previous query name from <b>Previous Query view</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool view;</b> drop in the <i>panel</i> or <i>Query Name</i>.</li>
+				<li><b>Workplace view;</b> drop in a <i>user</i> or <i>shared folder</i></li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Patient Set</li>
+			<p> A specific set of patients can be added to other views by dragging the <b>Patient set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> from <b>Previous Query view</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool view;</b> drop in the <i>panel</i>.</li>
+				<li><b>Workplace view;</b> drop in a <i>user</i> or <i>shared folder</i></li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Encounter Set</li>
+			<p> A specific set of encounters (visit list) can be added to other views by dragging the <b>Encounter Set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> from <b>Previous Query view</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool view;</b> drop in the <i>panel</i>.</li>
+				<li><b>Workplace view;</b> drop in a <i>user</i> or <i>shared folder</i></li>
+			</ul>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="pqAddToQt" id="pqAddToQt"></a>Add to Query Tool View</h3>
+		<p>The Query Tool view is designed to simplify the process of retrieving information from the database associated to the i2b2 Web Client.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/qtDragPqIschemicHrt.png" alt="qtDragPqIschemicHrt"  /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>Within the <b>Previous Query view</b> there are several items that can be used in the Query Tool view to run a query. The following sections explain how to add the previous query, patient set and encounter set to the Query Tool view.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="pqAddPqToQt" id="pqAddPqToQt"></a>Add Previous Query to Query Tool View</h4>
+		<p>&nbsp;</p>
+		<p>Within the Query Tool view, a previous query can be added to one of the following two locations.</p>
+		<p>&nbsp;</p>
+		<table width="85%" border="1" cellspacing="1" cellpadding="1">
+			<tr>
+				<td><b>Query Name field</b></td>
+				<td>The items and constraints from the original query will be used to create a new query. This information can be edited to make a new query or can be used as is to run the query again.
+				</td>
+			</tr>
+			<tr>
+				<td><b>Panel (Group)</b></td>
+				<td>Used within a new query (query-in-query). The information associated with the previous query can not be edited. Add additional search criteria (items) to be used in the new query.
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="pqAddPqToQtNew" id="pqAddPqToQtNew"></a>Add Previous Query to the Query Name (New Query)</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Highlight the <b>previous query</b> <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="previousQuery" /> / <img src="images/iconTemporalQry.png" alt="temporalQuery"/>)</span> by clicking on the name of the query.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item  to the <b>Query Tool view</b>.</li>
+			<li>Drop the item into the <b>Query Name field</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragPqIschemicHrt.png" alt="dragPq" width="524" height="353" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The item(s) associated with the previous query will  display in the appropriate group(s), the name of the query will appear at <b>Query Name</b>, and any constraints that were defined when the original query was run will now default with the new query.
+			</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropPqIschemicHrt.png" alt="dropPq" width="524" height="353" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						When you run the query it will receive a new name. This is to distinguish the first previous query from the second.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="pqAddPqToQtPanel" id="pqAddPqToQtPanel"></a>Add Previous Query to the Query Name (Query-in-Query)</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Highlight the <b>previous query</b> <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="previousQuery" /> / <img src="images/iconTemporalQry.png" alt="temporalQuery"/>)</span> by clicking on the name of the query.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item  to the <b>Query Tool view</b>.</li>
+			<li>Drop the item into the <b>Query Name field</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragPqIschemicHrtPanel.png" alt="qtDragPqIschemicHrtPanel"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The previous query will now display in the panel for Group 1.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropPqIschemicHrtPanel.png" alt="qtDropPqIschemicHrtPanel"  /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="pqAddPtSetToQt" id="pqAddPtSetToQt"></a>Add Patient Set to the Query Tool View</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the name of the previous query that contains the patient set.
+			</li>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the results folder.
+			</li>
+			<li>Highlight the <b>Patient set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Query Tool view</b></li>
+			<li>Drop the item into the<strong> </strong><b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragPtSet.png" alt="qtDragPtSet" width="524" height="353" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The  item will now display in the panel for Group 1.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropPtSet.png" alt="qtDropPtSet" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="pqAddEncSetToQt" id="pqAddEncSetToQt"></a>Add Encounter Set to the Query Tool View</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the name of the previous query that contains the encounter set.
+			</li>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the results folder.
+			</li>
+			<li>Highlight the <b>Encounter set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Query Tool view</b></li>
+			<li>Drop the item into the<strong> </strong><b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragEncSet.png" alt="qtDragEncSet" width="524" height="353" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The  item will now display in the panel for Group 1.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropEncSet.png" alt="qtDropEncSet" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p></p>
+		<p>&nbsp;</p>
+		<ol>
+		</ol>
+		<p></p>
+		<p>&nbsp;</p>
+		<h3><a name="pqAddToWp" id="pqAddToWp"></a>Add to Workplace View</h3>
+		<p>Information in the workplace is related to the most common concepts and queries that an individual uses and in essence becomes their personal workplace.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/wpView.png" alt="wpView" width="296" height="164" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="pqAddPqToWp" id="pqAddPqToWp"></a>Add Previous Query to Workplace View</h4>
+		<ol>
+			<li>Highlight the <b>previous query</b> <span style="color:#CCCCCC">(<img src="images/prevQuery.png" alt="previousQuery" /> / <img src="images/iconTemporalQry.png" alt="temporalQuery"/>)</span> by clicking on the name of the query.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the previous query name  to the <b>Workplace view</b>.
+			</li>
+			<li>Drop the previous query into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragPq.png" alt="dragPqToWp" width="296" height="164" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The previous query will now appear in the workplace with the same name<b></b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropPq.png" alt="dropPqInWp" width="296" height="164" /></p>
+		</ol>
+		<p></p>
+		<p>&nbsp;</p>
+		<h4><a name="pqAddPtSetToWp" id="pqAddPtSetToWp"></a>Add Patient Set to Workplace View</h4>
+		<ol>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the name of the previous query that contains the patient set.
+			</li>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the results folder.
+			</li>
+			<li>Highlight the <b>Patient set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the <b>Patient set</b> to the <b>Workplace view</b>.
+			</li>
+			<li>Drop the Patient set into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragPtSet.png" alt="dragPtSetToWp" width="296" height="164" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The Patient set will now appear in the workplace.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropPtSet.png" alt="dropPtSetInWp" width="296" height="164" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</ol>
+		<h4><a name="pqAddPtSetToWp" id="pqAddPtSetToWp2"></a>Add Encounter Set to Workplace View</h4>
+		<ol>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the name of the previous query that contains the encounter set.
+			</li>
+			<li>Click on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the results folder.
+			</li>
+			<li>Highlight the <b>Encounter Set</b> <span style="color:#CCCCCC">(<img src="images/ptSet.png" alt="ptSet" />)</span> by clicking on its name.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the <b>Encounter set</b> to the <b>Workplace view</b>.
+			</li>
+			<li>Drop the encounter set into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragEncSet.png" alt="dragEncSetToWp"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The encounter set will now appear in the workplace.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropEncSet.png" alt="dropEncSetInWp"  /></p>
+			<p></p>
+		</ol>
+	</body>
+</html>

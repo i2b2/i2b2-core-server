@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema id="ontology_cell" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:rpdr="http://rpdr.mgh.harvard.edu/"
+    xmlns:ontology="http://i2b2.mgh.harvard.edu/ontology_cell"
+    targetNamespace="http://i2b2.mgh.harvard.edu/ontology_cell">
+    
+    <xs:import namespace="http://i2b2.mgh.harvard.edu/concept_dimension"/>
+    
+    <xs:element name="concept">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="hlevel"/>        <!-- c_hlevel -->
+                <xs:element name="concept_path"/>  <!-- c_fullname -->
+                <xs:element name="concept_cd"/>    <!-- c_basecode -->
+                <xs:element name="name_char"/>     <!-- c_name -->
+                <xs:element name="synonym_cd"/>    <!-- c_synonym_cd -->
+                <xs:element name="visual_cd"/>     <!-- c_visualattributes -->
+                <xs:element name="metadata_xml"/>  <!-- c_metadataxml -->
+                <xs:element name="select_column"/> <!-- c_facttablecolumn -->
+                <xs:element name="from_table"/>    <!-- c_tablename -->
+                <xs:element name="where_column"/>  <!-- c_columnname -->
+                <xs:element name="operator_cd"/>   <!-- c_operator -->
+                <xs:element name="match_pattern"/> <!-- c_dimcode -->
+                <xs:element name="datatype_cd"/>   <!-- c_columndatatype -->
+                <xs:element name="comment"/>       <!-- c_comment -->
+                <xs:element name="tooltip"/>       <!-- c_tooltip -->
+                                                   <!-- c_totalnum -->
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+
+

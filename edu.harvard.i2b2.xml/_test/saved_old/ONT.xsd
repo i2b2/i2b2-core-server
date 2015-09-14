@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:annotation>
+        <xs:documentation><![CDATA[
+            Lookup by name (left, contains, right, exact), soundex, wildcards
+            Lookup by fullname and hlevel, go down a certain number of hlevels, + from to accommodate look-ahead
+            Lookup by code
+            Create new groups to use in queries (one level only)
+            Find parents by fullname
+            return standard code from base code
+            return base code from standard code
+            get available tables
+            Lookup modifiers
+            Lookup value constraints
+            
+DEFAULT        Options	
+(not)            get hiddens
+(not)            get blob
+(not)            get technical metadata, update_date…
+(not)            get db fields, sql stuff
+return all       return error if more than x are returned, return top so many
+(not)            include query in results, request in response
+(not)            sql that was actually used
+        ]]></xs:documentation>
+        <xs:documentation><![CDATA[
+            Lookup by name (left, contains, right, exact), soundex, wildcards
+            Lookup by fullname and hlevel, go down a certain number of hlevels, + from to accommodate look-ahead
+            Lookup by code     
+            Find parents by fullname          
+            return standard code from base code
+            return base code from standard code           
+            Lookup modifiers
+            Lookup value constraints
+            
+            get available tables
+            
+            Create new groups to use in queries (one level only)
+
+            
+DEFAULT        Options
+(not)            get blob
+(not)            get technical metadata, update_date…
+(not)            get db fields, sql stuff
+
+(not)            get hiddens
+return all       return error if more than x are returned, return top so many
+(not)            include query in results, request in response
+(not)            sql that was actually used
+        ]]></xs:documentation>
+    </xs:annotation>
+    <!-- THIS IS A LOOKUP SERVICE -->
+    
+
+
+    
+</xs:schema>

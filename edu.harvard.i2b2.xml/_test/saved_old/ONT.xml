@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ont:root xmlns:ont="http://i2b2.mgh.harvard.edu/querytool"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/querytool ./ONT.xsd">
+
+    <!-- get available tables : is this really an ontology cell query?  or is it something about authentication -->
+    <request>
+        <return>
+            <metadata_table/>
+        </return>
+        <search>
+            <user/>
+        </search>
+    </request>
+
+    <!-- create new group to use in query -->
+    <request>
+        <return>
+            <fullname/>
+            <!-- the fullname of the new group -->
+        </return>
+        <create>
+            <group name="asthma_and_diabetes">
+                <fullname/>
+                <fullname/>
+                <fullname/>
+            </group>
+        </create>
+    </request>
+
+    <!-- options -->
+    <request>
+        <return target="parents|(self)|siblings|children" hidden="true|(false)" echo="true|(false)"
+            sql="true|(false)" synonym="true|(false)">
+            <hlevel/>
+            <fullname/>
+            <name_char/>
+            <synonym_cd/>
+            <visualattribute_cd/>
+            <base_cd/>
+            <metadata_xml/>
+            <facttablecolumn/>
+            <tablename/>
+            <columnname/>
+            <operator/>
+            <dimcode/>
+            <columndatatype/>
+            <comment/>
+            <tooltip/>
+            <update_date/>
+            <download_date/>
+            <import_date/>
+            <sourcesystem_cd/>
+            <valuetype_cd/>
+            <!-- special metadata -->
+            <standard_cd scheme_cd=""/>
+            <modifier_cd/>
+            <value_constraint/>
+        </return>
+        <search>
+            <!-- match name -->
+            <name_char>
+                <match_str strategy="exact">aerobid</match_str>
+            </name_char>
+        </search>
+        <search>
+            <!-- match fullname and hlevel -->
+            <fullname>
+                <match_str strategy="left">\i2b2\diagnoses</match_str>
+            </fullname>
+            <hlevel>
+                <match_int strategy="equal">3</match_int>
+            </hlevel>
+        </search>
+        <!-- match code -->
+        <search>
+            <concept_cd>
+                <match_str strategy="exact">i2b2:asthma</match_str>
+            </concept_cd>
+        </search>
+        <!-- search by fullname (return parents) -->
+        <search>
+            <fullname>
+                <match_str strategy="exact">\i2b2\diagnoses\asthma</match_str>
+            </fullname>
+        </search>
+        <!-- search for basecode (return standard code) -->
+        <search>
+            <base_cd>
+                <match_str strategy="exact">i2b2:asthma</match_str>
+            </base_cd>
+        </search>
+        <!-- search for standard code (return basecode) -->
+        <search>
+            <standard_cd>
+                <match_str strategy="exact">asthma</match_str>
+            </standard_cd>
+            <scheme_cd>
+                <match_str strategy="exact">i2b2</match_str>
+            </scheme_cd>
+        </search>
+    </request>
+
+
+    <response>
+        <metadata>
+
+        </metadata>
+    </response>
+
+
+
+</ont:root>

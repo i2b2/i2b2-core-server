@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:element name="class" type="allTerms_Type"/>
+    
+    <!-- allTermsType (Top level type) -->			
+    <xs:complexType name="allTerms_Type"> 
+        <xs:sequence>
+            <xs:element name="page" type="xs:int"/>	
+            <xs:element name="pageCount" type="xs:int"/>   
+            <xs:element name="prevPage" type="xs:int"/>
+            <xs:element name="nextPage" type="xs:int"/>
+            <xs:element name="links" type="pageLinksType"/>
+           	<xs:element name="collection" type="collectionType"/>
+        </xs:sequence>
+    </xs:complexType>            
+            
+   
+    <xs:complexType name="pageLinksType">  
+		<xs:sequence>
+			<xs:element name="nextPage" type="xs:string"/>
+			<xs:element name="prevPages" type="xs:string"/>
+        </xs:sequence>
+   </xs:complexType>
+   
+   
+   <xs:complexType name="collectionType">  
+   		<xs:sequence>
+			<xs:element name="class" maxOccurs="unbounded" type="classType"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+ 	<xs:complexType name="classType">  
+		<xs:sequence>
+			<xs:element name="properties" type="propertiesType"/>
+			<xs:element name="id" type="xs:string"/>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="synonymCollection" type="synonymCollectionType"/>
+			<xs:element name="childrenCollection" type="childrenCollectionType"/>
+			<xs:element name="linksCollection" type="linksCollectionType"/>	
+    	 </xs:sequence>
+   </xs:complexType>   
+    		
+    
+  <xs:complexType name="propertiesType">  
+		<xs:sequence>
+			<xs:element name="prefLabelCollection" type="prefLabelCollectionType"/>
+			<xs:element name="tuiCollection" type="tuiCollectionType"/>
+			<xs:element name="cuiCollection" type="cuiCollectionType"/>
+			<xs:element name="notationCollection" type="notationCollectionType"/>
+			<xs:element name="subClassOfCollection" type="subClassOfCollectionType"/>
+			<xs:element name="typeCollection" type="typeCollectionType"/>
+			<xs:element name="hasSTYCollection" type="hasSTYCollectionType"/>
+      </xs:sequence>
+   </xs:complexType>
+   
+      <xs:complexType name="prefLabelCollectionType">  
+   		<xs:sequence>
+			<xs:element name="prefLabel" maxOccurs="unbounded" type="xs:string"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+    <xs:complexType name="tuiCollectionType">  
+   		<xs:sequence>
+			<xs:element name="tui" maxOccurs="unbounded" type="xs:string"/>
+   		</xs:sequence>
+   </xs:complexType>
+      
+       <xs:complexType name="cuiCollectionType">  
+   		<xs:sequence>
+			<xs:element name="cui" maxOccurs="unbounded" type="xs:string"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+    <xs:complexType name="notationCollectionType">  
+   		<xs:sequence>
+			<xs:element name="notation" maxOccurs="unbounded" type="xs:string"/>
+   		</xs:sequence>
+   </xs:complexType>
+      
+      <xs:complexType name="subClassOfCollectionType">  
+   		<xs:sequence>
+			<xs:element name="subClassOf" maxOccurs="unbounded" type="xs:string"/>
+   		</xs:sequence>
+   </xs:complexType>
+      
+       <xs:complexType name="typeCollectionType">  
+   		<xs:sequence>
+			<xs:element name="type" maxOccurs="unbounded" type="xs:string"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+    <xs:complexType name="hasSTYCollectionType">  
+   		<xs:sequence>
+			<xs:element name="hasSTY" maxOccurs="unbounded" type="xs:string"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+    <xs:complexType name="synonymCollectionType">  
+   		<xs:sequence>
+			<xs:element name="synonym" maxOccurs="unbounded" type="xs:string"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+       <xs:complexType name="childrenCollectionType">  
+   		<xs:sequence>
+			<xs:element name="children" maxOccurs="unbounded" type="childrenType"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="childrenType">  
+   		<xs:sequence>
+			<xs:element name="synonymCollection" type="synonymCollectionType"/>
+			<xs:element name="id" type="xs:string"/>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="linksCollection" type="linksCollectionType"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+    <xs:complexType name="linksCollectionType">  
+   		<xs:sequence>
+			<xs:element name="links" maxOccurs="unbounded" type="linksType"/>
+   		</xs:sequence>
+   </xs:complexType>
+      
+   <xs:complexType name="linkType">
+        <xs:attribute name="href" type="xs:string"/>
+        <xs:attribute name="rel" type="xs:string"/>
+    </xs:complexType> 
+     
+       <xs:complexType name="linksType">  
+   		<xs:sequence>
+			<xs:element name="self" type="linkType"/>
+			<xs:element name="ontology" type="linkType"/>
+			<xs:element name="children" type="linkType"/>
+			<xs:element name="parents" type="linkType"/>
+			<xs:element name="descendants" type="linkType"/>
+			<xs:element name="ancestors" type="linkType"/>
+			<xs:element name="tree" type="linkType"/>
+			<xs:element name="notes" type="linkType"/>
+			<xs:element name="mappings" type="linkType"/>
+			<xs:element name="ui" type="linkType"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+</xs:schema>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:crc="http://www.i2b2.org/xsd/cell/crc/pdo/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/pdo/">
+
+    <xs:include schemaLocation="./CRC_PSM_OBJ.xsd"/>
+    <xs:import schemaLocation="../../../hive/pdo/i2b2_PDO.xsd"
+        namespace="http://www.i2b2.org/xsd/hive/pdo/"/>
+
+    <xs:element name="pdoresponse" type="crc:patient_data_responseType"/>
+
+    <xs:complexType name="patient_data_responseType">
+        <xs:sequence>
+            <xs:element ref="pdo:patient_data"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!--
+    <xs:element name="response" type="crc:responseType"/>
+
+    <xs:complexType name="responseType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>responseType is abstract so a concrete type must be declared in the
+                instance document using the xsi:type attribute.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence/>
+    </xs:complexType>
+
+    <xs:complexType name="patient_data_responseType">
+        <xs:complexContent>
+            <xs:extension base="crc:responseType">
+                <xs:sequence>
+                    <xs:element ref="pdo:patient_data"/>
+                </xs:sequence>
+            </xs:extension>
+                </xs:complexContent>
+    </xs:complexType>
+-->
+</xs:schema>

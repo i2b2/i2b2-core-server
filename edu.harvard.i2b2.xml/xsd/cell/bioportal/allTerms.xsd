@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:element name="success" type="allTerms_Type"/>
+    
+    <!-- allTermsType (Top level type) -->			
+    <xs:complexType name="allTerms_Type"> 
+        <xs:sequence>
+            <xs:element name="accessedResource" type="xs:string"/>	
+            <xs:element name="accessDate" type="xs:dateTime" />   
+            <xs:element name="data" type="dataType" />
+        </xs:sequence>
+    </xs:complexType>            
+            
+    <xs:complexType name="dataType">  
+		<xs:sequence>    
+			<xs:element name="classBean" type="classBeanType"/>
+			<xs:element name="page" type="pageType"/>
+        </xs:sequence>
+   </xs:complexType>   
+   
+    <xs:complexType name="pageType">  
+		<xs:sequence>
+			<xs:element name="pageNum" type="xs:int"/>
+			<xs:element name="numPages" type="xs:int"/>
+			<xs:element name="pageSize" type="xs:int"/>
+            <xs:element name="numResultsPage" type="xs:int"/>
+            <xs:element name="numResultsTotal" type="xs:int"/>	                
+            <xs:element name="contents" type="contentsType"/>	
+        </xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="contentsType">  
+		<xs:sequence>
+			<xs:element name="classBeanResultList" type="classBeanResultListType"/>	
+        </xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="classBeanResultListType">  
+   		<xs:sequence>
+			<xs:element name="classBean" maxOccurs="unbounded" type="classBeanType"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+ 	<xs:complexType name="classBeanType">  
+		<xs:sequence>
+			<xs:element name="id" type="xs:string"/>	
+        	<xs:element name="fullId" type="xs:string" /> 
+			<xs:element name="label" type="xs:string"/>	
+        	<xs:element name="type" type="xs:string" />
+        	<xs:element name="synonyms">
+                  <xs:complexType>
+                	<xs:sequence>
+						<xs:element name="string" maxOccurs="unbounded" type="xs:string"/>
+					 </xs:sequence>
+    			  </xs:complexType>   
+    		</xs:element>
+ 			<xs:element name="relations">
+                  <xs:complexType>
+                	<xs:sequence>
+						<xs:element name="entry" maxOccurs="unbounded" type="entryType"/>
+					 </xs:sequence>
+    			  </xs:complexType>   
+    		</xs:element>
+    	 </xs:sequence>
+   </xs:complexType>   
+    		
+    
+  <xs:complexType name="entryType">  
+		<xs:sequence>
+			<xs:element name="string" type="xs:string" />
+			<xs:element name="int" type="xs:int" />
+			<xs:element name="list" type="listType"/>
+      </xs:sequence>
+   </xs:complexType>
+   
+     <xs:complexType name="listType">  
+		<xs:sequence>
+			<xs:element name="classBean" maxOccurs="unbounded" type="classBeanType"/>
+   			<xs:element name="string" maxOccurs="unbounded" type="xs:string" />
+   		</xs:sequence>
+   </xs:complexType>
+                      
+      
+</xs:schema>

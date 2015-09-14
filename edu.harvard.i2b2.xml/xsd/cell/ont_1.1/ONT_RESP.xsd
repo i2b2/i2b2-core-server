@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ont/1.1/">
+
+    <xs:element name="concepts" type="ont:conceptsType"/>      
+    <xs:element name="add_child" type="ont:conceptType"/>
+    <xs:element name="modify_child" type="ont:modifyChildType"/>
+    <xs:element name="ontology_process_status" type="ont:ontologyProcessStatusType"/>
+    <xs:element name="ontology_process_status_list" type="ont:ontologyProcessStatusListType"/>
+     <xs:element name="dirty_state" type="ont:dirtyValueType"/>
+     <xs:element name="modifiers" type="ont:modifiersType"/>    
+     <xs:element name="add_modifier" type="ont:modifierType"/>  
+    
+    <xs:complexType name="conceptsType">
+        <xs:sequence>
+            <xs:element name="concept" type="ont:conceptType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    
+    <xs:complexType name="conceptType">
+        <xs:sequence>
+            <xs:element name="level" type="xs:int" />
+            <xs:element name="key" type="xs:string" />
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="synonym_cd" type="xs:string" />
+            <xs:element name="visualattributes" type="xs:string" />
+            <xs:element name="totalnum" nillable="true" type="xs:int" />
+            <xs:element name="basecode" type="xs:string" />
+            <xs:element name="metadataxml" type="ont:xml_valueType" /> 
+            <xs:element name="facttablecolumn" type="xs:string" />
+            <xs:element name="tablename" type="xs:string" />
+            <xs:element name="columnname" type="xs:string" />
+            <xs:element name="columndatatype" type="xs:string" />
+            <xs:element name="operator" type="xs:string" />
+            <xs:element name="dimcode" type="xs:string" />
+            <xs:element name="comment" type="xs:string" />
+            <xs:element name="tooltip" type="xs:string" />
+            <xs:element name="update_date" type="xs:dateTime" />
+            <xs:element name="download_date" type="xs:dateTime" />
+            <xs:element name="import_date" type="xs:dateTime" />
+            <xs:element name="sourcesystem_cd" type="xs:string" />
+            <xs:element name="valuetype_cd" type="xs:string" />
+             <xs:element name="modifier" type="ont:modifierType" />
+             <xs:element name="domain_name" type="xs:string" />
+            <xs:element name="on_parent" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    
+     <xs:complexType name="ontologyProcessStatusListType">
+        <xs:sequence>
+            <xs:element name="ontology_process_status" type="ont:ontologyProcessStatusType" maxOccurs="unbounded"/>
+        </xs:sequence>
+     </xs:complexType>
+    
+    <xs:complexType name="ontologyProcessStatusType">
+        <xs:sequence>
+        <xs:element name="process_id" type="xs:string" />
+        <xs:element name="process_type_cd" type="xs:string" />
+        <xs:element name="process_step_cd" type="xs:string" />
+        <xs:element name="start_date" type="xs:dateTime" />
+        <xs:element name="end_date" type="xs:dateTime" />
+        <xs:element name="process_status_cd" type="xs:string" />
+        <xs:element name="crc_upload_id" type="xs:string" />
+        <xs:element name="message" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+ 
+    <xs:complexType name="xml_valueType" mixed="false">
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any" processContents="skip"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+     <xs:complexType name="modifyChildType">
+        <xs:sequence>
+            <xs:element name="self" type="ont:conceptType"/>
+        </xs:sequence>
+         <xs:attribute name="inclSynonyms" type="xs:boolean" default="true"/>
+    </xs:complexType>
+    
+     <xs:simpleType name="dirtyValueType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ADD"/>
+             <xs:enumeration value="DELETE_EDIT"/>
+            <xs:enumeration value="NONE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="modifiersType">
+        <xs:sequence>
+            <xs:element name="modifier" type="ont:modifierType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    
+    <xs:complexType name="modifierType">
+        <xs:sequence>
+            <xs:element name="level" type="xs:int" />
+            <xs:element name="applied_path" type="xs:string" />
+            <xs:element name="key" type="xs:string" />
+            <xs:element name="fullname" type="xs:string" />
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="visualattributes" type="xs:string" />
+            <xs:element name="synonym_cd" type="xs:string" />
+            <xs:element name="totalnum" nillable="true" type="xs:int" />
+            <xs:element name="basecode" type="xs:string" />
+            <xs:element name="metadataxml" type="ont:xml_valueType" /> 
+            <xs:element name="facttablecolumn" type="xs:string" />
+            <xs:element name="tablename" type="xs:string" />
+            <xs:element name="columnname" type="xs:string" />
+            <xs:element name="columndatatype" type="xs:string" />
+            <xs:element name="operator" type="xs:string" />
+            <xs:element name="dimcode" type="xs:string" />
+            <xs:element name="comment" type="xs:string" />
+            <xs:element name="tooltip" type="xs:string" />
+            <xs:element name="update_date" type="xs:dateTime" />
+            <xs:element name="download_date" type="xs:dateTime" />
+            <xs:element name="import_date" type="xs:dateTime" />
+            <xs:element name="sourcesystem_cd" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    
+    
+</xs:schema>

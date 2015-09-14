@@ -1,0 +1,31 @@
+#help-viewer-body {
+	color: #333;
+	background-color: #FFF;
+}
+#help-viewer-body h1 {
+	color: #4E5B82;
+	font-size:18px;
+	font-weight:bold;
+	padding:0;
+	margin:0;
+}
+#help-viewer-body h2 {
+	color: #4E5B82;
+	font-size:15px;
+	font-weight:bold;
+	padding:0;
+	margin:15px 0 10px 0;
+}
+#help-viewer-body h3 {
+	font-size:12px;
+	font-weight:bold;
+	padding:0;
+	margin:15px 0 10px 0;
+}
+#help-viewer-body a {
+	color: #4E5B82;
+}
+#help-viewer-body .view {
+	color: #4E5B82;
+	font-weight:bold;
+}

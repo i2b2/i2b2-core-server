@@ -1,0 +1,113 @@
+<project name="common" default=".donotrun">        
+    
+    <target name=".donotrun">
+        <fail>The common-build file is meant for including, not running</fail>
+    </target>
+    
+    <property file="local.properties"/>
+    <property file="build.properties"/>
+    
+    <property name="www"        value="www"/>
+    <property name="src"        value="src"/>
+    <property name="gensrc"     value="gensrc"/>
+    <property name="cpysrc"     value="cpysrc"/>
+    <property name="lib"        value="lib"/>     
+    <property name="genlib"     value="genlib"/>
+    <property name="test"       value="test"/>
+	<property name="report"       value="report"/>
+    
+    <property name="etc"        value="etc"/>
+    <property name="sql"        value="sql"/>     
+    <property name="classes"    value="classes"/>
+    <property name="dist"       value="dist"/>
+	
+	<property name="i2b2CommonProject"    value="edu.harvard.i2b2.server-common" />
+	<property name="i2b2xmlproject"       value="edu.harvard.i2b2.xml"/>
+	
+    
+    <!-- OTHER SETTINGS -->
+	<property name="javac.debug" value="off" />
+	<property name="javac.opt" value="true" />
+    <property name="jboss.version" value="4.0" />
+    <property name="ejbspec" value="2.0" />
+    
+    
+    
+    <available file="../local.properties" property="local.properties.available"/>
+    
+    <!-- PROPERTIES -->	
+    <target name="common_properties" if="local.properties.available">
+        <echo message="Loading local properties file"/>
+        <property file="../local.properties"/>
+    </target>	
+    
+    <!-- INITIALIZE THE DISTRIBUTION DIRECTORY -->
+    <target name="common_init"  description="Internal initialize the environment">
+        <mkdir dir="${src}"/>
+        <mkdir dir="${lib}"/>
+    	<mkdir dir="${report}"/>
+        <mkdir dir="${genlib}"/>
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${gensrc}"/>
+    	<mkdir dir="${classes}"/>
+    </target>
+    
+    
+    
+    <!-- STANDARD BUILD DIRECTORIES WHICH SHOULD GET CLEANED WHEN ASKED -->
+    <target name="common_clean" depends="common_init" description="Internal clean all build products">
+        <echo message="Cleaning non-source directories in ${basedir}"/>
+        <delete dir="${classes}"/>
+        <delete dir="${test.classes}"/>
+        <delete dir="${dist}"/> 
+        <delete dir="${gensrc}"/>   
+        <delete dir="${genlib}"/>
+        <delete dir="${todo}"/>
+    </target>
+    
+    
+    <target name="common-classpath"> 
+    	<path id="common-classpath">
+    				<fileset dir="../${i2b2CommonProject}/${lib}">
+    					<include name="**/*.jar" />
+    				</fileset>
+    					<fileset dir="${genlib}">
+	    					<include name="*.jar" />
+    					</fileset>
+    				<pathelement location="${classes}" />
+    			</path>
+	</target>
+    
+	
+
+	<!-- Copy dependent libraries from a single dependent project -->
+	    <macrodef name="copy_genlibs">
+	       <attribute name="module"/>
+	       <sequential>
+	          <copy todir="../${Project}/${genlib}">
+	       	      <fileset dir="../@{module}/${dist}">
+			         <include name="*.jar"/>
+	              </fileset>
+	       	      <fileset dir="../@{module}/${genlib}">
+			         <include name="*.jar"/>
+		    	  </fileset>
+	          </copy>
+	       </sequential>
+	    </macrodef>
+
+    <!-- Copy core src code from a single dependent project -->
+    <macrodef name="copy_core_src">
+        <attribute name="module"/>
+        <sequential>
+            <mkdir dir="../${Project}/${cpysrc}"/>
+            <copy todir="../${Project}/${cpysrc}">
+                <fileset dir="../@{module}/src/core">
+                    <include name="**/*.java"/>
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
+    
+    
+    
+</project>

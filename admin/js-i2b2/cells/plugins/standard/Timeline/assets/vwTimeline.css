@@ -1,0 +1,362 @@
+/*** CSS for main plugin wrapper ***/
+
+DIV#Timeline-mainDiv {
+	padding: 0px;
+}
+
+
+#Timeline-InfoPanel .bd { 
+	    overflow:auto; 
+} 
+
+#Timeline-InfoPanel pre {
+white-space: pre-wrap; /* css-3 */
+white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+white-space: -pre-wrap; /* Opera 4-6 */
+white-space: -o-pre-wrap; /* Opera 7 */
+word-wrap: break-word; /* Internet Explorer 5.5+ */
+font:11px arial, tahoma, helvetica, sans-serif; /* font style was lost when the column text was surrounded by pre tag- so overriding */
+}
+
+/*** CSS for tab background ***/
+
+DIV#Timeline-TABS DIV.yui-content {
+	background: #FFF;
+}
+DIV#Timeline-TABS DIV.Timeline-MainContent {
+    background:#FFF;
+    border:solid #63758C;
+    border-width:1px 0;
+    overflow:auto;
+	width:100%;
+    height:100%;
+	position:relative;
+}
+DIV#Timeline-TABS DIV.Timeline-MainContentPad {
+    padding:10px 10px;
+}
+
+
+
+/*** CSS for the Specify Data tab ***/
+
+DIV#Timeline-mainDiv DIV.droptrgtlbl {
+	padding: 6px 0px;
+	width:80px;
+	text-align:right;
+	float: left;
+	font-weight:bold;
+	color:#666;
+	margin: 15px 10px 0px 0px;
+}
+DIV#Timeline-mainDiv DIV.droptrgt {
+	padding: 0;
+	background: #DEEBEF;
+	margin-top: 15px;
+	text-align:left;
+	border: 1px solid #63758C;
+	overflow:hidden;
+	white-space:nowrap;
+	width:320px;
+}
+DIV#Timeline-mainDiv #Timeline-PRSDROP {
+	padding: 5px 10px;
+	overflow:hidden;
+	white-space:nowrap;
+	width:300px;
+}
+DIV#Timeline-mainDiv DIV.droptrgt .concptItem {
+	padding: 5px 10px;
+	overflow:hidden;
+	white-space:nowrap;
+	display:block;
+	color:#000;
+	text-decoration:none;
+}
+DIV#Timeline-mainDiv DIV.droptrgt .concptItem:hover {
+	background-color:#FCC;
+}
+DIV#Timeline-mainDiv DIV.droptrgt .concptDiv {
+	height:1px;
+	overflow:hidden;
+	background-color:#63758C;
+}
+DIV#Timeline-mainDiv #Timeline-DeleteMsg {
+	font-size:11px;
+	margin: 2px 0 0 90px;
+	display:none;
+}
+
+
+DIV#Timeline-mainDiv DIV.outputOptionsLbl {
+	padding: 6px 0px;
+	width:80px;
+	text-align:right;
+	float: left;
+	font-weight:bold;
+	color:#666;
+	margin: 15px 10px 0px 0px;
+}
+DIV#Timeline-mainDiv DIV.outputOptions {
+	padding: 5px 10px;
+	margin-top: 15px;
+	text-align:center;
+	border: 1px solid #63758C;
+	width:300px;
+	overflow:hidden; 
+}
+DIV#Timeline-mainDiv DIV.outputOptions form {
+	margin:0;
+	padding:0;
+}
+DIV#Timeline-mainDiv DIV.outputOptions span {
+	margin-right: 15px;
+}
+
+
+
+/*** CSS for the View Results tab ***/
+
+DIV#Timeline-TABS DIV.results-directions {
+	padding: 10px;
+	text-align:left;
+}
+DIV#Timeline-TABS DIV.results-working {
+	margin:10px;
+	text-align:left;
+}
+DIV#Timeline-TABS DIV.results-finished {
+	width:100%;
+	height:100%;
+	overflow:hidden;
+}
+DIV#Timeline-TABS DIV.results-progress {
+	padding:5px 25px;
+	line-height:12px;
+	position:absolute;
+	top:0;
+	left:0;
+}
+DIV#Timeline-TABS DIV.results-progressIcon {
+	background-image:url(Timeline-loading.gif);
+	background-repeat:no-repeat;
+	width:16px;
+	height:20px;
+	position:absolute;
+	top:0;
+	left:5px;
+}
+
+
+DIV#Timeline-TABS DIV.results-header {
+	height:23px;
+	font-size:12px;
+	border-bottom:1px solid #808080;
+	xbackground: #CEDBEF;
+	background: #DBE8EF;
+	padding-top:2px;
+}
+DIV#Timeline-TABS DIV.results-header form {
+	padding:0;
+	margin:0;
+}
+DIV#Timeline-TABS DIV.results-header TABLE {
+	padding:0;
+	margin:0;
+}
+DIV#Timeline-TABS DIV.results-header TD {
+	vertical-align:center;
+	font-size:12px;
+	padding:0px 2px;
+}
+DIV#Timeline-TABS .results-header-btn {
+	width:40px;
+}
+DIV#Timeline-TABS .results-header-zbtn {
+	width:20px;
+}
+
+
+DIV#Timeline-TABS DIV.results-scale {
+	height:15px;
+	font-size:10px;
+	border-top: 1px solid #FFFFFF;
+	border-bottom: 1px solid #667788;
+	background: #DBE8EF;
+	padding: 0px 36px 0px 5px;
+}
+DIV#Timeline-TABS DIV.results-scaleLbl {
+	margin:0 5px;
+	padding:0 2px;
+	background: #DBE8EF;
+	display:inline;
+}
+
+
+DIV#Timeline-TABS DIV.results-timelineBox {
+	width:100%;
+	height:100px;
+	overflow:hidden;
+}
+DIV#Timeline-TABS DIV.results-timeline {
+	position:relative;
+	width:100%;
+	height:100%;
+	overflow-y:scroll;
+	overflow-x:hidden;
+}
+DIV#Timeline-TABS DIV.results-finished DIV.ptBox {
+	position:relative;
+	border: 1px solid #FFFFFF;
+	border-bottom: 1px solid #667788;
+	padding: 1px 20px 1px 5px;
+	display: block;
+	background: #DBE8EF;
+	xwidth:90%;
+	xoverflow:hidden;
+}
+DIV#Timeline-TABS DIV.results-finished DIV.ptName {
+	font-size:11px;
+	font-weight:bold;
+	white-space:nowrap;
+}
+DIV#Timeline-TABS DIV.results-finished TABLE.ptData {
+	position:relative;
+	margin:0;
+	padding:0;
+	border-collapse:collapse;
+	width:100%;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptPanel {
+	font-size:10px;
+	line-height:12px;
+	width:100px;
+	height:12px;
+	overflow:hidden;
+	white-space:nowrap;
+	position:relative;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptObsTD {
+	padding:0;
+	margin:0;
+	position:relative;
+	height:12px;
+	overflow:hidden;
+	line-height:12px;
+	vertical-align:top;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptObsTD DIV.spacer {
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptObsTD DIV.ptObsDIV {
+	position:relative;
+	top:-1px;
+	left:5px;
+	height:13px;
+	overflow:hidden;
+	width:100%;
+	vertical-align: top;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptObsTD DIV.ptObs {
+	position:absolute;
+	height:13px;
+	overflow:hidden;
+	width:100%;
+	left:0;
+	top:0;
+	font-size:10px;
+	line-height:13px;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptObsTD DIV.ptObsZoom {
+	position:relative;
+	height:13px;
+	overflow:hidden;
+	width:100%;
+	left:0;
+	top:0;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptObsTD .ptOb {
+	position:absolute;
+	top:2px;
+	left:0px;
+	xborder-right:2px solid #67A;
+	height:10px;
+	overflow:hidden;
+	display:block;
+	background:#67A;
+	width:2px;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptObsTD .ptOb:hover {
+	background:#F00;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptObsTD .ptOb2 {
+	position:absolute;
+	top:6px;
+	left:0px;
+	height:3px;
+	overflow:hidden;
+	display:block;
+	background:#67A;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptObsTD DIV.ptObsBack {
+	position:absolute;
+	top:2px;
+	left:0px;
+	height:7px;
+	overflow:hidden;
+	background-color:#FFF;
+	width:100%;
+	display:none;
+}
+DIV#Timeline-TABS DIV.results-finished TD.ptObsTD DIV.ptObsLine {
+	position:absolute;
+	top:0px;
+	left:0px;
+	border-bottom:1px solid #CCC;
+	height:7px;
+	overflow:hidden;
+	width:100%;
+}
+DIV#Timeline-TABS DIV.results-finished .zoomKey {
+	position:relative;
+	margin:2px 0 0 0;
+	padding:0;
+	overflow:hidden;
+	background:#BCE;
+	border: 1px solid #67A;
+	height:6px;
+	width:90px;
+}
+DIV#Timeline-TABS DIV.results-finished .zoomKeyRange {
+	position:relative;
+	margin:0;
+	padding:0;
+	top:0;
+	left:0;
+	overflow:hidden;
+	background:#FF9;
+	height:6px;
+	width:90px;
+}
+
+
+
+/*** CSS for the Plugin Help tab ***/
+
+DIV#Timeline-TABS H1 {
+	margin:0 0 10px 0;
+	font-size:16px;
+	color:#42558C;
+	font-weight:bold;
+}
+DIV#Timeline-TABS H2 {
+	margin:10px 0 10px 0;
+	font-size:13px;
+	color:#42558C;
+	font-weight:bold;
+}
+DIV#Timeline-TABS HR {
+	margin:0;
+}

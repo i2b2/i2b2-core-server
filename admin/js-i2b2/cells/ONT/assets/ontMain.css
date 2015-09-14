@@ -1,0 +1,196 @@
+DIV#ontMainBox {
+	position:absolute;
+	left: 15px;
+}
+
+DIV#ontMainBox DIV.tabBox {}
+DIV#ontMainBox DIV.tabBox > DIV {}
+
+DIV#ontMainBox DIV.tabBox.active {}
+DIV#ontMainBox DIV.tabBox.active > DIV {}
+
+DIV#ontMainBox DIV#ontMainDisp {
+	background:#BBCCEE none repeat scroll 0%;
+	border:1px solid #667788;
+	width:auto;
+	float:left;
+	height:100%;
+	padding: 5px;
+	white-space:nowrap;
+	overflow:hidden;
+	position:relative;
+	top:-1px;
+	clear: both;
+}
+
+
+
+DIV#modifier-viewer-body DIV.Modifier-MainContent {
+    background:#FFF;
+    border:solid #63758C;
+    border-width:1px 0;
+    overflow:auto;
+    height:100%;
+}
+
+
+DIV#ontMainBox .findSubTab, 
+DIV#ontMainBox .findSubTabSelected {
+	font-family:arial,helvetica;
+	font-size:11px;
+	color: #000000;
+	text-decoration: none;
+	text-align: center;
+	background: #CBD8EF none repeat scroll 0%;
+	border: 1px solid #667788;
+	overflow: hidden;
+	margin-right:2px;
+	padding:2px 5px 2px 5px;
+	cursor:pointer;
+	position: relative;
+	top:6px;
+	width:90px;
+}
+DIV#ontMainBox .findSubTabSelected {
+	background: #DBE8EF;
+	border-bottom-style:none;
+	z-index:10;
+}
+DIV#ontMainBox .findSubTab:hover {
+	background: #DBE8EF;	
+}
+DIV#ontMainBox DIV.findSubFrame {
+	position: relative;
+	top: 6px;
+	border: 1px solid #667788;
+	background: #DBE8EF;
+	padding: 2px 5px 2px 5px;
+}
+
+
+
+#searchNamesForm,
+#searchModifiersForm, 
+#searchCodesForm {
+	width:auto;
+	height:80px;
+	border-bottom:1px solid #445588;
+	overflow:hidden;
+}
+#ontSearchNamesResults,
+#ontSearchModifiersResults,  
+#ontSearchCodesResults {
+	margin-top: 5px;
+	width:auto;
+	background-color:#FFF;
+	overflow:auto;
+	border:1px solid #667788;
+}
+#ontFindNameButtonWorking {
+	float:left;
+	width:70px;
+	height:16px;
+	position:relative;
+}
+
+#ontFindModiferButtonWorking {
+	padding-left: 10px;
+}
+
+
+
+.ontFindButton {
+	position:relative;
+	top:0px;
+	left:0px;
+	background:#6677AA;
+	border:1px solid #667788;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-family:arial,helvetica;
+	font-size:11px;
+	height:16px;
+	line-height:16px;
+	text-align:center;
+	width:45px;
+	color:#FFF;
+	cursor:pointer;
+	float:left;
+	margin-right:10px;
+}
+.ontFindButton a {
+	color:#FFF;
+	display:block;
+	text-decoration:none;
+}
+.ontFindButton a:hover {
+	background-color:#7687bf;
+}
+
+.ontModifierButton {
+	position:relative;
+	top:0px;
+	left:0px;
+	background:#6677AA;
+	border:1px solid #667788;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-family:arial,helvetica;
+	font-size:11px;
+	height:16px;
+	line-height:16px;
+	text-align:center;
+	width:75px;
+	color:#FFF;
+	cursor:pointer;
+	float:left;
+	margin-right:10px;
+}
+.ontModifierButton a {
+	color:#FFF;
+	display:block;
+	text-decoration:none;
+}
+.ontModifierButton a:hover {
+	background-color:#7687bf;
+}
+
+
+
+
+/* Ontology Navigate window */
+DIV#ontMainBox DIV#ontNavDisp {
+	width:auto;
+	background: #FFFFFF none repeat scroll 0%;
+	border: 1px solid #667788;
+	overflow: auto;
+	padding: 3px;
+	white-space: nowrap;
+}
+DIV#ontMainBox DIV#ontFormFindCode {
+	width:auto;
+	overflow: hidden;
+}
+
+DIV#ontMainBox DIV#ontBalloonBox {
+	position:relative;
+	top:-120px;
+	width:auto;
+	height:40px;
+	padding:37px 0px;
+	z-index:5;
+	display:none;
+}
+
+DIV#ontMainBox DIV#ontBalloon {
+	background:#FFFF99;
+	border:1px solid #667788;
+	width:70px;
+	height:40px;
+	color:#000000;
+	font-size:12px;
+	font-weight:bold;
+	text-align:center;
+	line-height:13px;
+}
+

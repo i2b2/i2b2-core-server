@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:hive="http://www.i2b2.org/xsd/hive/msg/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/hive/msg/1.1/">
+
+    <xs:include schemaLocation="./i2b2.xsd"/>
+
+    <xs:element name="request" type="hive:request_messageType"/>
+
+    <xs:complexType name="request_messageType" final="extension">
+        <xs:sequence>
+            <xs:element name="message_header" type="hive:message_headerType"/>
+            <xs:element name="request_header" type="hive:request_headerType"/>
+            <xs:element name="message_body" type="hive:bodyType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="request_headerType">
+        <xs:sequence>
+            <xs:element name="result_waittime_ms" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

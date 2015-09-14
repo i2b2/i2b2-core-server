@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i2b2:i2b2 xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/message ./i2b2.xsd">
+    <body>  
+        <identity:publish xmlns:identity="http://i2b2.mgh.harvard.edu/identity_management_cell" 
+            xsi:schemaLocation="http://i2b2.mgh.harvard.edu/identity_management_cell 
+            file:/Users/kristel/Documents/EclipseWorkspace/i2b2_xml/identity_publish.xsd">
+            <request>
+                
+                <master_record id="1000000" status="A">
+                    <local_record id="DUCKDEMO_1000" site="MGH" status="A">
+                        
+                        <string concept_cd="firstname">DONALD</string>
+                        <string concept_cd="middlename">F</string>
+                        <string concept_cd="lastname">DUCK</string>
+                        
+                        <date concept_cd="dateofbirth">1934-06-09</date>
+                        
+                        <string concept_cd="address">4 DISNEY CHARACTER LN</string>
+                        <string concept_cd="city">DUCKBURG</string>
+                        <string concept_cd="state">MA</string>
+                        <string concept_cd="zip">02114</string>
+                        
+                        <string concept_cd="insurance_coname">DUCKLAND HEALTHCARE</string>
+                        <string concept_cd="insurance_firstname">DONALD</string>
+                        <string concept_cd="insurance_lastname">DUCK</string>
+                        
+                        <string concept_cd="maritalstatus">S</string>
+                        <string concept_cd="mothersmaidenname">MCDUCK</string>
+                        <string concept_cd="languagecode">ENGL</string>
+                        <string concept_cd="race">W</string>
+                        <string concept_cd="gender">male</string>
+
+                        <string concept_cd="veteranstatus">Y</string>
+                        
+                    </local_record>
+                    <local_record id="DUCKDEMO_1001" site="BWH" status="A">
+                        
+                        <string concept_cd="firstname">PAPERINIK</string>
+                        <string concept_cd="lastname">DUCK</string>
+                        
+                        <date concept_cd="dateofbirth">1934-06-09</date>
+                        
+                    </local_record>
+                    
+                    
+                    
+                    
+                    
+                    
+                    <master_record id="1000000" status="A">
+                        <local_record id="1000000000" site="MGH" status="A">
+                            
+                            <string concept_cd="firstname">DONALD</string>
+                            <string concept_cd="middlename">F</string>
+                            <string concept_cd="lastname">DUCK</string>
+                            
+                            <date concept_cd="dateofbirth">1934-06-09</date>
+                            
+                            <string concept_cd="address">4 DISNEY CHARACTER LN</string>
+                            <string concept_cd="city">DUCKBURG</string>
+                            <string concept_cd="state">MA</string>
+                            <string concept_cd="zip">02114</string>
+                            
+                            <string concept_cd="insurance_coname">DUCKLAND HEALTHCARE</string>
+                            <string concept_cd="insurance_firstname">DONALD</string>
+                            <string concept_cd="insurance_lastname">DUCK</string>
+                            
+                            <string concept_cd="maritalstatus">S</string>
+                            <string concept_cd="mothersmaidenname">MCDUCK</string>
+                            <string concept_cd="languagecode">ENGL</string>
+                            <string concept_cd="race">W</string>
+                            <string concept_cd="gender">male</string>
+                            
+                            <string concept_cd="veteranstatus">Y</string>
+                            
+                        </local_record>
+                        <local_record id="1000000001" site="BWH" status="A">
+                            
+                            <string concept_cd="firstname">PAPERINIK</string>
+                            <string concept_cd="lastname">DUCK</string>
+                            
+                            <date concept_cd="dateofbirth">1934-06-09</date>
+                            
+                        </local_record>
+                </master_record>
+
+            </request>
+        </identity:publish> 
+    </body>
+</i2b2:i2b2>

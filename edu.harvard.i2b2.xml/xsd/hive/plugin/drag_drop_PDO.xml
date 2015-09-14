@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plug:plugin_drag_drop xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:plug="http://www.i2b2.org/xsd/hive/plugin/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/hive/plugin/ ./drag_drop.xsd
+                        http://www.i2b2.org/xsd/cell/crc/pdo/ ../../cell/crc/pdo/CRC_PDO_QRY.xsd">
+    <pdo:patient_data>
+        <observation_fact_set>
+            <observation_fact>
+                <encounter_num>0</encounter_num>
+                <patient_num>0</patient_num>
+                <concept_cd>SCHEME:note_code</concept_cd>
+                <provider_id></provider_id>
+                <start_date>2002-12-23T00:00:00</start_date>
+                <modifier_cd></modifier_cd>
+            </observation_fact>
+        </observation_fact_set>
+    </pdo:patient_data>
+</plug:plugin_drag_drop>

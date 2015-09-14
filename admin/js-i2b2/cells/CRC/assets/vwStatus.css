@@ -1,0 +1,44 @@
+DIV#crcStatusBox {
+        position: absolute;
+}
+
+DIV#crcStatusBox DIV.tabTextBox {
+}
+        
+DIV#crcStatusBox DIV.StatusBox {
+        background: #BBCCEE none repeat scroll 0%;
+        border: 1px solid #667788;
+        clear: both;
+        display: block;
+        overflow: hidden;
+        padding: 5px;
+        position: relative;
+        top: -1px;
+        height: auto;
+        width: auto;
+        z-index: 0;
+}
+
+DIV#crcStatusBox DIV.StatusBoxText {
+        background: #FFFFFF none repeat scroll 0%;
+        border: 1px solid #667788;
+        height: 144px;
+		width: auto;
+        overflow: hidden;
+        padding: 1px 5px;
+        overflow: auto;
+}
+
+DIV#crcStatusBox DIV.StatusBoxChart {
+        background: #FFFFFF none repeat scroll 0%;
+        border: 1px solid #667788;
+        height: 144px;
+	    width: auto;
+        overflow: hidden;
+        padding: 1px 5px;
+        overflow: auto;
+}
+
+DIV#crcStatusBox DIV.StatusBoxInnerGraph {
+        width: auto;
+}

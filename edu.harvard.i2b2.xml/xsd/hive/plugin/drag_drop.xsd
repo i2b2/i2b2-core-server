@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:plug="http://www.i2b2.org/xsd/hive/plugin/"
+    targetNamespace="http://www.i2b2.org/xsd/hive/plugin/">
+
+    <xs:element name="plugin_drag_drop" type="plug:dndType"/>
+
+    <xs:complexType name="dndType">
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="patient_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="patient" maxOccurs="unbounded" type="plug:patientType"/> 
+			</xs:sequence>
+			<xs:attribute name="patient_set_id" type="xs:string" use="optional"/>
+			<xs:attribute name="patient_set_name" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="patient_type" type="plug:patientType"/>
+	<xs:complexType name="patientType">
+		<xs:sequence>
+			<xs:element name="patient_id" type="xs:string" minOccurs="1"/>	
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

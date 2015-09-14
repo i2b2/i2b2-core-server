@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ont/">
+    
+    <xs:complexType name="vocab_metaType">
+        <xs:all>
+            <xs:element name="table_name" type="xs:string" minOccurs="0"/>
+            <xs:element name="table_size" type="xs:int" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    
+</xs:schema>
+
+

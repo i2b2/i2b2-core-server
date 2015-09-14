@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ad="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/">
+    
+     
+    
+    <xs:annotation>
+        <xs:documentation>this schema defines xml representation of a query definition</xs:documentation>
+    </xs:annotation>
+
+    <!-- query definition is made top level elment to marshall/unmarshall this element -->
+    <xs:element name="analysis_definition" type="ad:analysis_definitionType"/>
+    
+    
+    <xs:complexType name="analysis_definitionType">
+        <xs:sequence>
+            <xs:element name="analysis_plugin_name" type="xs:string"/>
+            <xs:element name="version" type="xs:string"/>
+            <xs:element name="crc_analysis_input_param" type="ad:crc_analysis_input_paramType"/>
+            <xs:element name="crc_analysis_result_list" type="ad:analysis_result_optionListType" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="crc_analysis_input_paramType">
+        <xs:sequence>
+            <xs:element name="param" type="ad:analysisParamType" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>    
+    
+    <xs:complexType name="analysisParamType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="column" type="xs:string"/>
+                <xs:attribute name="type" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    
+    <xs:complexType name="analysis_result_optionListType">
+        <xs:sequence>
+            <xs:element name="result_output" type="ad:analysis_result_optionType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="analysis_result_optionType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="priority_index" type="xs:int"/>
+        <xs:attribute name="display_type" type="xs:string"/>
+        <xs:attribute name="full_name" type="xs:string" />
+    </xs:complexType>
+    
+    
+
+ 
+</xs:schema>

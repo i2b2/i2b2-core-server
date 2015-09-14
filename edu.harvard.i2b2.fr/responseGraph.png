@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header /><soapenv:Body><ns4:response xmlns:tns="http://ws.fr.i2b2.harvard.edu" xmlns:ns3="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns2="http://www.i2b2.org/xsd/cell/fr/1.0/" xmlns:ns5="http://www.i2b2.org/xsd/cell/pm/1.1/">c2RmCnNkZnNkZnMKCmRzCmQKZAoK
+    <message_header>
+        <i2b2_version_compatible>1.1</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name>edu.harvard.i2b2.fr</application_name>
+            <application_version>1.0</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>i2b2_QueryTool</application_name>
+            <application_version>0.2</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </receiving_facility>
+        <message_control_id>
+            <instance_num>1</instance_num>
+        </message_control_id>
+        <project_id xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true" />
+    </message_header>
+    <response_header>
+        <info>Log information</info>
+        <result_status>
+            <status type="DONE">DONE</status>
+            <polling_url interval_ms="100" />
+        </result_status>
+    </response_header>
+    <message_body>
+        <ns2:recvfile_response>
+            <recvfile_response size="21" name="myfilename" hash="f04135e2bb40e3aeb7f87b5b1ba70ab1">
+                <desc>/tmp/myfilename</desc>
+            </recvfile_response>
+        </ns2:recvfile_response>
+    </message_body>
+</ns4:response></soapenv:Body></soapenv:Envelope>

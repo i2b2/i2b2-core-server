@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    targetNamespace="http://www.i2b2.org/xsd/hive/pdo/">
+
+
+    <xs:include schemaLocation="./i2b2_PDO_fields.xsd"/>
+
+    <xs:element name="patient_data" type="pdo:patient_dataType">
+        <xs:annotation>
+            <xs:documentation>The root element that holds data from the patient data
+            tables.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="patient_dataType">
+        <xs:annotation>
+            <xs:documentation>May contain any number of visit_dimension, concept_dimension,
+                provider_dimension, patient_dimension and observation_fact elements. They can occur
+                in any order.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="visit_dimension_set" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="visit_dimension" maxOccurs="unbounded"
+                            type="pdo:visit_dimensionType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="concept_dimension_set" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="concept_dimension" maxOccurs="unbounded"
+                            type="pdo:concept_dimensionType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="provider_dimension_set" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="provider_dimension" maxOccurs="unbounded"
+                            type="pdo:provider_dimensionType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="patient_dimension_set" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="patient_dimension" maxOccurs="unbounded"
+                            type="pdo:patient_dimensionType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="observation_fact_set" minOccurs="0" maxOccurs="unbounded">
+            
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="observation_fact" maxOccurs="unbounded"
+                            type="pdo:observation_factType"/>
+                    </xs:sequence>
+                     
+                    <xs:attribute name="path" type="xs:string" use="optional"/>
+                    <xs:attribute name="filter_name" type="xs:string" use="optional"/>
+                    <xs:attribute name="concept_name" type="xs:string" use="optional"/>
+                    <xs:attribute name="provider_id" type="xs:string" use="optional"/>
+                    <!--
+                    <xs:attributeGroup ref="pdo:conceptPathgroup"/>
+    		        <xs:attributeGroup ref="pdo:providerPathgroup"/>
+    		        -->
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="visit_dimensionType">
+        <xs:annotation>
+            <xs:documentation>One row of data from the visit_dimension table.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="pdo:encounter_idChoice"/>
+            <xs:group ref="pdo:patient_idChoice"/>
+            <xs:element name="inout_cd" type="pdo:InOut_CdType" minOccurs="0"/>
+            <xs:element name="location_cd" type="pdo:Location_CdType" minOccurs="0"/>
+            <xs:element name="location_path" type="pdo:Location_PathType" minOccurs="0"/>
+            <xs:element name="start_date" type="pdo:Start_DateType" minOccurs="0"/>
+            <xs:element name="end_date" type="pdo:End_DateType" minOccurs="0"/>
+            <xs:element name="visit_blob" type="pdo:Visit_BlobType" minOccurs="0"/>
+            <xs:group ref="pdo:annotationGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="concept_dimensionType">
+        <xs:annotation>
+            <xs:documentation>One row of data from the concept_dimension table.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="concept_path" type="pdo:Concept_PathType"/>
+            <xs:element name="concept_cd" type="pdo:Concept_CdType" minOccurs="0"/>
+            <xs:element name="name_char" type="pdo:Name_CharType" minOccurs="0"/>
+            <xs:element name="concept_blob" type="pdo:Concept_BlobType" minOccurs="0"/>
+            <xs:group ref="pdo:annotationGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="provider_dimensionType">
+        <xs:annotation>
+            <xs:documentation>One row of data from the provider_dimension table.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="provider_path" type="pdo:Provider_PathType"/>
+            <xs:element name="provider_id" type="pdo:Provider_IdType"/>
+            <xs:element name="name_char" type="pdo:Name_CharType" minOccurs="0"/>
+            <xs:element name="provider_blob" type="pdo:Provider_BlobType" minOccurs="0"/>
+            <xs:group ref="pdo:annotationGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="patient_dimensionType">
+        <xs:annotation>
+            <xs:documentation>One row of data from the patient_dimension table.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="pdo:patient_idChoice"/>
+            <xs:element name="vital_status_cd" type="pdo:Vital_Status_CdType" minOccurs="0"/>
+            <xs:element name="birth_date" type="pdo:Birth_DateType" minOccurs="0"/>
+            <xs:element name="death_date" type="pdo:Death_DateType" minOccurs="0"/>
+            <xs:element name="sex_cd" type="pdo:Sex_CdType" minOccurs="0"/>
+            <xs:element name="age_in_years_num" type="pdo:Age_In_Years_NumType" minOccurs="0"/>
+            <xs:element name="language_cd" type="pdo:Language_CdType" minOccurs="0"/>
+            <xs:element name="race_cd" type="pdo:Race_CdType" minOccurs="0"/>
+            <xs:element name="marital_status_cd" type="pdo:Marital_Status_CdType" minOccurs="0"/>
+            <xs:element name="religion_cd" type="pdo:Religion_CdType" minOccurs="0"/>
+            <xs:element name="zip_cd" type="pdo:Zip_CdType" minOccurs="0"/>
+            <xs:element name="statecityzip_path" type="pdo:StateCityZip_PathType" minOccurs="0"/>
+            <xs:element name="patient_blob" type="pdo:Patient_BlobType" minOccurs="0"/>
+            <xs:group ref="pdo:annotationGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!--
+    <xs:group name="observationSetGroupChoice">
+		<xs:sequence>
+			<xs:choice>
+        	<xs:attributeGroup ref="conceptPathgroup"/>
+        	</xs:choice>
+        	
+    		<xs:attributeGroup ref="providerPathgroup"/>
+    		
+		</xs:sequence>
+    </xs:group>
+	<xs:attributeGroup name="conceptPathgroup">
+	  <xs:attribute name="concept_name" type="xs:string"/>
+	  <xs:attribute name="concept_path" type="xs:string"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="providerPathgroup">
+	  <xs:attribute name="provider_name" type="xs:string"/>
+	  <xs:attribute name="provider_path" type="xs:string"/>
+	</xs:attributeGroup>
+	-->
+    <xs:complexType name="observation_factType">
+        <xs:annotation>
+            <xs:documentation>One row of data from the observation_fact table.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="pdo:encounter_idChoice" minOccurs="1"/>
+            <xs:group ref="pdo:patient_idChoice" minOccurs="1"/>
+            <xs:element name="concept_cd" type="pdo:Concept_CdType"/>
+            <xs:element name="provider_id" type="pdo:Provider_IdType"/>
+            <xs:element name="start_date" type="pdo:Start_DateType"/>
+            <xs:element name="modifier_cd" type="pdo:Modifier_CdType"/>
+            <xs:element name="valtype_cd" type="pdo:ValType_CdType" minOccurs="0"/>
+            <xs:element name="tval_char" type="pdo:TVal_CharType" minOccurs="0"/>
+            <xs:element name="nval_num" type="pdo:NVal_NumType" minOccurs="0"/>
+            <xs:element name="valueflag_cd" type="pdo:ValueFlag_CdType" minOccurs="0"/>
+            <xs:element name="quantity_num" type="pdo:Quantity_NumType" minOccurs="0"/>
+            <xs:element name="units_cd" type="pdo:Units_CdType" minOccurs="0"/>
+            <xs:element name="end_date" type="pdo:End_DateType" minOccurs="0"/>
+            <xs:element name="location_cd" type="pdo:Location_CdType" minOccurs="0"/>
+            <xs:element name="confidence_num" type="pdo:Confidence_NumType" minOccurs="0"/>
+            <!--
+            <xs:element name="observation_blob" type="pdo:Observation_BlobType" minOccurs="0"/>
+            -->
+            <xs:element name="observation_blob" type="xs:anyType" minOccurs="0"/>
+            <xs:group ref="pdo:annotationGroup" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:group name="patient_idChoice">
+        <xs:annotation>
+            <xs:documentation>A choice between one of three patient identifiers.</xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="patient_num" type="pdo:Patient_NumType"/>
+            <xs:element name="patient_id" type="pdo:Patient_IdType"/>
+            <xs:element name="patient_ide" type="pdo:Patient_IdeType"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="encounter_idChoice">
+        <xs:annotation>
+            <xs:documentation>A choice between one of three encounter
+            identifiers.</xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="encounter_num" type="pdo:Encounter_NumType"/>
+            <xs:element name="encounter_id" type="pdo:Encounter_IdType"/>
+            <xs:element name="encounter_ide" type="pdo:Encounter_IdeType"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="annotationGroup">
+        <xs:annotation>
+            <xs:documentation>A group of fields that always appear together at the end of a table
+                and store annotation or administrative information.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="update_date" type="pdo:Update_DateType" minOccurs="0"/>
+            <xs:element name="download_date" type="pdo:Download_DateType" minOccurs="0"/>
+            <xs:element name="import_date" type="pdo:Import_DateType" minOccurs="0"/>
+            <xs:element name="sourcesystem_cd" type="pdo:Sourcesystem_CdType" minOccurs="0"/>
+            <xs:element name="upload_id" type="pdo:Upload_IdType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:group>
+</xs:schema>

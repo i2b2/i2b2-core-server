@@ -1,0 +1,18 @@
+#help-viewer-panel .bd { 
+	overflow:auto; 
+	background-color:fff; 
+	padding:10px; 
+} 
+
+#help-viewer-panel .ft { 
+	height:15px; 
+	padding:0; 
+}
+
+#help-viewer-panel .yui-resize-handle-br { 
+	right:0; 
+	bottom:0; 
+	height: 8px; 
+	width: 8px; 
+	position:absolute;  
+} 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<globals xmlns="http://www.i2b2.org/xsd/cell/pm/1.1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.i2b2.org/xsd/cell/pm/1.1/ file:/Users/mem61/Documents/i2b2workbench-10_31/edu.harvard.i2b2.xml/xsd/cell/pm_1.1/PM_USER.xsd">
+    <project_path xmlns="">project_path0</project_path>
+    <user_name xmlns="">user_name0</user_name>
+    <can_overridge xmlns="">false</can_overridge>
+</globals>

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- I'm not sure this schema is still being used. -->
+<xs:schema id="i2b2patientdata_enums" targetNamespace="http://i2b2.mgh.harvard.edu/crc"
+    xmlns:crc="http://i2b2.mgh.harvard.edu/crc"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:include schemaLocation="./CRC_PDO_types.xsd"/>
+    <xs:simpleType name="Language_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing a language of communication.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="crc:tokenType">
+            <xs:enumeration value="@">
+                <xs:annotation>
+                    <xs:documentation>no info (null)</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="ALBA"/>
+            <xs:enumeration value="ALBANIAN"/>
+            <xs:enumeration value="AMHA"/>
+            <xs:enumeration value="ARAB"/>
+            <xs:enumeration value="ARABIC "/>
+            <xs:enumeration value="ARME"/>
+            <xs:enumeration value="BOSN"/>
+            <xs:enumeration value="BOSNIAN"/>
+            <xs:enumeration value="CAMB"/>
+            <xs:enumeration value="CAMBODIAN"/>
+            <xs:enumeration value="CANT"/>
+            <xs:enumeration value="CAPE"/>
+            <xs:enumeration value="CAPP"/>
+            <xs:enumeration value="CHIN"/>
+            <xs:enumeration value="CHINESE-CANT."/>
+            <xs:enumeration value="CHINESE-MAND."/>
+            <xs:enumeration value="CREO"/>
+            <xs:enumeration value="CREOLE"/>
+            <xs:enumeration value="DANE"/>
+            <xs:enumeration value="DANISH"/>
+            <xs:enumeration value="ENGL"/>
+            <xs:enumeration value="ENGLISH"/>
+            <xs:enumeration value="ETHIOPIAN-AMHARIC"/>
+            <xs:enumeration value="FARS"/>
+            <xs:enumeration value="FARSI-PERSIAN"/>
+            <xs:enumeration value="FREN"/>
+            <xs:enumeration value="FRENCH"/>
+            <xs:enumeration value="FRENCH CREOLE"/>
+            <xs:enumeration value="GERM"/>
+            <xs:enumeration value="GREEK"/>
+            <xs:enumeration value="GREK"/>
+            <xs:enumeration value="GUGA"/>
+            <xs:enumeration value="HATI"/>
+            <xs:enumeration value="HEBR"/>
+            <xs:enumeration value="HEBREW"/>
+            <xs:enumeration value="HINDI"/>
+            <xs:enumeration value="HNDI"/>
+            <xs:enumeration value="HUNGARIAN"/>
+            <xs:enumeration value="ITAL"/>
+            <xs:enumeration value="ITALIAN"/>
+            <xs:enumeration value="JAPA"/>
+            <xs:enumeration value="KORE"/>
+            <xs:enumeration value="KOREAN"/>
+            <xs:enumeration value="MAND"/>
+            <xs:enumeration value="OTHE"/>
+            <xs:enumeration value="OTHER"/>
+            <xs:enumeration value="POL"/>
+            <xs:enumeration value="POLISH"/>
+            <xs:enumeration value="POPO"/>
+            <xs:enumeration value="PORT"/>
+            <xs:enumeration value="PORTUGUESE"/>
+            <xs:enumeration value="PRCI"/>
+            <xs:enumeration value="PUNJABI"/>
+            <xs:enumeration value="RUSS"/>
+            <xs:enumeration value="RUSSIAN"/>
+            <xs:enumeration value="SIGN"/>
+            <xs:enumeration value="SIGN LANG"/>
+            <xs:enumeration value="SOMA"/>
+            <xs:enumeration value="SOMALIAN"/>
+            <xs:enumeration value="SPAN"/>
+            <xs:enumeration value="SPAN-ENGL"/>
+            <xs:enumeration value="SPANISH"/>
+            <xs:enumeration value="SPEN"/>
+            <xs:enumeration value="SWED"/>
+            <xs:enumeration value="SWEDISH"/>
+            <xs:enumeration value="TAIW"/>
+            <xs:enumeration value="TAMI"/>
+            <xs:enumeration value="THAI"/>
+            <xs:enumeration value="TIBE"/>
+            <xs:enumeration value="TIGR"/>
+            <xs:enumeration value="TURK"/>
+            <xs:enumeration value="UKRA"/>
+            <xs:enumeration value="UNKN"/>
+            <xs:enumeration value="UNKNOWN"/>
+            <xs:enumeration value="URDU"/>
+            <xs:enumeration value="VIET"/>
+            <xs:enumeration value="VIETNAMESE"/>
+            <xs:enumeration value="YDSH"/>
+            <xs:enumeration value="YUGOSLAVIAN"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Race_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing race.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="crc:tokenType">
+            <xs:enumeration value="@">
+                <xs:annotation>
+                    <xs:documentation>no info (null)</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="A"/>
+            <xs:enumeration value="AMER. INDIAN"/>
+            <xs:enumeration value="ASIAN"/>
+            <xs:enumeration value="ASIAN/PAC. ISL"/>
+            <xs:enumeration value="B"/>
+            <xs:enumeration value="BLACK"/>
+            <xs:enumeration value="D"/>
+            <xs:enumeration value="H"/>
+            <xs:enumeration value="HIS/WHITE"/>
+            <xs:enumeration value="HISPANIC"/>
+            <xs:enumeration value="HIW"/>
+            <xs:enumeration value="I"/>
+            <xs:enumeration value="IN"/>
+            <xs:enumeration value="INDIAN"/>
+            <xs:enumeration value="M"/>
+            <xs:enumeration value="MULTI"/>
+            <xs:enumeration value="O"/>
+            <xs:enumeration value="OR"/>
+            <xs:enumeration value="ORIENTAL"/>
+            <xs:enumeration value="OTHER"/>
+            <xs:enumeration value="R"/>
+            <xs:enumeration value="U"/>
+            <xs:enumeration value="UNK"/>
+            <xs:enumeration value="W"/>
+            <xs:enumeration value="WHITE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Marital_Status_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing marital status.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="crc:tokenType">
+            <xs:enumeration value="@">
+                <xs:annotation>
+                    <xs:documentation>no info (null)</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="C"/>
+            <xs:enumeration value="D"/>
+            <xs:enumeration value="DIVORCED"/>
+            <xs:enumeration value="L"/>
+            <xs:enumeration value="LEGAL.SEP"/>
+            <xs:enumeration value="LIFE PART"/>
+            <xs:enumeration value="M"/>
+            <xs:enumeration value="MARRIED"/>
+            <xs:enumeration value="P"/>
+            <xs:enumeration value="PARTNER"/>
+            <xs:enumeration value="S"/>
+            <xs:enumeration value="SEP"/>
+            <xs:enumeration value="SINGLE"/>
+            <xs:enumeration value="U"/>
+            <xs:enumeration value="UNK"/>
+            <xs:enumeration value="W"/>
+            <xs:enumeration value="WIDOW"/>
+            <xs:enumeration value="WID-WIDR"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Religion_CdType">
+        <xs:annotation>
+            <xs:documentation>A code representing religious affiliation.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="crc:tokenType">
+            <xs:enumeration value="@">
+                <xs:annotation>
+                    <xs:documentation>no info (null)</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="7TH DAY ADVENT"/>
+            <xs:enumeration value="AC"/>
+            <xs:enumeration value="ADVENT CHRISTIAN"/>
+            <xs:enumeration value="AG"/>
+            <xs:enumeration value="AGNOSTIC"/>
+            <xs:enumeration value="AN"/>
+            <xs:enumeration value="ANGLICAN"/>
+            <xs:enumeration value="ARMENIAN CATHOLIC"/>
+            <xs:enumeration value="AT"/>
+            <xs:enumeration value="ATHEIST"/>
+            <xs:enumeration value="BA"/>
+            <xs:enumeration value="BAHAI"/>
+            <xs:enumeration value="BAPTIST"/>
+            <xs:enumeration value="BP"/>
+            <xs:enumeration value="BU"/>
+            <xs:enumeration value="BUDDHIST"/>
+            <xs:enumeration value="CA"/>
+            <xs:enumeration value="CATHOLIC"/>
+            <xs:enumeration value="CH"/>
+            <xs:enumeration value="CHRISTIAN"/>
+            <xs:enumeration value="CHRISTIAN SCIENCE"/>
+            <xs:enumeration value="CHURCH OF GOD"/>
+            <xs:enumeration value="CO"/>
+            <xs:enumeration value="CONGRAGATIONAL"/>
+            <xs:enumeration value="CONGREGATIONAL"/>
+            <xs:enumeration value="CS"/>
+            <xs:enumeration value="DC"/>
+            <xs:enumeration value="DE"/>
+            <xs:enumeration value="DEFERRED"/>
+            <xs:enumeration value="DISCIPLES OF CHRIST"/>
+            <xs:enumeration value="EC"/>
+            <xs:enumeration value="EP"/>
+            <xs:enumeration value="EPISCOPAL"/>
+            <xs:enumeration value="EVANG. CHRISTIAN"/>
+            <xs:enumeration value="GO"/>
+            <xs:enumeration value="GREEK ORTHODOX"/>
+            <xs:enumeration value="HI"/>
+            <xs:enumeration value="HINDU"/>
+            <xs:enumeration value="IS"/>
+            <xs:enumeration value="ISLAMIC"/>
+            <xs:enumeration value="JEHOV.WITNESS"/>
+            <xs:enumeration value="JEHOV. WITNESS"/>
+            <xs:enumeration value="JEWISH"/>
+            <xs:enumeration value="JH"/>
+            <xs:enumeration value="JV"/>
+            <xs:enumeration value="JW"/>
+            <xs:enumeration value="LU"/>
+            <xs:enumeration value="LUTHERAN"/>
+            <xs:enumeration value="ME"/>
+            <xs:enumeration value="METHODIST"/>
+            <xs:enumeration value="MO"/>
+            <xs:enumeration value="MORMON (LDS)"/>
+            <xs:enumeration value="MS"/>
+            <xs:enumeration value="MU"/>
+            <xs:enumeration value="MUSLIM"/>
+            <xs:enumeration value="NA"/>
+            <xs:enumeration value="NAZARENE"/>
+            <xs:enumeration value="ND"/>
+            <xs:enumeration value="NO"/>
+            <xs:enumeration value="NON-DENOM"/>
+            <xs:enumeration value="NONE"/>
+            <xs:enumeration value="NO PREF"/>
+            <xs:enumeration value="NP"/>
+            <xs:enumeration value="NSP"/>
+            <xs:enumeration value="OC"/>
+            <xs:enumeration value="OR"/>
+            <xs:enumeration value="ORTHODOX"/>
+            <xs:enumeration value="ORTHODOX CHRISTIAN"/>
+            <xs:enumeration value="OT"/>
+            <xs:enumeration value="OTHER"/>
+            <xs:enumeration value="PE"/>
+            <xs:enumeration value="PENTECOSTAL"/>
+            <xs:enumeration value="PR"/>
+            <xs:enumeration value="PRESBYTERIAN"/>
+            <xs:enumeration value="PROTESTANT"/>
+            <xs:enumeration value="PS"/>
+            <xs:enumeration value="QU"/>
+            <xs:enumeration value="QUAKER"/>
+            <xs:enumeration value="RC"/>
+            <xs:enumeration value="REF"/>
+            <xs:enumeration value="RO"/>
+            <xs:enumeration value="ROMAN CATHOLIC"/>
+            <xs:enumeration value="RUSSIAN ORTH."/>
+            <xs:enumeration value="SD"/>
+            <xs:enumeration value="SP"/>
+            <xs:enumeration value="SPIRITUALIST"/>
+            <xs:enumeration value="UA"/>
+            <xs:enumeration value="UN"/>
+            <xs:enumeration value="UNITARIAN"/>
+            <xs:enumeration value="UNITARIAN UNIVERS."/>
+            <xs:enumeration value="UNKNOWN"/>
+            <xs:enumeration value="UU"/>
+            <xs:enumeration value="WI"/>
+            <xs:enumeration value="WICCAN"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:load_data_response xmlns:ns1="http://www.i2b2.org/xsd/cell/crc/loader/1.1/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/crc/loader/1.1/ file:/Users/rk903/Documents/Development_Uploader/edu.harvard.i2b2.xml/xsd/cell/crc/loader_1.1/CRC_UPLOADER_QRY_response.xsd" uplod_id="uplod_id0" user_id="user_id0" load_status="load_status0" data_file_location_uri="data_file_location_uri0"
+    transformer_name="transformer_name0">
+    <status>
+        <condition type="ERROR" coding_system="coding_system0">condition0</condition>
+        <condition type="ERROR" coding_system="coding_system1">condition1</condition>
+        <condition type="ERROR" coding_system="coding_system2">condition2</condition>
+    </status>
+    <observation_set inserted_record="2147483647" ignored_record="2147483647" total_record="2147483647">
+        <ignored_patient_data_file_uri protocol_name="protocol_name0">ignored_patient_data_file_uri0</ignored_patient_data_file_uri>
+        <inserted_patient_data_file_uri protocol_name="protocol_name1">inserted_patient_data_file_uri0</inserted_patient_data_file_uri>
+    </observation_set>
+    <patient_set inserted_record="2147483647" ignored_record="2147483647" total_record="2147483647">
+        <ignored_patient_data_file_uri protocol_name="protocol_name2">ignored_patient_data_file_uri1</ignored_patient_data_file_uri>
+        <inserted_patient_data_file_uri protocol_name="protocol_name3">inserted_patient_data_file_uri1</inserted_patient_data_file_uri>
+    </patient_set>
+    <event_set inserted_record="2147483647" ignored_record="2147483647" total_record="2147483647">
+        <ignored_patient_data_file_uri protocol_name="protocol_name4">ignored_patient_data_file_uri2</ignored_patient_data_file_uri>
+        <inserted_patient_data_file_uri protocol_name="protocol_name5">inserted_patient_data_file_uri2</inserted_patient_data_file_uri>
+    </event_set>
+    <observer_set inserted_record="2147483647" ignored_record="2147483647" total_record="2147483647">
+        <ignored_patient_data_file_uri protocol_name="protocol_name6">ignored_patient_data_file_uri3</ignored_patient_data_file_uri>
+        <inserted_patient_data_file_uri protocol_name="protocol_name7">inserted_patient_data_file_uri3</inserted_patient_data_file_uri>
+    </observer_set>
+    <concept_set inserted_record="2147483647" ignored_record="2147483647" total_record="2147483647">
+        <ignored_patient_data_file_uri protocol_name="protocol_name8">ignored_patient_data_file_uri4</ignored_patient_data_file_uri>
+        <inserted_patient_data_file_uri protocol_name="protocol_name9">inserted_patient_data_file_uri4</inserted_patient_data_file_uri>
+    </concept_set>
+    <pid_set inserted_record="2147483647" ignored_record="2147483647" total_record="2147483647">
+        <ignored_patient_data_file_uri protocol_name="protocol_name10">ignored_patient_data_file_uri5</ignored_patient_data_file_uri>
+        <inserted_patient_data_file_uri protocol_name="protocol_name11">inserted_patient_data_file_uri5</inserted_patient_data_file_uri>
+    </pid_set>
+    <eventid_set inserted_record="2147483647" ignored_record="2147483647" total_record="2147483647">
+        <ignored_patient_data_file_uri protocol_name="protocol_name12">ignored_patient_data_file_uri6</ignored_patient_data_file_uri>
+        <inserted_patient_data_file_uri protocol_name="protocol_name13">inserted_patient_data_file_uri6</inserted_patient_data_file_uri>
+    </eventid_set>
+</ns1:load_data_response>

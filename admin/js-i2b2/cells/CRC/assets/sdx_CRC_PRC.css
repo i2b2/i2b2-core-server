@@ -1,0 +1,26 @@
+.sdxDefaultPRC {
+	font-family:arial,helvetica;
+	font-size:12px;
+	white-space:nowrap;
+	vertical-align:bottom;
+	cursor:pointer;
+	line-height:16px;
+}
+.sdxDefaultPRC img {
+	height:16px;
+	width:16px;
+	border:none;
+	padding-right:3px;
+	vertical-align:bottom;
+}
+.sdxDefaultPRC a {
+	color:#000000;
+	text-decoration:none;
+}
+.sdxDefaultPRC a:hover {
+	text-decoration:underline;
+}
+
+.ddPRCTarget {
+	background:#FFFFBB !important;	
+}

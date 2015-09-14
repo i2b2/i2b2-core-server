@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:crc="http://www.i2b2.org/xsd/cell/crc/psm/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/psm/">
+    <!-- www.i2b2.org/xsd/crc -->
+
+    <xs:include schemaLocation="./CRC.xsd"/>
+    <xs:include schemaLocation="./CRC_PSM_QRY_request.xsd"/>
+    <xs:include schemaLocation="./CRC_PSM_QRY_response.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation>This schmea defines CRC QRY elements that may be used inside an i2b2
+            message_body tag. The header and sql elements are defined here, while the request and
+            response tags are defined in included schemas. The examples tag should only be used to
+            validate example message_body tags used during testing and for
+        reference.</xs:documentation>
+    </xs:annotation>
+    <!--
+    <xs:element name="examples">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="message_body" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="crc:header"/>
+                            <xs:element ref="crc:request"/>
+                            <xs:element ref="crc:response"/>
+                            <xs:element ref="crc:sql"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    -->
+    
+    
+    <xs:element name="psmheader" type="crc:psm_qry_headerType"/> 
+    <!-- 
+    <xs:element name="sql" type="xs:string"/>
+    --> 
+    <!-- query master is made top level elment for previous query drag and drop -->
+    <xs:element name="query_master" type="crc:query_masterType"/>
+    <!-- query result is made top level elment for previous query drag and drop -->
+    <xs:element name="query_result_instance" type="crc:query_result_instanceType"/>
+    
+    <xs:complexType name="psm_qry_headerType">
+        <xs:complexContent>
+            <xs:extension base="crc:headerType">
+                <xs:sequence>
+                    <xs:element name="request_type" type="crc:psmRequest_typeType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="psmRequest_typeType">
+        <xs:annotation>
+            <xs:documentation>Enumerated list of codes that define what kind of request is being
+                made. This informs the specific kind of request and response element that should be
+                expected. Whether the request type and response type match with this string is not
+                enforced, however.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CRC_QRY_getQueryMasterList_fromUserId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>user_requestType</requestType>
+                        <responseType>master_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerylist]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getQueryMasterList_fromGroupId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>user_requestType</requestType>
+                        <responseType>master_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerylist]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getQueryMaster_fromQueryMasterId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>master_requestType</requestType>
+                        <responseType>master_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getQueryMaster_fromQueryInstanceId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>instance_requestType</requestType>
+                        <responseType>master_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getQueryMaster_fromResultInstanceId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>instance_requestType</requestType>
+                        <responseType>master_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_saveQueryMaster_fromQueryDefinition">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>query_definition_requestType</requestType>
+                        <responseType>master_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getQueryInstanceList_fromQueryMasterId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>master_requestType</requestType>
+                        <responseType>instance_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getrunlist]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getQueryInstance_fromQueryInstanceId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>instance_requestType</requestType>
+                        <requestType>instance_responseType</requestType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getQueryInstance_fromResultInstanceId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>result_requestType</requestType>
+                        <responseType>instance_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_runQueryInstance_fromQueryMasterId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>master_requestType</requestType>
+                        <responseType>instance_result_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_runQueryInstance_fromQueryDefinition">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>query_definition_requestType</requestType>
+                        <responseType>master_instance_result_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[runquery]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getQueryResultInstanceList_fromQueryInstanceId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>instance_requestType</requestType>
+                        <responseType>result_responeType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getpatientlist, but really resultlist]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getQueryResultInstance_fromResultInstanceId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>result_requestType</requestType>
+                        <responseType>result_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getRequestXml_fromQueryMasterId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>master_requestType</requestType>
+                        <responseType>request_xml_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerydef]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_getPatientSet_fromResultInstanceId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>result_requestType</requestType>
+                        <responseType>patient_set_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_deleteQueryMaster">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>master_delete_requestType</requestType>
+                        <responseType>master_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_renameQueryMaster">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>master_rename_requestType</requestType>
+                        <responseType>master_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:map="http://www.i2b2.org/xsd/cell/ontmap/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ontmap/1.1/">
+
+    <xs:include schemaLocation="./MAP_QRY.xsd"/>
+     
+ 
+
+     <xs:element name="hierarchyMappings" type="map:hierarchyMappingsType"/>
+	 <xs:element name="allMappings" type="xs:string" />
+	 <xs:element name="allStatus" type="map:allStatusType" />
+ 	 <xs:element name="status" type="map:mapStatusType" />
+  	 <xs:element name="mappingCount" type="map:mapCountType" />
+ 	<xs:element name="mappedConcepts" type="map:mappedConceptsType" />
+ 	 <xs:element name="shrineMappings" type="map:shrineMappingsType" />
+ 
+ 	 <xs:element name="schemes" type="map:schemesType"/>
+
+   	<xs:complexType name="schemesType">
+    	 <xs:sequence>
+            <xs:element name="schemes" type="map:getTermsType" maxOccurs="unbounded"/>
+        </xs:sequence>
+     </xs:complexType>
+ 	
+
+
+   <xs:complexType name="hierarchyMappingsType">
+        <xs:sequence>
+            <xs:element name="hierarchyMapping" type="map:hierarchyMapType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>  
+    
+    <xs:complexType name="mapCountType">
+        <xs:sequence>
+            <xs:element name="concept_count" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>  
+    
+   	<xs:complexType name="allStatusType">
+        <xs:sequence>
+            <xs:element name="status" type="map:mapStatusType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>  
+    
+    <xs:complexType name="mapStatusType">
+        <xs:sequence>
+            <xs:element name="process_id" type="xs:int" />
+            <xs:element name="status_cd" type="xs:string" />
+            <xs:element name="status_message" type="xs:string" />
+            <xs:element name="start_date" type="xs:dateTime" />
+            <xs:element name="end_date" type="xs:dateTime" />
+            <xs:element name="output_file_name" type="xs:string" />
+            <xs:element name="user_id" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>  
+    
+    <xs:complexType name="mappedConceptsType">
+        <xs:sequence>
+            <xs:element name="mappedConcept" type="map:mappedConceptType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+
+    
+   	<xs:complexType name="mappedConceptType">
+        <xs:sequence>
+            <xs:element name="level" type="xs:int" />
+            <xs:element name="key" type="xs:string" />
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="synonym_cd" type="xs:string" />
+            <xs:element name="visualattributes" type="xs:string" />
+            <xs:element name="basecode" type="xs:string" />
+            <xs:element name="metadataxml" type="map:xml_valueType" /> 
+            <xs:element name="facttablecolumn" type="xs:string" />
+            <xs:element name="tablename" type="xs:string" />
+            <xs:element name="columnname" type="xs:string" />
+            <xs:element name="columndatatype" type="xs:string" />
+            <xs:element name="operator" type="xs:string" />
+            <xs:element name="dimcode" type="xs:string" />
+            <xs:element name="comment" type="xs:string" />
+            <xs:element name="tooltip" type="xs:string" />
+            <xs:element name="update_date" type="xs:dateTime" />
+            <xs:element name="download_date" type="xs:dateTime" />
+            <xs:element name="import_date" type="xs:dateTime" />
+            <xs:element name="sourcesystem_cd" type="xs:string" />
+            <xs:element name="valuetype_cd" type="xs:string" />
+            <xs:element name="path" type="xs:string" />
+            <xs:element name="symbol" type="xs:string" />
+            <xs:element name="applied_path" type="xs:string" />
+            <xs:element name="exclusion_cd" type="xs:string" />
+            <xs:element name="totalnum" nillable="true" type="xs:int" />            
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="xml_valueType" mixed="false">
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any" processContents="skip"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+     <xs:complexType name="shrineMappingsType">
+        <xs:sequence>
+            <xs:element name="shrineMap" type="map:shrineMapType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+
+    
+   	<xs:complexType name="shrineMapType">
+        <xs:sequence>
+            <xs:element name="source_key" type="xs:string" />
+            <xs:element name="destination_key" type="xs:string" />
+            <xs:element name="source_fullname" type="xs:string" />
+            <xs:element name="destination_fullname" type="xs:string" />
+            <xs:element name="source_table_cd" type="xs:string" />
+            <xs:element name="destination_table_cd" type="xs:string" /> 
+        </xs:sequence>
+    </xs:complexType>
+    
+    
+</xs:schema>

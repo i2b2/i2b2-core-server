@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:crc="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/"
+   
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/">
+    
+    <xs:include schemaLocation="../psm_1.1/CRC_PANEL.xsd"/>
+    <xs:include schemaLocation="./CRC.xsd"/>
+    
+    
+    <xs:element name="filterlistType" type="crc:filter_listType"/>
+    
+    
+    <xs:complexType name="GetPDOTemplate_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+        <xs:complexType name="GetPDOFromInputList_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+            <xs:sequence>
+	            <xs:element name="input_list" type="crc:input_option_listType"/>
+    	        <xs:element name="filter_list" type="crc:filter_listType"/>
+        	    <xs:element name="output_option" type="crc:output_option_listType"/>
+	        </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    <xs:complexType name="GetObservationFactByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="fact_primary_key" type="crc:fact_primary_key_Type"/>
+                    <xs:element name="fact_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="fact_primary_key_Type">
+        <xs:sequence>
+            <xs:element name="event_id" type="xs:string" />
+            <xs:element name="patient_id" type="xs:string"/>
+            <xs:element name="concept_cd" type="xs:string"/>
+            <xs:element name="observer_id" type="xs:string"/>
+            <xs:element name="start_date" type="xs:dateTime"/>
+            <xs:element name="modifier_cd" type="xs:string"/>
+            <xs:element name="instance_num" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>    
+    
+    
+     <xs:complexType name="GetPatientByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="patient_primary_key" type="crc:patient_primary_key_Type"/>
+                    <xs:element name="patient_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="patient_primary_key_Type">
+        <xs:sequence>
+            <xs:element name="patient_id" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>    
+
+
+     <xs:complexType name="GetEventByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="event_primary_key" type="crc:event_primary_key_Type"/>
+                    <xs:element name="event_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="event_primary_key_Type">
+        <xs:sequence>
+            <xs:element name="event_id" type="xs:string"/>
+            <xs:element name="patient_id" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>        
+    
+  
+     <xs:complexType name="GetConceptByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="concept_primary_key" type="crc:concept_primary_key_Type"/>
+                    <xs:element name="concept_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="concept_primary_key_Type">
+	    <xs:sequence>
+            <xs:element name="concept_path" type="xs:string"/>
+         </xs:sequence>
+    </xs:complexType>      
+    
+    <xs:complexType name="GetModifierByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="modifier_primary_key" type="crc:modifier_primary_key_Type"/>
+                    <xs:element name="modifier_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="modifier_primary_key_Type">
+	    <xs:sequence>
+            <xs:element name="modifier_path" type="xs:string"/>
+         </xs:sequence>
+    </xs:complexType>     
+    
+     <xs:complexType name="GetObserverByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="observer_primary_key" type="crc:observer_primary_key_Type"/>
+                    <xs:element name="observer_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="observer_primary_key_Type">
+        <xs:sequence>
+            <xs:element name="observer_path" type="xs:string"/>
+            <xs:element name="observer_id" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>        
+    
+        
+    
+    <xs:complexType name="input_option_listType">
+   		<xs:choice>
+		    <xs:element name="patient_list" type="crc:patient_listType" maxOccurs="1"/>
+		    <xs:element name="event_list" type="crc:event_listType" maxOccurs="1"/>
+   		    <xs:element name="pid_list" type="crc:pid_listType" maxOccurs="1"/>
+   		    <xs:element name="eid_list" type="crc:eid_listType" maxOccurs="1"/>
+        </xs:choice>    
+    </xs:complexType>
+
+  
+    
+    <xs:complexType name="output_option_listType">
+        <xs:all>
+            <xs:element name="observation_set" type="crc:fact_output_optionType" minOccurs="0"/>
+            <xs:element name="patient_set" type="crc:output_optionType" minOccurs="0"/>
+            <xs:element name="event_set" type="crc:output_optionType" minOccurs="0"/>
+            <xs:element name="observer_set_using_filter_list" type="crc:output_optionType" minOccurs="0"/>
+            <xs:element name="concept_set_using_filter_list" type="crc:output_optionType" minOccurs="0"/>
+            <xs:element name="modifier_set_using_filter_list" type="crc:output_optionType" minOccurs="0"/>
+            <xs:element name="pid_set" type="crc:output_optionType" minOccurs="0"/>
+            <xs:element name="eid_set" type="crc:output_optionType" minOccurs="0"/>
+            <xs:element name="dimension_set" type="crc:dimension_output_optionType"  minOccurs="0"/>
+        </xs:all>
+        <xs:attribute name="phi" type="crc:outputOptionPhiType" />
+        <xs:attribute name="names" type="crc:outputOptionNameType" />
+        <xs:attribute name="time" type="crc:outputOptionTimeType" />
+    </xs:complexType>
+    
+    <xs:complexType name="output_optionType">
+        <!-- the key is always returned by default -->
+        <xs:attribute name="onlykeys" type="xs:boolean" default="true"/>
+        <xs:attribute name="blob" type="xs:boolean" default="false"/>
+        <xs:attribute name="techdata" type="xs:boolean" default="false"/>
+        <xs:attribute name="select" type="crc:outputOptionSelectType" default="using_filter_list"/>
+    </xs:complexType>
+    <xs:complexType name="fact_output_optionType">
+        <xs:complexContent>
+            <xs:extension base="crc:output_optionType">
+                <xs:attribute name="before" type="xs:dateTime"/>
+                <xs:attribute name="after" type="xs:dateTime"/>
+                <xs:attribute name="value" type="xs:int"/>
+		        <xs:attribute name="selectionfilter" type="crc:outputOptionSelectionFilterType" />
+                <xs:attribute name="withmodifiers" type="xs:boolean" default="true"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="dimension_output_optionType">
+        <xs:complexContent>
+            <xs:extension base="crc:output_optionType">
+                <xs:attribute name="dimensionname" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- not sure where this patient set object should be defined, maybe here
+    this patient_listType needs more work, especially with regards to ranges
+    (patient_num_range) and defining how many results are to be returned at a time -->
+
+    <xs:complexType name="filter_listType">
+        <xs:sequence>
+            <xs:sequence>
+                <xs:element name="query_name" type="xs:string"/>
+                <xs:element name="query_description" type="xs:string"/>
+                <xs:element name="query_timing" type="crc:queryTimingType" default="ANY"/>
+                <xs:element name="panel" type="crc:panelType" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="patient_listType">
+        <xs:complexContent>
+            <xs:extension base="crc:rangeType">
+                <xs:choice>
+                    <xs:element name="entire_patient_set"/> <!-- all patients -->
+                    <xs:element name="patient_set_coll_id" type="xs:string"/>
+                    <xs:element name="patient_id" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                    <xs:attribute name="index" type="xs:int" use="required"/>
+                                    <!-- patient_set_id  attribute is optional and it is not part of i2b2 message -->
+                                    <xs:attribute name="patient_set_id" type="xs:string" use="optional"/>
+                                </xs:extension>
+                            </xs:simpleContent>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="event_listType">
+        <xs:complexContent>
+            <xs:extension base="crc:rangeType">
+                <xs:choice>
+                    <xs:element name="entire_event_set"/> <!-- all visits -->
+                    <xs:element name="patient_event_coll_id" type="xs:string"/>
+                    <xs:element name="event_id" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                    <xs:attribute name="index" type="xs:int" use="required"/>
+                                </xs:extension>
+                            </xs:simpleContent>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="pid_listType">
+        <xs:complexContent>
+            <xs:extension base="crc:rangeType">
+                <xs:choice>
+                    <xs:element name="pid" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                    <xs:attribute name="index" type="xs:int" use="required"/>
+                                    <xs:attribute name="source" type="xs:string" use="required"/>
+                                </xs:extension>
+                            </xs:simpleContent>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="eid_listType">
+        <xs:complexContent>
+            <xs:extension base="crc:rangeType">
+                <xs:choice>
+                    <xs:element name="eid" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                    <xs:attribute name="index" type="xs:int" use="required"/>
+                                    <xs:attribute name="source" type="xs:string" use="required"/>
+                                </xs:extension>
+                            </xs:simpleContent>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    <xs:complexType name="observer_listType">
+        <xs:sequence>
+            <xs:element name="observer_path"  minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="filter_name" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>    
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+
+
+    
+    <xs:simpleType name="queryTimingType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ANY"/>
+            <xs:enumeration value="SAME"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    
+    
+    <xs:complexType name="rangeType">
+        <xs:attribute name="min" type="xs:int"/>
+        <xs:attribute name="max" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:simpleType name="tokenType">
+        <xs:annotation>
+            <xs:documentation>A token or string without leading and trailing whitespace, tabs,
+                linebreaks or repeating whitespace.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token"/>
+    </xs:simpleType>
+    
+    <xs:simpleType name="outputOptionPhiType">
+        <xs:annotation>
+            <xs:documentation>PDO Query Output option's phi value</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="crc:tokenType">
+            <xs:enumeration value="encrypted">
+                <xs:annotation>
+                    <xs:documentation>Encrypted</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="unencrypted">
+                <xs:annotation>
+                    <xs:documentation>Unencrypted</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="outputOptionNameType">
+        <xs:annotation>
+            <xs:documentation>PDO Query Output option's name types</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="crc:tokenType">
+            <xs:enumeration value="none">
+                <xs:annotation>
+                    <xs:documentation>Intags</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="asattributes">
+                <xs:annotation>
+                    <xs:documentation>As attributes</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="outputOptionTimeType">
+        <xs:annotation>
+            <xs:documentation>PDO Query Output option's time types</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="crc:tokenType">
+            <xs:enumeration value="nozone">
+                <xs:annotation>
+                    <xs:documentation>No Zone</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="withzone">
+                <xs:annotation>
+                    <xs:documentation>With Zone</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="outputOptionSelectionFilterType">
+        <xs:annotation>
+            <xs:documentation>return value for expression</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="crc:tokenType">
+            <xs:enumeration value="min_value">
+                <xs:annotation>
+                    <xs:documentation>minimum value</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="max_value">
+                <xs:annotation>
+                    <xs:documentation>maximum value</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="first_value">
+                <xs:annotation>
+                    <xs:documentation>first value</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="last_value">
+                <xs:annotation>
+                    <xs:documentation>last value</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="single_observation">
+                <xs:annotation>
+                    <xs:documentation>one item</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>            
+            <xs:enumeration value="last_n_values">
+                <xs:annotation>
+                    <xs:documentation>last n values</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>            
+
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="outputOptionSelectType">
+        <xs:annotation>
+            <xs:documentation>PDO Query Output option's select types</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="crc:tokenType">
+            <xs:enumeration value="using_input_list">
+                <xs:annotation>
+                    <xs:documentation>Using input liste</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="using_filter_list">
+                <xs:annotation>
+                    <xs:documentation>Using filter list</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

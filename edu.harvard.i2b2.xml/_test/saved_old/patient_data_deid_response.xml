@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i2b2:response xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/message ./i2b2_response.xsd">
+    <message_header>
+        <i2b2_version_compatible>0.3</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name>i2b2 QueryTool</application_name>
+            <application_version>0.1</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>LCS</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>De-ID Tools</application_name>
+            <application_version>0.1</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name/>
+        </receiving_facility>
+        <datetime_of_message>2006-08-31T23:59:59.222</datetime_of_message>
+        <security>
+            <!-- <ticket/> -->
+            <domain/>
+            <username/>
+            <password/>
+        </security>
+        <message_type>
+            <message_code/>
+            <event_type/>
+            <message_structure/>
+        </message_type>
+        <message_control_id>
+            <session_id>2006-08-31T23:59:59.222</session_id>
+            <message_num>1234</message_num>
+            <instance_num>0</instance_num>
+        </message_control_id>
+        <processing_id>
+            <processing_id>P</processing_id>
+            <processing_mode>I</processing_mode>
+        </processing_id>
+        <accept_acknowledgement_type>AL</accept_acknowledgement_type>
+        <application_acknowledgement_type>AL</application_acknowledgement_type>
+        <country_code>US</country_code>
+    </message_header>
+    <response_header>
+        <info url="http://i2b2...">Some information here.</info>
+        <result_status>
+            <status type="DONE">Message here.</status>
+            <polling_url interval_ms="25">http://i2b2/polling</polling_url>
+            <conditions>
+                <condition type="WARNING" coding_system="i2b2">Message here.</condition>
+                <condition type="ERROR" coding_system="i2b2">Message here.</condition>
+                <condition type="FATAL_ERROR" coding_system="i2b2">Message here.</condition>
+                <condition type="INFO" coding_system="i2b2">Message here.</condition>
+            </conditions>
+        </result_status>
+    </response_header>
+    <message_body>
+        <repository:patient_data xmlns:repository="http://i2b2.mgh.harvard.edu/repository_cell"
+            xsi:schemaLocation="http://i2b2.mgh.harvard.edu/repository_cell ./patient_data.xsd">
+            <observation_fact_set>
+                <!-- Group all observation_fact elements together -->
+                <observation_fact>
+                    <encounter_num>10000001</encounter_num>
+                    <patient_num>1234</patient_num>
+                    <concept_cd>LCS-I2B2:1027-note<!-- (MGH Discharge Summary - IDs removed) --></concept_cd>
+                    <provider_id>12345</provider_id>
+                    <start_date>2003-12-07T00:00:00</start_date>
+                    <modifier_cd/>
+                    <valtype_cd/>
+                    <tval_char/>
+                    <nval_num/>
+                    <valueflag_cd/>
+                    <quantity_num/>
+                    <units_cd/>
+                    <end_date/>
+                    <location_cd/>
+                    <confidence_num/>
+                    <observation_blob>
+                        <deidentified_note>
+                            <deletion_marker>[REMOVED]</deletion_marker>
+                            <note_text><![CDATA[
+ED DISCHARGE NOTIFICATION/SUMMARY
+
+[REMOVED],[REMOVED] MRN: [REMOVED] Age: 77y
+REGISTRATION DATE: [REMOVED] 02:40 PM     Provider: [REMOVED]  [REMOVED]
+
+PRELIMINARY REPORT
+]]></note_text>
+                        </deidentified_note>
+                    </observation_blob>
+                    <update_date>2005-12-23T09:41:03</update_date>
+                    <download_date>2005-12-21T09:41:03</download_date>
+                    <import_date>2005-12-22T09:41:03</import_date>
+                    <sourcesystem_cd>RPDR</sourcesystem_cd>
+                    <upload_id/>
+                </observation_fact>
+                <observation_fact>
+                    <encounter_num>10000001</encounter_num>
+                    <patient_num>1234</patient_num>
+                    <concept_cd>LCS-I2B2:1028-note<!-- (MGH Discharge Summary - IDs marked) --></concept_cd>
+                    <provider_id>12345</provider_id>
+                    <start_date>2003-12-07T00:00:00</start_date>
+                    <modifier_cd/>
+                    <valtype_cd/>
+                    <tval_char/>
+                    <nval_num/>
+                    <valueflag_cd/>
+                    <quantity_num/>
+                    <units_cd/>
+                    <end_date/>
+                    <location_cd/>
+                    <confidence_num/>
+                    <observation_blob>
+                        <identified_note>
+                            <!-- These locations may not be exact because this is a hand-made example -->
+                            <id_location start="54" end="60"/>
+                            <id_location start="61" end="67"/>
+                            <id_location start="112" end="122"/>
+                            <id_location start="146" end="152"/>
+                            <id_location start="154" end="160"/>
+                            <id_location start="207" end="217"/>
+                            <note_text><![CDATA[
+ED DISCHARGE NOTIFICATION/SUMMARY
+
+MILLER,BERTHA MRN: 12345678 Age: 77y
+REGISTRATION DATE: 12/11/2003 02:40 PM     Provider: MORRIS  RIVERA
+
+PRELIMINARY REPORT
+]]></note_text>
+                        </identified_note>
+                    </observation_blob>
+                    <update_date>2005-12-23T09:41:03</update_date>
+                    <download_date>2005-12-21T09:41:03</download_date>
+                    <import_date>2005-12-22T09:41:03</import_date>
+                    <sourcesystem_cd>RPDR</sourcesystem_cd>
+                    <upload_id/>
+                </observation_fact>
+            </observation_fact_set>
+        </repository:patient_data>
+    </message_body>
+</i2b2:response>

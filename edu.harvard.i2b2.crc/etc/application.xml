@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN" "http://java.sun.com/dtd/application_1_3.dtd">
+<application>
+    <display-name>My Application</display-name>
+    
+    <module>
+        <ejb>QueryProcessor-EJB.jar</ejb>
+    </module>
+    <module>
+        <ejb>QP-An-EJB.jar</ejb>
+    </module>
+    <!-- 
+    <module>
+        <connector>query_processor.sar</connector>
+    </module>
+    -->
+</application>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:fr="http://www.i2b2.org/xsd/cell/fr/1.0/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/fr/1.0/">
+
+  
+    <xs:include schemaLocation="./FR_QRY_request.xsd"/>
+    <xs:include schemaLocation="./FR_QRY_response.xsd"/>
+
+    <xs:element name="examples">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="message_body" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="fr:sendfile_request"/>
+                            <xs:element ref="fr:recvfile_response"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    
+   
+</xs:schema>
