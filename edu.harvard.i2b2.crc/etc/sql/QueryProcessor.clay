@@ -1,0 +1,769 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<clay-model clay-version="1.2.0">
+<database-model alias="" author="" begin-script="" end-script="" name="myModel3" remarks="" sql-dialect-id="jp.azzurri.clay.model.physical.dialect.SQL92_Dialect" version="1.0">
+<database-model-description></database-model-description>
+<schema-list>
+<schema alias="" name="DEFAULT_SCHEMA" remarks="">
+<schema-description></schema-description>
+<domain-list/>
+<table-list>
+<table alias="" name="QT_USER" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="62" width="161" x="7" y="53"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="USER_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="100" decimal-digits="0" default-value="" mandatory="false" name="PASSWORD" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="ACTIVE_STATUS" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_USER" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
+<table alias="" name="QT_WORK_GROUP" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="53" width="148" x="22" y="193"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="GROUP_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="100" decimal-digits="0" default-value="" mandatory="false" name="GROUP_NAME" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_WORK_GROUP" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
+<table alias="" name="QT_GROUP_USER" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="79" width="130" x="240" y="123"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="GROUP_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="USER_iD" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="ROLE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_GROUP_USER" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_GROUP_USER_1" on-delete="" on-update="" referenced-key="PK_QT_WORK_GROUP" referenced-table="QT_WORK_GROUP" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+<foreign-key alias="" name="FK_GROUP_USER_2" on-delete="" on-update="" referenced-key="PK_QT_USER" referenced-table="QT_USER" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+<foreign-key alias="" name="FK_GROUP_USER_3" on-delete="" on-update="" referenced-key="PK_QT_ROLE" referenced-table="QT_ROLE" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="QT_ROLE" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="66" width="143" x="18" y="326"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="ROLE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="100" decimal-digits="0" default-value="" mandatory="false" name="ROLE_NAME" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="ROLE_TYPE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_ROLE" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
+<table alias="" name="QT_ACL" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="60" width="227" x="231" y="460"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="ACL_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="ACCESS_CONTROL_OBJECT_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="ACCESS_TYPE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_ACL" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_ACL_1" on-delete="" on-update="" referenced-key="PK_QT_ACCESS_CONTROL_OBJECT" referenced-table="QT_ACCESS_CONTROL_OBJECT" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+<foreign-key alias="" name="FK_ACL_2" on-delete="" on-update="" referenced-key="PK_QT_ACCESS_TYPE" referenced-table="QT_ACCESS_TYPE" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="QT_ACCESS_TYPE" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="52" width="172" x="466" y="460"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="ACCESS_TYPE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="TYPE_NAME" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_ACCESS_TYPE" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
+<table alias="" name="QT_ACCESS_CONTROL_OBJECT" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="68" width="228" x="-21" y="450"/>
+<column-list>
+<column alias="OBJECT_TYPE" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="ACCESS_CONTROL_OBJECT_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="OBJECT_NAME" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="OBJECT_TYPE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_ACCESS_CONTROL_OBJECT" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
+<table alias="" name="QT_ROLE_ACL" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="62" width="146" x="210" y="325"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="ROLE_ACL_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="ROLE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="ACL_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_ROLE_ACL" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_ROLE_ACL_1" on-delete="" on-update="" referenced-key="PK_QT_ACL" referenced-table="QT_ACL" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+<foreign-key alias="" name="FK_ROLE_ACL_2" on-delete="" on-update="" referenced-key="PK_QT_ROLE" referenced-table="QT_ROLE" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="QT_QUERY_MASTER" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="140" width="186" x="428" y="121"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="QUERY_MASTER_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="NAME" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="2000" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="USER_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="2000" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="GROUP_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="2000" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="CREATE_DATE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="91" literal-prefix="'" literal-suffix="'" name="DATE" selected-variant-pattern="DATE">
+<variant type-name-pattern="DATE"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="DELETE_DATE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="91" literal-prefix="'" literal-suffix="'" name="DATE" selected-variant-pattern="DATE">
+<variant type-name-pattern="DATE"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5000" decimal-digits="0" default-value="" mandatory="false" name="REQUEST_XML" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5000" decimal-digits="0" default-value="" mandatory="false" name="GENERATED_SQL" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="3" decimal-digits="0" default-value="" mandatory="false" name="DELETE_FLAG" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="2000" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_QUERY_MASTER" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
+<table alias="" name="QT_QUERY_INSTANCE" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="139" width="179" x="697" y="33"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="QUERY_INSTANCE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p,%s)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="QUERY_MASTER_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p,%s)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="USER_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="2000" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="GROUP_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="2000" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="50" decimal-digits="0" default-value="" mandatory="false" name="BATCH_MODE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="2000" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="START_DATE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="91" literal-prefix="'" literal-suffix="'" name="DATE" selected-variant-pattern="DATE">
+<variant type-name-pattern="DATE"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="END_DATE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="91" literal-prefix="'" literal-suffix="'" name="DATE" selected-variant-pattern="DATE">
+<variant type-name-pattern="DATE"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="STATUS_TYPE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p,%s)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="3" decimal-digits="0" default-value="" mandatory="false" name="DELETE_FLAG" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="2000" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_QUERY_INSTANCE" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_CONTROL_FILE_INSTANCE_2" on-delete="" on-update="" referenced-key="PK_QT_QUERY_MASTER" referenced-table="QT_QUERY_MASTER" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+<foreign-key alias="" name="FK_QT_QUERY_INSTANCE_2" on-delete="" on-update="" referenced-key="PK_QT_QUERY_STATUS_TYPE" referenced-table="QT_QUERY_STATUS_TYPE" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="QT_QUERY_RESULT_INSTANCE" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="123" width="193" x="659" y="204"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="RESULT_INSTANCE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="QUERY_INSTANCE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p,%s)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="3" decimal-digits="0" default-value="" mandatory="false" name="RESULT_TYPE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="SET_SIZE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="START_DATE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="91" literal-prefix="'" literal-suffix="'" name="DATE" selected-variant-pattern="DATE">
+<variant type-name-pattern="DATE"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="END_DATE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="91" literal-prefix="'" literal-suffix="'" name="DATE" selected-variant-pattern="DATE">
+<variant type-name-pattern="DATE"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="3" decimal-digits="0" default-value="" mandatory="false" name="STATUS_TYPE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="3" decimal-digits="0" default-value="" mandatory="false" name="DELETE_FLAG" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="2000" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_QUERY_RESULT_INSTANCE" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_CONTROL_FILE_RESULT_INSTANCE_2" on-delete="" on-update="" referenced-key="PK_QT_QUERY_RESULT_TYPE" referenced-table="QT_QUERY_RESULT_TYPE" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+<foreign-key alias="" name="FK_QT_QUERY_RESULT_INSTANCE_2" on-delete="" on-update="" referenced-key="PK_QT_QUERY_INSTANCE" referenced-table="QT_QUERY_INSTANCE" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="QT_QUERY_STATUS_TYPE" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="58" width="168" x="459" y="56"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="3" decimal-digits="0" default-value="" mandatory="false" name="STATUS_TYPE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="100" decimal-digits="0" default-value="" mandatory="false" name="NAME" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="200" decimal-digits="0" default-value="" mandatory="false" name="DESCRIPTION" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_QUERY_STATUS_TYPE" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
+<table alias="" name="QT_QUERY_RESULT_TYPE" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="62" width="171" x="427" y="271"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="3" decimal-digits="0" default-value="" mandatory="false" name="RESULT_TYPE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="100" decimal-digits="0" default-value="" mandatory="false" name="NAME" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="100" decimal-digits="0" default-value="" mandatory="false" name="DESCRIPTION" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_QUERY_RESULT_TYPE" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
+<table alias="" name="QT_XML_RESULT" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="60" width="201" x="779" y="371"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="XML_RESULT_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="RESULT_INSTANCE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5000" decimal-digits="0" default-value="" mandatory="false" name="XML_VALUE" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="12" literal-prefix="'" literal-suffix="'" name="VARCHAR" selected-variant-pattern="VARCHAR(%n)">
+<variant precision-max="4000" precision-min="1" precision-variable="%n" type-name-pattern="VARCHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_XML_RESULT" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_XML_RESULT_1" on-delete="" on-update="" referenced-key="PK_QT_QUERY_RESULT_INSTANCE" referenced-table="QT_QUERY_RESULT_INSTANCE" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="QT_PATIENT_ENC_COLLECTION" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="84" width="194" x="377" y="344"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="PATIENT_ENC_COLL_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="RESULT_INSTANCE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="SET_INDEX" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="PATIENT_NUM" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="ENCOUNTER_NUM" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_PATIENT_ENC_COLLECTION" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_QT_PATIENT_ENC_COLLECTION_1" on-delete="" on-update="" referenced-key="PK_QT_QUERY_RESULT_INSTANCE" referenced-table="QT_QUERY_RESULT_INSTANCE" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="QT_PATIENT_SET_COLLECTION" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="77" width="192" x="581" y="362"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="PATIENT_SET_COLL_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="5" decimal-digits="0" default-value="" mandatory="false" name="RESULT_INSTANCE_ID" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="SET_INDEX" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="PATIENT_NUM" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="2" name="NUMERIC" selected-variant-pattern="NUMERIC(%p)">
+<variant precision-max="38" precision-min="1" precision-variable="%p" type-name-pattern="NUMERIC(%p)"/>
+<variant type-name-pattern="NUMERIC"/>
+<variant precision-max="38" precision-min="1" precision-variable="%p" scale-max="127" scale-min="-84" scale-variable="%s" type-name-pattern="NUMERIC(%p,%s)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_QT_PATIENT_SET_COLLECTION" remarks="">
+<primary-key-description></primary-key-description>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_QT_PATIENT_SET_COLLECTION_1" on-delete="" on-update="" referenced-key="PK_QT_QUERY_RESULT_INSTANCE" referenced-table="QT_QUERY_RESULT_INSTANCE" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+</table-list>
+</schema>
+</schema-list>
+</database-model>
+</clay-model>

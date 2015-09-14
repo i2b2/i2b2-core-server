@@ -1,0 +1,52 @@
+DIV.modLabValues DIV.mlvBody {
+	width:auto;
+}
+
+DIV.modLabValues DIV#mlvfrmNUMERIC P {
+	top-margin:0px;
+	bottom-margin:5px;
+}
+
+DIV.modLabValues INPUT.numInput {
+	width:50px;
+}
+
+DIV.modLabValues INPUT.strInput {
+	width:250px;
+}
+
+
+DIV.modLabValues DIV.mlvtop {
+	display:block;
+	vertical-align:top;
+	width:100%;
+}
+
+DIV.modLabValues DIV.mlvModesGroup {
+	float:left;
+	margin:10px;
+	width:136px;
+}
+
+DIV.modLabValues DIV.mlvInputGroup {
+	float:left;
+	margin:10px;
+	vertical-align:top;
+}
+
+DIV.modLabValues DIV.mlvModesGroup > DIV {
+	float:left;
+	font-size:12px;
+	line-height:10px;
+	margin:0px;
+	padding:4px 0px;
+	width:180px;
+}
+
+DIV.modLabValues A.barlink {
+	display:block; 
+	width:100%; 
+	text-decoration:none;
+	color:#000;
+	text-align: center;
+}

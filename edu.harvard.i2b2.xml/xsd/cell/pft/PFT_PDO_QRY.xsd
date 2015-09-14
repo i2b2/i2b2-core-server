@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:pft="http://www.i2b2.org/xsd/cell/pft/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/pft/">
+    
+    <xs:element name="message_body_example">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="pft:process_report_request"/>
+                <xs:element ref="pft:process_report_response"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="process_report_request" type="pft:requestType"/>
+    <xs:element name="process_report_response" type="pft:responseType"/>
+    
+    <xs:complexType name="requestType">
+        <xs:sequence>
+            <xs:any namespace="http://www.i2b2.org/xsd/hive/pdo/"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="responseType">
+        <xs:sequence>
+            <xs:any namespace="http://www.i2b2.org/xsd/hive/pdo/"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+</xs:schema>

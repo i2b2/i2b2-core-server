@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/v2/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ont/v2/">
+<!--    <xs:element name="examples">
+        <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="message_body">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:any namespace="##targetNamespace"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>   
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>-->
+
+    <xs:element name="concepts" type="ont:conceptsType"/>
+
+    <xs:complexType name="conceptsType">
+        <xs:sequence>
+            <xs:element name="concept" type="ont:conceptType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="conceptType">
+        <xs:sequence>
+            <xs:element name="level" type="xs:int" />
+            <xs:element name="key" type="xs:string" />
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="synonym_cd" type="xs:string" />
+            <xs:element name="visualattributes" type="xs:string" />
+            <xs:element name="totalnum" type="xs:int" />
+            <xs:element name="basecode" type="xs:string" />
+            <xs:element name="metadataxml" type="ont:xml_valueType" /> 
+            <xs:element name="facttablecolumn" type="xs:string" />
+            <xs:element name="tablename" type="xs:string" />
+            <xs:element name="columnname" type="xs:string" />
+            <xs:element name="columndatatype" type="xs:string" />
+            <xs:element name="operator" type="xs:string" />
+            <xs:element name="dimcode" type="xs:string" />
+            <xs:element name="comment" type="xs:string" />
+            <xs:element name="tooltip" type="xs:string" />
+            <xs:element name="update_date" type="xs:dateTime" />
+            <xs:element name="download_date" type="xs:dateTime" />
+            <xs:element name="import_date" type="xs:dateTime" />
+            <xs:element name="sourcesystem_cd" type="xs:string" />
+            <xs:element name="valuetype_cd" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+ 
+    <xs:complexType name="xml_valueType" mixed="false">
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any" processContents="skip"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

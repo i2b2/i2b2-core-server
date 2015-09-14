@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:loader="http://www.i2b2.org/xsd/cell/crc/loader/1.1/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/loader/1.1/">
+
+  
+    <xs:include schemaLocation="./CRC_UPLOADER_QRY_request.xsd"/>
+    <xs:include schemaLocation="./CRC_UPLOADER_QRY_response.xsd"/>
+
+    <xs:element name="examples">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="message_body" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="loader:publish_data_request"/>
+                            <xs:element ref="loader:load_data_response"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    
+   
+</xs:schema>

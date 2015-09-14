@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for i2b2 with spring jdbc template.
+  -->
+<beans>
+
+  <bean id="jaxbPackage" class="org.springframework.beans.factory.config.ListFactoryBean">
+    <property name="sourceList">
+      <list>
+        <value>edu.harvard.i2b2.crc.datavo.i2b2message</value>
+        <value>edu.harvard.i2b2.crc.datavo.pdo</value>
+        <value>edu.harvard.i2b2.crc.datavo.pdo.query</value>
+        <value>edu.harvard.i2b2.crc.datavo.setfinder.query</value>
+        <value>edu.harvard.i2b2.crc.datavo.pm</value>
+        <value>edu.harvard.i2b2.crc.datavo.ontology</value>
+        <value>edu.harvard.i2b2.crc.datavo.i2b2result</value>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="appType" class="edu.harvard.i2b2.crc.datavo.i2b2message.ApplicationType">
+    <property name="applicationName" value="CRC Cell"/>
+    <property name="applicationVersion" value="1.7"/>
+  </bean>
+  
+ 
+  
+ <bean id="message_header" class="edu.harvard.i2b2.crc.datavo.i2b2message.MessageHeaderType">
+ 	<property name="sendingApplication" ref="appType"/>
+ </bean>
+ 
+  <bean name="defaultSetfinderResultType" class="java.lang.String">
+    <constructor-arg  index="0" type="java.lang.String"><value>PATIENTSET</value></constructor-arg>
+  </bean>
+  
+  
+    
+  
+  <bean name="setFinderResultGeneratorMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+    <property name="sourceMap">
+      <map>
+      <entry>
+        <key>
+          <value>PATIENTSET</value>
+        </key>
+         <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSetGenerator</value>   
+      </entry>
+      <entry>
+        <key>
+          <value>PATIENT_ENCOUNTER_SET</value>
+        </key>
+         <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultEncounterSetGenerator</value>   
+      </entry>
+      <entry>
+        <key>
+          <value>PATIENT_COUNT_XML</value>
+        </key>
+        <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientCountGenerator</value>
+      </entry>
+        <entry>
+          <key>
+            <value>PATIENT_GENDER_COUNT_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultGenerator</value>
+        </entry>
+        <entry>
+          <key>
+            <value>PATIENT_RACE_COUNT_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultGenerator</value>
+        </entry>
+        <entry>
+          <key>
+            <value>PATIENT_VITALSTATUS_COUNT_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultGenerator</value>
+        </entry>
+        <entry>
+          <key>
+            <value>PATIENT_MORTALITY_COUNT_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultGenerator</value>
+        </entry>
+        <entry>
+          <key>
+            <value>PATIENT_AGE_COUNT_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultGenerator</value>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+
+
+</beans>
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="jaxbPackage"
+		class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>edu.harvard.i2b2.crc.loader.datavo.loader.query</value>
+				<value>edu.harvard.i2b2.crc.datavo.pdo</value>
+				<value>edu.harvard.i2b2.crc.datavo.i2b2message</value>
+				<value>edu.harvard.i2b2.crc.datavo.pm</value>
+				<value>edu.harvard.i2b2.crc.loader.datavo.fr</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="appType" class="edu.harvard.i2b2.crc.datavo.i2b2message.ApplicationType">
+		<property name="applicationName" value="CRC Cell" />
+		<property name="applicationVersion" value="1.7" />
+	</bean>
+
+
+
+	<bean id="message_header"
+		class="edu.harvard.i2b2.crc.datavo.i2b2message.MessageHeaderType">
+		<property name="sendingApplication" ref="appType" />
+	</bean>
+
+	<bean id="CRCBootstrapDS" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:XE" />
+		<property name="username" value="i2b2hive" />
+		<property name="password" value="demouser" />
+	</bean>
+
+
+</beans>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pft:message_body_example xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    xmlns:pft="http://www.i2b2.org/xsd/cell/pft/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/pft/ ./PFT_PDO_QRY.xsd 
+                        http://www.i2b2.org/xsd/cell/crc/ ../../hive/pdo/i2b2_PDO.xsd">
+    <pft:process_report_request>
+        <pdo:patient_data>
+            <observation_fact_set>
+                <observation_fact>
+                    <encounter_num>0</encounter_num>
+                    <patient_num>0</patient_num>
+                    <concept_cd>LCS-I2B2:pul</concept_cd>
+                    <provider_id/>
+                    <start_date>2000-12-30T00:00:00</start_date>
+                    <modifier_cd/>
+                    <observation_blob><![CDATA[
+SPIROMETRY:                    Pre Bronchodilator         Post Bronchodilator
+                        Meas. Pred. %Pred  CI-Range/Eval  Meas. %Pred %Change
+------------------------------------------------------------------------------
+FEV1        (L)          1.06  3.09    34  2.25-3.93  AM   1.27    41    20
+FVC         (L)          1.56  4.08    38  2.96-5.2   AM   1.88    46    21
+FEV1/FVC    (%)            68    76   ---    68-             68   ---   ---
+FEF 25-75   (L/s)        0.68  2.74    25  1.07-4.41       0.64    23    -6
+PEFR        (L/s)        2.82  7.57    37  3.68-11.46      3.67    48    30
+FIVC        (L)          1.48  4.08   ---  2.96-5.2        1.68   ---   ---
+FEF50/FIF50 (%)          0.33  ---    ---      -           0.34   ---   ---
+                    ]]></observation_blob>
+                </observation_fact>
+            </observation_fact_set>
+        </pdo:patient_data>
+    </pft:process_report_request>
+    <pft:process_report_response>
+        <pdo:patient_data>
+            <observation_fact_set>
+                <observation_fact>
+                    <encounter_num>0</encounter_num>
+                    <patient_num>0</patient_num>
+                    <concept_cd>LCS-I2B2:pulfev1obs</concept_cd>
+                    <provider_id/>
+                    <start_date>2000-12-30T00:00:00</start_date>
+                    <modifier_cd/>
+                    <nval_num>1.06</nval_num>
+                </observation_fact>
+                <observation_fact>
+                    <encounter_num>0</encounter_num>
+                    <patient_num>0</patient_num>
+                    <concept_cd>LCS-I2B2:pulfev1obspost</concept_cd>
+                    <provider_id/>
+                    <start_date>2000-12-30T00:00:00</start_date>
+                    <modifier_cd/>
+                    <nval_num>1.27</nval_num>
+                </observation_fact>
+                <observation_fact>
+                    <encounter_num>0</encounter_num>
+                    <patient_num>0</patient_num>
+                    <concept_cd>LCS-I2B2:pulfev1pred</concept_cd>
+                    <provider_id/>
+                    <start_date>2000-12-30T00:00:00</start_date>
+                    <modifier_cd/>
+                    <nval_num>34</nval_num>
+                </observation_fact>
+            </observation_fact_set>
+        </pdo:patient_data>
+    </pft:process_report_response>
+</pft:message_body_example>

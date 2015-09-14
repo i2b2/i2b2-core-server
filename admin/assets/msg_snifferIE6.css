@@ -1,0 +1,21 @@
+DIV#sniffer_Filters {
+	width: 722px !important;
+}
+DIV#sniffer_MatchMsgDisp {
+	height: 448px !important;
+	top: 30px !important;
+	width: 472px !important;
+}	
+DIV#sniffer_MatchMsgList {
+	height: 448px !important;
+	top: 30px !important;
+}
+
+DIV#sniffer_ListButtons {
+	top: 441px !important;
+	height: 36px !important;
+}
+
+TBODY TR TD {
+	font-size: 10px !important;	
+}

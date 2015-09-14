@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/nlp/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/nlp/">
+    
+    <xs:element name="nlp_result" type="nlp:nlp_result_dataType"/>
+    
+    <xs:complexType name="nlp_result_dataType">
+        <xs:sequence>
+            <xs:element name="version" type="xs:string" />        
+            <xs:element name="section_heading" type="xs:string" />    
+            <xs:element name="section_offset" type="xs:int" "/>     
+            <xs:element name="sentence" type="xs:string" />        
+            <xs:element name="sentence_offset" type="xs:int" />  
+            <xs:element name="word" type="xs:string" />  />     
+       </xs:sequence>
+    </xs:complexType>
+    
+   	<xs:element name="keyword_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="keyword" maxOccurs="unbounded"
+					type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+        
+
+</xs:schema>
+
+

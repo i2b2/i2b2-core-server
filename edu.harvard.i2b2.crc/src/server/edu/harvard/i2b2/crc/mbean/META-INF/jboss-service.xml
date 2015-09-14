@@ -1,0 +1,9 @@
+<server>
+    <mbean code="edu.harvard.i2b2.crc.mbean.CronStartService" 
+           name="crc.startCron:service=CronStartService">
+        <!--
+        <attribute name="JndiName">inmemory/maps/MapTest</attribute>
+        -->
+        <depends>jboss:service=Naming</depends>
+    </mbean>
+</server> 

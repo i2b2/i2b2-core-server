@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<id:publish xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:id="http://www.i2b2.org/xsd/cell/id/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/id/ ./ID_publish.xsd">
+    <request session="x">
+        <master_record id="1">
+            <local_record id="a" site="lmr" status="active">
+                <string concept_cd="first_name">Raj</string>
+                <string concept_cd="last_name">Kuttan-Kuttan</string>
+                <date concept_cd="birthdate">2000-02-29</date>
+                <datetime concept_cd="start_date">2002-02-28T13:59:59</datetime>
+                <number concept_cd="test_result">25.0</number>
+            </local_record>
+            <local_record id="b" site="mgh" status="inactive">
+                <string concept_cd="first_name">rajesh</string>
+                <string concept_cd="last_name">kuttan</string>
+            </local_record>
+        </master_record>
+        <master_record>
+            <local_record id="c" site="bwh">
+                <string concept_cd="first_name">Kristel</string>
+                <string concept_cd="last_name">Hackett</string>
+            </local_record>
+        </master_record>
+    </request>
+    <response>
+        <publish_master id="1">
+            <message status="error">There was some kind of error.</message>
+            <publish_local id="a" site="lmr">
+                <message status="error">There was an error with date type.</message>
+            </publish_local>
+            <publish_local id="b" site="mgh">
+                <message status="updated_existing"/>
+            </publish_local>
+        </publish_master>
+        <publish_master>
+            <message status="no_master_created"/>
+            <publish_local id="c" site="bwh">
+                <message status="inserted_new"/>
+            </publish_local>
+        </publish_master>
+    </response>
+</id:publish>

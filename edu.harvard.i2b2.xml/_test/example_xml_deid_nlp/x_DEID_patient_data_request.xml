@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/hive/ ./i2b2_request.xsd
+                        http://www.i2b2.org/xsd/hive/pdo/ ./i2b2_PDO.xsd">
+    <message_header>
+        <i2b2_version_compatible>0.3</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name>i2b2 QueryTool</application_name>
+            <application_version>0.1</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>LCS</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>De-ID Tools</application_name>
+            <application_version>0.1</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name/>
+        </receiving_facility>
+        <datetime_of_message>2006-08-31T23:59:59.222</datetime_of_message>
+        <security>
+            <!-- <ticket/> -->
+            <domain/>
+            <username/>
+            <password/>
+        </security>
+        <message_type>
+            <message_code/>
+            <event_type/>
+            <message_structure/>
+        </message_type>
+        <message_control_id>
+            <session_id>2006-08-31T23:59:59.222</session_id>
+            <message_num>1234</message_num>
+            <instance_num>0</instance_num>
+        </message_control_id>
+        <processing_id>
+            <processing_id>P</processing_id>
+            <processing_mode>I</processing_mode>
+        </processing_id>
+        <accept_acknowledgement_type>AL</accept_acknowledgement_type>
+        <application_acknowledgement_type>AL</application_acknowledgement_type>
+        <country_code>US</country_code>
+    </message_header>
+    <request_header>
+        <result_waittime_ms>120000</result_waittime_ms>
+    </request_header>
+    <message_body>
+        <pdo:patient_data>
+            <observation_fact_set>
+                <!-- Group all observation_fact elements together -->
+                <observation_fact>
+                    <encounter_num>10000001</encounter_num>
+                    <patient_num>1234</patient_num>
+                    <concept_cd>LCS-I2B2:c1010c<!-- (MGH Discharge Summary) --></concept_cd>
+                    <provider_id>12345</provider_id>
+                    <start_date>2003-12-07T00:00:00</start_date>
+                    <modifier_cd/>
+                    <observation_blob>
+                        <![CDATA[
+ED DISCHARGE NOTIFICATION/SUMMARY
+
+MILLER,BERTHA MRN: 12345678 Age: 77y
+REGISTRATION DATE: 12/11/2003 02:40 PM     Provider: MORRIS  RIVERA
+
+PRELIMINARY REPORT
+]]>
+                    </observation_blob>
+                    <update_date>2005-12-23T09:41:03</update_date>
+                    <download_date>2005-12-21T09:41:03</download_date>
+                    <import_date>2005-12-22T09:41:03</import_date>
+                    <sourcesystem_cd>RPDR</sourcesystem_cd>
+                </observation_fact>
+            </observation_fact_set>
+        </pdo:patient_data>
+    </message_body>
+</i2b2:request>

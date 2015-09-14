@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ont/1.1/">
+    
+    <xs:element name="GenomicMetadata" type="ont:genomicMetadataType"/>
+    
+    <!-- GenomicMetadataType (Top level type) -->			
+    <xs:complexType name="genomicMetadataType"> 
+        <xs:sequence>
+            <xs:element name="Version" type="xs:string"/>	
+            <xs:element name="CreationDateTime" type="xs:dateTime" />   
+            <xs:element name="SequenceVariantLocation" type="ont:sequenceVariantLocationType"/>
+            <xs:element name="ChromosomeLocation" type="ont:chromosomeLocationType"/>      
+   			<xs:element name="SequenceVariant" type="ont:sequenceVariantType"/>      
+
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="chromosomeLocationType">
+ 		<xs:sequence>
+        	<xs:element name="Chromosome" type="xs:string" />
+        	<xs:element name="Start" type="xs:int" />
+     		<xs:element name="End" type="xs:int" />
+       		<xs:element name="Orientation" type="xs:string" />
+       		<xs:element name="Region" type="xs:string" />
+     	</xs:sequence>
+   	</xs:complexType>
+     
+    <xs:complexType name="sequenceVariantType">   
+       <xs:sequence>
+           <xs:element name="AaChange" type="xs:string" />
+           <xs:element name="DnaChange" type="ont:dnaChangeType" />
+           <xs:element name="HGVSName" type="xs:string" />
+           <xs:element name="SystematicName" type="xs:string" />
+           <xs:element name="SystematicNameProtein" type="xs:string" />
+       </xs:sequence>
+    </xs:complexType>     
+    
+         
+    <xs:complexType name="dnaChangeType">   
+       <xs:sequence>
+           <xs:element name="type" type="xs:string" />
+           <xs:element name="value" type="xs:string" />
+       </xs:sequence>
+    </xs:complexType>   
+    
+    <xs:complexType name="sequenceVariantLocationType">
+       <xs:sequence>
+           <xs:element name="FlankingSeq_5" type="xs:string" />
+           <xs:element name="FlankingSeq_3" type="xs:string" />
+           <xs:element name="GeneId" type="xs:string" />
+           <xs:element name="GeneName" type="xs:string" />
+           <xs:element name="ReferenceGenomeVersion" type="xs:string" />
+           <xs:element name="RegionName" type="xs:string" />
+           <xs:element name="RegionType" type="xs:string" />
+           <xs:element name="Accessions" type="ont:accessionsType"/>   
+       </xs:sequence>
+    </xs:complexType> 
+
+    <xs:complexType name="accessionsType">
+        <xs:sequence>
+          <xs:element name="Accession" type="ont:accessionType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>  
+                  
+      <xs:complexType name="accessionType">
+        <xs:sequence>
+	        <xs:element name="Name" type="xs:string" />
+            <xs:element name="Type" type="xs:string" />
+        </xs:sequence>                         
+      </xs:complexType>
+                      
+</xs:schema>

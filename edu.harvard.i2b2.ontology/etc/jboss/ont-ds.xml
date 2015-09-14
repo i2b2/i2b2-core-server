@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema">
+	<datasource jta="false" jndi-name="java:/OntologyDemoDS"
+		pool-name="OntologyDemoDS" enabled="true" use-ccm="false">
+		<connection-url>jdbc:oracle:thin:@localhost:1521:xe</connection-url>
+		<driver-class>oracle.jdbc.OracleDriver</driver-class>
+		<driver>ojdbc6.jar</driver>
+		<security>
+			<user-name>i2b2metadata</user-name>
+			<password>demouser</password>
+		</security>
+		<validation>
+			<validate-on-match>false</validate-on-match>
+			<background-validation>false</background-validation>
+		</validation>
+		<statement>
+			<share-prepared-statements>false</share-prepared-statements>
+		</statement>
+	</datasource>
+	<datasource jta="false" jndi-name="java:/OntologyBootStrapDS"
+		pool-name="OntologyBootStrapDS" enabled="true" use-ccm="false">
+		<connection-url>jdbc:oracle:thin:@localhost:1521:xe</connection-url>
+		<driver-class>oracle.jdbc.OracleDriver</driver-class>
+		<driver>ojdbc6.jar</driver>
+		<security>
+			<user-name>i2b2hive</user-name>
+			<password>demouser</password>
+		</security>
+		<validation>
+			<validate-on-match>false</validate-on-match>
+			<background-validation>false</background-validation>
+		</validation>
+		<statement>
+			<share-prepared-statements>false</share-prepared-statements>
+		</statement>
+	</datasource>
+	
+	
+		
+	<!-- 
+
+
+	<datasource jta="false" jndi-name="java:/OntologyDemoDS"
+		pool-name="OntologyDemoDS" enabled="true" use-ccm="false">
+		<connection-url>jdbc:postgresql://localhost:5432/i2b2</connection-url>
+		<driver-class>org.postgresql.Driver</driver-class>
+		<driver>postgresql-9.2-1002.jdbc4.jar</driver>
+		<security>
+			<user-name>i2b2metadata</user-name>
+			<password>demouser</password>
+		</security>
+		<validation>
+			<validate-on-match>false</validate-on-match>
+			<background-validation>false</background-validation>
+		</validation>
+		<statement>
+			<share-prepared-statements>false</share-prepared-statements>
+		</statement>
+	</datasource>
+
+
+
+	<datasource jta="false" jndi-name="java:/OntologyDemoDS"
+		pool-name="OntologyDemoDS" enabled="true" use-ccm="false">
+		<connection-url>jdbc:sqlserver://localhost:1433</connection-url>
+		<driver-class>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver-class>
+		<driver>sqljdbc4.jar</driver>
+		<security>
+			<user-name>i2b2metadata</user-name>
+			<password>demouser</password>
+		</security>
+		<validation>
+			<valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLValidConnectionChecker"></valid-connection-checker>
+            <validate-on-match>false</validate-on-match>
+		</validation>
+		<statement>
+			<share-prepared-statements>false</share-prepared-statements>
+		</statement>
+	</datasource>
+
+ -->
+	
+</datasources>

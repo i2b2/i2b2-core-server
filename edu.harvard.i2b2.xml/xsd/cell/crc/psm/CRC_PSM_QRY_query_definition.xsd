@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:crc="http://www.i2b2.org/xsd/cell/crc/psm/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/psm/">
+    
+    <xs:annotation>
+        <xs:documentation>this schema defines xml representation of a query definition</xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType name="query_definitionType">
+        <xs:sequence>
+            <xs:element name="query_name" type="xs:string"/>
+            <xs:element name="query_description" type="xs:string"/>
+            <xs:element name="query_timing" type="crc:timingType"/>
+            <xs:element name="specificity_scale" type="xs:int"/>
+            <xs:element name="query_date_from" type="xs:dateTime"/>
+            <xs:element name="query_date_to" type="xs:dateTime"/>
+            <xs:element name="panel" type="crc:panelType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="timingType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ANY"/>
+            <xs:enumeration value="SAME"/>
+            <xs:enumeration value="ORDER_BY_DATE"/>
+            <xs:enumeration value="SPAN_BY_DATE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="panelType">
+        <xs:sequence>
+            <xs:element name="panel_number" type="xs:int"/>
+            <xs:element name="panel_date_from" type="xs:dateTime"/>
+            <xs:element name="panel_date_to" type="xs:dateTime"/>
+            <xs:element name="invert" type="xs:int"/>
+            <!-- boolean? -->
+            <xs:element name="total_item_occurrences" type="xs:int"/>
+            <xs:element name="item" type="crc:itemType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="itemType">
+        <xs:sequence>
+            <xs:element name="hlevel" type="xs:int"/>
+            <xs:element name="item_name" type="xs:string"/>
+            <xs:element name="item_table" type="xs:string"/>
+            <xs:element name="item_key" type="xs:string"/>
+            <xs:element name="item_icon" type="xs:string"/>
+            <xs:element name="tooltip" type="xs:string"/>
+            <xs:element name="class" type="xs:string"/>
+            
+            <!-- there may be two constrain_by_values to express a range of numbers -->
+            <xs:element name="constrain_by_value" minOccurs="0" maxOccurs="2">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="value_operator" type="crc:operatorType"/>      
+                        <!--
+                            a list of enumerated would look like this:
+                            value_operator:   in
+                            value_constraint: 'a','b','c'
+                        -->
+                        <xs:element name="value_constraint" type="xs:string"/>
+                        <xs:element name="value_unit_of_measure" type="xs:string"/>
+                        <xs:element name="value_type" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="constrain_by_date" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="date_from" type="xs:dateTime"/>
+                        <xs:element name="date_to" type="xs:dateTime"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="constrain_by_modifier" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="modifier_name" type="xs:string"/>
+                        <xs:element name="modifier_key" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="operatorType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="="/>
+            <xs:enumeration value="&gt;"/>
+            <xs:enumeration value="&lt;"/>
+            <xs:enumeration value="in"/>
+            <xs:enumeration value="&gt;="/>
+            <xs:enumeration value="&lt;="/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

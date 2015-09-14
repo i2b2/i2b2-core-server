@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- XSD for i2b2 get version message and the Project Management cell, implements this message -->
+<!-- $Id: i2b2_version_msg.xsd,v 1.1 2007/09/05 16:55:41 rk903 Exp $ -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:i2b2version="http://www.i2b2.org/xsd/hive/msg/version/"
+    targetNamespace="http://www.i2b2.org/xsd/hive/msg/version/">
+         
+    <xsd:element name="request" type="i2b2version:request_messageType"/>
+    <xsd:element name="response" type="i2b2version:response_messageType"/>
+        
+    <xsd:complexType name="request_messageType" final="extension">
+        <xsd:sequence>
+            <xsd:element name="message_header" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Empty tag to comply with i2b2 message_header tag
+                </xsd:documentation>
+            </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="message_body">
+                <xsd:complexType >
+                    <xsd:sequence>
+                        <xsd:element name="get_message_version" />
+                    </xsd:sequence>
+                 </xsd:complexType >
+            </xsd:element> 
+        </xsd:sequence>
+    </xsd:complexType>
+
+        
+    <xsd:complexType name="response_messageType" final="extension">
+        <xsd:sequence>
+            <xsd:element name="message_header" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Empty tag to comply with i2b2 message_header tag
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="message_body">
+                <xsd:complexType >
+                 <xsd:sequence>
+                    <xsd:element name="i2b2_message_version" type="xsd:string"/>
+                 </xsd:sequence>
+                </xsd:complexType >            
+            </xsd:element>    
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

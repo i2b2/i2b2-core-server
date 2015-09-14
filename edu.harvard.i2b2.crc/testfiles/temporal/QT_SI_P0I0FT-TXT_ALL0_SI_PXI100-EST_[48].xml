@@ -1,0 +1,87 @@
+<ns5:request xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" 
+			xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" 
+			xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" 
+			xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" 
+			xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" 
+			xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" 
+			xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" 
+			xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" 
+			xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/">
+			  <message_header>
+				<i2b2_version_compatible>1.1</i2b2_version_compatible>
+				<sending_application>
+				  <application_name>i2b2 Query Tool</application_name>
+				  <application_version>1.6</application_version>
+				</sending_application>
+				<sending_facility>
+				  <facility_name>i2b2 Hive</facility_name>
+				</sending_facility>
+				<receiving_application>
+				  <application_name>CRC Cell</application_name>
+				  <application_version>1.6</application_version>
+				</receiving_application>
+				<receiving_facility>
+				  <facility_name>i2b2 Hive</facility_name>
+				</receiving_facility>
+				<datetime_of_message>2013-11-08T11:34:44.970</datetime_of_message>
+				<security>
+				  <domain>i2b2demo</domain>
+				  <username>demo</username>
+				  <password is_token="false">demouser</password>
+				</security>
+				<message_type>
+				  <message_code>Q04</message_code>
+				  <event_type>EQQ</event_type>
+				</message_type>
+				<message_control_id>
+				  <message_num>DA01804809554BAD9AB2950685EC8DAA</message_num>
+				  <instance_num>0</instance_num>
+				</message_control_id>
+				<processing_id>
+				  <processing_id>P</processing_id>
+				  <processing_mode>I</processing_mode>
+				</processing_id>
+				<accept_acknowledgement_type>AL</accept_acknowledgement_type>
+				<application_acknowledgement_type>AL</application_acknowledgement_type>
+				<country_code>US</country_code>
+				<project_id>Demo</project_id>
+			  </message_header>
+			  <request_header>
+				<result_waittime_ms>180000</result_waittime_ms>
+			  </request_header>
+			  <message_body>
+				<ns4:psmheader>
+				  <user group="i2b2demo" login="demo">demo</user>
+				  <patient_set_limit>0</patient_set_limit>
+				  <estimated_time>0</estimated_time>
+				  <query_mode></query_mode>
+				  <request_type>CRC_QRY_runQueryInstance_fromQueryDefinition</request_type>
+				</ns4:psmheader>
+				<ns4:request xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:query_definition_requestType">
+				  <query_definition>
+					<query_name>QT_SI_P0I0FT-TXT_ALL0_SI_PXI100-EST</query_name>
+					<query_timing>ANY</query_timing>
+					<specificity_scale>0</specificity_scale>
+					<subquery_constraint>
+						<first_query>
+							<query_id>Query0</query_id>
+							<join_column>STARTDATE</join_column>
+							<aggregate_operator>ANY</aggregate_operator>
+						</first_query>
+						<operator>LESS</operator>
+						<second_query>
+							<query_id>Query1</query_id>
+							<join_column>STARTDATE</join_column>
+							<aggregate_operator>LAST</aggregate_operator>
+						</second_query>
+						<span></span>                
+					</subquery_constraint>					
+					<subquery><query_name>QI_P0I0FT-TXT</query_name><query_timing>SAMEINSTANCENUM</query_timing><specificity_scale>0</specificity_scale><panel><panel_number>1</panel_number><panel_timing>SAMEINSTANCENUM</panel_timing><panel_accuracy_scale>100</panel_accuracy_scale><panel_date_from>2000-01-01T00:00:00Z</panel_date_from><panel_date_to>2005-12-31T00:00:00Z</panel_date_to><invert>0</invert><total_item_occurrences>1</total_item_occurrences><item><hlevel>2</hlevel><item_name>De-Identified X-Ray Reports</item_name><item_key>\\i2b2_REP\i2b2\Reports\De-Identified X-Ray Reports\</item_key><item_icon>LAE</item_icon><tooltip>\ i2b2 \ Reports \ De-Identified X-Ray Reports \</tooltip><class>ENC</class><constrain_by_value><value_operator>CONTAINS</value_operator><value_constraint>Radiology</value_constraint><value_unit_of_measure/><value_type>LARGETEXT</value_type></constrain_by_value><item_is_synonym>false</item_is_synonym></item></panel><query_id>Query0</query_id><query_type>EVENT</query_type></subquery>
+					<subquery><query_name>QI_PXI100-EST</query_name><query_timing>SAMEINSTANCENUM</query_timing><specificity_scale>0</specificity_scale><panel><panel_number>1</panel_number><panel_timing>SAMEINSTANCENUM</panel_timing><panel_accuracy_scale>100</panel_accuracy_scale><invert>1</invert><total_item_occurrences>2</total_item_occurrences><item><hlevel>0</hlevel><item_name>Encounter Set for "Circulatory sys@01:28:25"</item_name><item_key>patient_set_enc_id:371</item_key><tooltip>Encounter Set for "Circulatory sys@01:28:25"</tooltip><item_is_synonym>false</item_is_synonym></item></panel><query_id>Query1</query_id><query_type>EVENT</query_type></subquery>
+				  </query_definition>
+				  <result_output_list>
+					<result_output priority_index="1" name="PATIENT_COUNT_XML" />
+				  </result_output_list>
+				</ns4:request>
+			  </message_body>
+			</ns5:request>

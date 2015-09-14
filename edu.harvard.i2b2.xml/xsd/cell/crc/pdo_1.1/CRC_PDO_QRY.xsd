@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:crc="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/">
+
+    <xs:include schemaLocation="./CRC.xsd"/>
+    <xs:include schemaLocation="./CRC_PDO_QRY_request.xsd"/>
+    <xs:include schemaLocation="./CRC_PDO_QRY_response.xsd"/>
+
+    <xs:element name="examples">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="message_body" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="crc:pdoheader"/>
+                            <xs:element ref="crc:request"/>
+                            <xs:element ref="crc:response"/>
+                            <xs:element ref="crc:sql"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    
+    <xs:element name="pdoheader" type="crc:pdo_qry_headerType"/>
+    <!-- 
+    <xs:element name="sql" type="xs:string"/>
+    -->
+    
+    <xs:complexType name="pdo_qry_headerType">
+        <xs:complexContent>
+            <xs:extension base="crc:headerType">
+                <xs:sequence>
+                    <xs:element name="request_type" type="crc:pdoRequest_typeType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+<!--
+    <xs:element name="response">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="crc:patient_data"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+-->
+    <!--
+    1. patient set + concept list -> patient data (perhaps organized by patient)
+    2. observation fact key -> observation fact details (full fact or blob, etc)
+    -->
+    <xs:element name="patient_set_coll_id" type="xs:string"/>
+    <!-- <xs:element name="concept_path" type="ont:concept_path_itemType"/> -->
+    <xs:element name="concept_path" type="xs:string"/>
+    <xs:element name="observation_fact"/>
+    <!-- 
+    options:
+    1. how returned data is organized
+    2. what fields of observation_fact are returned
+    3. whether patient_dimension data is returned
+    4. restrict date range
+    5. 
+     -->
+
+    <xs:simpleType name="pdoRequest_typeType">
+        <xs:annotation>
+            <xs:documentation>Enumerated list of codes that define what kind of request is being
+                made. This informs the specific kind of request and response element that should be
+                expected. Whether the request type and response type match with this string is not
+                enforced, however.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="getPDO_fromInputList">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>get_pdo_from_inputList_requestType</requestType>
+                        <responseType>patient_data_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerydef]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="get_observationfact_by_primary_key">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>GetObservationFactByPrimaryKey_requestType</requestType>
+                        <responseType>patient_data_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerydef]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="get_patient_by_primary_key">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>GetPatientByPrimaryKey_requestType</requestType>
+                        <responseType>patient_data_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerydef]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="get_event_by_primary_key">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>GetEventByPrimaryKey_requestType</requestType>
+                        <responseType>patient_data_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerydef]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="get_concept_by_primary_key">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>GetConceptByPrimaryKey_requestType</requestType>
+                        <responseType>patient_data_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerydef]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="get_observer_by_primary_key">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>GetObserverByPrimaryKey_requestType</requestType>
+                        <responseType>patient_data_responseType</responseType>
+                    </xs:appinfo>
+                    <xs:documentation>[getquerydef]</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="get_pdo_template">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>GetPDOTemplate_requestType</requestType>
+                        <responseType>patient_data_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

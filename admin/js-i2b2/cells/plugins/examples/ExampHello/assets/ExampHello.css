@@ -1,0 +1,11 @@
+DIV#ExampHello-mainDiv {
+	padding: 8px;
+	text-align:left;
+}
+
+DIV#ExampHello-mainDiv DIV.helloDiv{
+	padding: 50px;
+	background: #DDF;
+	text-align:center;
+	border: 1px solid #000000
+}

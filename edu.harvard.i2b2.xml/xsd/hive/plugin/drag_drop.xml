@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plug:plugin_drag_drop xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:plug="http://www.i2b2.org/xsd/hive/plugin/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/hive/plugin/ ./drag_drop.xsd">
+    
+</plug:plugin_drag_drop>

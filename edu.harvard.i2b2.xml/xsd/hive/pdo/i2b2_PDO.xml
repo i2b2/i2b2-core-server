@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pdo:patient_data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/hive/pdo/ ./i2b2_PDO.xsd">
+
+    <visit_dimension_set>
+
+        <!-- Maximum Visit Data -->
+        <visit_dimension>
+            <encounter_ide source="PULENCTMAP">XDFD45HSDG9578FDFG</encounter_ide>
+            <patient_num>12345</patient_num>
+            <inout_cd>I</inout_cd>
+            <location_cd>MGH</location_cd>
+            <location_path>Clinics\MGH\Oral Surgury</location_path>
+            <start_date>1999-02-28T13:59:00</start_date>
+            <end_date>1999-02-28T13:59:00</end_date>
+            <visit_blob/>
+            <update_date>1999-02-28T13:59:00</update_date>
+            <download_date>1999-02-28T13:59:00</download_date>
+            <import_date>1999-02-28T13:59:00</import_date>
+            <sourcesystem_cd>RPDRASTHMA</sourcesystem_cd>
+            <upload_id>123</upload_id>
+        </visit_dimension>
+
+        <!-- Minimum Visit Data -->
+        <visit_dimension>
+            <encounter_num>1234567</encounter_num>
+            <patient_id source="EMP">123456789</patient_id>
+        </visit_dimension>
+
+    </visit_dimension_set>
+
+    <concept_dimension_set>
+
+        <!-- Maximum Concept Data -->
+        <concept_dimension>
+            <concept_path>i2b2\Diagnoses\C0004096</concept_path>
+            <concept_cd>UMLS:C0004096</concept_cd>
+            <name_char>Asthma</name_char>
+            <concept_blob/>
+            <update_date>1999-02-28T13:59:00</update_date>
+            <download_date>1999-02-28T13:59:00</download_date>
+            <import_date>1999-02-28T13:59:00</import_date>
+            <sourcesystem_cd>ASTHMADICT</sourcesystem_cd>
+            <upload_id>234</upload_id>
+        </concept_dimension>
+
+        <!-- Minimum Concept Data -->
+        <concept_dimension>
+            <concept_path>i2b2\Diagnoses\C0004096</concept_path>
+        </concept_dimension>
+
+    </concept_dimension_set>
+
+    <provider_dimension_set>
+
+        <!-- Maximum Provider Data -->
+        <provider_dimension>
+            <provider_path>BWH\Pathology\B001234567\12345</provider_path>
+            <provider_id>B001234567</provider_id>
+            <name_char>Doctor, John A., MD</name_char>
+            <provider_blob/>
+            <update_date>1999-02-28T13:59:00</update_date>
+            <download_date>1999-02-28T13:59:00</download_date>
+            <import_date>1999-02-28T13:59:00</import_date>
+            <sourcesystem_cd>token</sourcesystem_cd>
+            <upload_id>345</upload_id>
+        </provider_dimension>
+
+        <!-- Minimum Provider Data -->
+        <provider_dimension>
+            <provider_path>BWH\Pathology\B001234567\12345</provider_path>
+            <provider_id>B001234567</provider_id>
+        </provider_dimension>
+
+    </provider_dimension_set>
+
+    <patient_dimension_set>
+
+        <!-- Maximum Patient Data -->
+        <patient_dimension>
+            <patient_id source="EMP">123456789</patient_id>
+            <vital_status_cd>Y</vital_status_cd>
+            <birth_date>1930-02-28T13:59:00</birth_date>
+            <death_date>2001-02-28T13:59:00</death_date>
+            <sex_cd>F</sex_cd>
+            <age_in_years_num>71</age_in_years_num>
+            <language_cd>ENGL</language_cd>
+            <race_cd>B</race_cd>
+            <marital_status_cd>M</marital_status_cd>
+            <religion_cd>CA</religion_cd>
+            <zip_cd>12345-1234</zip_cd>
+            <statecityzip_path>Zip codes\Massachusetts\Boston\02120\</statecityzip_path>
+            <patient_blob/>
+            <update_date>1999-02-28T13:59:00</update_date>
+            <download_date>1999-02-28T13:59:00</download_date>
+            <import_date>1999-02-28T13:59:00</import_date>
+            <sourcesystem_cd>token</sourcesystem_cd>
+            <upload_id>456</upload_id>
+        </patient_dimension>
+
+        <!-- Minimum Patient Data -->
+        <patient_dimension>
+            <patient_num>1234</patient_num>
+        </patient_dimension>
+
+    </patient_dimension_set>
+
+    <observation_fact_set>
+
+        <!-- Maximum Observation Data -->
+        <observation_fact>
+            <encounter_num>1234567</encounter_num>
+            <patient_ide source="EMP">XRTU8GT9FKIS35DSVB</patient_ide>
+            <concept_cd>CODING-SYSTEM:V450</concept_cd>
+            <provider_id>12345</provider_id>
+            <start_date>1999-02-28T13:59:00</start_date>
+            <modifier_cd/>
+            <valtype_cd>N</valtype_cd>
+            <tval_char>Some Text Value</tval_char>
+            <nval_num>1.0</nval_num>
+            <valueflag_cd>float (or some code)</valueflag_cd>
+            <quantity_num>1.0</quantity_num>
+            <units_cd>ml</units_cd>
+            <end_date>1999-02-28T13:59:00</end_date>
+            <location_cd>MGH</location_cd>
+            <confidence_num>95</confidence_num>
+            <observation_blob/>
+            <update_date>1999-02-28T13:59:00</update_date>
+            <download_date>1999-02-28T13:59:00</download_date>
+            <import_date>1999-02-28T13:59:00</import_date>
+            <sourcesystem_cd>RPDRASTHMA</sourcesystem_cd>
+            <upload_id>567</upload_id>
+        </observation_fact>
+
+        <!-- Minimum Observation Data -->
+        <observation_fact>
+            <encounter_id source="PULENCTMAP">123456</encounter_id>
+            <patient_num>1234</patient_num>
+            <concept_cd>CODING-SYSTEM:V450</concept_cd>
+            <provider_id>12345</provider_id>
+            <start_date>1999-02-28T13:59:00</start_date>
+            <modifier_cd/>
+            <observation_blob></observation_blob>
+        </observation_fact>
+
+    </observation_fact_set>
+    
+    <observation_fact_set concept_name="1" concept_path="1">
+        <observation_fact>
+            <encounter_num>1</encounter_num>
+            <patient_num>1</patient_num>
+            <concept_cd>1</concept_cd>
+            <provider_id></provider_id>
+            <start_date>1999-02-28T13:59:00</start_date>
+            <modifier_cd></modifier_cd>
+        </observation_fact>
+    </observation_fact_set>
+
+</pdo:patient_data>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:crc="http://www.i2b2.org/xsd/cell/crc/psm/1.1/"
+    xmlns:qd="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"
+    xmlns:ad="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/psm/1.1/">
+    <xs:include schemaLocation="./CRC.xsd"/>
+    <xs:import schemaLocation="./CRC_PSM_QRY_query_definition.xsd" 
+    namespace="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"/>
+    
+    <xs:import schemaLocation="./CRC_PSM_QRY_analysis_definition.xsd" 
+    namespace="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/"/>
+    
+    <xs:annotation>
+        <xs:documentation>This schema defines abstract requestType and concrete requestTypes. It
+            also defines a request element of type requestType. the specific requestType of request
+            must be declared in the instance document using the xsi:type
+        attribute.</xs:documentation>
+    </xs:annotation>
+    <!-- 
+    <xs:element name="request" type="crc:requestType"/>
+ 
+    <xs:complexType name="requestType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>requestType is abstract so a concrete type must be declared in the
+                instance document using the xsi:type attribute.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence/>
+    </xs:complexType>
+    --> 
+
+   
+        
+    <xs:complexType name="user_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="user_id" type="xs:string"/>
+                    <xs:element name="group_id" type="xs:string"/>
+                    <xs:element name="fetch_size" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+
+    <xs:complexType name="master_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="query_master_id" type="xs:string"/>
+                    <xs:element name="query_name" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+	<xs:complexType name="master_delete_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+	                <xs:element name="user_id" type="xs:string"/>
+                    <xs:element name="query_master_id" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+	<xs:complexType name="master_rename_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+	                <xs:element name="user_id" type="xs:string"/>
+                    <xs:element name="query_master_id" type="xs:string"/>
+                    <xs:element name="query_name" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+
+    <xs:complexType name="instance_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="query_instance_id" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="result_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="query_result_instance_id" type="xs:string"/>
+                    <xs:element name="description" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="result_type_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="analysis_plugin_metadata_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                	<xs:element name="plugin_name" type="xs:string" default="ALL"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="query_definition_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="query_definition" type="qd:query_definitionType"/>
+                    <xs:element name="result_output_list" type="crc:result_output_optionListType" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="result_output_optionListType">
+        <xs:sequence>
+            <xs:element name="result_output" type="crc:result_output_optionType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="analysis_definition_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="analysis_definition" type="ad:analysis_definitionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+   
+   <xs:complexType name="result_output_optionType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="priority_index" type="xs:int"/>
+        <xs:attribute name="display_type" type="xs:string"/>
+        <xs:attribute name="full_name" type="xs:string" />
+    </xs:complexType>
+
+    
+    
+</xs:schema>

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:repository="http://rpdr.partners.org/repository_cell" 
+	targetNamespace="http://rpdr.partners.org/repository_cell" >
+	<!-- 
+		attributeFormDefault="unqualified" elementFormDefault="unqualified"
+	-->
+	
+	<xs:element name="event_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="event" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="event_id">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="source" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="patient_id">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="source" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="inout_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="site_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="location_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="start_date" type="xs:dateTime" />
+							<xs:element name="end_date" type="xs:dateTime" />
+							<xs:element name="principal_observer">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="principal_concept_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="event_xml" />
+							<xs:element name="update_date" type="xs:dateTime" />
+							<xs:element name="download_date" type="xs:dateTime" />
+							<xs:element name="import_date" type="xs:dateTime" />
+							<xs:element name="sourcesystem_cd" type="xs:string" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="concept_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="concept" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="concept_path" type="xs:string" />
+							<xs:element name="concept_cd" type="xs:string" />
+							<xs:element name="name_char" type="xs:string" />
+							<xs:element name="concept_xml" />
+							<xs:element name="udpate_date" type="xs:dateTime" />
+							<xs:element name="download_date" type="xs:dateTime" />
+							<xs:element name="import_date" type="xs:dateTime" />
+							<xs:element name="sourcesystem_cd" type="xs:string" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="observer_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="observer" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="observer_path" type="xs:string" />
+							<xs:element name="observer_cd" type="xs:string" />
+							<xs:element name="name_char" type="xs:string" />
+							<xs:element name="provider_xml" />
+							<xs:element name="update_date" type="xs:dateTime" />
+							<xs:element name="download_date" type="xs:dateTime" />
+							<xs:element name="import_date" type="xs:dateTime" />
+							<xs:element name="sourcesystem_cd" type="xs:string" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="patient_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="patient" maxOccurs="unbounded"> 
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="patient_id">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="source" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="vital_status_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="birth_date" type="xs:dateTime" />
+							<xs:element name="death_date" type="xs:dateTime" />
+							<xs:element name="sex_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="age_in_years_num">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:unsignedByte">
+											<xs:attribute name="units" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="language_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="race_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="marital_status_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="religion_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="zipcode_char" type="xs:string" />
+							<xs:element name="patient_xml" />
+							<xs:element name="update_date" type="xs:dateTime" />
+							<xs:element name="download_date" type="xs:dateTime" />
+							<xs:element name="import_date" type="xs:dateTime" />
+							<xs:element name="sourcesystem_cd" type="xs:string" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="observation_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="observation" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="event_id">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="source" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="patient_id">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="source" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="concept_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="observer_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="soruce" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="start_date" type="xs:dateTime" />
+							<xs:element name="modifier_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="valuetype_cd" type="xs:string" />
+							<xs:element name="tval_char" type="xs:string" />
+							<xs:element name="nval_num">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:decimal">
+											<xs:attribute name="units" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="valueflag_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="quantity_num" type="xs:decimal" />
+							<xs:element name="units_cd" type="xs:string" />
+							<xs:element name="end_date" type="xs:dateTime" />
+							<xs:element name="location_cd">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="observation_xml" />
+							<xs:element name="update_date" type="xs:dateTime" />
+							<xs:element name="download_date" type="xs:dateTime" />
+							<xs:element name="import_date" type="xs:dateTime" />
+							<xs:element name="sourcesystem_cd" type="xs:string" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="path" type="xs:string" use="optional"/>
+			<xs:attribute name="filter_name" type="xs:string" use="optional"/>
+			<xs:attribute name="concept_name" type="xs:string" use="optional"/>
+			<xs:attribute name="provider_id" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,70 @@
+<!--
+   Copyright 2002-2004 The Apache Software Foundation
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project name="Demo Launcher" default="demo" basedir=".">
+
+    <property name="base.dir" value="${basedir}/.."/>
+
+    <property name="etc.dir" value="${base.dir}/etc"/>
+    <property name="lib.dir" value="${base.dir}/lib"/>
+    <property name="jboss.lib.dir" value="${base.dir}/lib/jboss"/>
+    <property name="axis2.lib.dir" value="${base.dir}/lib/axis2"/>
+  
+
+    <property name="log.dir" value="${base.dir}/log"/>
+
+    <path id="base.class.path">
+        <pathelement path="${etc.dir}"/>
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+        <fileset dir="${axis2.lib.dir}" includes="*.jar"/>
+        <fileset dir="${jboss.lib.dir}" includes="*.jar"/>
+        <!--
+        <fileset dir="${cxf.lib.dir}" includes="*.jar"/>
+        <fileset dir="${axis2.lib.dir}" includes="*.jar"/>
+        -->
+    </path>
+
+    <target name="demo">
+        <mkdir dir="${log.dir}" />
+        <launch classname="edu.harvard.i2b2.crc.exec.CalulatePatientCountMain">
+            <classpath refid="base.class.path"/>
+            <syspropertyset>
+                <sysproperty key="log.dir" file="${log.dir}"/>
+            </syspropertyset>
+        </launch>
+    </target>
+   
+    <target name="calculate_patient_breakdown_by_itemkey">
+        <mkdir dir="${log.dir}" />
+        <launch classname="edu.harvard.i2b2.crc.exec.CalulatePatientCountMainFromItemKey">
+            <classpath refid="base.class.path"/>
+            <syspropertyset>
+                <sysproperty key="log.dir" file="${log.dir}"/>
+            </syspropertyset>
+        </launch>
+    </target>
+    
+    <!--
+    <target name="demo">
+        <mkdir dir="${log.dir}" />
+        <launch classname="org.apache.launcher.example.Main">
+            <classpath refid="base.class.path"/>
+            <syspropertyset>
+                <sysproperty key="log.dir" file="${log.dir}"/>
+            </syspropertyset>
+        </launch>
+    </target>
+   -->
+</project>

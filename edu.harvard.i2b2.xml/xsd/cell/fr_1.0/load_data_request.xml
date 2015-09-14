@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:publish_data_request xmlns:ns1="http://www.i2b2.org/xsd/cell/crc/loader/1.1/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/crc/loader/1.1/ file:/Users/rk903/Documents/Development_Uploader/edu.harvard.i2b2.xml/xsd/cell/crc/loader_1.1/CRC_UPLOADER_QRY_request.xsd">
+    <input_list>
+        <data_file>
+            <location_uri protocol_name="protocol_name0">location_uri0</location_uri>
+            <data_format_type>PDO</data_format_type>
+            <source_system_cd>source_system_cd0</source_system_cd>
+            <load_label>load_label0</load_label>
+        </data_file>
+    </input_list>
+    <load_list commit_flag="true" clear_temp_load_tables="false">
+        <load_observation_set encrypt_blob="false" ignore_bad_data="true"/>
+        <load_event_set encrypt_blob="false" ignore_bad_data="true"/>
+        <load_patient_set encrypt_blob="false" ignore_bad_data="true"/>
+        <load_observer_set encrypt_blob="false" ignore_bad_data="true"/>
+        <load_eventid_set encrypt_blob="false" ignore_bad_data="true"/>
+        <load_pid_set encrypt_blob="false" ignore_bad_data="true"/>
+    </load_list>
+    <output_list detail="true">
+        <observation_set onlykeys="true" blob="false" techdata="false"/>
+        <patient_set onlykeys="true" blob="false" techdata="false"/>
+        <event_set onlykeys="true" blob="false" techdata="false"/>
+        <observer_set onlykeys="true" blob="false" techdata="false"/>
+        <concept_set onlykeys="true" blob="false" techdata="false"/>
+        <pid_set onlykeys="true" blob="false" techdata="false"/>
+        <eventid_set onlykeys="true" blob="false" techdata="false"/>
+    </output_list>
+</ns1:publish_data_request>

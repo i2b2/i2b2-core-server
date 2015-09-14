@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:crc="http://i2b2.mgh.harvard.edu/querytool"
+    targetNamespace="http://i2b2.mgh.harvard.edu/querytool">
+    
+    <xs:element name="examples">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="message_body" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="crc:header"/>
+                            <xs:element ref="crc:request"/>
+                            <xs:element ref="crc:response"/>
+                            <xs:element ref="crc:sql"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="header" type="crc:headerType"/>
+    <xs:element name="sql" type="xs:string"/>
+    <xs:element name="request" type="xs:string"/>
+    <xs:element name="response" type="xs:string"/>
+    
+    <xs:complexType name="headerType">
+        <xs:sequence>
+            <xs:element name="user" type="crc:userType"/>
+            <xs:element name="data_source" type="xs:string"/>
+            <xs:element name="patient_data_limit" type="xs:int"/>
+            <xs:element name="estimated_time" type="xs:int"/>
+            <xs:element name="create_date" type="xs:dateTime"/>
+            <xs:element name="submit_date" type="xs:dateTime"/>
+            <xs:element name="complete_date" type="xs:dateTime"/>
+            <xs:element name="request_type" type="crc:request_typeType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="userType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="login" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    
+    <xs:simpleType name="request_typeType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+</xs:schema>

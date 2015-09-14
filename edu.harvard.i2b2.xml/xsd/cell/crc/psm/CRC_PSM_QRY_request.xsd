@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:crc="http://www.i2b2.org/xsd/cell/crc/psm/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/psm/">
+    <xs:include schemaLocation="./CRC.xsd"/>
+    <xs:include schemaLocation="./CRC_PSM_QRY_query_definition.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation>This schema defines abstract requestType and concrete requestTypes. It
+            also defines a request element of type requestType. the specific requestType of request
+            must be declared in the instance document using the xsi:type
+        attribute.</xs:documentation>
+    </xs:annotation>
+    <!-- 
+    <xs:element name="request" type="crc:requestType"/>
+ 
+    <xs:complexType name="requestType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>requestType is abstract so a concrete type must be declared in the
+                instance document using the xsi:type attribute.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence/>
+    </xs:complexType>
+    --> 
+
+    <xs:complexType name="user_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="user_id" type="xs:string"/>
+                    <xs:element name="group_id" type="xs:string"/>
+                    <xs:element name="fetch_size" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+
+    <xs:complexType name="master_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="query_master_id" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+	<xs:complexType name="master_delete_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+	                <xs:element name="user_id" type="xs:string"/>
+                    <xs:element name="query_master_id" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+	<xs:complexType name="master_rename_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+	                <xs:element name="user_id" type="xs:string"/>
+                    <xs:element name="query_master_id" type="xs:int"/>
+                    <xs:element name="query_name" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+
+    <xs:complexType name="instance_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="query_instance_id" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="result_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="query_result_instance_id" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="query_definition_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="query_definition" type="crc:query_definitionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

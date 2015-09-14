@@ -1,0 +1,27 @@
+.sdxDefaultQM {
+	font-family:arial,helvetica;
+	font-size:12px;
+	white-space:nowrap;
+	vertical-align:bottom;
+	cursor:pointer;
+	line-height:16px;
+}
+.sdxDefaultQM img {
+	height:16px;
+	width:16px;
+	border:none;
+	padding-right:3px;
+	vertical-align:bottom;
+}
+.sdxDefaultQM a {
+	color:#000000;
+	text-decoration:none;
+}
+.sdxDefaultQM a:hover {
+	text-decoration:underline;
+}
+
+.ddQMTarget {
+	background:#FFFFBB !important;	
+}
+

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ont:examples xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/ont/ ./ONT_VDO_QRY.xsd">
+
+    <!-- REQUEST VOCAB "DATA" FROM METADATA TABLES -->
+    <message_body>
+        <ont:request echo="true" sql="true">
+            <vocab_data table="i2b2">
+                <return_list target="self" max="50" max_response="warning">
+                    <return item="concept_path"/>
+                    <return item="concept_cd"/>
+                    <return item="name_char"/>
+                    <return item="standard_cd"/>
+                    <return item="modifier_cd_list"/>
+                    <return item="value_constraint_list"/>
+                </return_list>
+                <search_list hiddens="true" synonyms="true">
+                    <search item="hlevel">
+                        <match_int strategy="equal">3</match_int>
+                    </search>
+                    <search item="concept_path">
+                        <match_str strategy="left">\i2b2\Diagnoses\c0004096</match_str>
+                    </search>
+                </search_list>
+            </vocab_data>
+        </ont:request>
+        <ont:response>
+            <vocab_data>
+                <concept_path>\i2b2\Diagnoses\c0004096\UMLS:c0004096</concept_path>
+                <concept_cd>UMLS:c0004096</concept_cd>
+                <name_char>Asthma</name_char>
+                <standard_cd scheme_cd="UMLS">c0004096</standard_cd>
+                <modifier_cd_list>
+                    <modifier_cd>mild</modifier_cd>
+                    <modifier_cd>severe</modifier_cd>
+                </modifier_cd_list>
+                <value_constraint_list>
+                    <value_constraint/>
+                    <value_constraint/>
+                </value_constraint_list>
+            </vocab_data>
+            <vocab_data>
+                <concept_path>\i2b2\Diagnoses\c0004096\DSG-NLP:asthma</concept_path>
+                <concept_cd>DSG-NLP:asthma</concept_cd>
+                <name_char>asthma</name_char>
+                <standard_cd scheme_cd="DSG-NLP:">asthma</standard_cd>
+                <modifier_cd_list>
+                    <modifier_cd>mild</modifier_cd>
+                    <modifier_cd>severe</modifier_cd>
+                </modifier_cd_list>
+                <value_constraint_list>
+                    <value_constraint/>
+                    <value_constraint/>
+                </value_constraint_list>
+            </vocab_data>
+            <sql>select ... from ... where...</sql>
+        </ont:response>
+    </message_body>
+
+    <!-- LOOKUP BY NAME (return concept_path,name_char) -->
+    <message_body>
+        <ont:request echo="true">
+            <vocab_data table="i2b2">
+                <return_list>
+                    <return item="concept_path"/>
+                    <return item="name_char"/>
+                </return_list>
+                <search_list>
+                    <search item="name_char">
+                        <match_str strategy="contains">asthma</match_str>
+                    </search>
+                </search_list>
+            </vocab_data>
+        </ont:request>
+        <ont:response>
+            <vocab_data>
+                <concept_path>\i2b2\Diagnoses\c0004096</concept_path>
+                <name_char>Asthma</name_char>
+            </vocab_data>
+            <vocab_data>
+                <concept_path>\i2b2\Diagnoses\c0004096\UMLS:c0004096</concept_path>
+                <name_char>Asthma</name_char>
+            </vocab_data>
+            <vocab_data>
+                <concept_path>\i2b2\Diagnoses\c0004099</concept_path>
+                <name_char>Asthma, Exercise-Induced</name_char>
+            </vocab_data>
+            <vocab_data>
+                <concept_path>\i2b2\Diagnoses\c0004099\UMLS:c0004099</concept_path>
+                <name_char>Asthma, Exercise-Induced</name_char>
+            </vocab_data>
+        </ont:response>
+    </message_body>
+
+    <!-- CREATE NEW GROUP (return concept_path of new group) -->
+    <message_body>
+        <ont:request echo="true">
+            <vocab_data table="i2b2">
+                <return_list>
+                    <return item="concept_path"/>
+                </return_list>
+                <create_list>
+                    <group name="Asthma Diabetes Query">
+                        <!-- QUESTION: what if we want to make a group with concepts from more than one table? -->
+                        <concept_path>\i2b2\Diagnoses\c0004096\UMLS:c0004096</concept_path>
+                        <concept_path>\i2b2\Diagnoses\some-diabetes-concept</concept_path>
+                    </group>
+                </create_list>
+            </vocab_data>
+        </ont:request>
+        <ont:response>
+            <vocab_data>
+                <concept_path>\i2b2\UserDefinedGroup\AsthmaDiabetesQuery</concept_path>
+            </vocab_data>
+        </ont:response>
+    </message_body>
+
+    <!-- LOOKUP BY CONCEPT_PATH (return concept_paths of *parents*) -->
+    <message_body>
+        <ont:request echo="true">
+            <vocab_data table="i2b2">
+                <return_list target="parents">
+                    <return item="concept_path"/>
+                    <return item="name_char"/>
+                </return_list>
+                <search_list>
+                    <search item="concept_path">
+                        <match_str strategy="exact">\i2b2\Diagnoses\c0004096\UMLS:c0004096</match_str>
+                    </search>
+                </search_list>
+            </vocab_data>
+        </ont:request>
+        <ont:response>
+            <vocab_data>
+                <concept_path>\i2b2\Diagnoses\c0004096</concept_path>
+                <name_char>Asthma</name_char>
+            </vocab_data>
+            <vocab_data>
+                <concept_path>\i2b2\UserDefinedGroup\AsthmaDiabetesQuery</concept_path>
+                <name_char>Asthma Diabetes Query</name_char>
+            </vocab_data>
+        </ont:response>
+    </message_body>
+
+    <!-- LOOKUP BY STANDARD CODE (return concept_cd) -->
+    <message_body>
+        <ont:request echo="true">
+            <vocab_data table="i2b2">
+                <return_list>
+                    <return item="concept_cd"/>
+                </return_list>
+                <search_list>
+                    <search item="standard_code">
+                        <match_str strategy="exact">c0004096</match_str>
+                    </search>
+                    <search item="scheme_cd">
+                        <match_str strategy="exact">UMLS</match_str>
+                    </search>
+                </search_list>
+            </vocab_data>
+        </ont:request>
+        <ont:response>
+            <vocab_data>
+                <concept_cd>UMLS:c0004096</concept_cd>
+            </vocab_data>
+        </ont:response>
+    </message_body>
+
+</ont:examples>

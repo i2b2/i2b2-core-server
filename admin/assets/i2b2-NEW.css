@@ -1,0 +1,179 @@
+body {
+	margin:0;
+	padding:15px;
+	font-family:arial,helvetica;
+	font-size:12px;
+	line-height:16px;
+	background:url('images/background.gif');
+	background-color:#D9ECF0;
+}
+
+#topBarTitle {
+	position:relative; 
+	left:-5px;
+}
+
+BODY #title-back {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background-image: url(images/title_back.gif);
+	background-position: center;
+	background-repeat: none;
+	height: 26px;
+	width: 100%;
+	display: none;
+}
+
+.xmlMsg {
+	background:#FFFFFF none repeat scroll 0%;
+	border:1px solid #000000;
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
+}
+
+A.selectedView { font-weight:bold; }
+
+#topBarTable {
+	position:relative; 
+	top:-15px;
+	/*
+	background-image: url('images/top_hive.gif'); 
+	background-position: center center;
+	background-repeat: no-repeat;
+	*/
+}
+
+#topBarTable td {
+	color: #FFF;
+}
+
+#topBarTable a {
+	color: #FFF;
+	text-decoration:none;
+}
+
+#topBarTable a:hover {
+	color: #FFF;
+	text-decoration:underline;
+}
+
+
+#topTitleImg {
+	position:relative; 
+	top:-15px;
+}
+
+#screenQueryData {
+	padding: 4px 0px 0px; 
+}
+
+
+
+/* function buttons on right of tabs */
+DIV.opXML {
+	position: relative;
+	float: right;
+	padding: 6px 10px 0px 0px;
+	overflow: hidden;
+}
+
+/* <standarized main tab style> */
+DIV.TopTabs {
+	height:26px;
+	position:relative;
+	z-index:100 !important;
+	overflow:hidden;
+}
+
+
+DIV.tabBox {
+	background:#BBCCEE none repeat scroll 0%;
+	border-color:#667788;
+	border-style:solid solid none;
+	border-width:1px;
+	cursor:pointer;
+	float:left;
+	height:19px;
+	margin-right:5px;
+	padding:5px 5px 0px;
+}
+
+DIV.tabBox DIV {
+	padding: 0px 5px;
+	display:inline;
+}
+
+DIV.tabBox > DIV {
+	color:#445588;
+	font-weight:bold;
+	font-family:arial,helvetica;
+	font-size:12px;
+	height:18px;
+	line-height:17px;
+	text-align:center;
+	padding: 0px 5px;
+	display:block;
+}
+
+
+DIV.tabBox.active {
+	background:#BBCCEE none repeat scroll 0% 50%;
+	border-color:#667788;
+	border-style:solid solid none;
+	border-width:1px;
+	margin-right:5px;
+	height:20px;
+}
+DIV.tabBox.active DIV {
+	background:#6677AA;
+	border:1px solid #667788;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-family:arial,helvetica;
+	font-size:12px;
+}
+
+DIV.tabTextBox {
+	background:#BBCCEE none repeat scroll 0% 50%;
+	border-color:#667788;
+	border-style:solid solid none;
+	border-width:1px;
+	cursor:pointer;
+	float:left;
+	height:20px;
+	margin-right:5px;
+	padding:5px 5px 0px;
+	position:relative;
+	width:136px;
+	z-index:10;
+}
+DIV.tabTextBox DIV {
+	background: #6677AA none repeat scroll 0%;
+	border: 1px solid #667788;
+	color: #FFFFFF;
+	font-family: arial,helvetica;
+	font-size: 12px;
+	font-weight: bold;
+	height: 18px;
+	line-height: 17px;
+	text-align: center;
+	padding: 0px 8px;
+}
+DIV.tabText {}
+/* </standarized main tab style> */
+
+
+.pageMask {
+	background:#000;
+	opacity: 0.25; 
+	filter:alpha(opacity=25);
+	-moz-opacity:0.25;	
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:100%;
+//	height:390px;
+	z-index:500;
+}

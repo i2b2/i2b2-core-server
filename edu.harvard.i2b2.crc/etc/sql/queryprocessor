@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<clay-model clay-version="1.2.0">
+<database-model alias="" author="" begin-script="" end-script="" name="queryprocessor" remarks="" sql-dialect-id="jp.azzurri.clay.model.physical.dialect.SQL92_Dialect" version="1.0">
+<database-model-description></database-model-description>
+<schema-list/>
+</database-model>
+</clay-model>

@@ -1,0 +1,151 @@
+/*** CSS for main plugin wrapper ***/
+
+DIV#ExampComm-mainDiv {
+	padding: 0px;
+}
+
+
+
+/*** CSS for tab background ***/
+
+DIV#ExampComm-TABS DIV.yui-content {
+	background: #FFF;
+}
+DIV#ExampComm-TABS DIV.ExampComm-MainContent {
+    background:#FFF;
+    border:solid #63758C;
+    border-width:1px 0;
+    overflow:auto;
+    height:100%;
+}
+DIV#ExampComm-TABS DIV.ExampComm-MainContentPad {
+    padding:10px 10px;
+}
+
+
+
+/*** CSS for the Specify Data tab ***/
+
+DIV#ExampComm-mainDiv DIV.selector {
+	clear:both;
+	width: 500px;
+}
+DIV#ExampComm-mainDiv DIV.selector DIV {
+	float: right;
+	margin-right: 10px;
+	font-weight: bold;
+}
+
+DIV#ExampComm-mainDiv DIV.selector SELECT {
+	float: right;
+	width: 300px;
+}
+
+DIV#ExampComm-mainDiv DIV.selector INPUT.addComm {
+	float:right;
+	margin-left:4px;
+	position:relative;
+	top:-2px;
+	width:46px;
+}
+
+/** tags form **/
+DIV#ExampComm-mainDiv DIV.taglist {
+	clear: both;
+	border: 1px solid rgb(0, 0, 0);
+	background: #ECF0FF;
+	margin: 50px 10px 0px 10px;
+}
+DIV#ExampComm-mainDiv DIV.taglist DIV.tagrow {
+	width: 100%;
+	padding-top: 4px;
+}
+DIV#ExampComm-mainDiv DIV.taglist DIV.tagrow TEXTAREA {
+	border: 1px solid rgb(0, 0, 0);
+	float: right;
+	width: 560px;
+	height: 82px;
+	margin-right: 6px;
+}
+DIV#ExampComm-mainDiv DIV.taglist DIV.tagrow DIV.fieldname {
+	margin-left: 10px;
+	width: 130px;
+	font-weight: bold;
+}
+DIV#ExampComm-mainDiv DIV.taglist DIV.tagrow DIV.escaped { margin-left: 10px; }
+DIV#ExampComm-mainDiv DIV.taglist DIV.tagrow DIV.bline {
+	border-top: 1px solid rgb(204, 204, 204);
+	margin: 58px 0px 3px;
+	clear: both;
+}
+
+
+
+
+
+/*** CSS for the View Results tab ***/
+
+DIV#ExampComm-TABS DIV.results-directions {
+	padding: 10px;
+	text-align:center;
+	margin-top:5%;
+}
+DIV#ExampComm-TABS DIV.results-msgs {
+	margin:10px;
+}
+
+DIV#ExampComm-TABS DIV.results-msgs TABLE {
+	border-collapse:collapse;
+	margin:0 10px 10px;
+}
+
+DIV#ExampComm-TABS DIV.results-msgs TABLE TH {
+	background-color:#CEDBEF;
+	border:1px solid #63758C;
+	padding:5px;
+	width:150px;	
+}
+
+DIV#ExampComm-TABS DIV.results-msgs TABLE TD {
+	background-color:#DEEBEF;
+	border:1px solid #63758C;
+	overflow:auto;
+	padding: 0px;
+	width:300px;
+}
+
+DIV#ExampComm-TABS DIV.results-msgs TABLE .originalXML {
+	height:150px;
+	margin:0;
+	overflow:hidden;
+	padding:0;
+}
+
+DIV#ExampComm-TABS DIV.results-msgs TABLE PRE {
+	display:block;
+	height:140px;
+	margin:0;
+	overflow:scroll;
+	padding:5px;
+	width:300px;
+}
+
+
+
+/*** CSS for the Plugin Help tab ***/
+
+DIV#ExampComm-TABS H1 {
+	margin:0 0 10px 0;
+	font-size:16px;
+	color:#42558C;
+	font-weight:bold;
+}
+DIV#ExampComm-TABS H2 {
+	margin:10px 0 10px 0;
+	font-size:13px;
+	color:#42558C;
+	font-weight:bold;
+}
+DIV#ExampComm-TABS HR {
+	margin:0;
+}

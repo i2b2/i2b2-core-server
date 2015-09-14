@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:patient_data xmlns:ns1="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ns1:event_set>
+        <event update_date="" download_date="" import_date=""
+             sourcesystem_cd="" upload_id="">
+            <event_id source=""></event_id>
+            <patient_id source=""></patient_id>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <start_date></start_date>
+            <end_date></end_date>
+            <event_blob>
+            </event_blob>
+        </event>
+    </ns1:event_set>
+    <ns1:concept_set>
+        <concept update_date="" download_date="" import_date=""
+             sourcesystem_cd="" upload_id="">
+            <concept_path></concept_path>
+            <concept_cd></concept_cd>
+            <name_char></name_char>
+            <concept_blob>
+            </concept_blob>
+        </concept>
+    </ns1:concept_set>
+    <ns1:observer_set>
+        <observer update_date="" download_date="" import_date=""
+             sourcesystem_cd="" upload_id="">
+            <observer_path></observer_path>
+            <observer_cd></observer_cd>
+            <name_char></name_char>
+            <observer_blob>
+            </observer_blob>
+        </observer>
+    </ns1:observer_set>
+    <ns1:pid_set>
+        <pid>
+            <patient_id status="" update_date="" download_date="" import_date=""
+                 sourcesystem_cd="" upload_id="" source=""></patient_id>
+            <patient_map_id source="" status="" update_date="" download_date=""
+                 import_date="" sourcesystem_cd="" upload_id=""></patient_map_id>
+        </pid>
+    </ns1:pid_set>
+    <ns1:eid_set>
+        <eid>
+            <event_id source="" patient_id="" patient_id_source="" status="" update_date=""
+                 download_date="" import_date="" sourcesystem_cd=""
+                 upload_id=""></event_id>
+            <event_map_id source="" patient_id="" patient_id_source="" status="" update_date=""
+                 download_date="" import_date="" sourcesystem_cd=""
+                 upload_id=""></event_map_id>
+        </eid>
+    </ns1:eid_set>
+    <ns1:patient_set>
+        <patient update_date="" download_date="" import_date=""
+             sourcesystem_cd="" upload_id="">
+            <patient_id source=""></patient_id>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <param column="" name=""></param>
+            <patient_blob>
+            </patient_blob>
+        </patient>
+    </ns1:patient_set>
+    <ns1:observation_set panel_name="">
+        <observation update_date="" download_date="" import_date=""
+             sourcesystem_cd="" upload_id="">
+            <event_id source=""></event_id>
+            <patient_id source=""></patient_id>
+            <concept_cd name=""></concept_cd>
+            <observer_cd name=""></observer_cd>
+            <start_date></start_date>
+            <modifier_cd name=""></modifier_cd>
+            <instance_num name=""></instance_num>
+            <valuetype_cd></valuetype_cd>
+            <tval_char></tval_char>
+            <nval_num units=""></nval_num>
+            <valueflag_cd name=""></valueflag_cd>
+            <quantity_num></quantity_num>
+            <units_cd></units_cd>
+            <end_date></end_date>
+            <location_cd name=""></location_cd>
+            <confidence_num></confidence_num>
+            <observation_blob>
+            </observation_blob>
+        </observation>
+    </ns1:observation_set>
+</ns1:patient_data>

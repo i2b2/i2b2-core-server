@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:request xmlns:ns3="http://www.i2b2.org/xsd/hive/pdo/" xmlns:ns2="http://www.i2b2.org/xsd/hive/msg/">
+    <message_header>
+        <sending_application>
+            <application_name>appname</application_name>
+            <application_version>1.0</application_version>
+        </sending_application>
+        <receiving_application>
+            <application_name>appname</application_name>
+            <application_version>1.0</application_version>
+        </receiving_application>
+        <message_type>
+            <message_code>messageCode</message_code>
+            <event_type>eventype</event_type>
+        </message_type>
+        <message_control_id>
+            <session_id>1</session_id>
+            <message_num>1</message_num>
+            <instance_num>1</instance_num>
+        </message_control_id>
+        <accept_acknowledgement_type>messageId</accept_acknowledgement_type>
+    </message_header>
+    <request_header>
+        <result_waittime_ms>1000</result_waittime_ms>
+    </request_header>
+    <message_body>
+        <ns3:patient_data>
+            <visit_dimension_set>
+                <visit_dimension>
+                    <encounter_ide source="i2b2">1000001</encounter_ide>
+                    <patient_ide source="i2b2">10000</patient_ide>
+                    <sourcesystem_cd>i2b2</sourcesystem_cd>
+                </visit_dimension>
+            </visit_dimension_set>
+            <observation_fact_set>
+                <observation_fact>
+                    <encounter_ide source="i2b2">1000001</encounter_ide>
+                    <patient_ide source="i2b2">10000</patient_ide>
+                    <concept_cd>i2b2:60004</concept_cd>
+                    <tval_char>tval</tval_char>
+                    <nval_num>100.0</nval_num>
+                    <end_date>2007-02-22T12:30:04.590-05:00</end_date>
+                    <confidence_num>1.0</confidence_num>
+                    <observation_blob xsi:type="ns5:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns5="http://www.w3.org/2001/XMLSchema">BLOB</observation_blob>
+                    <sourcesystem_cd>i2b2</sourcesystem_cd>
+                </observation_fact>
+            </observation_fact_set>
+        </ns3:patient_data>
+    </message_body>
+</ns2:request>

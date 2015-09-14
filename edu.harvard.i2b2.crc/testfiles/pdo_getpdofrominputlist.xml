@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/"
+  xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"
+  xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/"
+  xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/"
+  xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+  xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
+	<message_header>
+		<proxy>
+            <redirect_url>http://localhost:9090/i2b2/rest/QueryToolService/pdorequest</redirect_url>
+        </proxy>
+		<sending_application>
+			<application_name>i2b2_QueryTool</application_name>
+			<application_version>1.6</application_version>
+		</sending_application>
+		<sending_facility>
+			<facility_name>PHS</facility_name>
+		</sending_facility>
+		<receiving_application>
+			<application_name>i2b2_DataRepositoryCell</application_name>
+			<application_version>1.6</application_version>
+		</receiving_application>
+		<receiving_facility>
+			<facility_name>PHS</facility_name>
+		</receiving_facility>
+		<message_type>
+			<message_code>Q04</message_code>
+			<event_type>EQQ</event_type>
+		</message_type>
+		<security>
+			<domain>i2b2demo</domain>
+			<username>demo</username>
+			<password token_ms_timeout="1800000" is_token="true">SessionKey:i5bXajk3bhfCLCQ2OwXq</password>
+		</security>
+		<message_control_id>
+			<message_num>kFW5Z807ntDbDOrOgCXeM</message_num>
+			<instance_num>0</instance_num>
+		</message_control_id>
+		<processing_id>
+			<processing_id>P</processing_id>
+			<processing_mode>I</processing_mode>
+		</processing_id>
+		<accept_acknowledgement_type>messageId</accept_acknowledgement_type>
+		<project_id>Demo</project_id>
+	</message_header>
+	<request_header>
+		<result_waittime_ms>180000</result_waittime_ms>
+	</request_header>
+	<message_body>
+		<ns3:pdoheader>
+			<patient_set_limit></patient_set_limit>
+			<estimated_time>180000</estimated_time>
+			<request_type>getPDO_fromInputList</request_type>
+		</ns3:pdoheader>
+		<ns3:request xsi:type="ns3:GetPDOFromInputList_requestType" 
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<input_list>
+	<patient_list max="10" min="1">
+		<patient_set_coll_id>241</patient_set_coll_id>
+	</patient_list>
+</input_list>
+<filter_list>
+	<panel name="\\i2b2_DIAG\i2b2\Diagnoses\Circulatory system (390-459)\">
+		<panel_number>0</panel_number>
+		<panel_accuracy_scale>0</panel_accuracy_scale>
+		<invert>0</invert>
+		<item>
+			<hlevel>2</hlevel>
+			<item_key>\\i2b2_DIAG\i2b2\Diagnoses\Circulatory system (390-459)\</item_key>
+			<dim_tablename>concept_dimension</dim_tablename>
+			<dim_dimcode>\i2b2\Diagnoses\Circulatory system (390-459)\</dim_dimcode>
+			<item_is_synonym>N</item_is_synonym>
+		</item>
+	</panel>
+</filter_list>
+<output_option names="asattributes">
+	<observation_set blob="false" onlykeys="false"/>
+	<patient_set select="using_input_list" onlykeys="false"/>
+</output_option>
+		</ns3:request>
+	</message_body>
+</ns6:request>

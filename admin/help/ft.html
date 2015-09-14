@@ -1,0 +1,986 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>i2b2 Help</title>
+		<link href="i2b2Style.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<p class="docTitle">i2b2 Web Client Help</p>
+		<h1><a name="ftView" id="ftView"></a>i2b2 Find Terms View</h1>
+		<p>The <b>Find Terms view</b> is designed to allow users to search for concepts. Users can search by the name or by a particular code. Once the appropriate concept is found it can be used in many of the i2b2 views and plug-ins, such as the <i>Query Tool view</i>.
+		</p>
+		<p>&nbsp;</p>
+		<h2><a name="ftIntro" id="ftIntro"></a>Introduction</h2>
+		<p>This section describes the layout and contents of this view.</p>
+		<p>&nbsp;</p>
+		<h3><a name="ftLayout" id="ftLayout"></a>Layout of the Find Terms View</h3>
+		<p>The <b>Find Terms view</b> allows users to search for a concept, group of concepts, and their associated modifiers. There are basically two methods of searching available;(1) by name and (2) by code.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/ftLayout.png" alt="FindTerms" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>Regardless of how you search for the concept the layout of both tabs is the same.</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftSearchOptions" id="ftSearchOptions"></a>Search by Options</h4>
+		<p>This section has two tabs; one is to <b>Search by Name</b> and the other <b>Search by Code</b>. Depending on which tab is active will determine which search method is used to find the concept.
+		</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftSearchCriteia" id="ftSearchCriteia"></a>Search Criteria</h4>
+		<p>There are three fields in this section; (1) Qualifier, (2) Text and (3) Category</p>
+		<p>&nbsp;</p>
+		<h5><a name="ftSearchQualifier" id="ftSearchQualifier"></a>Qualifier</h5>
+		<p>The qualifier is used to tell the system whether or not you are looking for an exact match or just a partial match. There are four different options to choose from.
+		</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Starting with</li>
+			<li>Ending with</li>
+			<li>Containing</li>
+			<li>Exact</li>
+		</ol>
+		<p>&nbsp;</p>
+		<h5><a name="ftSearchTxt" id="ftSearchTxt"></a>Text</h5>
+		<p>The text box is where you will enter what you are searching for.</p>
+		<p>&nbsp;</p>
+		<h5><a name="ftSearchCategory" id="ftSearchCategory"></a>Category / Coding System</h5>
+		<p>The category / coding system selection field allows you to narrow down the search to a particular table or set of codes.
+		</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftResults" id="ftResults"></a>Results Section</h4>
+		<p>The results section displays the concepts that were found based on the search criteria.</p>
+		<p>&nbsp;</p>
+		<h3><a name="ftCodeSystems" id="ftCodeSystems"></a>Standard Coding Systems</h3>
+		<p>The clinical vocabulary that resides in the Ontology Management Cell was partially built using terminology from several standard coding systems. These codes can be used to search for a particular term (see section on <i>Search by Code</i>). The following are some examples of standard coding systems.
+		</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftIcd9" id="ftIcd9"></a>ICD-9</h4>
+		<ul>
+			<li>International Classification of Diseases, 9th Revision</li>
+			<li>Primarily used for disease surveillance, immunization rates and environmental monitoring.</li>
+			<li>Maintained by the National Center for Health Statistics (NCHS) and Centers for Medicare and Medicaid Services (CMS).
+			</li>
+		</ul>
+		<p>&nbsp;</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Example:</i></p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Code:&nbsp;&nbsp;414.9</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description:&nbsp;&nbsp;Chronic Ischemic Heart Disease, unspecified
+		</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftLoinc" id="ftLoinc"></a>LOINC</h4>
+		<ul>
+			<li>Logical Observation Identifiers Names and Codes</li>
+			<li>Primarily used for Clinical Health Information (CHI) such as laboratory and clinical test results, history and physicals, discharge summaries, operative notes, tumor registry and nursing observations.
+			</li>
+			<li>Licensed and maintained by Regenstrief Institute.</li>
+		</ul>
+		<p>&nbsp;</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Example:</i></p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Code:&nbsp;&nbsp;13969-1</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description:&nbsp;&nbsp;CPK-MB</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftNDC" id="ftNDC"></a>NDC</h4>
+		<ul>
+			<li>National Drug Code</li>
+			<li>Universal product identifier for drugs intended for human use. Drug products are identified and reported using the NDC.
+			</li>
+			<li>Maintained by the Food and Drug Administration (FDA).</li>
+		</ul>
+		<p>&nbsp;</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Example:</i></p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Code:&nbsp;&nbsp;12783-*178-87</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description:&nbsp;&nbsp;Briston-Myers Squibb, Pravachol, 20 mg tablets
+		</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftUmls" id="ftUmls"></a>UMLS</h4>
+		<ul>
+			<li>Unified Medical Language System</li>
+			<li>A comprehensive thesaurus and ontology of biomedical concepts.</li>
+			<li>Maintained by the National Library of Medicine.</li>
+		</ul>
+		<p>&nbsp;</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Example:</i></p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Code:&nbsp;&nbsp;C0001403</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description:&nbsp;&nbsp;Addison's Disease</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="ftModLayout" id="ftModLayout"></a>Layout of the Find Modifiers Section of Find Terms View</h3>
+		<p>An additional section called <b>Find Modifiers </b> is located at the bottom of the <i>Find Terms view</i>. This section is only visible once you find a term and select to find the modifiers from the pop-up menu (see section on Finding Modifiers).
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/ftLayoutModifier.png" alt="ftLayoutModifiers" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>The functionality of finding modifiers is very similar to finding terms in that you can search by name or by code and you can define the search criteria to be used when performing the search.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftModSearchCriteria" id="ftModSearchCriteria"></a>Search Criteria</h4>
+		<p>There are two fields in this section; (1) Qualifier, and (2) Text</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="ftModSearchQualifier" id="ftModSearchQualifier"></a>Qualifier</h5>
+		<p>The qualifier is used to tell the system whether or not you are looking for an exact match or just a partial match. There are four different options to choose from.
+		</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Starting with</li>
+			<li>Ending with</li>
+			<li>Containing</li>
+			<li>Exact</li>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="ftModSearchTxt" id="ftModSearchTxt"></a>Text</h5>
+		<p>The text box is where you will enter what you are searching for.</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftModSearchOptions" id="ftModSearchOptions"></a>Search by Options</h4>
+		<p>There are three methods of searching for a modifier; (1) Find Name, (2) Find Code and (3) Get All.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="ftModSearchCategory" id="ftModSearchCategory"></a>Find Name Button</h5>
+		<p>The text entered will be used to search for the <i>name</i> of the modifier.</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;<i><u>Example</u>:</i></p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Severity: Mild</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="ftModSearchCode" id="ftModSearchCode"></a>Find Code Button</h5>
+		<p>The text entered will be used to search for the <i>code</i> of the modifier.</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;<i><u>Example</u>:</i></p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;255604002 (this is the SNOMED code for Mild Severity)
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h5><a name="ftModSearchAll" id="ftModSearchAll"></a>Get All Button</h5>
+		<p>The Get All button will return all the modifiers associated with a term regardless of what qualifier and text have been entered.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftModResults" id="ftModResults"></a>Results Section</h4>
+		<p>The results section displays the concepts that were found based on the search criteria.</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h2><a name="ftNavigation" id="ftNavigation"></a>Navigation</h2>
+		<h3><a name="ftExpCollFolder" id="ftExpCollFolder"></a>Expand / Collapse a Folder</h3>
+		<p>Depending on the search criteria, the results section may display groups of concepts which are contained in folders as well as individual concepts. The folders can be expanded to see the listing of concepts in that grouping by clicking on the plus sign <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> or negative sign <span style="color:#CCCCCC">(<img src="images/minusSign.png" alt="minusSign" />)</span> next to the folder icon.
+		</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>The ability to expand and collapse folders also extends to the modifier result section which can contain modifiers.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<h4><a name="ftExpFolder" id="ftExpFolder"></a>Expand (Open) a Folder</h4>
+		<ol>
+			<li>Click on the <b>plus sign</b> <span style="color:#CCCCCC">(<img src="images/plusSign.png" alt="plusSign" />)</span> next to the folder in the results section of <i>Find Terms view</i> or the Modifier folder in the <i>Find Modifiers section</i>.
+			</li>
+			<li>The folder will open and all the items in the folder will display.</li>
+		</ol>
+		<p>&nbsp;</p>
+		<h4><a name="ftCollFolder" id="ftCollFolder"></a>Collapse (Close) a Folder</h4>
+		<ol>
+			<li>Click on the <b>negative sign</b> <span style="color:#CCCCCC">(<img src="images/minusSign.png" alt="minusSign" />)</span> next to the folder in the results section of <i>Find Terms view</i> or the Modifier folder in the <i>Find Modifiers section</i>.
+			</li>
+			<li>The folder will close and all the items in the folder will no longer display.</li>
+		</ol>
+		<p>&nbsp;</p>
+		<h3><a name="ftOptions" id="ftOptions"></a>Options</h3>
+		<p>Users can define how many concepts to display and whether or not to show hidden terms and/or synonyms. The display options are set in the Find Terms Options dialog window, which can be accessed by clicking on the <b>Show Options button</b> <span style="color:#CCCCCC">(<img src="images/options.png" alt="options" />)</span>.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/ftOptions.png" alt="optionsWindow" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftDisplayMax" id="ftDisplayMax"></a>Maximum to Display</h4>
+		<p>The <b>Maximum number of children to display</b> is used when retrieving the search results to be displayed in the results section of the <b>Find Terms view</b>. Once the maximum number is reached a message will appear informing you that the query has reached the maximum number of terms and suggests you try searching again with a more specific query. Running a search with a more specific query will narrow your results as the selection criteria will not be as broadly defined.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/ftMaxExceedMsg.png" alt="maxExceed" /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftShowHidden" id="ftShowHidden"></a>Show Hidden Terms</h4>
+		<p>In the metadata table, an attribute is set to determine whether or not a term is active, inactive or hidden. If an item is marked as hidden it will not appear in the list of terms. Selecting <b>Show Hidden Terms</b> will display those items marked to be hidden. For easy identification, hidden terms will be <span style="color:#FF0000">red</span> when displayed in the results list.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftShowSynonym" id="ftShowSynonym"></a>Show Synonymous Terms</h4>
+		<p>Some terms may be flagged in the metadata table as a synonym of another term. Selecting <b>Show Synonymous Terms</b> will display both the original term and the synonym in the <i>Find Terms view</i>. For easy identification, synonymous terms will be <span style="color:#000099">blue</span> when displayed in the results list.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftEnablePtCounts" id="ftEnablePtCounts"></a>Enable Patient Counts</h4>
+		<p>The <b>Enable patient counts</b> option will display the total number of patients that have an observation fact entered for that item.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftUseShortTooltips" id="ftUseShortTooltips"></a>Use Short Tooltips</h4>
+		<p>By default, the tooltip that displays when you hover over an item will contain the entire path name and the tooltip that is specific to that item. Enabling the <b>Use short tooltips</b> option will only display the tooltip information; the path will not be included.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftShowConceptCd" id="ftShowConceptCd"></a>Show Concept Codes in Tooltips</h4>
+		<p>In addition to showing the tooltip, this option will also display the concept_cd associated to the item.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftDisableModifiers" id="ftDisableModifiers"></a>Disable Modifiers</h4>
+		<p>The ability to search for modifiers will not be available if the <b>Disable modifiers </b> option is checked off.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h2><a name="ftSearch" id="ftSearch"></a>Searching Terms</h2>
+		<p>This section describes how to search for a term using one of
+			the two available methods; (1) Search by Name and (2) Search by Code.
+		</p>
+		<p>&nbsp;</p>
+		<p>Regardless of whether you are searching by name or by code, the first step in entering the search criteria is defining a qualifier.  The first field is the “qualifier” and it is a drop-down list with four options:
+		</p>
+		<p>&nbsp;</p>
+		<p></p>
+		<ol>
+			<li>Starting with</li>
+			<p>The results returned will contain only those terms whose name or code begins with the text entered in the search box.
+			</p>
+			<p>&nbsp;</p>
+			<li>Ending with</li>
+			<p>The results returned will contain only those terms whose name or code ends with the text entered in the search box.
+			</p>
+			<p>&nbsp;</p>
+			<li>Containing</li>
+			<p>The results returned will be those terms whose name or code ends with the text entered in the search box.
+			</p>
+			<p>&nbsp;</p>
+			<table id=note>
+				<tr>
+					<td>
+						<p class=NoteHeading>NOTE: </p>
+						<p class=NoteParagraph>This search will return the broadest range of results.
+						</p>
+					</td>
+				</tr>
+			</table>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Exact</li>
+			<p>The results returned will be those terms whose name or code matches exactly to the text entered in the search box.
+			</p>
+			<p>&nbsp;</p>
+			<table id=note>
+				<tr>
+					<td>
+						<p class=NoteHeading>NOTE: </p>
+						<p class=NoteParagraph>This search will return the narrowest range of results.
+						</p>
+					</td>
+				</tr>
+			</table>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</ol>
+		<h3><a name="ftSearchName" id="ftSearchName"></a>Search by Name</h3>
+		<p>The method of searching by the name is exactly what it sounds like; you can search for a concept by its name.
+		</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftSearchNameStart" id="ftSearchNameStart"></a>Search Using "Starting with"</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Click on the <b>drop-down arrow</b> located in the qualifier field.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameStartWith01.png" alt="findStartWith1" width="301" height="174" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Starting with</b> from the drop-down list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameStartWith02.png" alt="findStartWith2" width="285" height="105" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the text for the term you are searching on.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameStartWith03.png" alt="findStartWith3" width="282" height="82" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>To narrow your search to a particular category, click on the <b>drop-down arrow</b> in the <i>category selection box</i>. Otherwise, accept the default of Any Category.
+			</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameStartWith04.png" alt="findStartWith4" width="283" height="83" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Find button</b>. <img src="images/buttonFind.png" alt="findButton" width="47" height="18" />
+			</li>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameStartWith05.png" alt="findStartWith5" width="302" height="174" /></p>
+			<p>&nbsp;</p>
+		</ol>
+		<h4><a name="ftSearchNameEnd" id="ftSearchNameEnd"></a>Search Using "Ending with"</h4>
+		<ol>
+			<li>Click on the <b>drop-down arrow</b> located in the qualifier field.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameEndWith01.png" alt="findEndWith1" width="301" height="174" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Ending with</b> from the drop-down list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameEndWith02.png" alt="findEndWith2" width="283" height="102" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the text for the term you are searching on.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameEndWith03.png" alt="findEndWith3" width="282" height="79" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>To narrow your search to a particular category, click on the <b>drop-down arrow</b> in the <i>category selection box</i>. Otherwise, accept the default of Any Category.
+			</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameEndWith04.png" alt="findTermEnd4" width="282" height="87" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Find button</b>.  <img src="images/buttonFind.png" alt="findButton" width="47" height="18" />
+			</li>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameEndWith05.png" alt="findEndWith5" width="301" height="173" /></p>
+			<p>&nbsp;</p>
+		</ol>
+		<p>&nbsp;</p>
+		<h4><a name="ftSearchNameContain" id="ftSearchNameContain"></a>Search Using "Containing"</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Click on the <b>drop-down arrow</b> located in the Qualifier field.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameContain01.png" alt="findContains1" width="301" height="174" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Containing</b> from the drop-down list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameContain02.png" alt="findContains2" width="283" height="105" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the text for the term you are searching on.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameContain03.png" alt="findContains" width="282" height="82" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>To narrow your search to a particular category, click on the <b>drop-down arrow</b> in the <i>category selection box</i>. Otherwise, accept the default of Any Category.
+			</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameContain04.png" alt="findContains4" width="282" height="85" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Find button</b>.  <img src="images/buttonFind.png" alt="findButton" width="47" height="18" />
+			</li>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameContain05.png" alt="findContain5" width="301" height="173" /></p>
+			<p></p>
+			<p>&nbsp;</p>
+		</ol>
+		<p>&nbsp;</p>
+		<h4><a name="ftSearchNameExact" id="ftSearchNameExact"></a>Search Using "Exact"</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Click on the <b>drop-down arrow</b> located in the qualifier field.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameExact01.png" alt="findExact1" width="301" height="174" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Exact</b> from the drop-down list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameExact02.png" alt="findExact2" width="282" height="105" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the text for the term you are searching on.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameExact03.png" alt="findExact" width="282" height="80" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>To narrow your search to a particular category, click on the <b>drop-down arrow</b> in the <i>category selection box</i>. Otherwise, accept the default of Any Category.
+			</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameExact04.png" alt="findExact4" width="282" height="87" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Find button</b>.  <img src="images/buttonFind.png" alt="findButton" width="47" height="18" />
+			</li>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByNameExact05.png" alt="findExact5" width="301" height="173" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="ftSearchCode" id="ftSearchCode"></a>Search by Code</h3>
+		<p>Some of the concepts have a standard code associated with them. This code can be used to search for a specific concept or a grouping of concepts.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>The steps listed in this section walk you through a code search using LOINC codes. These same steps can be used when doing a search of any type of code. In step 4, replace LOINC with the coding system you want to search.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftSearchLoinc" id="ftSearchLoinc"></a>Search Using LOINC Code</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>In the text box enter the code for the term you are searching on.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByCodeLoinc02.png" alt="findCode2" width="290" height="86" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>drop-down arrow</b> located in the <i>coding system selection field</i>. </li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByCodeLoinc03.png" alt="findCode3" width="290" height="86" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>LOINC</b> from the drop-down list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByCodeLoinc04.png" alt="findCode4" width="291" height="154" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Find button</b>.  <img src="images/buttonFind.png" alt="findButton" width="47" height="18" />
+			</li>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftByCodeLoinc05.png" alt="findCode5" width="303" height="174" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h2><a name="ftModSearch" id="ftModSearch"></a>Searching Modifiers</h2>
+		<p>A modifier is associated with a single term or a group of terms. Therefore in order to search for a modifier you must first search for the term. Once the term is found you can begin the process of finding the modifier. Overall the process of finding modifiers is very similar to searching for a term; you can search by name or by code.
+		</p>
+		<p>&nbsp;</p>
+		<p>Regardless of whether you are searching by name or by code, the first step in entering the search criteria is defining a qualifier.  The first field is the “qualifier” and it is a drop-down list with four options:
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Starting with</li>
+			<p>The results returned will contain only those modifiers whose name or code begins with the text entered in the search box.
+			</p>
+			<p>&nbsp;</p>
+			<li>Ending with</li>
+			<p>The results returned will contain only those modifiers whose name or code ends with the text entered in the search box.
+			</p>
+			<p>&nbsp;</p>
+			<li>Containing</li>
+			<p>The results returned will be those modifiers whose name or code ends with the text entered in the search box.
+			</p>
+			<p>&nbsp;</p>
+			<table id=note>
+				<tr>
+					<td>
+						<p class=NoteHeading>NOTE: </p>
+						<p class=NoteParagraph>This search will return the broadest range of results.
+						</p>
+					</td>
+				</tr>
+			</table>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Exact</li>
+			<p>The results returned will contain only those modifiers whose name or code matches exactly to the text entered in the search box.
+			</p>
+			<p>&nbsp;</p>
+			<table id=note>
+				<tr>
+					<td>
+						<p class=NoteHeading>NOTE: </p>
+						<p class=NoteParagraph>This search will return the narrowest range of results.
+						</p>
+					</td>
+				</tr>
+			</table>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</ol>
+		<h3><a name="ftModSearchName" id="ftModSearchName"></a>Find Modifiers by Name</h3>
+		<p>The method of searching by the name is exactly what it sounds like; you can search for a modifier by its name.
+		</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>As stated above you must first search for the term before you can find the associated modifiers.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftModSearchNameStart" id="ftModSearchNameStart"></a>Search Modifiers Using &quot;Starting with&quot;</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Search for your term by either name or code.</li>
+			<li>Using the <i>right mouse button</i>, click on the name of the <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> or <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span>.
+			</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenu.png" alt="ftMenu"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Find Modifiers</b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenuFindModifiers.png" alt="ftMenuFindModifiers"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The <b>Find Modifiers section</b> will display at the bottom of the <i>Find Terms view</i></li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModView.png" alt="ftModView"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>drop-down arrow</b> located in the qualifier field.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModQualifierField.png" alt="ftModQualifierField"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Starting with</b> from the drop-down list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModStartWith01.png" alt="ftModStartWith01"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the text for the modifier you are searching on.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModStartWith02.png" alt="ftModStartWith02" width="282" height="82" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Find Name button</b>. <img src="images/buttonFindName.png" alt="FindNameButton" /></li>
+			<p>&nbsp;</p>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModStartWith03.png" alt="ftModStartWith03"  /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftModSearchNameEnd" id="ftModSearchNameEnd"></a>Search Modifiers Using &quot;Ending with&quot;</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Search for your term by either name or code.</li>
+			<li>Using the <i>right mouse button</i>, click on the name of the <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> or <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span>.
+			</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenu.png" alt="ftMenu"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Find Modifiers</b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenuFindModifiers.png" alt="ftMenuFindModifiers"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The <b>Find Modifiers section</b> will display at the bottom of the <i>Find Terms view</i></li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModView.png" alt="ftModView"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>drop-down arrow</b> located in the qualifier field.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModQualifierField.png" alt="ftModQualifierField"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Ending with</b> from the drop-down list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModEndWith01.png" alt="ftModEndWith01"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the text for the modifier you are searching on.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModEndWith02.png" alt="ftModEndWith02" width="282" height="82" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Find Name button</b>. <img src="images/buttonFindName.png" alt="FindNameButton" /></li>
+			<p>&nbsp;</p>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModEndWith03.png" alt="ftModEndWith02"  /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftModSearchNameContain" id="ftModSearchNameContain"></a>Search Modifiers Using &quot;Containing&quot;</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Search for your term by either name or code.</li>
+			<li>Using the <i>right mouse button</i>, click on the name of the <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> or <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span>.
+			</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenu.png" alt="ftMenu"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Find Modifiers</b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenuFindModifiers.png" alt="ftMenuFindModifiers"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The <b>Find Modifiers section</b> will display at the bottom of the <i>Find Terms view</i></li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModView.png" alt="ftModView"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>drop-down arrow</b> located in the qualifier field.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModQualifierField.png" alt="ftModQualifierField"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Containing</b> from the drop-down list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModContain01.png" alt="ftModContain01"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the text for the modifier you are searching on.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModContain02.png" alt="ftModContain02"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Find Name button</b>. <img src="images/buttonFindName.png" alt="FindNameButton" /></li>
+			<p>&nbsp;</p>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModContain03.png" alt="ftModContain03"  /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftModSearchNameExact" id="ftModSearchNameExact"></a>Search Modifiers Using &quot;Exact&quot;</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Search for your term by either name or code.</li>
+			<li>Using the <i>right mouse button</i>, click on the name of the <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> or <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span>.
+			</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenu.png" alt="ftMenu"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Find Modifiers</b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenuFindModifiers.png" alt="ftMenuFindModifiers"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The <b>Find Modifiers section</b> will display at the bottom of the <i>Find Terms view</i></li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModView.png" alt="ftModView"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>drop-down arrow</b> located in the qualifier field.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModQualifierField.png" alt="ftModQualifierField"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Exact</b> from the drop-down list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModExact01.png" alt="ftModExact01"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the text for the modifier you are searching on.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModExact02.png" alt="ftModExact02" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Find Name button</b>. <img src="images/buttonFindName.png" alt="FindNameButton" /></li>
+			<p>&nbsp;</p>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModExact03.png" alt="ftModExact02"  /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="ftModSearchCode" id="ftModSearchCode2"></a>Find Modifiers by Code</h3>
+		<p>Some of the modifiers have a standard code associated with them. This code can be used to search for a specific modifier or a grouping of modifiers.
+		</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>As stated above you must first search for the term before you can find the associated modifiers.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftModSearchCode" id="ftModSearchCode2"></a>Search by Modifier Code</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Search for your term by either name or code.</li>
+			<li>Using the <i>right mouse button</i>, click on the name of the <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> or <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span>.
+			</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenu.png" alt="ftMenu"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Find Modifiers</b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenuFindModifiers.png" alt="ftMenuFindModifiers"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The <b>Find Modifiers section</b> will display at the bottom of the <i>Find Terms view</i></li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModView.png" alt="ftModView"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>In the text box enter the code for the modifier you are searching on.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModByCode01.png" alt="ftModByCode01" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Find Code button</b>. <img src="images/buttonFindCode.png" alt="FindCodeButton" /></li>
+			<p>&nbsp;</p>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModByCode02.png" alt="ftModByCode02"  /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="ftModSearchGetAll" id="ftModSearchGetAll"></a>Find All Modifiers</h3>
+		<p>In the Find Modifiers section of the Find Terms view there is a Get All button. This button will return all the modifiers associated to a term.
+		</p>
+		<p>&nbsp;</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>As stated above you must first search for the term before you can find the associated modifiers.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftModSearchCode" id="ftModSearchCode3"></a>Get All Modifiers</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Search for your term by either name or code.</li>
+			<li>Using the <i>right mouse button</i>, click on the name of the <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> or <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" alt="folder" />)</span>.
+			</li>
+			<li>A pop-up menu will open.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenu.png" alt="ftMenu"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Select <b>Find Modifiers</b> from the list.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftMenuFindModifiers.png" alt="ftMenuFindModifiers"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The <b>Find Modifiers section</b> will display at the bottom of the <i>Find Terms view</i></li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModView.png" alt="ftModView"  /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Click on the <b>Get All button</b>. <img src="images/buttonGetAll.png" alt="getAllButton" /></li>
+			<p>&nbsp;</p>
+			<li>The results will be displayed in the results section.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/ftModGetAll.png" alt="ftModGetAll"  /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h2><a name="ftUseTerms" id="ftUseTerms"></a>Using Terms</h2>
+		<p>This section describes how to use a concept or group of concepts.</p>
+		<p>&nbsp;</p>
+		<h3><a name="ftDragItems" id="ftDragItems"></a>Draggable Items</h3>
+		<p>Individual as well as groups of concepts and modifiers can be dragged and dropped (copied) from the Find Terms View to other views in the i2b2 Web Client.
+		</p>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Folder</li>
+			<p>A <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" width="16" height="18" alt="folder" />)</span> and all its concepts (children) can be added to other views by dragging the folder name from <b>Find Terms</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool View;</b> drop in the <i>panel</i></li>
+				<li><b>Workplace View;</b> drop in a <i>user</i> or <i>shared folder</i></li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Modifier Folder</li>
+			<p>A <b>modifier folder</b> <span style="color:#CCCCCC">(<img src="images/modifierfolder.png" width="16" height="18" alt="folder" />)</span> and all its concepts (children) can be added to other views by dragging the folder name from <b>Find Terms</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool View;</b> drop in the <i>panel</i></li>
+				<li><b>Workplace View;</b> drop in a <i>user</i> or <i>shared folder</i></li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Concept</li>
+			<p>A <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> can be added to other views by dragging the name of the concept from <b>Find Terms</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool View;</b> drop in the <i>panel</i></li>
+				<li><b>Workplace View;</b> drop in a <i>user</i> or <i>shared folder</i></li>
+			</ul>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>Modifier</li>
+			<p>A <b>modifier</b> <span style="color:#CCCCCC">(<img src="images/modifier.png" alt="modifier" />)</span> can be added to other views by dragging the name of the modifier from <b>Find Terms</b> to one of the following views.
+			</p>
+			<p>&nbsp;</p>
+			<ul>
+				<li><b>Query Tool View;</b> drop in the <i>panel</i></li>
+				<li><b>Workplace View;</b> drop in a <i>user</i> or <i>shared folder</i></li>
+			</ul>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="ftAddToQt" id="ftAddToQt"></a>Add to Query Tool View</h3>
+		<p>A folder,  individual concept, or modifier can be added to the query tool view by simply dragging the item from <b>Find Terms view</b> and dropping it into one of the panels in the <b>Query Tool view</b>.
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftAddFolderToQt" id="ftAddFolderToQt"></a>Add Folder to Query Tool View</h4>
+		<ol>
+			<li>Highlight the <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" width="16" height="18" alt="folder" />)</span> by clicking on the name of the folder.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Query Tool view</b>.</li>
+			<li>Drop the item into the <b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragFolderMI.png" alt="qtDragFolderMI" width="526" height="362" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The folder will now display in the panel for Group 1.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropFolderMI.png" alt="qtDropFolderMI" width="172" height="232" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftAddConceptToQt" id="ftAddConceptToQt"></a>Add Concept to Query Tool View</h4>
+		<ol>
+			<li>Highlight the <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" width="16" height="17" />)</span> by clicking on the name of the concept.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Query Tool view</b>.</li>
+			<li>Drop the item into the <b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragConceptMI.png" alt="qtDragConceptMI" width="524" height="359" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The concept will now display in the panel for Group 1.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropConceptMI.png" alt="qtDropConceptMI" width="172" height="232" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftAddModToQt" id="ftAddModToQt"></a>Add Modifier to Query Tool View</h4>
+		<ol>
+			<li>Highlight the <b>modifier</b> <span style="color:#CCCCCC">(<img src="images/modifier.png" alt="modifier" width="16" height="17" />)</span> by clicking on the name of the modifier.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Query Tool view</b>.</li>
+			<li>Drop the item into the <b>panel</b> labeled <b>Group 1</b>.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDragModPrincDx.png" alt="qtDragModPrincDx" width="524" height="359" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The name of the concept associated to the modifier plus the modifier will now display in the panel for Group 1.
+			</li>
+			<p>&nbsp;</p>
+			<p><img src="images/qtDropModPrincDx.png" alt="qtDropModPrincDx"  /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h3><a name="ftAddToWp" id="ftAddToWp"></a>Add to Workplace View</h3>
+		<p>Information in the workplace is related to the most common concepts and queries that an individual uses and in essence becomes their personal workplace.
+		</p>
+		<p>&nbsp;</p>
+		<p><img src="images/wpView.png" alt="wpView"  /></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftAddFolderToWp" id="ftAddFolderToWp"></a>Add Folder to Workplace View</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Highlight the <b>folder</b> <span style="color:#CCCCCC">(<img src="images/folder.png" width="16" height="18" alt="folder" />)</span> by clicking on the name of the folder.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Workplace view</b>.</li>
+			<li>Drop the item into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragFolder.png" alt="wpDragFolder" width="303" height="170" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The folder will now display in the <b>Workplace view</b> with the same name.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropFolder.png" alt="wpDropFolder" width="304" height="171" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftAddConceptToWp" id="ftAddConceptToWp"></a>Add Concept to Workplace View</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Highlight the <b>concept</b> <span style="color:#CCCCCC">(<img src="images/leaf.png" alt="leaf" />)</span> by clicking on the name of the concept.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Workplace view</b>.</li>
+			<li>Drop the item into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragConcept.png" alt="wpDragConcept" width="303" height="170" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The concept will now display in the <b>Workplace view</b> with the same name.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropConcept.png" alt="wpDropConcept" width="303" height="170" /></p>
+		</ol>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<h4><a name="ftAddModToWp" id="ftAddModToWp"></a>Add Modifier to Workplace View</h4>
+		<p>&nbsp;</p>
+		<ol>
+			<li>Highlight the <b>modifier</b> <span style="color:#CCCCCC">(<img src="images/modifier.png" alt="leaf" />)</span> by clicking on the name of the modifier.
+			</li>
+			<li>While holding the <i>left mouse button</i> down, drag the item over to the <b>Workplace view</b>.</li>
+			<li>Drop the item into either your workplace folder or the shared folder.</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDragModifier.png" alt="wpDragModifier" width="303" height="170" /></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<li>The name of the concept associated to modifier and the modifier will now display in the <b>Workplace view</b>.
+			</li>
+			<p>&nbsp;</p>
+			<p><img src="images/wpDropModifier.png" alt="wpDropModifier" width="303" height="170" /></p>
+		</ol>
+		<p></p>
+		<p>&nbsp;</p>
+	</body>
+</html>

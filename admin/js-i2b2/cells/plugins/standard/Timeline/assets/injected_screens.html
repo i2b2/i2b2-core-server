@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<body>
+
+		<div id='Timeline-mainDiv'>
+
+			<div id="Timeline-TABS" class="yui-navset">
+				<ul class="yui-nav">
+					<li id="Timeline-TAB0" class="selected"><a href="#Timeline-TAB0"><em>Specify Data</em></a></li>
+					<li id="Timeline-TAB1"><a href="#Timeline-TAB1"><em>View Results</em></a></li>
+					<li id="Timeline-TAB2"><a href="#Timeline-TAB2"><em>Plugin Help</em></a></li>
+				</ul>
+				<div class="yui-content" id="Timeline-CONTENT">
+					<div>
+						<div class="Timeline-MainContent">
+							<div class="Timeline-MainContentPad">
+								<div>Drop a Patient Set and one or more Concepts (Ontology Terms) into the input boxes below, and then click the "View Results" tab to view a timeline showing when those concepts were observed in the selected patient set.</div>
+								<div class="droptrgtlbl">Patient Set:</div>
+								<div class="droptrgt SDX-PRS" id="Timeline-PRSDROP">Drop a small Patient Set here</DIV>
+								<div class="droptrgtlbl">Concept(s):</div>
+								<div class="droptrgt SDX-CONCPT" id="Timeline-CONCPTDROP"><div class="concptItem">Drop one or more Concepts here</div></DIV>
+								<div id="Timeline-DeleteMsg">Click a concept to remove it from the list.</div>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="Timeline-MainContent">
+							<div class="results-directions">Please return to the "Specify Data" tab and select both a Patient Set and a Concept.</div>
+							<div class="results-finished" style="display:none;">
+								<div class="results-header">
+									<table width="100%" cellpadding="0" cellspacing="0">
+									<tr>
+									<td align="left" valign="center">
+										<form>
+										<table class="results-header-pagination" cellpadding="0" cellspacing="0">
+										<tr>
+										<td><input type="button" onclick="i2b2.Timeline.pgGo(-1);" value="<<<" class="results-header-btn"></td>
+										<td>start: <input type="text" id="Timeline-pgstart" style="width:40px;" value="1"></td>
+										<td>size: <input type="text" id="Timeline-pgsize" style="width:40px;" value="10"></td>
+										<td><input type="button" onclick="i2b2.Timeline.pgGo(0);" value="go" class="results-header-btn"></td>
+										<td><input type="button" onclick="i2b2.Timeline.pgGo(1);" value=">>>" class="results-header-btn"></td>
+										</tr>
+								</table>
+										</form>
+									</td>
+									<td align="right" valign="center">
+										<form>
+										<table class="results-header-zoom" cellpadding="0" cellspacing="0">
+										<tr>
+										<td>zoom:</td>
+										<td>
+											<input type="button" value="-" onclick="i2b2.Timeline.zoom('-');" class="results-header-zbtn">
+											<input type="button" value="+" onclick="i2b2.Timeline.zoom('+');" class="results-header-zbtn">
+										</td>
+										<td>&nbsp;pan:</td>
+										<td>
+											<input type="button" value="<" onclick="i2b2.Timeline.zoom('<');" class="results-header-zbtn">
+											<input type="button" value=">" onclick="i2b2.Timeline.zoom('>');" class="results-header-zbtn">
+										</td>
+										</tr>
+										</table>
+										</form>
+									</td>
+									</tr>
+									</table>
+								</div>
+								<div class="results-scale">
+										<table class="ptData">
+										<tr>
+										<td class="ptPanel"><div class="zoomKey"><div class="zoomKeyRange">&nbsp;</div></div></td>
+										<td class="ptObsTD"><div class="spacer">&nbsp;</div>
+										<div class="ptObsDIV">
+										<div class="ptObsBack"></div>
+										<div class="ptObsLine"></div>
+										<div class="ptObs">
+											<table cellspacing="0" cellpadding="0" width="100%">
+											<tr>
+											<td align="left" width="33%"><div class="results-scaleLbl" id="Timeline-results-scaleLbl1"></div></td>
+											<td align="center" width="34%"><div class="results-scaleLbl" id="Timeline-results-scaleLbl2"></div></td>
+											<td align="right" width="33%"><div class="results-scaleLbl" id="Timeline-results-scaleLbl3"></div></td>
+											</tr>
+											</table>
+										</div>
+										</div>
+										</div>
+										</td>
+										</tr>
+										</table>
+								</div>
+								<div class="results-timelineBox">
+									<div class="results-timeline"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="Timeline-MainContent">
+							<div class="Timeline-MainContentPad">
+								<h1>Timeline</h1>
+								<hr size="1" noshade>
+								<h2>Introduction</h2>
+								This plugin displays patient data on a graphical timeline.
+								<h2>Instructions</h2>
+								Navigate to the "Specify Data" tab. Then, drag and drop a Patient Set and one or more Concepts (Ontology Terms) onto the input boxes.
+								Click the "View Results" tab to draw a timeline that shows when the selected concepts were observed in the patient set.
+								By default, the first ten patients are shown. You can scroll forwards or backwards to view additional patients, or enter a new "size" to change the number of patients shown at one time.
+								The time scale at the top of the timeline indicates the start and end range of data being shown. Use zoom and pan buttons to change the visible date range.
+								<h2>About Us</h2>
+								This plugin was created by Nick Benik and Griffin Weber, MD, PhD.
+								<h2>Terms of Use</h2>
+								This plugin is distributed with the i2b2 web client framework and may be used free of charge.
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+
+
+	</body>
+</html>

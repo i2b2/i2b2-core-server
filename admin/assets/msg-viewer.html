@@ -1,0 +1,401 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Message Log</title>
+	<link rel="stylesheet" type="text/css" href="../assets/msg_sniffer.css" />
+	<!--[if lte IE 6]>
+		<link rel="stylesheet" type="text/css" href="../assets/msg_snifferIE6.css" />
+	<![endif]-->
+	<!--  Prototype JS framework -->
+	<script type="text/javascript" src="../js-ext/prototype.js"></script>
+</head>
+<body onload="initialize();" class="msgSnifferViewer">
+<script>
+	try {
+		// copy over some namespace references
+		var i2b2 = window.opener.i2b2;
+
+		var SnifferDisplay = {
+			_viewCommSide: "BOTH",
+			_filteredView: false,
+			changedOrigin: function(refSelect) {
+				SnifferDisplay.renderFilteredList();
+			},
+			changedChannel: function(refSelect) {
+				SnifferDisplay.renderActions();
+				SnifferDisplay.renderFilteredList();
+			},
+			changedAction: function(refSelect) {
+				SnifferDisplay.renderFilteredList();
+			},
+			renderFilteredList: function() {
+				var matches = new Hash();
+				var origin = false;
+				var channel = false;
+				var action = false;
+
+				// clear XML display panel
+				var rs = Element.select(document.body, ".msgXML");
+				rs[0].innerHTML = '&nbsp;';
+				rs[0].scrollTop = 0;
+
+				// get form data
+				var filtered = !(!SnifferDisplay._filteredView);
+				if (filtered && SnifferDisplay._filteredView.origins && !(!SnifferDisplay._filteredView.origins.push)) {
+					origin = SnifferDisplay._filteredView.origins;
+				} else {
+					var t = document.getElementById('sniffer_Origin');
+					if (t.options[t.selectedIndex].value != "ALL" ) {
+						origin = t.options[t.selectedIndex].value;
+					}
+				}
+				
+				if (filtered && SnifferDisplay._filteredView.cells && !(!SnifferDisplay._filteredView.cells.push)) {
+					channel = SnifferDisplay._filteredView.cells;
+				} else {
+					var t = document.getElementById('sniffer_CommChannel');
+					if (t.options[t.selectedIndex].value != "ALL" ) {
+						channel = t.options[t.selectedIndex].value;
+					}
+				}
+				
+				if (filtered && SnifferDisplay._filteredView.actions && !(!SnifferDisplay._filteredView.actions.push)) {
+					action = SnifferDisplay._filteredView.actions;
+				} else {
+					var t = document.getElementById('sniffer_ChannelAction');
+					if (t.options[t.selectedIndex].value != "ALL" ) {
+						action = t.options[t.selectedIndex].value;
+					}
+				}
+				// sieve results from msg log
+				var DB = i2b2.hive.MsgSniffer.signalMessageDB;
+				for (var i=0; i<DB.length; i++) {
+					var mThresh = 0;
+					var mVal = 0;
+					var rec = DB[i];
+					if (origin) {
+						mThresh++;
+						if (origin.push) {
+							for (var i2=0; i2 < origin.length; i2++) {
+								if (rec.SignalOrigin==origin[i2]) { 
+									mVal++; 
+									break;
+								}
+							}
+						} else {
+							if (rec.SignalOrigin==origin) { mVal++; }
+						}
+					}
+					if (channel) {
+						mThresh++;
+						if (channel.push) {
+							for (var i2=0; i2 < channel.length; i2++) {
+								if (rec.CellName==channel[i2]) { 
+									mVal++; 
+									break;
+								}
+							}
+						} else {
+							if (rec.CellName==channel) { mVal++; }
+						}
+					}
+					if (action) {
+						mThresh++;
+						if (action.push) {
+							for (var i2=0; i2 < action.length; i2++) {
+								if (rec.CellAction==action[i2]) { 
+									mVal++; 
+									break;
+								}
+							}
+						} else {
+							if (rec.CellAction==action) { mVal++; }
+						}
+					}
+					if (mVal==mThresh) { matches.set(i, rec); }
+				}
+
+				// clear the current msg index listing
+				var lst = $('sniffer_MatchMsgList');
+				while( lst.hasChildNodes() ) { lst.removeChild( lst.lastChild ); }
+
+				// render the list of matching messages
+				var tmpl = document.getElementById('sniffer_msg-REC');  // template code
+				var time0 = false;
+				if (matches.keys().length > 0) {
+					matches.each(function(val) {
+						var index = val[0];
+						val = val[1];
+						var disp = tmpl.cloneNode(true);
+						disp.id = "sniffer_msg-"+index;
+						// calculate T+x time string
+						if (!time0) {
+							// first record
+							time0 = val.SignalTimestamp.valueOf();
+						}
+						var leadZeros = function(v, l) {
+							var t = parseInt(v) + "";
+							while (t.length < l) {
+								t = "0" + t;
+							}
+							return t;
+						}
+						var tDiff = Math.abs(time0 - val.SignalTimestamp.valueOf());
+						var tDisp =  leadZeros((tDiff % 1000) / 10, 2);
+						var x = tDiff / 1000;
+						tDisp = leadZeros(x % 60, 2)+"." + tDisp;
+						x = x / 60;
+						tDisp = leadZeros(x % 60, 2)+":" + tDisp;
+						// display to time node
+						var el = Element.select(disp, ".msgTime")[0];
+						el.innerHTML = "T+"+tDisp;
+						el.title = val.SignalTimestamp.toLocaleTimeString();
+						// display other nodes
+						var el = Element.select(disp, ".msgChan")[0];
+						el.innerHTML = val.CellName;
+						var el = Element.select(disp, ".msgAction")[0];
+						el.innerHTML = val.CellAction;
+						var el = Element.select(disp, ".msgOrigin")[0];
+						el.innerHTML = val.SignalOrigin;
+						// change the color of the recieved message button if an error has occured
+						if (val.CommDetails.error) {
+							var el = Element.select(disp, ".recvStatus")[0];
+							Element.addClassName(el, "msgError");
+						}						
+						lst.appendChild(disp);
+						Element.show(disp);
+					});
+				} else {
+					lst.innerHTML = "&nbsp;";
+				}
+			},
+			renderOrigins: function() {
+				if (SnifferDisplay._filteredView && SnifferDisplay._filteredView.origins) {
+					return true;
+				}
+				var sn = document.getElementById('sniffer_Origin');
+				while( sn.hasChildNodes() ) { sn.removeChild( sn.lastChild ); }
+				// populate dropdown
+				var pno = document.createElement('OPTION');
+				pno.setAttribute('value', 'ALL');
+				var pnt = document.createTextNode('All Origins');
+				pno.appendChild(pnt);
+				sn.appendChild(pno);
+				for (var i=0; i<i2b2.hive.MsgSniffer.signalOrigins.length; i++) {
+					var t = i2b2.hive.MsgSniffer.signalOrigins[i];
+					var pno = document.createElement('OPTION');
+					pno.setAttribute('value', t);
+					var pnt = document.createTextNode(t);
+					pno.appendChild(pnt);
+					sn.appendChild(pno);
+				}
+				sn.selectedIndex = 0;
+			},
+			renderChannels: function() {
+				var sn = document.getElementById('sniffer_CommChannel');
+				while( sn.hasChildNodes() ) { sn.removeChild( sn.lastChild ); }
+				// populate dropdown
+				var isFiltered = (SnifferDisplay._filteredView && SnifferDisplay._filteredView.cells && !(!SnifferDisplay._filteredView.cells.push));
+
+				if (!isFiltered) {
+					var pno = document.createElement('OPTION');
+					pno.setAttribute('value', 'ALL');
+					var pnt = document.createTextNode('All Cells');
+					pno.appendChild(pnt);
+					sn.appendChild(pno);
+				}
+				for (var i=0; i<i2b2.hive.MsgSniffer.sniffSources.length; i++) {
+					var t = i2b2.hive.MsgSniffer.sniffSources[i];
+					var doAdd = true;
+					if (isFiltered) {
+						// apply filter
+						var doAdd = false;
+						for (var fi=0; fi < SnifferDisplay._filteredView.cells.length; fi++) {
+							if (SnifferDisplay._filteredView.cells[fi] == t.channelCode) {
+								doAdd = true;
+								break;
+							}
+						}
+					} 
+					if (doAdd) {
+						var pno = document.createElement('OPTION');
+						pno.setAttribute('value', t.channelCode);
+						var pnt = document.createTextNode(t.channelName);
+						pno.appendChild(pnt);
+						sn.appendChild(pno);
+					}
+				}
+				sn.selectedIndex = 0;
+			},
+			renderActions: function() {
+				var sn = document.getElementById('sniffer_ChannelAction');
+				while( sn.hasChildNodes() ) { sn.removeChild( sn.lastChild ); }
+				// populate dropdown
+				var pno = document.createElement('OPTION');
+				pno.setAttribute('value', 'ALL');
+				var pnt = document.createTextNode('All Actions');
+				pno.appendChild(pnt);
+				sn.appendChild(pno);
+				sn.selectedIndex = 0;
+				// find currently selected cell
+				var c = document.getElementById('sniffer_CommChannel')
+				c = c.options[c.selectedIndex].value;
+				if (c == "ALL") { return true; }
+				for (var i=0; i<i2b2.hive.MsgSniffer.sniffSources.length; i++) {
+					if (i2b2.hive.MsgSniffer.sniffSources[i].channelCode == c) {
+						c = i;
+						break;
+					}
+				}
+				for (var i=0; i<i2b2.hive.MsgSniffer.sniffSources[c].channelActions.length; i++) {
+					var t = i2b2.hive.MsgSniffer.sniffSources[c].channelActions[i];
+					var pno = document.createElement('OPTION');
+					pno.setAttribute('value', t);
+					var pnt = document.createTextNode(t);
+					pno.appendChild(pnt);
+					sn.appendChild(pno);
+				}
+			},
+			refresh: function() {
+				SnifferDisplay.renderOrigins();
+				SnifferDisplay.renderChannels();
+				SnifferDisplay.renderActions();
+				SnifferDisplay.renderFilteredList();
+			},
+			showMsg: function(el, commSide) {
+				if (commSide != "SENT" && commSide != "RCVD" ) { commSide = false; }
+				var t = this._extract_id(el);
+				var cn = "selected"; // class name
+				if (!t) { return false; }
+
+				// deselect previous
+				var rs = Element.select(document.body, ".IndexRecord."+cn);
+				for (var i=0; i<rs.length; i++) {
+					Element.removeClassName(rs[i], cn);
+				}
+
+				// select new
+				var t2 = document.getElementById("sniffer_msg-"+t);
+				if (!Element.hasClassName(t2, cn)) {
+					t2.className += (t2.className ? ' ' : '') + cn;
+				}
+				var rec = i2b2.hive.MsgSniffer.signalMessageDB[t];
+				// tweak GUI when error occurs
+				var cssError = "";
+				if (rec.CommDetails.error) {
+					cssError = "msgError";
+				}
+				// display XML
+				commSide = this._viewCommSide;
+				var output = ""; 
+				if (commSide=="BOTH" || commSide=="SENT") {
+					output += '<pre class="msgXML msgSent">'+i2b2.h.Escape(rec.CommDetails.msgRequest)+'</pre>';
+				}
+				if (commSide=="BOTH" || commSide=="RCVD") {
+					output += '<pre class="msgXML msgRcvd '+cssError+'">'+i2b2.h.Escape(rec.CommDetails.msgResponse)+'</pre>';
+				}
+				var rs = Element.select(document.body, ".msgXML");
+				rs[0].innerHTML = output;
+				rs[0].scrollTop = 0;
+			},
+			showSingleCommSide: function(commSide) {
+				if (commSide!="SENT" && commSide!="RCVD") { commSide = "BOTH"; }
+				this._viewCommSide = commSide;
+				// set to view both if next click does not hit the SEND or RCVD buttons
+				setTimeout("SnifferDisplay._viewCommSide='BOTH'",200);
+			},
+			ClearLog: function() {
+				if(confirm("Are you sure you want to delete ALL messages in the log?")) {
+					i2b2.hive.MsgSniffer.signalMessageDB = [];
+					this.refresh.call(this);
+				}
+			},
+			_extract_id: function(div) {
+				var t1 = div;
+				while (!t1.id) {
+					t1 = t1.parentNode;
+					if (!t1) { break; }
+				}
+				var t2 = t1.id;
+				var rec_num = t2.lastIndexOf('-');
+				if (rec_num > 0) {
+					rec_num = t2.slice(rec_num+1);
+					return rec_num;
+				} else {
+					return false;
+				}
+			},
+			resize: function(evt) {
+				if (window.outerHeight < 260) { window.outerHeight = 260; }
+				if (window.outerWidth < 600) { window.outerWidth = 600; }
+			}
+		};
+	} catch(e) { alert('XML Message viewer failed to initialize.'); }
+	function initialize() {
+		var t = i2b2.hive.MsgSniffer.asyncStackFilter;
+		if (t) {
+			SnifferDisplay._filteredView = Object.clone(t);
+			delete t;
+			i2b2.hive.MsgSniffer.asyncStackFilter = false; 
+			$('sniffer_Origin').hide();
+			$('sniffer_CommChannel').hide();
+			$('sniffer_ChannelAction').hide();
+			var t = $('view_stack_name')
+			t.show();
+//			t.innerHTML = SnifferDisplay._filteredView.title;
+		} else {
+			SnifferDisplay._filteredView = false;
+		}
+		SnifferDisplay.refresh.call(SnifferDisplay);
+		Event.observe(window, 'resize', SnifferDisplay.resize.bindAsEventListener(SnifferDisplay));
+	}
+</script>
+<form style="margin:0px; padding:0px;">
+<div id="sniffer_Filters" style="height:30px;border-top:1px solid #FFF;border-left:1px solid #FFF;border-bottom:1px solid #678;border-right:1px solid #678; background: #BCD; z-index:100;">
+				<div class="filters" style="position:absolute;top:5px; white-space:nowrap; overflow:hidden; margin-left:8px">
+					<div style="width:240px; float:left; display:none; font-family:arial,helvetica" id="view_stack_name">XML Message History</div>
+					<select style="width:150px;" id="sniffer_Origin" onchange="SnifferDisplay.changedOrigin(this)">
+						<option value="ALL" selected="selected">All Views</option>
+					</select>
+					<select style="width:150px;" style="margin-left:0px;" id="sniffer_CommChannel" onchange="SnifferDisplay.changedChannel(this)">
+						<option value="ALL">All Cells</option>
+					</select>
+					<select style="width:250px;" id="sniffer_ChannelAction" onchange="SnifferDisplay.changedAction(this)">
+						<option value="ALL" selected="selected">All Actions</option>
+					</select>
+				</div>
+				
+
+</div>
+
+<div id="sniffer_MatchMsgList" style="position:absolute;top:32px;left:0px;background:#DBE8EF; width:250px; overflow:scroll;border-bottom:1px solid #678; bottom:0px; padding-bottom:18px; margin-bottom:18px"></div>
+<div id="sniffer_ListButtons" style="position:absolute; left:0px; bottom:2px; width:250px; height:28px; z-index:10; background: #F0F0F0; padding: 5px 0px 0px; align:center; border-top: 1px solid #F8F8F8">
+	<input type="button" style="float: right; margin-right: 15px; width:70px;" value="Clear" onclick="SnifferDisplay.ClearLog()"/>
+	<input type="button" style="margin:0px 5px; width:70px;" value="Refresh" onclick="SnifferDisplay.refresh()"/>
+</div>
+
+<div id="sniffer_MatchMsgDisp" class="msgXML" style="background: #FFF; padding: 3px; overflow:auto; position:absolute; top:32px; right:0px; left:250px; bottom:0px"></div>
+
+</form>
+<div id="sniffer_msg-REC" class="IndexRecord" style="border-top:1px solid #FFF;border-left:1px solid #FFF;border-bottom:1px solid #678; width:227px;display:none;" onclick="SnifferDisplay.showMsg(this)">
+	<table style="font-size:inherit; width:227px;" cellspacing="0">
+		<tbody>
+		<tr>
+			<td rowspan="2" width="26">
+				<div class="sentStatus" title="Request" onclick="SnifferDisplay.showSingleCommSide('SENT')">sent</div>
+				<div class="recvStatus" title="Response" onclick="SnifferDisplay.showSingleCommSide('RCVD')">rcvd</div>
+			</td>
+			<td><div class="msgAction">action</div></td>
+			<td align="right"><div class="msgChan">cell</div></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			called by <span class="msgOrigin">origin</span> @
+			<span class="msgTime" title="12:45:01 AM">T+1</span>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+</html>

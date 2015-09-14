@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema id="querytool" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:qt="http://i2b2.mgh.harvard.edu/querytool"
+    targetNamespace="http://i2b2.mgh.harvard.edu/querytool">
+
+    <xs:annotation>
+        <xs:documentation>this schema defines xml representation of data objects from the CRC QRY
+            database</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="datatypes_example">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="query_status_type" type="qt:query_status_typeType"/>
+                <xs:element name="query_result_type" type="qt:query_result_typeType"/>
+                <xs:element name="query_master" type="qt:query_masterType"/>
+                <xs:element name="query_instance" type="qt:query_instanceType"/>
+                <xs:element name="query_result_instance" type="qt:query_result_instanceType"/>
+                <xs:element name="patient_enc_collection" type="qt:patient_enc_collectionType"/>
+                <xs:element name="patient_set_collection" type="qt:patient_set_collectionType"/>
+                <xs:element name="xml_result" type="qt:xml_resultType"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="status_type_idType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="result_type_idType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="query_master_idType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="query_instance_idType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="result_instance_idType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="patient_numType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="encounter_numType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="patient_enc_coll_idType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="patient_set_coll_idType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="xml_result_idType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="set_sizeType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+    <xs:simpleType name="set_indexType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="create_dateType">
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="delete_dateType">
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="start_dateType">
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="end_dateType">
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="nameType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="descriptionType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="user_idType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="group_idType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="generated_sqlType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="batch_modeType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <xs:complexType name="request_xmlType">
+        <!--
+        <xs:complexContent>
+            <xs:restriction base="xs:anyType"/>
+        </xs:complexContent>
+        -->
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="xml_valueType">
+        <!--
+        <xs:complexContent>
+            <xs:restriction base="xs:anyType"/>
+        </xs:complexContent>
+        -->
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="query_status_typeType">
+        <xs:sequence>
+            <xs:element name="status_type_id" type="qt:status_type_idType"/>
+            <xs:element name="name" type="qt:nameType" minOccurs="0"/>
+            <xs:element name="description" type="qt:descriptionType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="query_result_typeType">
+        <xs:sequence>
+            <xs:element name="result_type_id" type="qt:result_type_idType"/>
+            <xs:element name="name" type="qt:nameType" minOccurs="0"/>
+            <xs:element name="description" type="qt:descriptionType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="query_masterType">
+        <xs:sequence>
+            <xs:element name="query_master_id" type="qt:query_master_idType"/>
+            <xs:element name="name" type="qt:nameType"/>
+            <xs:element name="user_id" type="qt:user_idType"/>
+            <xs:element name="group_id" type="qt:group_idType"/>
+            <xs:element name="create_date" type="qt:create_dateType"/>
+            <xs:element name="delete_date" type="qt:delete_dateType"/>
+            <xs:element name="request_xml" type="qt:request_xmlType"/>
+            <xs:element name="generated_sql" type="qt:generated_sqlType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="query_instanceType">
+        <xs:sequence>
+            <xs:element name="query_instance_id" type="qt:query_instance_idType"/>
+            <xs:element name="query_master_id" type="qt:query_master_idType"/>
+            <xs:element name="user_id" type="qt:user_idType"/>
+            <xs:element name="group_id" type="qt:group_idType"/>
+            <xs:element name="batch_mode" type="qt:batch_modeType"/>
+            <xs:element name="start_date" type="qt:start_dateType"/>
+            <xs:element name="end_date" type="qt:end_dateType"/>
+            <!--
+            <xs:choice>
+                <xs:element name="query_status_type" type="qt:query_status_typeType"/>
+                <xs:element name="status_type_id" type="qt:status_type_idType"/>
+            </xs:choice>
+            -->
+            <xs:element name="query_status_type" type="qt:query_status_typeType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="query_result_instanceType">
+        <xs:sequence>
+            <xs:element name="result_instance_id" type="qt:result_instance_idType"/>
+            <xs:element name="query_instance_id" type="qt:query_instance_idType"/>
+            <!--
+            <xs:choice>
+                <xs:element name="query_result_type" type="qt:query_result_typeType"/>
+                <xs:element name="result_type_id" type="qt:result_type_idType"/>
+            </xs:choice>
+            -->
+            <xs:element name="query_result_type" type="qt:query_result_typeType"/>
+            <xs:element name="set_size" type="qt:set_sizeType"/>
+            <xs:element name="start_date" type="qt:start_dateType"/>
+            <xs:element name="end_date" type="qt:end_dateType"/>
+            <!--
+            <xs:choice>
+                <xs:element name="query_status_type" type="qt:query_status_typeType"/>
+                <xs:element name="status_type_id" type="qt:status_type_idType"/>
+            </xs:choice>
+            -->
+            <xs:element name="query_status_type" type="qt:query_status_typeType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="patient_enc_collectionType">
+        <xs:sequence>
+            <xs:element name="patient_enc_coll_id" type="qt:patient_enc_coll_idType"/>
+            <xs:element name="result_instance_id" type="qt:result_instance_idType"/>
+            <xs:element name="set_index" type="qt:set_indexType"/>
+            <xs:element name="patient_num" type="qt:patient_numType"/>
+            <xs:element name="encounter_num" type="qt:encounter_numType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="patient_set_collectionType">
+        <xs:sequence>
+            <xs:element name="patient_set_coll_id" type="qt:patient_set_coll_idType"/>
+            <xs:element name="result_instance_id" type="qt:result_instance_idType"/>
+            <xs:element name="set_index" type="qt:set_indexType"/>
+            <xs:element name="patient_num" type="qt:patient_numType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="patient_setType">
+        <xs:sequence>
+            <xs:element name="cohort_patient" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="set_index" type="qt:set_indexType"/>
+                        <xs:element name="patient_num" type="qt:patient_numType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="patient_set_coll_id" type="qt:patient_set_coll_idType" use="required"/>
+        <xs:attribute name="result_instance_id" type="qt:result_instance_idType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="xml_resultType">
+        <xs:sequence>
+            <xs:element name="xml_result_id" type="qt:xml_result_idType"/>
+            <xs:element name="result_instance_id" type="qt:result_instance_idType"/>
+            <xs:element name="xml_value" type="qt:xml_valueType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

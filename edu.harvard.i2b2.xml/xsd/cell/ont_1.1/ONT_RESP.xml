@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ont:example xmlns:ont="http://www.i2b2.org/xsd/cell/ont/1.1/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/ont/1.1/ ./ONT_RESP.xsd">
+    
+    <message_body>
+        <ont:concepts>
+            <concept>
+                <level>1</level>
+                <key>\\testrpdr\RPDR\Transfusions</key>
+                <name>Transfusion Services</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode/>
+                <metadataxml/>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\RPDR\Transfusions</dimcode>
+                <comment/>
+                <tooltip>Transfusion Services</tooltip>     
+                <update_date>2002-12-23T00:00:00</update_date>
+                <download_date>2002-12-23T00:00:00</download_date>
+                <import_date>2002-12-23T00:00:00</import_date>
+                <sourcesystem_cd/>
+                <valuetype_cd/>           
+            </concept>
+        </ont:concepts>
+    </message_body>  
+
+</ont:example>
+

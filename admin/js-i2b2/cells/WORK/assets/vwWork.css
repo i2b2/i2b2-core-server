@@ -1,0 +1,30 @@
+
+DIV#wrkTreeview {
+	background: #FFFFFF;
+	border: 1px solid #667788;
+	width:auto;
+	padding:1px 5px;
+	overflow: auto;
+}
+
+DIV#wrkWorkplace {
+	position: absolute;
+}
+
+DIV#wrkWorkplace .bodyBox {
+	background:#BBCCEE none repeat scroll 0% 50%;
+	border:1px solid #667788;
+	clear:both;
+	display:block;
+	height:auto;
+	overflow:hidden;
+	padding:5px;
+	position:relative;
+	top:-1px;
+	width:auto;
+	z-index:0;
+}
+
+.ddDropToWorkplace {
+	background:#FFFF55 !important;	
+}

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ont/1.1/">
+    
+    <xs:element name="ValueMetadata" type="ont:value_metadata_Type"/>
+    
+    <!-- ValueMetadataType (Top level type) -->			
+    <xs:complexType name="value_metadata_Type"> 
+        <xs:sequence>
+            <xs:element name="Version" type="xs:string"/>	
+            <xs:element name="CreationDateTime" type="xs:dateTime" />   
+            <xs:element name="MaxStringLength" type="xs:string"/>	
+            <xs:element name="DataType" type="xs:string"/>	
+            <xs:element name="Flagstouse" type="xs:string"/>	
+            <xs:element name="Oktousevalues" type="xs:string"/>	
+            <xs:element name="LowofLowValue" type="xs:string"/>	
+            <xs:element name="HighofLowValue" type="xs:string"/>	
+            <xs:element name="LowofHighValue" type="xs:string"/>	
+            <xs:element name="HighofHighValue" type="xs:string"/>	
+            <xs:element name="LowofToxicValue" type="xs:string"/>	
+            <xs:element name="HighofToxicValue" type="xs:string"/>	
+            <xs:element name="EnumValues">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Val" maxOccurs="unbounded"
+                        type="xs:string" />
+                        <xs:element name="ExcludingVal" maxOccurs="unbounded"
+                            type="xs:string" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="CommentsDetermingExclusion">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Com" maxOccurs="unbounded"
+                            type="xs:string" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="UnitValues">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="NormalUnits" type="xs:string" />
+                        <xs:element name="EqualUnits" maxOccurs="unbounded"
+                        type="xs:string" />
+                        <xs:element name="ExcludingUnits" maxOccurs="unbounded"
+                        type="xs:string" />
+                        <xs:element name="ConvertingUnits" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Units" type="xs:string" />
+                                    <xs:element name="MultiplyingFactor" type="xs:float" />
+                                </xs:sequence>
+                               
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    
+   
+</xs:schema>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:test="http://i2b2.mgh.harvard.edu/test"
+    targetNamespace="http://i2b2.mgh.harvard.edu/test">
+    
+    <xs:element name="test">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="request" type="test:requestType"/>
+                <xs:element name="special_request" type="test:special_requestType"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:complexType name="requestType" abstract="true">
+        <xs:sequence>
+            <xs:element name="hello" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="special_requestType">
+        <xs:complexContent>
+            <xs:extension base="test:requestType">
+                <xs:sequence>
+                    <xs:element name="goodbye" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

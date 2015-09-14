@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PatientData xmlns="http://diagon.mgh.harvard.edu/i2b2/i2b2patientdata.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://diagon.mgh.harvard.edu/i2b2/i2b2patientdata.xsd file://diagon/i2b2/i2b2patientdata.xsd">
+    <visit_dimension>
+        <encounter_ide source="DUCKDEMO">2000000000</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <start_date>1997-06-13 00:00:00</start_date>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </visit_dimension>
+    <observation_fact>
+        <encounter_ide source="DUCKDEMO">2000000000</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <concept_cd>75510</concept_cd>
+        <provider_id>@</provider_id>
+        <start_date>1997-06-13 00:00:00</start_date>
+        <modifier_cd>@</modifier_cd>
+        <end_date>1997-06-13 00:00:00</end_date>
+        <location_cd>MGH</location_cd>
+        <observation_blob>Syndactylism, syndactyly</observation_blob>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </observation_fact>
+    <observation_fact>
+        <encounter_ide source="DUCKDEMO">2000000000</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <concept_cd>75461</concept_cd>
+        <provider_id>@</provider_id>
+        <start_date>1997-06-13 00:00:00</start_date>
+        <modifier_cd>@</modifier_cd>
+        <end_date>1997-06-13 00:00:00</end_date>
+        <location_cd>MGH</location_cd>
+        <observation_blob>Congenital flat foot</observation_blob>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </observation_fact>
+    <visit_dimension>
+        <encounter_ide source="DUCKDEMO">2000000001</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <start_date>2002-04-19 00:00:00</start_date>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </visit_dimension>
+    <observation_fact>
+        <encounter_ide source="DUCKDEMO">2000000001</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <concept_cd>LCS-I2B2:pul</concept_cd>
+        <provider_id>@</provider_id>
+        <start_date>2002-04-19 00:00:00</start_date>
+        <modifier_cd>@</modifier_cd>
+        <end_date>2002-04-19 00:00:00</end_date>
+        <location_cd>MGH</location_cd>
+        <observation_blob>Date:  04/19/2002/n/nHeight: 12.00 in              Weight: 10.00 lb/nReferring Physician:  DOCTOR DUCK Technician:  ABC/nRespiratory Diagnosis:   DYSPNEA/n/n**SPIROMETRY (BTPS)**/n/n                    Predicted      Observed/n                      Value       Pre     %Pred/nFVC       (Lts)        2.59        2.07       79/nFEV1      (Lts)        1.99        1.42       71/nFEV1/FVC    (%)        75          69         92/nFEF25-75  (L/s)        1.82        .96        52/nPEFR      (L/s)        5.18        2.49       48/n/n/n**TECH COMMENTS**/n/nMEDS:PROVENTIL/n/n/n></observation_blob>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </observation_fact>
+    <observation_fact>
+        <encounter_ide source="DUCKDEMO">2000000001</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <concept_cd>UMLS:c0013405</concept_cd>
+        <provider_id>@</provider_id>
+        <start_date>2002-04-19 00:00:00</start_date>
+        <modifier_cd>@</modifier_cd>
+        <end_date>2002-04-19 00:00:00</end_date>
+        <location_cd>MGH</location_cd>
+        <observation_blob>Dyspnea, Paroxysmal</observation_blob>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </observation_fact>
+    <observation_fact>
+        <encounter_ide source="DUCKDEMO">2000000001</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <concept_cd>UMLS:c0004096</concept_cd>
+        <provider_id>@</provider_id>
+        <start_date>2002-04-19 00:00:00</start_date>
+        <modifier_cd>@</modifier_cd>
+        <end_date>2002-04-19 00:00:00</end_date>
+        <location_cd>MGH</location_cd>
+        <observation_blob>Asthma</observation_blob>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </observation_fact>
+    <visit_dimension>
+        <encounter_ide source="DUCKDEMO">2000000002</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <start_date>2004-11-02 00:00:00</start_date>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </visit_dimension>
+    <observation_fact>
+        <encounter_ide source="DUCKDEMO">2000000002</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <concept_cd>LCS-I2B2:c1010c</concept_cd>
+        <provider_id>@</provider_id>
+        <start_date>2004-11-02 00:00:00</start_date>
+        <modifier_cd>@</modifier_cd>
+        <end_date>2004-11-02 00:00:00</end_date>
+        <location_cd>MGH</location_cd>
+        <observation_blob>Report Status:  Unsigned/n/nADMISSION DATE:  11/02/04          DISCHARGE DATE:  11/08/04/n/nPRINCIPAL DIAGNOSIS:  Asthma./n/nASSOCIATED DIAGNOSIS:  Dyspnea./n/nADVERSE DRUG REACTIONS: no known drug allergies./n/nHISTORY OF PRESENT ILLNESS:  Donald is a seventy year old white male duck, who /nlives in Duckburg.  On 11/02/04, he had trouble breathing, while trying to /nchase a chipmunk.  He was taken to a local hospital. /n/nPAST MEDICAL HISTORY:  Syndactylism. /n/nPHYSICAL EXAMINATION:  Seventy year old male duck in distress..../n/nHOSPITAL COURSE:  The patient was admitted to the hospital on 11/02/04.  He is going to/nfollowup with Dr. Mallard Duck.</observation_blob>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </observation_fact> 
+    <observation_fact>
+        <encounter_ide source="DUCKDEMO">2000000002</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <concept_cd>78609</concept_cd>
+        <provider_id>@</provider_id>
+        <start_date>2004-11-02 00:00:00</start_date>
+        <modifier_cd>@</modifier_cd>
+        <end_date>2004-11-02 00:00:00</end_date>
+        <location_cd>MGH</location_cd>
+        <observation_blob>Other dyspnea and respiratory abnormality</observation_blob>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </observation_fact>  
+    <observation_fact>
+        <encounter_ide source="DUCKDEMO">2000000002</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <concept_cd>LPA29</concept_cd>
+        <provider_id>@</provider_id>
+        <start_date>2004-11-02 00:00:00</start_date>
+        <modifier_cd>@</modifier_cd>
+        <end_date>2004-11-02 00:00:00</end_date>
+        <location_cd>MGH</location_cd>
+        <observation_blob>asthma-LMR</observation_blob>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </observation_fact> 
+    <visit_dimension>
+        <encounter_ide source="DUCKDEMO">2000000003</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <start_date>2005-02-15 00:00:00</start_date>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </visit_dimension> 
+    <observation_fact>
+        <encounter_ide source="DUCKDEMO">2000000003</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <concept_cd>78449</concept_cd>
+        <provider_id>@</provider_id>
+        <start_date>2005-02-15 00:00:00</start_date>
+        <modifier_cd>@</modifier_cd>
+        <end_date>2005-02-15 00:00:00</end_date>
+        <location_cd>MGH</location_cd>
+        <observation_blob>Other voice disturbance</observation_blob>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </observation_fact>
+    <observation_fact>
+        <encounter_ide source="DUCKDEMO">2000000003</encounter_ide>
+        <patient_ide source="DUCKDEMO">1000000000</patient_ide>
+        <concept_cd>3013</concept_cd>
+        <provider_id>@</provider_id>
+        <start_date>2005-02-15 00:00:00</start_date>
+        <modifier_cd>@</modifier_cd>
+        <end_date>2005-02-15 00:00:00</end_date>
+        <location_cd>MGH</location_cd>
+        <observation_blob>Explosive personality disorder</observation_blob>
+        <sourcesystem_cd>DUCKDEMO</sourcesystem_cd>
+    </observation_fact>
+</PatientData>
+
+

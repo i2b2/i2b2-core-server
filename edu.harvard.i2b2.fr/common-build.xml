@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE project>
+
+<project name="common-build">        
+	
+	
+	
+	<!-- COMMON PROPERTIES -->
+    <property name="src"        value="src"/>
+    <property name="lib"        value="lib"/>     
+    <property name="etc"        value="etc"/>
+    <property name="sql"        value="sql"/>     
+    <property name="classes"    value="classes"/>
+    <property name="dist"       value="dist"/>
+	<property name="web"        value="web"/>
+    <property name="gensrc"     value="gensrc"/>
+    <property name="genlib"     value="genlib"/>
+    
+
+	<!-- LIBRARY INFORMATION, CONFIGURE ANT_HOME, XDOCLET_HOME, TOMCAT,etc SPECIFIC DIRECTORY -->
+    <property environment="env"/>
+    <property name="java.lib" value="${env.JAVA_HOME}/jre/lib" />
+	<property name="ant.lib" value="${env.ANT_HOME}/lib" />
+    <property name="xdoclet.lib" value="${env.XDOCLET_HOME}/lib" />
+    <property name="xdoclet2.lib" value="${env.XDOCLET2_HOME}/lib" />
+	<property name="xdoclet2.plugins" value="${env.XDOCLET2_HOME}/plugins" />
+	<property name="junit.lib" value="${env.JUNIT_HOME}" />
+    <property name="tomcat.home" value="${env.TOMCAT_HOME}" />
+    <property name="spring.home" value="${env.SPRING_HOME}" />
+    
+    <!-- OTHER SETTINGS -->
+    <property name="javac.debug" value="true" />
+    <property name="javac.opt" value="false" />
+    <property name="ejbspec" value="2.0" />
+	<property name="jboss.version" value="4.0" />
+
+                 
+
+	
+	
+<!-- INITIALIZE THE DISTRIBUTION DIRECTORY -->
+    <target name="common_init"  description="Internal initialize the environment">
+        <mkdir dir="${src}"/>
+    	<mkdir dir="${classes}"/>
+    	<mkdir dir="${gensrc}"/>
+        <mkdir dir="${lib}"/>
+    	<mkdir dir="${dist}"/>
+        <mkdir dir="${genlib}"/>
+    	
+    </target>
+
+    
+
+	    
+	    
+<!-- STANDARD BUILD DIRECTORIES WHICH SHOULD GET CLEANED WHEN ASKED -->
+    <target name="common_clean" depends="common_init" description="Internal clean all build products">
+        <echo message="Cleaning non-source directories in ${basedir}"/>
+        <delete dir="${classes}"/>
+        <delete dir="${dist}"/> 
+        <delete dir="${gensrc}"/>   
+        <delete dir="${genlib}"/>
+    </target>
+
+
+    
+<!-- GENERATE JAVADOCS FOR THE PROJECT -->
+	
+	<!-- Running Project dependencies -->
+	<target name="dist.dependencies">
+        <antcall target="depend.${ant.project.name}"/>
+		
+	 </target>
+
+</project>

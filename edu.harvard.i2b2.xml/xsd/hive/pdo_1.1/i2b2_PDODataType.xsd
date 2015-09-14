@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	targetNamespace="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+	jxb:version="1.0">
+
+	<xs:element name="event_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="event" maxOccurs="unbounded"
+					type="pdo:eventType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="concept_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="concept" maxOccurs="unbounded"
+					type="pdo:conceptType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="modifier_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="modifier" maxOccurs="unbounded"
+					type="pdo:modifierType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="observer_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="observer" maxOccurs="unbounded"
+					type="pdo:observerType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="pid_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="pid" maxOccurs="unbounded"
+					type="pdo:pidType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+    <xs:element name="eid_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="eid" maxOccurs="unbounded"
+					type="pdo:eidType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="patient_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="patient" maxOccurs="unbounded"
+					type="pdo:patientType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="observation_set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="observation" maxOccurs="unbounded"
+					type="pdo:observationType" />
+			</xs:sequence>
+			<xs:attribute name="panel_name" type="xs:string"
+				use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Reused types starts here-->
+	<!-- EventType -->
+	<xs:complexType name="eventType">
+		<xs:annotation>
+			<xs:documentation>
+				One row of data from the visit_dimension table.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="event_id" minOccurs="1" >
+				<xs:complexType >
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="source" type="xs:string"
+								default="HIVE" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="patient_id" minOccurs="1" type="pdo:patientIdType">
+			</xs:element>
+			<xs:element name="param" type="pdo:paramType" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="start_date" type="xs:dateTime" />
+			<xs:element name="end_date" type="xs:dateTime" />
+			<xs:element name="event_blob" type="pdo:blobType"
+				minOccurs="0" />
+		</xs:sequence>
+		<xs:attributeGroup ref="pdo:techDataAttributeGroup" />
+	</xs:complexType>
+	<!-- ConceptType -->
+	<xs:complexType name="conceptType">
+		<xs:sequence>
+			<xs:element name="concept_path" type="xs:string"
+				minOccurs="1" />
+			<xs:element name="concept_cd" type="xs:string"
+				minOccurs="1" />
+			<xs:element name="name_char" type="xs:string" />
+			<xs:element name="concept_blob" type="pdo:blobType"
+				minOccurs="0" />
+		</xs:sequence>
+		<xs:attributeGroup ref="pdo:techDataAttributeGroup" />
+	</xs:complexType>
+	<!-- ModifierType -->
+	<xs:complexType name="modifierType">
+		<xs:sequence>
+			<xs:element name="modifier_path" type="xs:string"
+				minOccurs="1" />
+			<xs:element name="modifier_cd" type="xs:string"
+				minOccurs="1" />
+			<xs:element name="name_char" type="xs:string" />
+			<xs:element name="modifier_blob" type="pdo:blobType"
+				minOccurs="0" />
+		</xs:sequence>
+		<xs:attributeGroup ref="pdo:techDataAttributeGroup" />
+	</xs:complexType>
+	<!-- ObserverType -->
+	<xs:complexType name="observerType">
+		<xs:sequence>
+			<xs:element name="observer_path" type="xs:string"
+				minOccurs="1" />
+			<xs:element name="observer_cd" type="xs:string"
+				minOccurs="1" />
+			<xs:element name="name_char" type="xs:string" />
+			<xs:element name="observer_blob" type="pdo:blobType"
+				minOccurs="0" />
+		</xs:sequence>
+		<xs:attributeGroup ref="pdo:techDataAttributeGroup" />
+	</xs:complexType>
+	<!-- PIDType -->
+	<xs:complexType name="pidType">
+		<xs:sequence>
+			<!--
+			<xs:element name="patient_id" type="pdo:patientIdType"
+			minOccurs="1" />
+			--> 
+			<xs:element name="patient_id" 
+			minOccurs="1" >
+			<xs:complexType>
+				<xs:simpleContent>
+				<xs:extension base="pdo:patientIdType">
+					<xs:attribute name="status" type="xs:string"
+						use="optional" />
+					<xs:attributeGroup
+						ref="pdo:techDataAttributeGroup" />
+				</xs:extension>
+				</xs:simpleContent>
+			</xs:complexType>
+			</xs:element>
+			<xs:element name="patient_map_id" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="source" type="xs:string"
+								default="HIVE" />
+							<xs:attribute name="status" type="xs:string"
+								use="optional" />
+							<xs:attributeGroup
+								ref="pdo:techDataAttributeGroup" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- EIDType -->
+	<xs:complexType name="eidType">
+		<xs:sequence>
+			<xs:element name="event_id" minOccurs="1">
+				<xs:complexType >
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="source" type="xs:string"
+							default="HIVE"/>
+							<xs:attribute name="patient_id" type="xs:string"
+							/>
+							<xs:attribute name="patient_id_source" type="xs:string"
+							default="HIVE"/>
+							<xs:attribute name="status" type="xs:string"
+								use="optional" />
+							<xs:attributeGroup
+								ref="pdo:techDataAttributeGroup" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="event_map_id" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="source" type="xs:string"
+							default="HIVE" />
+							<xs:attribute name="patient_id" type="xs:string"
+							/>
+							<xs:attribute name="patient_id_source" type="xs:string"
+							default="HIVE"/>
+							<xs:attribute name="status" type="xs:string"
+								use="optional" />
+							<xs:attributeGroup
+								ref="pdo:techDataAttributeGroup" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- PatientType -->
+	<xs:complexType name="patientType">
+		<xs:sequence>
+			<xs:element name="patient_id" type="pdo:patientIdType"
+				minOccurs="1" />
+			<xs:element name="param" type="pdo:paramType" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="patient_blob" type="pdo:blobType"
+				minOccurs="0" />
+		</xs:sequence>
+		<xs:attributeGroup ref="pdo:techDataAttributeGroup" />
+	</xs:complexType>
+	<!-- ObservationType -->
+	<xs:complexType name="observationType">
+		<xs:sequence>
+			<xs:element name="event_id">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="source" type="xs:string"
+								default="HIVE"  />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="patient_id" type="pdo:patientIdType"
+				minOccurs="1" />
+			<xs:element name="concept_cd">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="name" type="xs:string"
+								use="required" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="observer_cd">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="name" type="xs:string"
+								use="required" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="start_date" type="xs:dateTime" />
+			<xs:element name="modifier_cd">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="name" type="xs:string"
+								use="required" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="instance_num">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="valuetype_cd" type="xs:string" />
+			<xs:element name="tval_char" type="xs:string" />
+			<xs:element name="nval_num">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:decimal">
+							<xs:attribute name="units" type="xs:string"
+								use="required" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="valueflag_cd">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="name" type="xs:string"
+								use="required" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="quantity_num" type="xs:decimal" />
+			<xs:element name="units_cd" type="xs:string" />
+			<xs:element name="end_date" type="xs:dateTime" />
+			<xs:element name="location_cd">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="name" type="xs:string"
+								use="required" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="confidence_num" type="xs:decimal" />
+			<xs:element name="observation_blob" type="pdo:blobType"
+				minOccurs="0" />
+		</xs:sequence>
+		<xs:attributeGroup ref="pdo:techDataAttributeGroup" />
+	</xs:complexType>
+
+
+
+    <!--  Patient Type -->
+	<xs:complexType name="patientIdType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="source" type="xs:string"
+					default="HIVE">
+					<xs:annotation>
+						<xs:appinfo>
+							<jxb:property name="Source" />
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<!-- ParamType -->
+	<xs:complexType name="paramType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="column" type="xs:string"
+					use="optional" />
+				<xs:attribute name="column_descriptor" type="xs:string"
+					use="optional" />
+				<xs:attribute name="name" type="xs:string"
+					use="optional" />
+				<xs:attribute name="type" type="xs:string"
+					use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<!-- BlobType -->
+	<xs:complexType name="blobType" mixed="true">
+		<xs:annotation>
+			<xs:documentation>
+				A string with all whitespace preserved. This string
+				could also contain xml so the type is anyType in order
+				for complex element content to be valid.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="xs:anyType">
+				<xs:sequence>
+					<xs:any minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- tech data attribute group -->
+	<xs:attributeGroup name="techDataAttributeGroup">
+		<xs:annotation>
+			<xs:documentation>
+				A group of fields that always appear together at the end
+				of a table and store annotation or administrative
+				information.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="update_date" type="xs:dateTime"
+			use="optional" />
+		<xs:attribute name="download_date" type="xs:dateTime"
+			use="optional" />
+		<xs:attribute name="import_date" type="xs:dateTime"
+			use="optional" />
+		<xs:attribute name="sourcesystem_cd" type="xs:string"
+			use="optional" />
+		<xs:attribute name="upload_id" type="xs:string" use="optional" />
+	</xs:attributeGroup>
+
+</xs:schema>

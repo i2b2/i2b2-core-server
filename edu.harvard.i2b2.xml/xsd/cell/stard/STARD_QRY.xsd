@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:stard="http://www.i2b2.org/xsd/cell/stard/1.1/"
+	xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+	targetNamespace="http://www.i2b2.org/xsd/cell/stard/1.1/">
+
+	<xs:import schemaLocation="../../hive/pdo_1.1/i2b2_PDO.xsd" 
+		namespace="http://www.i2b2.org/xsd/hive/pdo/1.1/">
+	</xs:import>
+
+	<xs:element name="get_study_headers" type="stard:get_study_headersType" />
+
+	<xs:complexType name="get_study_headersType">
+		<xs:sequence>
+			<xs:element ref="pdo:pid_set" minOccurs="1" maxOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="get_event_set" type="stard:get_event_setType" />
+
+	<xs:complexType name="get_event_setType">
+		<xs:sequence>
+			<xs:element ref="pdo:pid_set" minOccurs="1" maxOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="get_study_event_set" type="stard:get_study_event_setType" />
+
+	<xs:complexType name="get_study_event_setType">
+		<xs:sequence>
+			<xs:element ref="pdo:pid_set" maxOccurs="1"></xs:element>
+			<xs:element ref="pdo:eid_set" maxOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="get_series_event_set" type="stard:get_series_event_setType" />
+
+	<xs:complexType name="get_series_event_setType">
+		<xs:sequence>
+			<xs:element ref="pdo:eid_set" minOccurs="1" maxOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="get_image_event_set" type="stard:get_image_event_setType" />
+
+	<xs:complexType name="get_image_event_setType">
+		<xs:sequence>
+			<xs:element ref="pdo:eid_set" minOccurs="1" maxOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

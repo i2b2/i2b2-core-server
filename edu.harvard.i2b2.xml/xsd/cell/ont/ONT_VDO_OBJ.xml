@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ont:vocab_data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/ont/ ./ONT_VDO_OBJ.xsd">
+    <hlevel>2</hlevel>                                       <!-- c_hlevel -->
+    <concept_path>\i2b2\diagnosis\asthma</concept_path>      <!-- c_fullname -->
+    <concept_cd>i2b2:asthma</concept_cd>                     <!-- c_basecode -->
+    <name_char>Asthma</name_char>                            <!-- c_name -->
+    <synonym_cd>N</synonym_cd>                               <!-- c_synonym_cd -->
+    <visual_cd>FA</visual_cd>                                <!-- c_visualattributes -->
+    <metadata_xml/>                                          <!-- c_metadataxml -->
+    <select_column>concept_cd</select_column>                <!-- c_facttablecolumn -->
+    <from_table>concept_dimension</from_table>               <!-- c_tablename -->
+    <where_column>concept_path</where_column>                <!-- c_columnname -->
+    <operator_cd>LIKE</operator_cd>                          <!-- c_operator -->
+    <dimcode>\i2b2\diagnosis\asthma</dimcode>                <!-- c_dimcode -->
+    <datatype_cd>T</datatype_cd>                             <!-- c_columndatatype -->
+    <comment/>                                               <!-- c_comment -->
+    <tooltip>i2b2 / diagnosis / asthma</tooltip>             <!-- c_tooltip -->                                           <!-- c_totalnum -->
+</ont:vocab_data>
+

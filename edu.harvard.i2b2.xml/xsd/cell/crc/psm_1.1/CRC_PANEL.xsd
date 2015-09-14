@@ -1,0 +1,206 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:panel="http://www.i2b2.org/xsd/cell/crc/panel/1.1/">
+
+	<!-- to allow drag and drop of panel object -->
+	<xs:element name="panel" type="panelType"/>
+	
+	<xs:complexType name="panelType">
+		<xs:sequence>
+			<xs:element name="panel_number" type="xs:int" />
+			<xs:element name="panel_timing" type="xs:string" default="ANY"/>
+			<xs:element name="panel_date_from" type="constrainDateType" />
+			<xs:element name="panel_date_to" type="constrainDateType" />
+			<!-- this element is not used -->
+			<xs:element name="panel_accuracy_scale" type="xs:int" />
+			<!-- invert 0 or 1 -->
+			<xs:element name="invert" type="xs:int" default="0" />
+			<xs:element name="total_item_occurrences" default="1">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:int">
+							<xs:attribute name="operator"
+								type="totOccuranceOperatorType" default="GE" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="item" type="itemType"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="itemType">
+		<xs:sequence>
+			<xs:element name="hlevel" type="xs:int" />
+			<xs:element name="item_name" type="xs:string" />
+			<xs:element name="item_key" type="xs:string" />
+			<!--  display purpose -->
+			<xs:element name="item_icon" type="xs:string" />
+			<xs:element name="tooltip" type="xs:string" />
+			<xs:element name="class" type="xs:string" />
+			
+
+			<!-- value constrains -->
+			<xs:element name="constrain_by_value" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="value_operator"
+							type="constrainOperatorType" />
+						<xs:element name="value_constraint"
+							type="xs:string" />
+						<xs:element name="value_unit_of_measure"
+							type="xs:string" />
+						<xs:element name="value_type"
+							type="constrainValueType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<!-- date constrains -->
+			<xs:element name="constrain_by_date" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="date_from"
+							type="constrainDateType" />
+						<xs:element name="date_to"
+							type="constrainDateType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<!--  modifier constrains -->
+			<xs:element name="constrain_by_modifier">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="modifier_name"
+							type="xs:string" />
+						<xs:element name="modifier_key"
+							type="xs:string" />
+						<xs:element name="applied_path"
+							type="xs:string" />
+								
+						<!-- modifier value constrains -->
+						<xs:element name="constrain_by_value" minOccurs="0"
+							maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="value_operator"
+										type="constrainOperatorType" />
+									<xs:element name="value_constraint"
+										type="xs:string" />
+									<xs:element name="value_unit_of_measure"
+										type="xs:string" />
+									<xs:element name="value_type"
+										type="constrainValueType" />
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+			
+						<xs:element name="dim_tablename" type="xs:string" />
+						<xs:element name="dim_columnname" type="xs:string" />
+						<xs:element name="dim_dimcode" type="xs:string" />
+						<xs:element name="dim_columndatatype" type="xs:string" />
+						<xs:element name="dim_operator" type="xs:string" />
+						<xs:element name="facttablecolumn" type="xs:string" />
+			
+						<!-- optional element, for display purpose  -->
+						<xs:element name="modifier_visualattributes" type="xs:string" />
+						<xs:element name="modifier_synonym_cd" type="xs:string" />
+						<xs:element name="modifier_tooltip" type="xs:string" />
+						<xs:element name="modifier_class" type="xs:string" />
+					  </xs:sequence>
+				 </xs:complexType>
+			</xs:element>
+			
+			<!--  -->
+			<xs:element name="dim_tablename" type="xs:string" />
+			<xs:element name="dim_columnname" type="xs:string" />
+			<xs:element name="dim_dimcode" type="xs:string" />
+			<xs:element name="dim_columndatatype" type="xs:string" />
+			<xs:element name="dim_operator" type="xs:string" />
+			<xs:element name="facttablecolumn" type="xs:string" />
+
+			<!-- optional element, for display purpose  -->
+			<xs:element name="item_color" type="xs:string" />
+			<xs:element name="item_shape" type="xs:string" />
+			<xs:element name="item_row_number" type="xs:string" />
+			<xs:element name="item_is_synonym" type="xs:boolean" />
+			<xs:element name="metadataxml" type="metadataxml_valueType" /> 
+
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="constrainDateType">
+		<xs:simpleContent>
+			<xs:extension base="xs:dateTime">
+				<xs:attribute name="time" type="constrainDateTimeType"
+					use="required" />
+				<xs:attribute name="inclusive" type="inclusiveType"
+					default="YES" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="metadataxml_valueType" mixed="true">
+        <xs:sequence>
+            <xs:any namespace="##any" processContents="skip"/>
+        </xs:sequence>
+    </xs:complexType>
+
+	<xs:simpleType name="constrainOperatorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="EQ" />
+			<xs:enumeration value="NE" />
+			<xs:enumeration value="GT" />
+			<xs:enumeration value="LT" />
+			<xs:enumeration value="GE" />
+			<xs:enumeration value="LE" />
+			<xs:enumeration value="IN" />
+			<xs:enumeration value="LIKE" />
+			<xs:enumeration value="LIKE[begin]" />
+			<xs:enumeration value="LIKE[end]" />
+			<xs:enumeration value="LIKE[contains]" />
+			<xs:enumeration value="LIKE[exact]" />
+			<xs:enumeration value="BETWEEN" />
+			<xs:enumeration value="CONTAINS" />
+			<xs:enumeration value="CONTAINS[database]" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="totOccuranceOperatorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="EQ" />
+			<xs:enumeration value="NE" />
+			<xs:enumeration value="GT" />
+			<xs:enumeration value="LT" />
+			<xs:enumeration value="GE" />
+			<xs:enumeration value="LE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="constrainValueType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NUMBER" />
+			<xs:enumeration value="TEXT" />
+			<xs:enumeration value="LARGETEXT" />
+			<xs:enumeration value="FLAG" />
+			<xs:enumeration value="MODIFIER" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="constrainDateTimeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="START_DATE" />
+			<xs:enumeration value="END_DATE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="inclusiveType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="YES" />
+			<xs:enumeration value="NO" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

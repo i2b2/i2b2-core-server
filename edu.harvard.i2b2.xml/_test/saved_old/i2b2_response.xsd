@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema id="message" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://i2b2.mgh.harvard.edu/message"
+    targetNamespace="http://i2b2.mgh.harvard.edu/message">
+    
+    <xs:include schemaLocation="./i2b2.xsd"/>
+    
+    <xs:element name="response" type="response_messageType"/>
+    
+    <xs:complexType name="response_messageType" final="extension">
+        <xs:sequence>
+            <xs:element name="message_header" type="message_headerType"/>
+            <xs:element name="response_header">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="info" type="infoType"/>
+                        <xs:element name="result_status" type="result_statusType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="message_body" type="bodyType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="infoType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="url" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    
+    <xs:complexType name="result_statusType">
+        <xs:sequence>
+            <xs:element name="status" type="statusType"/>
+            <xs:element name="polling_url" type="polling_urlType"/>
+            <xs:element name="conditions" type="conditionsType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="statusType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="type" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="DONE"/>
+                            <xs:enumeration value="ERROR"/>
+                            <xs:enumeration value="PENDING"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    
+    <xs:complexType name="polling_urlType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="interval_ms" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    
+    <xs:complexType name="conditionsType">
+        <xs:sequence>
+            <xs:element name="condition" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="type" use="required">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="ERROR"/>
+                                        <xs:enumeration value="FATAL_ERROR"/>
+                                        <xs:enumeration value="WARNING"/>
+                                        <xs:enumeration value="INFO"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="coding_system" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+</xs:schema>

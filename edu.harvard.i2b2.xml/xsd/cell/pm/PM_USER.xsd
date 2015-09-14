@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/pm/">
+
+    <xs:element name="message_body_example">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any namespace="http://www.i2b2.org/xsd/cell/pm/" minOccurs="0"
+                    maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="get_user_configuration" type="pm:get_user_configurationType"/>
+    <xs:element name="response" type="pm:responseType"/>
+
+    <xs:complexType name="get_user_configurationType">
+        <xs:sequence>
+            <xs:element name="project" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="responseType">
+        <xs:sequence>
+            <xs:element name="configure" type="pm:configureType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="configureType">
+        <xs:sequence>
+            <xs:element name="environment" type="xs:string"/>
+            <xs:element name="helpURL" type="xs:string"/>
+            <xs:element name="user" type="pm:userType"/>
+            <xs:element name="cell_datas" type="pm:cell_datasType"/>
+            <xs:element name="global_data" type="pm:global_dataType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="userType">
+        <xs:sequence>
+            <xs:element name="full_name" type="xs:string"/>
+            <xs:element name="user_name" type="xs:string"/>
+            <xs:element name="password" type="xs:string"/>
+            <xs:element name="domain" type="xs:string"/>
+            <xs:element name="key" type="xs:string" minOccurs="0"/>
+            <xs:element name="project" type="pm:projectType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="projectType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="key" type="xs:string"/>
+            <xs:element name="wiki" type="xs:string" minOccurs="0"/>
+            <xs:element name="role" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="param" type="pm:paramType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="cell_datasType">
+        <xs:sequence>
+            <xs:element name="cell_data" type="pm:cell_dataType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="cell_dataType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="url" type="xs:string"/>
+            <xs:element name="special" type="xs:string"/>
+            <xs:element name="param" type="pm:paramType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>        
+    </xs:complexType>
+        <xs:complexType name="global_dataType">
+        <xs:sequence>
+            <xs:element name="param" type="pm:paramType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="paramType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="name" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/"
+  xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"
+  xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/"
+  xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/"
+  xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+  xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
+	<message_header>
+		<sending_application>
+			<application_name>i2b2_QueryTool</application_name>
+			<application_version>1.6</application_version>
+		</sending_application>
+		<sending_facility>
+			<facility_name>PHS</facility_name>
+		</sending_facility>
+		<receiving_application>
+			<application_name>i2b2_DataRepositoryCell</application_name>
+			<application_version>1.6</application_version>
+		</receiving_application>
+		<receiving_facility>
+			<facility_name>PHS</facility_name>
+		</receiving_facility>
+		<message_type>
+			<message_code>Q04</message_code>
+			<event_type>EQQ</event_type>
+		</message_type>
+		<security>
+			<domain>i2b2demo</domain>
+			<username>demo</username>
+			<password>demouser</password>
+		</security>
+		<message_control_id>
+			<message_num>gmI7I608f2v2h4DJJOSgi</message_num>
+			<instance_num>0</instance_num>
+		</message_control_id>
+		<processing_id>
+			<processing_id>P</processing_id>
+			<processing_mode>I</processing_mode>
+		</processing_id>
+		<accept_acknowledgement_type>messageId</accept_acknowledgement_type>
+        <project_id>Demo</project_id>
+	</message_header>
+	<request_header>
+		<result_waittime_ms>180000</result_waittime_ms>
+	</request_header>
+	<message_body>
+		<ns3:pdoheader>
+			<request_type>get_observationfact_by_primary_key</request_type>
+		</ns3:pdoheader>
+		<ns3:request xsi:type="ns3:GetObservationFactByPrimaryKey_requestType" 
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<fact_primary_key>
+		<event_id>476659</event_id>
+		<patient_id>1000000002</patient_id>
+		<concept_cd>LCS-I2B2:CT_RPT_DID</concept_cd>
+		<observer_id>LCS-I2B2:D000109060</observer_id>
+</fact_primary_key>
+<fact_output_option blob="true" onlykeys="false"/>
+		</ns3:request>
+	</message_body>
+</ns6:request>

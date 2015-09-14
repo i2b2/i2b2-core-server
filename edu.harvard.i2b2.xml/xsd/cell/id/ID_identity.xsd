@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema id="identity_managment_cell" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:id="http://www.i2b2.org/xsd/cell/id/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/id/">
+
+    <!-- <xs:import schemaLocation="i2b2.xsd" namespace="http://i2b2.mgh.harvard.edu/message"/> -->
+
+    <xs:attributeGroup name="metaGroup">
+        <xs:attribute name="update_date" type="xs:dateTime"/>
+        <xs:attribute name="download_date" type="xs:dateTime"/>
+        <xs:attribute name="import_date" type="xs:dateTime"/>
+        <xs:attribute name="sourcesystem_cd" type="xs:string"/>
+    </xs:attributeGroup>
+    
+    <xs:simpleType name="statusType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="active"/>
+            <xs:enumeration value="inactive"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="fieldType">
+        <xs:simpleContent>
+            <xs:extension base="xs:anySimpleType">
+                <xs:attribute name="concept_cd" use="required" type="xs:string"/>
+                <xs:attributeGroup ref="id:metaGroup"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="stringType">
+        <xs:simpleContent>
+            <xs:restriction base="id:fieldType">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string"/>
+                </xs:simpleType>
+            </xs:restriction>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="dateType">
+        <xs:simpleContent>
+            <xs:restriction base="id:fieldType">
+                <xs:simpleType>
+                    <xs:restriction base="xs:date"/>
+                </xs:simpleType>
+            </xs:restriction>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="datetimeType">
+        <xs:simpleContent>
+            <xs:restriction base="id:fieldType">
+                <xs:simpleType>
+                    <xs:restriction base="xs:dateTime"/>
+                </xs:simpleType>
+            </xs:restriction>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="numberType">
+        <xs:simpleContent>
+            <xs:restriction base="id:fieldType">
+                <xs:simpleType>
+                    <xs:restriction base="xs:decimal"/>
+                </xs:simpleType>
+            </xs:restriction>
+        </xs:simpleContent>
+    </xs:complexType>
+
+</xs:schema>

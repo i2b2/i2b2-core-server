@@ -1,0 +1,292 @@
+.yui-skin-sam .qryTemporalConstraint .yuimenu .bd {
+	width:300px;
+}
+
+DIV#crcQueryToolBox {
+	position: absolute;
+	width: 534px;
+}
+
+DIV.relationshipAmongEvents {
+	text-align: center;
+	line-height: 30px;	
+	 background-color: #CBD8EF;
+    border: 1px solid #63758C;
+}
+
+DIV#crcQueryToolBox DIV.tabBox {}
+DIV#crcQueryToolBox DIV.tabBox DIV {}
+
+DIV#crcQueryToolBox DIV.tabBox.active {}
+DIV#crcQueryToolBox DIV.tabBox.active DIV {}
+
+DIV#crcQueryToolBox DIV.bodyBox {
+	background:#BBCCEE none repeat scroll 0%;
+	border:1px solid #667788;
+	width:auto;
+	height:auto;
+	padding: 5px 5px 0px;
+	white-space:nowrap;
+	overflow:hidden;
+	position:absolute;
+	xtop:-1px;
+	top:25px;
+	clear: both;
+	z-index:0;
+}	
+
+DIV#crcQueryToolBox DIV.queryNameBar {
+	background:#BBCCEE none repeat scroll 0%;
+	border-bottom:1px solid #667788;
+	overflow:hidden;
+	padding: 2px 5px 5px;
+	margin: 0px -5px 5px;
+	width: auto;
+}
+
+DIV#crcQueryToolBox DIV.queryLabel {
+	font-size:12px;
+	height:15px;
+	line-height:15px;
+	overflow:hidden;
+	float:left;
+
+	xposition:absolute;
+	xz-index:99999;
+}
+
+DIV#crcQueryToolBox DIV#queryName {
+	background-color:#CBD8EF;
+	border:1px solid #63758C;
+	color:#4C5676;
+	font-size:11px;
+	height:15px;
+	line-height:15px;
+	overflow:hidden;
+	padding:0pt 5px;
+	white-space:nowrap;
+	width:auto;
+}
+
+DIV#crcQueryToolBox DIV.crcQryToolPanels {
+	height:auto;
+}
+
+DIV#crcQueryToolBox DIV.qryPanel {
+	width:168px;
+	float: left;
+	margin: 1px;
+	padding: 0px 0px 2px 0px;
+}
+
+DIV#crcQueryToolBox DIV.qryPanelTitle {
+	text-align:center;
+	background:#6677AA none repeat scroll 0%;
+	border:1px solid #667788;
+	color:#FFFFFF;
+	font-size:11px;
+	font-weight:bold;
+	height:13px;
+	line-height:12px;
+	overflow:hidden;
+	width:166px;
+	float:left;
+}
+
+DIV#crcQueryToolBox DIV.qryPanelClear {
+	float:right;
+	margin:1px;
+}
+
+DIV#crcQueryToolBox DIV.queryPanel {
+	background:#FFFFFF;
+	border:1px solid #667788;
+	padding:3px;
+	white-space:nowrap;
+	overflow:auto;
+	width:160px;
+	float: left;
+}
+
+
+DIV#crcQueryToolBox DIV.qryPanelButtonBar {
+	float:left;
+	margin: 0px 0px -1px 0px;
+}
+DIV#crcQueryToolBox DIV.qryPanelButtonBar DIV {
+	background:#CBD8EF none repeat scroll 0%;
+	border:1px solid #667788;
+	height:16px;
+	line-height:16px;
+	text-align:center;
+	float:left;
+}
+
+DIV#crcQueryToolBox DIV.qryButtonDate 	 {width:38px;}
+DIV#crcQueryToolBox DIV.qryButtonOccurs  {width:80px; margin:0px -1px;}
+DIV#crcQueryToolBox DIV.qryButtonExclude {width:46px;}
+DIV#crcQueryToolBox DIV.qryPanelTiming   {width:166px;text-align:left;}
+
+DIV#crcQueryToolBox DIV.qryPanelTiming .yuimenuitemlabel {width:120px;} 
+
+DIV#crcQueryToolBox DIV.qryPanelTiming Button {
+line-height:1;
+float:left;
+/*width:160px;*/
+min-height:1em;
+}
+
+DIV#crcQueryToolBox DIV.qryTemporalConstraint{
+	text-align:center;
+}
+
+DIV#crcQueryToolBox DIV.qryTemporalConstraint .yuimenuitemlabel {width:200px;}
+
+DIV#crcQueryToolBox DIV.qryTemporalConstraint Button {
+line-height:1;
+width:75px;
+min-height:1em;
+}
+DIV#crcQueryToolBox DIV#qryToolFooter {
+	border-top:1px solid #667788;
+	clear:both;
+	margin:0px -5px -2px -5px;
+	padding: 5px;
+	position:relative;
+	width:auto;
+	height:20px;
+	overflow:hidden;
+}
+
+
+DIV#crcQueryToolBox DIV#newBox,
+DIV#crcQueryToolBox DIV#printQueryBox,
+DIV#crcQueryToolBox DIV#addTemporalBox,
+DIV#crcQueryToolBox DIV#runBox {
+	position:relative;
+	xdisplay:none;
+	background:#6677AA;
+	border:1px solid #667788;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-family:arial,helvetica;
+	font-size:11px;
+	height:16px;
+	line-height:16px;
+	text-align:center;
+	color:#FFF;
+	cursor:pointer;
+	float: left;
+	margin:0px 5px 0px 0px;
+	width:72px;
+	xz-index:5;
+	overflow:hidden;
+}
+
+
+DIV#crcQueryToolBox DIV#newBox a,
+DIV#crcQueryToolBox DIV#printQueryBox a,
+DIV#crcQueryToolBox DIV#addTemporalBox a,
+DIV#crcQueryToolBox DIV#runBox a {
+	color:#FFF;
+	display:block;
+	text-decoration:none;
+}
+
+DIV#crcQueryToolBox DIV#addTemporalBox
+{
+	width: 150px;
+	float: none;	
+}
+
+a.topicButton {
+	color:#FFF;
+	display:block;
+	text-decoration:none;
+	display: inline;
+	background:#6677AA;
+	border:1px solid #667788;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-family:arial,helvetica;
+	font-size:11px;
+	height:18px;
+	line-height:18px;
+	text-align:center;
+	color:#FFF;
+	cursor:pointer;
+	padding: 2px 11px;
+}
+a.topicButton:hover {
+	background-color:#7687bf;
+}
+
+
+DIV#crcQueryToolBox DIV#newBox a:hover,
+DIV#crcQueryToolBox DIV#printQueryBox a:hover,
+DIV#crcQueryToolBox DIV#addTemporalBox a:hover,
+DIV#crcQueryToolBox DIV#runBox a:hover {
+	background-color:#7687bf;
+}
+
+DIV#crcQueryToolBox DIV#groupCount {
+	height:16px;
+	width:165px;
+	line-height:16px;
+	position:relative;
+	text-align:center;
+	float:left;
+	overflow:hidden;
+}
+
+DIV#crcQueryToolBox DIV#queryBottom {
+	position:relative;
+	height:20px;
+	border-top:1px solid #667788;
+	width:100%;
+}
+DIV#crcQueryToolBox DIV#scrollBox {
+	position:relative;
+	overflow:hidden;
+	float:right;
+	width:172px;
+	z-index:5;
+}
+
+DIV#crcQueryToolBox DIV#queryBalloonBox {
+	bottom:80px;
+	height:30px;
+	padding:0px 0px 0px 0px;
+	position:absolute;
+	width:100%;
+	z-index:10;
+}
+DIV#crcQueryToolBox DIV.queryBalloon {
+	background:#FFFF99;
+	border:1px solid #667788;
+	width:70px;
+	height:40px;
+	color:#000000;
+	font-size:12px;
+	font-weight:bold;
+	text-align:center;
+	line-height:13px;
+	position:absolute;
+	float:left;
+	display:none;
+}
+DIV#crcQueryToolBox DIV.queryBalloonAnd {
+	background:#6677AA;
+	border:1px solid #667788;
+	width:45px;
+	height:20px;
+	color:#FFFFFF;
+	font-size:14px;
+	font-weight:bold;
+	text-align:center;
+	line-height:20px;
+	position:absolute;
+	float:left;
+	/*margin:10px 27px;*/
+	display:none;
+}

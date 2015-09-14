@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ont/">
+    
+    <xs:element name="vocab_data" type="ont:vocab_dataType"/>
+    
+    <xs:complexType name="vocab_dataType">
+        <xs:all>
+            <xs:element name="hlevel" type="xs:int" minOccurs="0"/>        <!-- c_hlevel -->
+            <xs:element name="concept_path" type="ont:concept_pathType" minOccurs="0"/>  <!-- c_fullname -->
+            <xs:element name="concept_cd" type="xs:string" minOccurs="0"/>    <!-- c_basecode -->
+            <xs:element name="name_char" type="xs:string" minOccurs="0"/>     <!-- c_name -->
+            <xs:element name="synonym_cd" type="xs:string" minOccurs="0"/>    <!-- c_synonym_cd -->
+            <xs:element name="visual_cd" type="xs:string" minOccurs="0"/>     <!-- c_visualattributes -->
+            <xs:element name="metadata_xml" type="xs:string" minOccurs="0"/>  <!-- c_metadataxml -->
+            <xs:element name="select_column" type="xs:string" minOccurs="0"/> <!-- c_facttablecolumn -->
+            <xs:element name="from_table" type="xs:string" minOccurs="0"/>    <!-- c_tablename -->
+            <xs:element name="where_column" type="xs:string" minOccurs="0"/>  <!-- c_columnname -->
+            <xs:element name="operator_cd" type="xs:string" minOccurs="0"/>   <!-- c_operator -->
+            <xs:element name="dimcode" type="xs:string" minOccurs="0"/>       <!-- c_dimcode -->
+            <xs:element name="datatype_cd" type="xs:string" minOccurs="0"/>   <!-- c_columndatatype -->
+            <xs:element name="comment" type="xs:string" minOccurs="0"/>       <!-- c_comment -->
+            <xs:element name="tooltip" type="xs:string" minOccurs="0"/>       <!-- c_tooltip -->
+                                               <!-- c_totalnum -->
+            <!-- Derived Data -->
+            <xs:element name="standard_cd" type="ont:standard_cdType" minOccurs="0"/>
+            <xs:element name="modifier_cd_list" type="ont:modifier_cd_listType" minOccurs="0"/>
+            <xs:element name="value_constraint_list" type="ont:value_constraint_listType" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    
+    <xs:simpleType name="concept_pathType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    
+    <xs:complexType name="standard_cdType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="scheme_cd" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="modifier_cd_listType">
+        <xs:sequence>
+            <xs:element name="modifier_cd" type="xs:string" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="value_constraint_listType">
+        <xs:sequence>
+            <xs:element name="value_constraint" type="xs:string" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
+
+

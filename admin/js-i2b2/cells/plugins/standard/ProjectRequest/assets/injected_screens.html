@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<body>
+<div id='ProjectRequest-mainDiv'>
+  <div id="ProjectRequest-TABS" class="yui-navset">
+    <ul class="yui-nav">
+      <li id="ProjectRequest-TAB0" class="selected"><a href="#ProjectRequest-TAB0"><em>Specify Data</em></a></li>
+      <li id="ProjectRequest-TAB1"><a href="#ProjectRequest-TAB1"><em>View Results</em></a></li>
+      <li id="ProjectRequest-TAB2"><a href="#ProjectRequest-TAB2"><em>Plugin Help</em></a></li>
+    </ul>
+    <div class="yui-content" id="ProjectRequest-CONTENT">
+      <div >
+        <div class="ProjectRequest-MainContent">
+          <div class="ProjectRequest-MainContentPad">
+            <div><center><h1>Creating a new project based upon the existing project</h1></center><br/>This form allows a request for a new project data mart to be created.  Please make the notations on the form by choosing from the options available or dragging items from existing patient sets or concepts in the current project into the boxes below.  If these items are not yet created, please exit from the form to create them and then return to this form.<br/></div>
+
+<table cellpadding="0" cellspacing="0"><tr valign="top"><td width="60%"><div class="droptrgtlbl">Enter Title:</div><br clear="all"/><div class="TextMessage">Please begin by giving this project a name.  This will be the name that is used throughout the program to reference the project, so generally the name should be short, although can be up to 255 characters:</div></td>
+            
+		   <td><div class="outputOptions">
+              <input type="text" id="title" maxlength="255" />
+              <br/><div class="SubInputMessage">Enter upto 255 characters</div>
+            </div></td></tr>
+        <tr valign="top" bgcolor="#F0F0F0"><td><div class="droptrgtlbl">Select approval:</div><br clear="all"/><div class="TextMessage">Please choose from one of your registered approvals below.  If as approval does not appear, it will need to be registered by an administrator before you may proceed:</div></td>
+
+            <td><div class="outputOptions">
+              <select id="ProjectRequest-OutputApproval" onchange="i2b2.ProjectRequest.showPart2();">
+                <option>Select an Approval</option>
+              </select>
+            </div></td></tr>
+            
+            <tr  id="ProjectRequest-part2a" style="display:none;" valign="top"><td width="60%"><div class="droptrgtlbl">Pick users:</div><br clear="all"/><div class="TextMessage">According to the data from the i2b2 project management cell, the following users are allowed to be registered for this project using the approval that was chosen.  If a user is not found on the list below, an administrator will need to specifically add them to the approval before you can proceed.  The newly created project will allow these users to access it with the roles you choose for each user below.</div></td>
+              
+              <td><div class="outputOptions">
+                <div class="workarea"  id="ProjectRequest-roleItem"></div>
+              </div></td></tr>
+
+			<tr  id="ProjectRequest-part2b" style="display:none;" valign="top"  bgcolor="#F0F0F0"><td width="60%"><div class="droptrgtlbl">Cases:</div><br clear="all"/><div class="TextMessage">The new project will be created to include the set of patients that was created in a patient set of a current project.  It may also exclude patients from separate sets as desired.  These sets are dragged from the previous queries or workplace areas to the boxes below:</div></td>              
+              
+              <td><div class="droptrgt SDX-PRS" id="ProjectRequest-PRSDROP">
+                <div class="prsItem">Drop one or more Patient Set here</div>
+              </DIV>
+              <br clear="all"/><div class="SubInputMessage">Identify Cases</div>
+              <div id="ProjectRequest-DeleteMsgPRS"><br clear="all"/>Click a Patient Set to remove it from the list.</div>
+              <br clear="all"/>
+
+              <div class="droptrgt SDX-PRS" id="ProjectRequest-EXCPRSDROP">
+                <div class="excprsItem">Drop one or more Patient Set here</div>
+              </DIV>
+              <br clear="all"/><div class="SubInputMessage">Exclude these patients from the cases</div>
+              <div id="ProjectRequest-DeleteMsgExcPRS"><br clear="all"/>Click a Patient Set to remove it from the list.</div><br /></td></tr>
+         
+			  <tr  id="ProjectRequest-part2c" style="display:none;" valign="top"><td width="60%"><div class="droptrgtlbl">Controls:</div><br clear="all"/><div class="TextMessage">The new project may include a set of matched controls.  These are included from the current project and will be selected based upon age, gender, race, and co-morbidities.  You may define a specific set of the controls to be matched from, or create a set of all patients in the current project and drag the set to the box below.  Patients can also be excluded from this set in a similar way to that described above.</div></td>
+
+	          <td><div class="droptrgt SDX-PRS" id="ProjectRequest-ICDROP">
+                <div class="icItem">Drop one or more Patient Set here</div>
+              </DIV>
+              <br clear="all"/><div class="SubInputMessage">Identify Controls</div>
+              <div id="ProjectRequest-DeleteMsgIC"><br clear="all"/>Click a Patient Set to remove it from the list.</div>
+              <br clear="all"/>
+              
+              <div class="droptrgt SDX-PRS" id="ProjectRequest-EXCICDROP">
+                <div class="excicItem">Drop one or more Patient Set here</div>
+              </DIV>
+              <br clear="all"/><div class="SubInputMessage">Exclude these patients from the controls</div>
+              <div id="ProjectRequest-DeleteMsgExcIC"><br clear="all"/>Click a Patient Set to remove it from the list.</div><br/></td></tr>
+              
+			   <tr  id="ProjectRequest-part2d" style="display:none;" valign="top"  bgcolor="#F0F0F0"><td width="60%"><div class="droptrgtlbl">Concepts:</div><br clear="all"/><div class="TextMessage">The concepts that will be included in the new project are chosen by dragging items from the Ontology or Workplace views into the boxes below:</div></td>
+              <td><div class="droptrgt SDX-CONCPT" id="ProjectRequest-CONCPTDROP">
+                <div class="concptItem">Drop one or more Concepts here</div>
+              </DIV>
+              <br clear="all"/><div class="SubInputMessage">Identify Concepts to be Included</div>              
+              <div id="ProjectRequest-DeleteMsgConcept"><br clear="all"/>Click a concept to remove it from the list.</div>
+              <br clear="all"/>
+
+              <div class="droptrgt SDX-CONCPT" id="ProjectRequest-EXCCONCPTDROP">
+                <div class="excconcptItem">Drop one or more Concepts here</div>
+              </DIV>
+              <br clear="all"/><div class="SubInputMessage">Exclude these concepts</div>
+              <div id="ProjectRequest-DeleteMsgExcConcept"><br clear="all"/>Click a concept to remove it from the list.</div><br/></td></tr>
+              
+
+			   <tr  id="ProjectRequest-part2e" style="display:none;" valign="top"><td width="60%"><div class="TextMessage">When the above form is complete, you may request this project be created by clicking the "submit" button below.  A reference number will be returned that can be used to track the project.</div></td>
+
+                <td><div id="runBox"><a href="JavaScript:i2b2.ProjectRequest.doSubmit()">Submit Query</a></div></td></tr></table>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="ProjectRequest-MainContent">
+          <div class="results-directions">Please return to the "Specify Data" tab and fill out the request form.</div>
+          <div class="results-working" style="display:none;">The Project request is processing...</div>
+          <div class="results-finished" style="display:none;">
+            <div class="results-text">Your request for a new project to be created has been received and will be serviced by the administrators.  The reference number for tracking this project is shown below:
+              <UL>
+              </UL>
+            </div>
+            <div id="ProjectRequest-InfoPDO">
+              <table>
+                <tr>
+                  <th>Project ID</th>
+                  <td class="InfoPDO-Response"></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="ProjectRequest-MainContent">
+          <div class="ProjectRequest-MainContentPad">
+            <h1>Project Request</h1>
+            <hr size="1" noshade>
+            <h2>Instructions</h2>
+            Navigate to the "Specify Data" tab. Then, drag and drop a Patient Set and a Concept (Ontology Term) onto the input boxes. Finally, click the "View Results" tab to view the PDO Response.
+            <h2>About Us</h2>
+            This plugin was created by Mike Mendis
+            <h2>Terms of Use</h2>
+            This  plugin is distributed with the i2b2 web client framework and may be used free of charge. </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- 
+
+insert into i2b2demodata2.dbo.#global_temp_table ( patient_num , panel_count)
+select   patient_num ,1 as panel_count  from ( select  /*+ index(observation_fact fact_cnpt_pat_enct_idx) */  patient_num  from i2b2demodata2.dbo.observation_fact where  concept_cd IN (select concept_cd from i2b2demodata2.dbo.concept_dimension    where concept_path LIKE '\i2b2\Diagnoses\Genitourinary system (580-629)\Disorders of breast (610-611)\%')     group by   patient_num  ) t
+<*>
+update i2b2demodata2.dbo.#global_temp_table set panel_count = 2 where i2b2demodata2.dbo.#global_temp_table.panel_count =  1
+<*>
+update i2b2demodata2.dbo.#global_temp_table set panel_count = -1  where i2b2demodata2.dbo.#global_temp_table.panel_count =  2 and   exists ( select  1 as panel_count  from ( select  /*+ index(observation_fact fact_cnpt_pat_enct_idx) */  patient_num  from i2b2demodata2.dbo.observation_fact where  concept_cd IN (select concept_cd from i2b2demodata2.dbo.concept_dimension    where concept_path LIKE '\i2b2\Diagnoses\Digestive system (520-579)\(530) Diseases of esophagus\%')     group by   patient_num  ) t where i2b2demodata2.dbo.#global_temp_table.patient_num = t.patient_num    ) 
+<*>
+update i2b2demodata2.dbo.#global_temp_table set panel_count = -1  where i2b2demodata2.dbo.#global_temp_table.panel_count =  2 and   exists ( select  1 as panel_count  from ( select  /*+ index(observation_fact fact_cnpt_pat_enct_idx) */  patient_num  from i2b2demodata2.dbo.observation_fact where  concept_cd IN (select concept_cd from i2b2demodata2.dbo.concept_dimension    where concept_path LIKE '\i2b2\Diagnoses\Digestive system (520-579)\Other diseases of digestive system (570-579)\%')     group by   patient_num  ) t where i2b2demodata2.dbo.#global_temp_table.patient_num = t.patient_num    ) 
+<*>
+update i2b2demodata2.dbo.#global_temp_table set panel_count = 3 where i2b2demodata2.dbo.#global_temp_table.panel_count =  2
+<*>
+update i2b2demodata2.dbo.#global_temp_table set panel_count = -1  where i2b2demodata2.dbo.#global_temp_table.panel_count =  3 and   exists ( select  1 as panel_count  from ( select  /*+ index(observation_fact fact_cnpt_pat_enct_idx) */  patient_num  from i2b2demodata2.dbo.observation_fact where  concept_cd IN (select concept_cd from i2b2demodata2.dbo.concept_dimension    where concept_path LIKE '\i2b2\Diagnoses\Endocrine disorders (240-259)\Thyroid disorders (240-246)\%')     group by   patient_num  ) t where i2b2demodata2.dbo.#global_temp_table.patient_num = t.patient_num    ) 
+<*>
+update i2b2demodata2.dbo.#global_temp_table set panel_count = -1  where i2b2demodata2.dbo.#global_temp_table.panel_count =  3 and   exists ( select  1 as panel_count  from ( select  /*+ index(observation_fact fact_cnpt_pat_enct_idx) */  patient_num  from i2b2demodata2.dbo.observation_fact where  concept_cd IN (select concept_cd from i2b2demodata2.dbo.concept_dimension    where concept_path LIKE '\i2b2\Diagnoses\Hematologic diseases (280-289)\(285) Other and unspecified anemi~\%')     group by   patient_num  ) t where i2b2demodata2.dbo.#global_temp_table.patient_num = t.patient_num    ) 
+<*>
+insert into i2b2demodata2.dbo.#dx (  patient_num   ) select * from ( select distinct  patient_num  from i2b2demodata2.dbo.#global_temp_table where panel_count = 3 ) q
+-->
+<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/">
+	<message_header>
+		<sending_application>
+			<application_name>i2b2_QueryTool</application_name>
+			<application_version>1.6</application_version>
+		</sending_application>
+		<sending_facility>
+			<facility_name>PHS</facility_name>
+		</sending_facility>
+		<receiving_application>
+			<application_name>i2b2_DataRepositoryCell</application_name>
+			<application_version>1.6</application_version>
+		</receiving_application>
+		<receiving_facility>
+			<facility_name>PHS</facility_name>
+		</receiving_facility>
+		<security>
+			<domain>i2b2demo</domain>
+			<username>demo</username>
+			<password>demouser</password>
+		</security>
+		<message_type>
+			<message_code>Q04</message_code>
+			<event_type>EQQ</event_type>
+		</message_type>
+		<message_control_id>
+			<message_num>wP2qHFmEvAs4dbmFuETqW</message_num>
+			<instance_num>0</instance_num>
+		</message_control_id>
+		<processing_id>
+			<processing_id>P</processing_id>
+			<processing_mode>I</processing_mode>
+		</processing_id>
+		<accept_acknowledgement_type>messageId</accept_acknowledgement_type>
+		<project_id>Demo</project_id>
+	</message_header>
+	<request_header>
+		<result_waittime_ms>180000</result_waittime_ms>
+	</request_header>
+	<message_body>
+		<ns4:psmheader>
+			<user group="i2b2demo" login="demo">demo</user>
+			<patient_set_limit>0</patient_set_limit>
+			<estimated_time>0</estimated_time>
+			<query_mode>optimize_without_temp_table</query_mode>
+			<request_type>CRC_QRY_runQueryInstance_fromQueryDefinition</request_type>
+		</ns4:psmheader>
+				<ns4:request xsi:type="ns4:query_definition_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<query_definition>
+						<query_name>Disea-Thyro-Disor@09:24:36</query_name>
+						<query_timing>ANY</query_timing>
+						<specificity_scale>0</specificity_scale>
+						<panel>
+							<panel_number>1</panel_number>
+							<panel_accuracy_scale>100</panel_accuracy_scale>
+							<invert>0</invert>
+							<panel_timing>ANY</panel_timing>
+							<total_item_occurrences>1</total_item_occurrences>
+							<item>
+								<hlevel>3</hlevel>
+								<item_name>Disorders of breast</item_name>
+								<item_key>\\i2b2_DIAG\i2b2\Diagnoses\Genitourinary system (580-629)\Disorders of breast (610-611)\</item_key>
+								<tooltip>Diagnoses \ Genitourinary system \ Disorders of breast</tooltip>
+								<class>ENC</class>
+								<item_icon>FA</item_icon>
+								<item_is_synonym>false</item_is_synonym>
+							</item>
+						</panel>						
+						<panel>
+							<panel_number>2</panel_number>
+							<panel_accuracy_scale>100</panel_accuracy_scale>
+							<invert>1</invert>
+							<panel_timing>ANY</panel_timing>
+							<total_item_occurrences>1</total_item_occurrences>
+							<item>
+								<hlevel>3</hlevel>
+								<item_name>Thyroid disorders</item_name>
+								<item_key>\\i2b2_DIAG\i2b2\Diagnoses\Endocrine disorders (240-259)\Thyroid disorders (240-246)\</item_key>
+								<tooltip>Diagnoses \ Endocrine disorders \ Thyroid disorders</tooltip>
+								<class>ENC</class>
+								<item_icon>FA</item_icon>
+								<item_is_synonym>false</item_is_synonym>
+							</item>
+							<item>
+								<hlevel>3</hlevel>
+								<item_name>Other and unspecified anemias</item_name>
+								<item_key>\\i2b2_DIAG\i2b2\Diagnoses\Hematologic diseases (280-289)\(285) Other and unspecified anemi~\</item_key>
+								<tooltip>Diagnoses \ Hematologic diseases \ Other and unspecified anemias</tooltip>
+								<class>ENC</class>
+								<item_icon>FA</item_icon>
+								<item_is_synonym>false</item_is_synonym>
+							</item>
+						</panel>
+						<panel>
+							<panel_number>3</panel_number>
+							<panel_accuracy_scale>100</panel_accuracy_scale>
+							<invert>1</invert>
+							<panel_timing>ANY</panel_timing>
+							<total_item_occurrences>1</total_item_occurrences>
+							<item>
+								<hlevel>3</hlevel>
+								<item_name>Diseases of esophagus</item_name>
+								<item_key>\\i2b2_DIAG\i2b2\Diagnoses\Digestive system (520-579)\(530) Diseases of esophagus\</item_key>
+								<tooltip>Diagnoses \ Digestive system \ Diseases of esophagus</tooltip>
+								<class>ENC</class>
+								<item_icon>FA</item_icon>
+								<item_is_synonym>false</item_is_synonym>
+							</item>
+							<item>
+								<hlevel>3</hlevel>
+								<item_name>Other diseases of digestive system</item_name>
+								<item_key>\\i2b2_DIAG\i2b2\Diagnoses\Digestive system (520-579)\Other diseases of digestive system (570-579)\</item_key>
+								<tooltip>Diagnoses \ Digestive system \ Other diseases of digestive system</tooltip>
+								<class>ENC</class>
+								<item_icon>FA</item_icon>
+								<item_is_synonym>false</item_is_synonym>
+							</item>
+						</panel>
+						
+					</query_definition>
+					
+					<result_output_list><result_output priority_index="15" name="patient_count_xml"/>
+					</result_output_list>
+					
+				</ns4:request>
+		
+	</message_body>
+</ns6:request>

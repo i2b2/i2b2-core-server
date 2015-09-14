@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns6:request xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/">
+	<message_header>
+		<i2b2_version_compatible>1.1</i2b2_version_compatible>
+		<sending_application>
+			<application_name>i2b2 Query Tool</application_name>
+			<application_version>1.6</application_version>
+		</sending_application>
+		<sending_facility>
+			<facility_name>i2b2 Hive</facility_name>
+		</sending_facility>
+		<receiving_application>
+			<application_name>CRC Cell</application_name>
+			<application_version>1.6</application_version>
+		</receiving_application>
+		<receiving_facility>
+			<facility_name>i2b2 Hive</facility_name>
+		</receiving_facility>
+		<datetime_of_message>2011-11-08T11:46:39.309-05:00</datetime_of_message>
+		<security>
+          <domain>i2b2demo</domain>
+            <username>demo</username>
+            <password>demouser</password>
+		</security>
+		<message_type>
+			<message_code>Q04</message_code>
+			<event_type>EQQ</event_type>
+		</message_type>
+		<message_control_id>
+			<message_num>qLjYiXKFNaooVKBq8SBN</message_num>
+			<instance_num>0</instance_num>
+		</message_control_id>
+		<processing_id>
+			<processing_id>P</processing_id>
+			<processing_mode>I</processing_mode>
+		</processing_id>
+		<accept_acknowledgement_type>AL</accept_acknowledgement_type>
+		<application_acknowledgement_type>AL</application_acknowledgement_type>
+		<country_code>US</country_code>
+		<project_id>Demo</project_id>
+	</message_header>
+	<request_header>
+		<result_waittime_ms>180000</result_waittime_ms>
+	</request_header>
+	<message_body>
+		<ns4:psmheader>
+			<user group="i2b2demo" login="demo">demo</user>
+			<patient_set_limit>0</patient_set_limit>
+			<estimated_time>0</estimated_time>
+			<query_mode>optimize_without_temp_table</query_mode>
+			<request_type>CRC_QRY_runQueryInstance_fromQueryDefinition</request_type>
+		</ns4:psmheader>
+		<ns4:request xsi:type="ns4:query_definition_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<query_definition>
+				<query_name>Amoxi-Amoxi-Amoxi@11:46:33</query_name>
+				<query_timing>SAMEVISIT</query_timing>
+				<specificity_scale>0</specificity_scale>
+				<panel>
+					<panel_number>1</panel_number>
+					<panel_timing>SAMEVISIT</panel_timing>
+					<panel_accuracy_scale>0</panel_accuracy_scale>
+					<invert>0</invert>
+					<total_item_occurrences>1</total_item_occurrences>
+					<item>
+						<hlevel>5</hlevel>
+						<item_name>Amoxicillin</item_name>
+						<item_key>\\i2b2_MEDS\i2b2\Medications\MUL\(LME10) anti-infectives\(LME45) penicillins\(LME46) aminopenicillins\amoxicillin\</item_key>
+						<item_icon>FA</item_icon>
+						<tooltip>medications \ anti-infectives \ penicillins \ aminopenicillins \ amoxicillin</tooltip>
+						<class>ENC</class>
+						<constrain_by_modifier>
+							<modifier_name>Dose</modifier_name>
+							<modifier_key>\\i2b2_MEDS\Medication\Dose\</modifier_key>
+							<applied_path>\i2b2\Medications\MUL\(LME10) anti-infectives\(LME45) penicillins\(LME46) aminopenicillins\amoxicillin\%</applied_path>
+							<constrain_by_value>
+								<value_operator>LT</value_operator>
+								<value_constraint>900</value_constraint>
+								<value_unit_of_measure>mg</value_unit_of_measure>
+								<value_type>NUMBER</value_type>
+							</constrain_by_value>
+						</constrain_by_modifier>
+						<item_is_synonym>false</item_is_synonym>
+					</item>
+				</panel>
+				<panel>
+					<panel_number>2</panel_number>
+					<panel_timing>SAMEVISIT</panel_timing>
+					<panel_accuracy_scale>0</panel_accuracy_scale>
+					<invert>0</invert>
+					<total_item_occurrences>1</total_item_occurrences>
+					<item>
+						<hlevel>5</hlevel>
+						<item_name>Amoxicillin</item_name>
+						<item_key>\\i2b2_MEDS\i2b2\Medications\MUL\(LME10) anti-infectives\(LME45) penicillins\(LME46) aminopenicillins\amoxicillin\</item_key>
+						<item_icon>FA</item_icon>
+						<tooltip>medications \ anti-infectives \ penicillins \ aminopenicillins \ amoxicillin</tooltip>
+						<class>ENC</class>
+						<constrain_by_modifier>
+							<modifier_name>Frequency</modifier_name>
+							<modifier_key>\\i2b2_MEDS\Medication\Frequency\</modifier_key>
+							<applied_path>\i2b2\Medications\MUL\(LME10) anti-infectives\(LME45) penicillins\(LME46) aminopenicillins\amoxicillin\%</applied_path>
+							<constrain_by_value>
+								<value_operator>IN</value_operator>
+								<value_constraint>('QD')</value_constraint>
+								<value_unit_of_measure></value_unit_of_measure>
+								<value_type>TEXT</value_type>
+							</constrain_by_value>
+						</constrain_by_modifier>
+						<item_is_synonym>false</item_is_synonym>
+					</item>
+				</panel>
+				<panel>
+					<panel_number>3</panel_number>
+					<panel_timing>SAMEVISIT</panel_timing>
+					<panel_accuracy_scale>0</panel_accuracy_scale>
+					<invert>0</invert>
+					<total_item_occurrences>1</total_item_occurrences>
+					<item>
+						<hlevel>5</hlevel>
+						<item_name>Amoxicillin</item_name>
+						<item_key>\\i2b2_MEDS\i2b2\Medications\MUL\(LME10) anti-infectives\(LME45) penicillins\(LME46) aminopenicillins\amoxicillin\</item_key>
+						<item_icon>FA</item_icon>
+						<tooltip>medications \ anti-infectives \ penicillins \ aminopenicillins \ amoxicillin</tooltip>
+						<class>ENC</class>
+						<constrain_by_modifier>
+							<modifier_name>Route</modifier_name>
+							<modifier_key>\\i2b2_MEDS\Medication\Route\</modifier_key>
+							<applied_path>\i2b2\Medications\%</applied_path>
+							<constrain_by_value>
+								<value_operator>IN</value_operator>
+								<value_constraint>('PO')</value_constraint>
+								<value_unit_of_measure></value_unit_of_measure>
+								<value_type>TEXT</value_type>
+							</constrain_by_value>
+						</constrain_by_modifier>
+						<item_is_synonym>false</item_is_synonym>
+					</item>
+				</panel>
+			</query_definition>
+			<result_output_list>
+				<result_output priority_index="1" name="PATIENT_COUNT_XML"/>
+			</result_output_list>
+		</ns4:request>
+	</message_body>
+</ns6:request>

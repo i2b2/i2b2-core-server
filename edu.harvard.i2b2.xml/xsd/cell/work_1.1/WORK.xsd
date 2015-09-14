@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:work="http://www.i2b2.org/xsd/cell/work/1.1"
+    targetNamespace="http://www.i2b2.org/xsd/cell/work/1.1">
+    
+    <xs:complexType name="return_listType">
+        <xs:sequence>
+            <xs:element name="return" type="work:returnType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="returnType">
+        <xs:attribute name="item" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>work_meta: tablename tablesize</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    
+
+    
+</xs:schema>

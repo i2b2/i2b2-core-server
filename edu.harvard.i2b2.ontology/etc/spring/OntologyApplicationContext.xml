@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for i2b2 with spring jdbc template.
+    $Id: OntologyApplicationContext.xml,v 1.6 2010/06/01 20:10:49 rk903 Exp $
+  -->
+<beans>
+
+<bean id="appType" class="edu.harvard.i2b2.ontology.datavo.i2b2message.ApplicationType">
+    <property name="applicationName" value="edu.harvard.i2b2.ontology"/>
+    <property name="applicationVersion" value="1.701"/>
+  </bean>
+  
+ 
+  
+ <bean id="message_header" class="edu.harvard.i2b2.ontology.datavo.i2b2message.MessageHeaderType">
+ 	<property name="sendingApplication" ref="appType"/>
+ </bean>
+ 
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+    <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+    <property name="username" value="metadata_uname"/>
+    <property name="password" value="demouser"/>
+    <property name="defaultAutoCommit" value="false"/>
+    <property name="defaultReadOnly" value="true"/>
+  </bean>
+  
+</beans>
+
+<!-- *********************************************************************
+  $Log: OntologyApplicationContext.xml,v $
+  Revision 1.6  2010/06/01 20:10:49  rk903
+  appversiont changed from 1.4 to1 .5
+
+  Revision 1.5  2010/03/22 15:50:59  rk903
+  message header bean added
+
+  Revision 1.4  2007/10/16 14:28:00  lcp5
+  Revision comment causing build problem
+
+  Revision 1.3  2007/10/16 14:18:56  lcp5
+  Cleaned up properties files; removed items not in use
+  Changed log level of dao result size from info to debug
+
+  Revision 1.2  2007/05/23 19:09:16  rk903
+  added file prefix for property file parameter.
+  the location for ontology.properties should have fullpath like
+  (file:/ontologyapp/ontology.properites)
+
+  Revision 1.1  2007/05/22 15:07:34  rk903
+  new files
+
+  Revision 1.5  2007/05/14 14:54:00  rk903
+  connection parameter set to read only and auto commit false
+
+  Revision 1.4  2007/04/30 16:57:14  rk903
+  commented datasourcejndi bean
+
+  Revision 1.3  2007/04/28 23:54:47  rk903
+  data source bean added
+
+  Revision 1.2  2007/04/27 14:20:48  rk903
+  cvs log added
+
+  *************************************************************************  -->  

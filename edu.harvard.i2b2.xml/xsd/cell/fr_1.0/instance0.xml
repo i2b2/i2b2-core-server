@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<recvfile_request xmlns="http://www.i2b2.org/xsd/cell/fr/1.0/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.i2b2.org/xsd/cell/fr/1.0/ file:/Users/mem61/Documents/i2b2workbench-5_5/edu.harvard.i2b2.xml/xsd/cell/fr_1.0/FR_QRY_request.xsd">
+    <filename xmlns="">filename0</filename>
+</recvfile_request>

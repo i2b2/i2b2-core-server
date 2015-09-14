@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pm:message_body_example xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:pm="http://www.i2b2.org/xsd/cell/pm/"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/pm/ ./PM_USER.xsd">
+    <pm:request>
+        <get_services>
+            <username>mem61</username>
+            <password>passwd</password>
+        </get_services>
+    </pm:request>
+    <pm:response>
+        <configure>
+            <environment>Development</environment>
+            <user>
+                <name>Mike Mendis</name>
+                <key>sdfadsafadsf</key>
+                <project id="asthma">
+                    <name>Asthma</name>
+                    <wiki>http://www.i2b2.org</wiki>
+                    <role>Scientist</role>
+                </project>
+                <project id="rpdr">
+                    <name>RPDR</name>
+                    <wiki>http://www.rpdr.org</wiki>
+                    <role>IT</role>
+                </project>
+            </user>
+            <address>
+                <cell> 
+                    <name>identityService</name>
+                    <url>http://phsi2b2appdev.mgh.harvard.edu:9093/axis2/services/identity1</url>
+                </cell>
+                <cell>
+                    <name>PatientService</name>
+                    <url>http://phsi2b2appdev.mgh.harvard.edu:9093/axis2/services/patient</url>
+                    <parm name="something1">theVlaue1</parm>
+                    <parm name="something2">theVlaue2</parm>
+                    <parm name="something3">theVlaue3</parm>
+                </cell>
+            </address>
+        </configure>
+    </pm:response>
+</pm:message_body_example>

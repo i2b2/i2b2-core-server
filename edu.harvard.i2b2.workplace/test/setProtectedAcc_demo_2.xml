@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:request xmlns:ns3="http://www.i2b2.org/xsd/hive/msg/1.1/" 	xmlns:ns4="http://www.i2b2.org/xsd/cell/work/1.1/" 	xmlns:ns2="http://www.i2b2.org/xsd/hive/plugin/" 	xmlns:ns5="http://www.i2b2.org/xsd/cell/ont/1.1/">
+	<message_header>
+		<i2b2_version_compatible>1.1</i2b2_version_compatible>
+		<sending_application>
+			<application_name>i2b2 Ontology</application_name>
+			<application_version>1.6</application_version>
+		</sending_application>
+		<sending_facility>
+			<facility_name>i2b2 Hive</facility_name>
+		</sending_facility>
+		<receiving_application>
+			<application_name>1.1</application_name>
+			<application_version>1.6</application_version>
+		</receiving_application>
+		<receiving_facility>
+			<facility_name>i2b2 Hive</facility_name>
+		</receiving_facility>
+		<datetime_of_message>2012-02-17T09:39:38-05:00</datetime_of_message>
+		<security>
+			<domain>i2b2demo</domain>
+			<username>i2b2</username>
+			<password>demouser</password>
+		</security>
+		<message_control_id>
+			<message_num>rINbdb0ToT5kp8cCzQeq7</message_num>
+			<instance_num>0</instance_num>
+		</message_control_id>
+		<processing_id>
+			<processing_id>P</processing_id>
+			<processing_mode>I</processing_mode>
+		</processing_id>
+		<accept_acknowledgement_type>AL</accept_acknowledgement_type>
+		<application_acknowledgement_type>AL</application_acknowledgement_type>
+		<country_code>US</country_code>
+		<project_id>Demo</project_id>
+	</message_header>
+	<request_header>
+		<result_waittime_ms>180000</result_waittime_ms>
+	</request_header>
+	<message_body>
+		<ns4:set_protected_access>
+      		<index>\\demo\u5eHaJVYD2iaZ5LJu7Tw9</index>
+       		<protectedAccess>false</protectedAccess>
+		</ns4:set_protected_access>
+	</message_body>
+</ns3:request>

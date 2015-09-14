@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ont:examples xmlns:ont="http://www.i2b2.org/xsd/cell/ont/v2/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.i2b2.org/xsd/cell/ont/v2/ ./ONT_LITE_QRY.xsd">
+    
+    <message_body>
+        <ont:get_children max="300" hiddens="true" synonyms="true" type="default" blob="true">
+            <parent>\\i2b2\i2b2\Diagnoses\c123</parent>
+        </ont:get_children> 
+    </message_body>
+    
+   <message_body>
+        <ont:get_term_info max="300" hiddens="true" synonyms="true" type="default" blob="true">
+            <self>\\i2b2\i2b2\Diagnoses\c123</self>
+        </ont:get_term_info> 
+    </message_body>
+    
+    
+    <message_body>
+        <ont:get_name_info category="rpdr" max="300" hiddens="true" synonyms="true" type="core" blob="true">
+            <match_str strategy="contains">asthma</match_str>
+        </ont:get_name_info>
+    </message_body>
+    
+    <message_body>
+        <ont:get_code_info category="rpdr" max="300" hiddens="true" synonyms="true" type="all" blob="true">
+            <match_str strategy="exact">UMLS:c0004096</match_str>
+        </ont:get_code_info>
+    </message_body>
+    
+    <message_body>
+        <ont:get_categories />
+    </message_body>
+    
+    <message_body>
+        <ont:get_schemes />
+    </message_body>
+
+</ont:examples>
+

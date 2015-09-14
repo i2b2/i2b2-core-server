@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:fr="http://www.i2b2.org/xsd/cell/fr/1.0/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/1.0/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/fr/1.0/">
+ 
+    <xs:element name="sendfile_response" type="fr:sendfile_responseType" />
+    <xs:element name="recvfile_response" type="fr:recvfile_responseType" />
+    
+    
+    <xs:complexType name="file">
+        <xs:sequence minOccurs="0">
+            <xs:element name="desc" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="date" type="xs:dateTime" use="optional"/>
+        <xs:attribute name="hash" type="xs:string" use="optional"/>
+        <xs:attribute name="algorithm" type="xs:string" use="optional"/>
+        <xs:attribute name="overwrite" type="xs:string" use="optional"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="size" type="xs:integer" use="required"/>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="recvfile_responseType">
+        <xs:sequence>
+            <xs:element name="recvfile_response" type="fr:file" />
+        </xs:sequence>
+    </xs:complexType>    
+    
+    
+    <xs:complexType name="sendfile_responseType" >
+        <xs:complexContent>
+            <xs:extension base="fr:responseType">
+                <xs:sequence>
+                    <xs:element name="status_id" type="xs:string"/>
+                    <xs:element name="status" type="fr:statusType"/>
+                    <!--
+                    <xs:element ref="pdo:patient_data"/>
+                    -->
+                </xs:sequence>
+           
+                
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+<xs:complexType name="responseType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>responseType is abstract so a concrete type must be declared in the
+                instance document using the xsi:type attribute.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="status" type="fr:statusType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="statusType">
+        <xs:sequence>
+            <xs:element name="condition" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="type" use="required">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="ERROR"/>
+                                        <xs:enumeration value="FATAL_ERROR"/>
+                                        <xs:enumeration value="WARNING"/>
+                                        <xs:enumeration value="INFO"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="coding_system" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+
+    
+
+</xs:schema>

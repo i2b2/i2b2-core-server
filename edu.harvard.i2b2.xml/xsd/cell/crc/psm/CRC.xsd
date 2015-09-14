@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:crc="http://www.i2b2.org/xsd/cell/crc/psm/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/psm/">
+
+    <xs:element name="request" type="crc:requestType"/>
+    
+    <xs:element name="sql" type="xs:string"/>
+    
+    <xs:complexType name="requestType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>requestType is abstract so a concrete type must be declared in the
+                instance document using the xsi:type attribute.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence/>
+    </xs:complexType>
+    
+
+    <xs:complexType name="headerType">
+        <xs:sequence>
+            <xs:element name="user" type="crc:userType"/>
+            <xs:element name="data_source" type="xs:string"/>
+            <xs:element name="patient_set_limit" type="xs:int"/>
+            <xs:element name="estimated_time" type="xs:int"/>
+            <xs:element name="create_date" type="xs:dateTime"/>
+            <xs:element name="submit_date" type="xs:dateTime"/>
+            <xs:element name="complete_date" type="xs:dateTime"/>
+            <xs:element name="query_mode" type="crc:queryModeType"/>
+            <!-- <xs:element name="request_type" type="crc:request_typeType"/> -->
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="userType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="login" type="xs:string" use="required"/>
+                <xs:attribute name="group" type="xs:string" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    
+    
+    <xs:simpleType name="limitType">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="queryModeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="optimize_without_temp_table"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

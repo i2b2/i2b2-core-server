@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Sample JBoss Cache Service Configuration                             -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<server>
+   
+   <!-- ==================================================================== -->
+   <!-- Defines JBoss Cache configuration                                      -->
+   <!-- ==================================================================== -->
+
+   <!-- Note the value of the 'code' attribute has changed since JBC 1.x -->
+   <mbean code="org.jboss.cache.jmx.CacheJmxWrapper" name="jboss.cache:service=Cache">
+   
+      <!-- Ensure JNDI and the TransactionManager are started before the
+           cache.  Only works inside JBoss AS; ignored otherwise -->
+      <depends>jboss:service=Naming</depends>
+      <depends>jboss:service=TransactionManager</depends>
+
+      <!-- Configure the TransactionManager -->
+      <attribute name="TransactionManagerLookupClass">
+         org.jboss.cache.transaction.GenericTransactionManagerLookup
+      </attribute>
+
+      <!-- Node locking level : SERIALIZABLE
+                                REPEATABLE_READ (default)
+                                READ_COMMITTED
+                                READ_UNCOMMITTED
+                                NONE             -->
+      <attribute name="IsolationLevel">REPEATABLE_READ</attribute>
+
+      <attribute name="EvictionPolicyConfig">
+         <config>
+            <attribute name="wakeUpIntervalSeconds">120</attribute>
+            
+            <!-- Cache wide default -->
+            <region name="/_default_"
+               policyClass="org.jboss.cache.eviction.LRUPolicy">
+               <!-- This is the maximum number of nodes allowed in this region. -->
+               <!-- 0 denotes no limit. -->
+               <attribute name="maxNodes">0</attribute>
+               
+               <!-- The amount of time a node is not written to or read (in seconds) before the node is swept away.-->
+               <!-- 0 denotes no limit. -->
+               <attribute name="timeToLiveSeconds">10000</attribute>
+               
+               <!-- Lifespan of a node (in seconds) regardless of idle time before the node is swept away. -->
+               <!-- 0 denotes no limit. -->
+               <attribute name="maxAgeSeconds">10000</attribute>
+            </region>
+            
+            <!-- We dont have to define each region if we have default 0 values, but just incase we want to change it later -->
+            
+            <!--
+               <region name="/instructionPageFragments" policyClass="org.jboss.cache.eviction.LRUPolicy">
+               <attribute name="maxNodes">0</attribute>
+               <attribute name="timeToLiveSeconds">0</attribute>
+               <attribute name="maxAgeSeconds">0</attribute>
+               </region>
+               
+               <region name="/reviewInputPageFragments" policyClass="org.jboss.cache.eviction.LRUPolicy">
+               <attribute name="maxNodes">0</attribute>
+               <attribute name="timeToLiveSeconds">0</attribute>
+               <attribute name="maxAgeSeconds">0</attribute>
+               </region>
+               
+               <region name="/actorPageFragments" policyClass="org.jboss.cache.eviction.LRUPolicy">
+               <attribute name="maxNodes">0</attribute>
+               <attribute name="timeToLiveSeconds">0</attribute>
+               <attribute name="maxAgeSeconds">0</attribute>
+               </region>
+            -->
+         </config>
+      </attribute>
+      
+   </mbean>
+</server>
+      

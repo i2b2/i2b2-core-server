@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:bio="http://www.i2b2.org/xsd/cell/bioportal/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/bioportal/">
+    
+    <xs:element name="success" type="bio:rootpath_Type"/>
+    
+    <!-- rootpathType (Top level type) -->			
+    <xs:complexType name="rootpath_Type"> 
+        <xs:sequence>
+            <xs:element name="accessedResource" type="xs:string"/>	
+            <xs:element name="accessDate" type="xs:dateTime" />   
+            <xs:element name="data">
+                <xs:complexType>
+                    <xs:sequence>
+                    	 <xs:element name="list">
+                			<xs:complexType>
+                			  <xs:sequence>
+                    	 		<xs:element name="classBean">
+                    	 			<xs:complexType>
+                			  			<xs:sequence>
+											  <xs:element name="ontologyVersionId" type="xs:int"/>	
+        									  <xs:element name="id" type="xs:string" /> 
+ 											  <xs:element name="relations">
+                       							<xs:complexType>
+                				       			    <xs:sequence>
+						                        	    <xs:element name="entry">
+                            								<xs:complexType>
+                                								<xs:sequence>
+                                    	 							<xs:element name="string" maxOccurs="unbounded" type="xs:string"/>
+                                								</xs:sequence>
+							                            	</xs:complexType>
+                        								</xs:element>
+                			  						</xs:sequence> 	
+                								</xs:complexType>
+                							</xs:element>
+                						</xs:sequence>
+                					</xs:complexType>				
+                				</xs:element>
+                			</xs:sequence>
+                		</xs:complexType>	
+                	</xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>  			
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

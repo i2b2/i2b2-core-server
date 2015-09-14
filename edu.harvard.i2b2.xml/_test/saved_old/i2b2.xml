@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i2b2:message_header xmlns:i2b2="http://i2b2.mgh.harvard.edu/message"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://i2b2.mgh.harvard.edu/message ./i2b2.xsd">
+    <i2b2_version_compatible>0.3</i2b2_version_compatible>
+    <hl7_version_compatible>2.4</hl7_version_compatible>
+    <sending_application>
+        <application_name/>
+        <application_version/>
+    </sending_application>
+    <sending_facility>
+        <facility_name/>
+    </sending_facility>
+    <receiving_application>
+        <application_name/>
+        <application_version/>
+    </receiving_application>
+    <receiving_facility>
+        <facility_name/>
+    </receiving_facility>
+    <datetime_of_message>2000-01-31T23:59:59.222</datetime_of_message> <!-- HL7 REQUIRED -->
+    <security>
+        <domain></domain>
+        <username/>
+        <password/>
+        <!-- 
+        <ticket/>
+        -->
+    </security>
+    <message_type> <!-- HL7 REQUIRED -->
+        <message_code>EQQ</message_code> <!-- HL7 REQUIRED --> <!-- Embedded query language query MESSAGE -->
+        <event_type>Q04</event_type> <!-- HL7 REQUIRED --> <!-- Embedded query language query EVENT -->
+        <message_structure>EQQ_Q04</message_structure> <!-- HL7 REQUIRED --> <!-- Embedded query language query MESSAGE STRUCTURE -->
+    </message_type>
+    <message_control_id> <!-- HL7 REQUIRED -->
+        <session_id>session id or date</session_id> <!-- if session is used, otherwise is date-time -->
+        <message_num>1234</message_num> <!-- counter in sending application -->
+        <instance_num>0</instance_num> <!-- incremented by 1 from corresponding message_num -->
+    </message_control_id>
+    <processing_id> <!-- HL7 REQUIRED -->
+        <processing_id>P</processing_id> <!-- P:production, D:debugging, T:training -->
+        <processing_mode>I</processing_mode> <!-- I:initial load, A:archive, R:restore, <none>:default -->
+    </processing_id>
+    <accept_acknowledgement_type/>
+    <application_acknowledgement_type/>
+    <country_code>US</country_code>
+</i2b2:message_header>

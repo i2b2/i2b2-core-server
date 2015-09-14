@@ -1,0 +1,24 @@
+<jxb:bindings version="1.0"
+               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <!--
+               schemaLocation="i2b2_PDO.xsd"
+               node="/xs:schema"
+               -->
+  <jxb:bindings schemaLocation="../../../edu.harvard.i2b2.xml/xsd/cell/pm_1.1/PM_USER.xsd" node="/xs:schema">
+        <jxb:schemaBindings > 
+	           <jxb:package name="edu.harvard.i2b2.workplace.datavo.pm">
+	  	         <jxb:javadoc><![CDATA[<body>Package level 
+	  	 documentation for generated package primer.myPo.</body>]]>
+	  	         </jxb:javadoc>
+	  	     </jxb:package>
+	  	     <!-- 
+	  	     <jxb:nameXmlTransform>
+	  	         <jxb:elementName suffix="Element"/>
+	  	    </jxb:nameXmlTransform>
+	  	    -->
+    </jxb:schemaBindings>
+  </jxb:bindings> 
+  
+<!-- schemaLocation="po.xsd" node="/xs:schema" -->
+</jxb:bindings> 

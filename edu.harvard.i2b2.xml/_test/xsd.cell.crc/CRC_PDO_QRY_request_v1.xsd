@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:i2b2="http://i2b2.mgh.harvard.edu/message" xmlns:ont="http://i2b2.mgh.harvard.edu/ont"
+    xmlns:crc="http://i2b2.mgh.harvard.edu/crc" targetNamespace="http://i2b2.mgh.harvard.edu/crc">
+
+    <xs:include schemaLocation="./CRC_PSM_OBJ.xsd"/>
+    <xs:include schemaLocation="./CRC_PDO_OBJ.xsd"/>
+    <!-- <xs:import schemaLocation="./ONT_VDO_OBJ.xsd" namespace="http://i2b2.mgh.harvard.edu/ont"/> -->
+
+    <xs:element name="request" type="crc:requestType"/>
+
+    <xs:complexType name="requestType" abstract="true">
+        
+    </xs:complexType>
+
+    <xs:complexType name="GetPDOFromInputList_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+            <xs:sequence>
+	            <xs:element name="input_list" type="crc:input_option_listType"/>
+    	        <xs:element name="filter_list" type="crc:filter_listType"/>
+        	    <xs:element name="ouput_option_list" type="crc:output_option_listType"/>
+	        </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="GetObservationFactByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="fact_primary_key" type="crc:fact_primary_key_Type"/>
+                    <xs:element name="fact_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="fact_primary_key_Type">
+        <xs:sequence>
+            <xs:element name="encounter_num" type="xs:int" />
+            <xs:element name="patient_num" type="xs:int"/>
+            <xs:element name="concept_cd" type="xs:string"/>
+            <xs:element name="provider_id" type="xs:string"/>
+            <xs:element name="start_date" type="xs:dateTime"/>
+            <xs:element name="modifier_cd" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>    
+    
+    
+     <xs:complexType name="GetPatientByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="patient_primary_key" type="crc:patient_primary_key_Type"/>
+                    <xs:element name="patient_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="patient_primary_key_Type">
+        <xs:sequence>
+            <xs:element name="patient_num" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>    
+
+
+     <xs:complexType name="GetVisitByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="visit_primary_key" type="crc:visit_primary_key_Type"/>
+                    <xs:element name="visit_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="visit_primary_key_Type">
+        <xs:sequence>
+            <xs:element name="encounter_num" type="xs:int"/>
+            <xs:element name="patient_num" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>        
+    
+
+     <xs:complexType name="GetConceptByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="concept_primary_key" type="crc:concept_primary_key_Type"/>
+                    <xs:element name="concept_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="concept_primary_key_Type">
+	    <xs:sequence>
+            <xs:element name="concept_path" type="xs:string"/>
+         </xs:sequence>
+    </xs:complexType>        
+    
+     <xs:complexType name="GetProviderByPrimaryKey_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="provider_primary_key" type="crc:provider_primary_key_Type"/>
+                    <xs:element name="provider_output_option" type="crc:output_optionType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="provider_primary_key_Type">
+        <xs:sequence>
+            <xs:element name="provider_path" type="xs:string"/>
+            <xs:element name="provider_id" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>        
+    
+        
+    <!--
+    <xs:complexType name="GetPDOFromVisitSet_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="visit_list" type="crc:visit_listType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+
+    <xs:complexType name="observation_fact_set_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+                    <xs:element name="observation_fact_list" type="crc:observation_fact_listType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+   
+    <xs:complexType name="observation_fact_listType">
+        <xs:sequence>
+            <xs:element name="observation_fact" type="crc:observation_factType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    -->
+    
+    <xs:complexType name="input_option_listType">
+   		<xs:choice>
+		    <xs:element name="patient_list" type="crc:patient_listType" maxOccurs="1"/>
+		    <xs:element name="visit_list" type="crc:visit_listType" maxOccurs="1"/>
+	      </xs:choice>    
+    </xs:complexType>
+
+    <xs:complexType name="output_option_listType">
+        <xs:all>
+            <xs:element name="observation_fact" type="crc:fact_output_optionType" minOccurs="0"/>
+            <xs:element name="patient_dimension" type="crc:output_optionType" minOccurs="0"/>
+            <xs:element name="visit_dimension" type="crc:output_optionType" minOccurs="0"/>
+            <xs:element name="provider_dimension_from_fact" type="crc:output_optionType" minOccurs="0"/>
+            <xs:element name="concept_dimension_from_fact" type="crc:output_optionType" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="output_optionType">
+        <!-- the key is always returned by default -->
+        <xs:attribute name="detail" type="xs:boolean" default="true"/>
+        <xs:attribute name="blob" type="xs:boolean" default="false"/>
+        <xs:attribute name="statusinfo" type="xs:boolean" default="false"/>
+        <xs:attribute name="select" type="xs:string" default="true"/>
+    </xs:complexType>
+    <xs:complexType name="fact_output_optionType">
+        <xs:complexContent>
+            <xs:extension base="crc:output_optionType">
+                <xs:attribute name="before" type="xs:dateTime"/>
+                <xs:attribute name="after" type="xs:dateTime"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <!-- not sure where this patient set object should be defined, maybe here
+    this patient_listType needs more work, especially with regards to ranges
+    (patient_num_range) and defining how many results are to be returned at a time -->
+
+    <xs:complexType name="filter_listType">
+        <xs:sequence>
+            <xs:sequence>
+                <xs:element name="concept_list" type="crc:concept_listType"/>
+                <xs:element name="provider_list" type="crc:provider_listType"/>
+            </xs:sequence>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="patient_listType">
+        <xs:complexContent>
+            <xs:extension base="crc:rangeType">
+                <xs:choice>
+                    <xs:element name="entire_patient_set"/> <!-- all patients -->
+                    <xs:element name="patient_set_coll_id" type="crc:patient_set_coll_idType"/>
+                    <xs:element name="patient_num" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:simpleContent>
+                                <xs:extension base="crc:patient_numType">
+                                    <xs:attribute name="index" type="xs:int" use="required"/>
+                                </xs:extension>
+                            </xs:simpleContent>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="visit_listType">
+        <xs:complexContent>
+            <xs:extension base="crc:rangeType">
+                <xs:choice>
+                    <xs:element name="entire_visit_set"/> <!-- all visits -->
+                    <xs:element name="patient_enc_coll_id" type="crc:patient_enc_coll_idType"/>
+                    <xs:element name="encounter_num" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:simpleContent>
+                                <xs:extension base="crc:encounter_numType">
+                                    <xs:attribute name="index" type="xs:int" use="required"/>
+                                </xs:extension>
+                            </xs:simpleContent>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="concept_listType">
+        <xs:sequence>
+            <xs:element name="concept_path" type="crc:Concept_PathType" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="provider_listType">
+        <xs:sequence>
+            <xs:element name="provider_path" type="crc:Provider_PathType" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="rangeType">
+        <xs:attribute name="min" type="xs:int"/>
+        <xs:attribute name="max" type="xs:int"/>
+    </xs:complexType>
+
+</xs:schema>

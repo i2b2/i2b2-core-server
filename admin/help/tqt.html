@@ -1,0 +1,2358 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 25 March 2009), see www.w3.org" />
+  <title>i2b2 Temporal Query Tool View</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+  <link href="i2b2Style.css" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+  td.c19 {background-color: #D9D9D9}
+  span.c18 {font-size:10.0pt}
+  p.c17 {font-style: italic}
+  i.c16 {text-decoration: underline}
+  p.c15 {text-align: center}
+  a.c14 {font-weight: bold}
+  span.c13 {color:#999999}
+  p.c12 {page-break-after:avoid}
+  b.c11 {font-style: italic}
+  span.c10 {color:navy}
+  span.c9 {color:black}
+  span.c8 {color:silver}
+  div.c7 {margin-left: 24px;}
+  p.c6 {font-weight: bold}
+  p.c5 {font-weight: bold; text-align: center}
+  div.c4 {border:none;border-bottom:solid #4F81BD 1.0pt;padding:0in 0in 0in 0in}
+  p.c3 {border:none;padding:0in}
+  span.c2 {font:7.0pt "Times New Roman"}
+  div.c1 {border:none;border-bottom:solid #4F81BD 1.0pt;padding:0in 0in 1.0pt 0in}
+  p {padding: 0 0 16px 0;}
+  ul, ol {text-indent: 0; margin:8px 0 0 12px; clear:both;}
+  li {list-style-position:outside;}
+  img {margin:0; padding: 0; border: none;}
+  table{vertical-align: middle; text-align:left; margin: 0 0 0 24px;} 
+  </style>
+</head>
+
+<body>
+  <div class="WordSection1">
+    <h1><a name="tqtView" id="tqtView">i2b2 Temporal Query Tool View</a></h1>
+
+    <p class="jdwebnormal">The Temporal Query Tool view extends the query functionalities
+    provided by the classic Query Tool view. Users can submit temporal queries to using
+    the Temporal Query Tool view.</p>
+
+    <h3>i2b2 Temporal Query Tool View</h3>
+
+    <p class="jdwebnormal">The <b>Temporal Query Tool</b> view extends the query
+    functionalities provided by the classic <b>Query Tool</b> view. Users can create and
+    submit temporal queries to using the <b>Temporal Query Tool</b> view. It submits a
+    "select query" that will retrieve information from the database associated to the
+    i2b2 Web Client.</p>
+
+    <h2><a name="tqtIntro" id="tqtIntro">Introduction</a></h2>
+
+    <p class="jdwebnormal">The interface is organized to facilitate the temporal querying
+    process. There are three main steps in the process: Defining a population, defining
+    temporal relationships, and reviewing and submitting query. The interface is designed
+    to take users through each of these three steps. The section below describes the
+    interface for each step in detail.</p>
+
+    <div class='c1'>
+      <h3><a name="_Toc370995206">Step 1: Define Population</a></h3>
+    </div>
+
+    <p class="jdwebnormal">The image below shows the starting point of the <b>Temporal
+    Query Tool</b> view interface along with its annotations. Users would interact with
+    the <b>Group Panels</b> to define a population they are interested in. In the next
+    step, users would define the temporal relationships they are interested in. Finally,
+    users would review and submit their queries in the third step. This section breaks
+    down the interface for the 1<sup>st</sup> step.</p>
+
+    <p class="jdwebnormal"><img width="505" height="359" src="images/tqtView.png" /></p>
+
+    <p class="jdwebnormal">The <b>Patient/Encounter Dropdown Box</b> allows users to
+    choose whether to define the population of the query using patients or encounters.
+    The default is Patient:</p>
+
+    <p class="jdwebnormal"><img width="505" height="257" src="images/tqt_pop_dropdn.png" /></p>
+
+    <p class="jdwebnormal">Creating a population is optional. Users can skip Step 1 to use all data in the database.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995211">Group Panel</a></p>
+
+    <p class="jdwebnormal"><img width="488" height="249" src="images/qtPanelLayout.png" /></p>
+
+    <p class="jdwebnormal">At the start up, the interface for Step 1 displays three
+    groups by default. Each of the groups contains several components. In general, all
+    areas bounded by an orange-yellow highlight are clickable.</p>
+
+    <ol>
+	<li>
+    <b>(Group Heading)</b> The heading is a label to easily identify the collection of terms. 
+	Each heading will contain "Group" followed by a sequential number.  <p> Example: Group 1, Group 2, Group 3, etc.</p></li>
+
+    <li>
+    <b>(Selection Criteria)</b> This area of the panel is used to define date selections and other constraints.</li>
+
+    <li>
+    <b>(Panel Timing)</b> The <b>panel timing</b> defines the constraint on the panel level and uses the patient's visits in determining eligibility.</li>
+
+    <li>
+    <b>(Group List)</b> This section contains the terms that will be used during the process of querying the database.</li>
+
+    <li>
+    <b>(Delete Group)</b> Clicking on this button will remove the group from the
+    query construction. Users should use it to quickly discard a group.</li>
+
+    <li>
+    <b>(Information Box)</b> The content in the information box will change depending on whether or not a term is listed in the panel / group.
+	<ul>
+		<li>No term(s) listed
+		<ol>
+			<li>The message will appear as "<b>drop a term on here</b>"</li>
+			<li>The color of the box will be yellow</li>
+		</ol>
+		</li>
+		<li>Term(s) listed
+		<ol>
+			<li>The message will appear as "<b>one or more of these</b>"</li>
+			<li>The color of the box will be green</li>
+			<li>An additional information box will appear between panels</li>
+		</ol>
+		</li>
+	</ul>
+	
+	</li>
+	
+	</ol>
+
+    <p class="jdwebheading3"><a name="_Toc370995212">New/Add Group Button</a></p>
+
+    <p class="jdwebnormal"><img src="images/qtToolbarNewGrpButton.png" alt="qtToolbarNewGroup" width="524" height="44" /></p>
+
+    <p class="jdwebnormal">The <b>New Group</b> button lets users to quickly add additional Groups.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995213">Query Drop Area</a></p>
+
+    <p class="jdwebnormal">A previous query saved in <b>Workplace</b> view or in the
+    <b>Previous Query</b> view can be dragged and dropped here to reload the query.
+    Reloading a query will overwrite the current query information. If the previous query
+    is a temporal query, its population and temporal relationships will all be loaded. If
+    the previous query is a non-temporal query, only the population portion of the
+    temporal query interface will be loaded since a non-temporal query has no temporal
+    relationship information.</p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995215">Step 2: Define Temporal Relationships</a></p>
+    </div>
+
+    <p class="jdwebnormal"><b>Step 2:</b> <b>Define Temporal Relationships</b> is used to
+    define temporal relationships. It allows users to create a list of <b>Events</b> and
+    a list of <b>Temporal Relationships</b>. Users define a list of interested
+    <b>Events</b> and also define <b>Temporal Relationships</b> to describe how the
+    events are related temporally, e.g. Event A must occur before Event B.</p>
+
+    <p class="jdwebnormal">The interface is therefore a bit more complicated than Step 1
+    presented in the earlier section. It is broken into two major parts, presented below.
+    On the left are the <b>Event in Query</b> panel and the <b>Show Population</b> panel.
+    The <b>Event in Query</b> panel lets users define a list of Events. The <b>Show
+    Population</b> panel allows users see and change the population definition originally
+    defined in Step 1. On the right is a panel allowing users to add, remove, or modify
+    relationships among the events.</p>
+
+    <p class="jdwebnormal"><img width="649" height="378" src="images/tqt_events_temporal_query.png" /><img width="506" height="375" src="images/tqt_temporal_add.png" /></p>
+
+   
+
+    <p class="jdwebheading3"><a name="_Toc370995216">Events in Query Panel</a></p>
+
+    <p class="jdwebnormal"><img width="613" height="480" src="images/tqt_events.png" />(Event Panels at startup)</p>
+
+    <p class="jdwebnormal">The Events in Query Panel allows users to add, remove, and
+    edit each <b>Event</b>. Each <b>Event</b> is represented by an <b>Event Panel</b>. An
+    Event consists of a list of <b>Groups</b> just like a population definition. Users
+    can add, remove, and edit each of the <b>Groups</b> in an <b>Event</b> by dragging
+    terms into a group, changing its constraints, etc. At startup, two empty
+    <b>Events</b> are added, each with a <b>Group</b>. More Events can be added by
+    clicking on the <b>Add Event</b> button.</p>
+
+    <p class="jdwebnormal">One difference between an <b>Event</b> and a set of
+    <b>Groups</b> in Step 1 is that the first <b>Group</b> in an <b>Event</b> is special.
+    It cannot be removed (note the missing Remove Group button), and its <b>Group
+    Binding</b> <b>Control</b> is missing. The Group Binding for the 1<sup>st</sup>
+    <b>Group</b> of every <b>Event</b> is not changeable. All other <b>Group's</b>
+    <b>Group Bindings</b> are changeable. The first group anchors all other groups in an
+    Event. That is, the first <b>Group</b> determines the timing of the enclosing
+    <b>Event</b> with respect to the other <b>Events</b> temporally in the query.</p>
+
+    <p class="jdwebnormal">Under the list of Events is the gray background, which serves
+    as a <b>Query Drop Area</b>. Users can drop previous query in the <b>Query Drop
+    Area</b> to overwrite the current query. It has the same effect as the Query Drop
+    Area in Step 1.</p>
+
+    <p class="jdwebnormal">An <b>Event Panel</b> has several components.</p>
+
+    <p class="jdwebnormal"><img width="649" height="378" src="images/tqt_events_panel.png" /></p>
+
+    <ol>
+	<li>
+    <b>(Event ID)</b> This area shows the Event's name and color. Clicking on this area
+    will expand/collapse the entire <b>Event</b>. When an <b>Event Panel</b> is
+    collapsed, all its <b>Groups</b> are hidden. Only a row that contains the <b>Event
+    ID</b> area is shown. Click on the <b>Event ID</b> area to expand the <b>Event</b>.
+    All <b>Events</b> are expanded when created. Color of an <b>Event</b> is assigned
+    only when at least one term has been added to it.
+	</li>
+
+    <li><b>(Event-Wide Date
+    Constraints)</b> Selecting this area allows users to specify date constraints for all
+    <b>Groups</b> in this <b>Event</b>. This serves a similar function as the
+    supplemental Query-wide Date Constraints Control Panel in the Step 1.</li>
+
+    <li><b>(Remove Event Button)</b>
+    Clicking this button will remove the <b>Event</b>, deleting all its content and
+    removing it from view.</li>
+
+    <li><b>(Group Panel)</b> The Group
+    Panel is the same as the ones in Step 1.</li>
+
+    <li><b>(Add Group Button)</b>
+    Clicking on it adds a new <b>Group</b> to the <b>Event</b>.</li>
+	</ol>
+
+    <p class="jdwebnormal"><img width="557" height="368" src="images/tqt_events_edit.png" /></p>
+
+    <p class="jdwebnormal">The population in Step 1 is shown. The title changes to "Edit
+    Population," and every component is editable just as they are in Step 1.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995218">Temporal Relationship Definition Panel</a></p>
+
+    <p class="jdwebnormal">On the right hand side of the Step 3 interface is where users
+    can define how Events are related to one another temporally. The <b>Temporal
+    Relationship Definition Panel</b> contains a list of <b>Temporal Relationship
+    Panels</b> and an <b>Add Temporal Relationship Button</b>. These components are
+    described in detail below.</p>
+
+    <p class="jdwebnormal">Please note that at least one <b>Temporal Relationship
+    Panel</b> must be filled before users can move on to Step 3. A <b>Temporal
+    Relationship Panel</b> is filled only if has a fulfilled Event in the <b>Top Event
+    Definition</b> dropdown box and a fulfilled Event in the <b>Bottom Event
+    Definition</b> dropdown box (see the image below). A fulfilled Event is one that has
+    at least a fulfilled <b>Group</b>. A fulfilled <b>Group</b> is one that contains at
+    least one term (not empty).</p>
+
+    <p class="jdwebnormal"><img width="600" height="375" src="images/tqt_temporal_panel.png" align="left" hspace="12" /></p>
+
+    <ol>
+    <li>
+    The color indicator shows the colors of the <b>Events</b>
+    that are being referenced in the <b>Temporal Relationship</b>. The top color (green
+    in this example) matches the color of the <b>Event</b> in the <b>Top Event
+    Definition</b> row and the bottom color (orange) matches the color of the
+    <b>Event</b> in the <b>Bottom Event Definition</b> row. If an <b>Event</b> that has
+    no content is referred, no color will be displayed in the <b>Color Indicator</b>.</li>
+
+    <li>
+    <b>(Top Event Definition)</b>This row allows users designate the first <b>Event</b>
+    in this <b>Temporal Relationship</b>. A second event is specified in the <b>Bottom
+    Event Definition</b> row. The dropdown boxes have the following choices:
+
+    <p class="jdwebnormal"><b><img width="243" height="76" src="images/tqt_image025.jpg" /></b>(Dropdown box options for Event Definition)</p>
+	</li>
+
+    <li>
+    <b>(Event Ordering)</b> This dropdown box describes how the <b>Top Event</b> elates
+    to the <b>Bottom Event</b>.
+
+    <p class="jdwebnormal"><b><img width="126" height="100" src="images/tqt_image026.gif" /></b> (Dropdown box options for Event Ordering)</p>
+	</li>
+    <li>
+    <b>(Bottom Event Definition)</b> This row allows users designate the second
+    <b>Event</b> in this <b>Temporal Relationship</b>. It has the same dropdown box
+    options as <b>Top Event Definition</b>.</li>
+
+    <li>
+    <b>(Occurrence Temporal Constraint)</b> Users can optionally describe the specified
+    <b>Event Ordering</b> by a time range, creating the bolded part of, for example,
+    "Event 1 Occurs Before Event 2 <b>By &gt; 5 day(s).</b>" This additional temporal
+    constraint can be a bounded range such as "<b>By &gt; 5 day(s) And &lt; 10
+    day(s)</b>." Users must first check the "<b>By</b>" checkbox to enable the dropdown
+    boxes on that row. The "<b>And</b>" checkbox becomes enabled only when the
+    "<b>By</b>" checkbox is checked. Checking the "<b>And</b>" checkbox enables the
+    dropdown boxes on its row. Both the <b>By</b> row and the <b>And</b> row have the
+    same options depicted below.
+
+    <p class="jdwebnormal"><b><img width="234" height="123" src="images/tqt_image027.gif" /></b>
+		(Options for Occurrence Temporal Constraint)
+	</p>
+	</li>
+
+    <li>
+    <b>(Add Temporal Relationship Button)</b> This adds a new Temporal Relationship Panel
+    should users require more relationship constraints among <b>Events</b>.</p>
+	</li>
+	</ol>
+    <div class='c4'>
+      <p class="jdwebheading2 c3"><a name="_Toc370995219">Step 3: Review and Submit
+      Query</a></p>
+    </div>
+
+    <p class="jdwebnormal">The last step allows users to review and modify the name of
+    the query and selection of analyses types they want the server to return as the
+    results of the query.</p>
+
+    <p class="jdwebheading3"><img src="images/qtRunQueryWindow.png" alt="qtRunQueryWindow" width="402" height="310" /></p>
+	
+    <p class="jdwebheading3"><a name="_Toc370995220">Query Name Area</a></p>
+
+    <p class="jdwebnormal">Upon entering Step 3, a query name is automatically generated.
+    A "(t)" prefix indicates the query is a temporal query, differentiating it from
+    normal queries submitted using the classic query tool. Some terms used in the query
+    are then appended to identify this query. A timestamp is added at the end. Users may
+    modify the query name however they wish. The name in the <b>Query Name Area</b> will
+    be displayed in the <b>Previous Query</b> view once the query is submitted</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995221">Analysis Type Area</a></p>
+
+    <p class="jdwebnormal">The area presents the different analyses types users can
+    select as results of the query. They are exactly the same as the ones from the
+    classic Query Tool:</p>
+
+    <div class="c7">
+      <table border="1" cellspacing="0" cellpadding="0">
+        <tr>
+          <th width="576" colspan="2" valign="top">
+            Table of Result Types
+          </th>
+        </tr>
+
+        <tr>
+          <th width="196" valign="top">
+            Patient list
+          </th>
+
+          <td width="380" valign="top">
+            Provides a set of patients who met the search criteria.
+          </td>
+        </tr>
+
+        <tr>
+          <th width="196" valign="top">
+            Event list
+          </th>
+
+          <td width="380" valign="top">
+            Provides a set of encounters for those patients who met
+            the search criteria.
+          </td>
+        </tr>
+
+        <tr>
+          <th width="196" valign="top">
+            Number of patients
+          </th>
+
+          <td width="380" valign="top">
+            Provides the total number of patients who met the
+            search criteria.
+          </td>
+        </tr>
+
+        <tr>
+          <th width="196" valign="top">
+            Gender patient breakdown
+          </th>
+
+          <td width="380" valign="top">
+            Provides a breakdown of the patients by their gender.
+          </td>
+        </tr>
+
+        <tr>
+          <th width="196" valign="top">
+            Vital Status patient breakdown
+          </th>
+
+          <td width="380" valign="top">
+            Provides a breakdown of the patients by their vital
+            status.
+          </td>
+        </tr>
+
+        <tr>
+          <th width="196" valign="top">
+            Race patient breakdown
+          </th>
+
+          <td width="380" valign="top">
+            Provides a breakdown of the patients by their race.
+          </td>
+        </tr>
+
+        <tr>
+          <th width="196" valign="top">
+            Age patient breakdown
+          </th>
+
+          <td width="380" valign="top">
+            Provides a breakdown of the patients by their age
+          </td>
+        </tr>
+
+        <tr>
+          <th width="196" valign="top">
+            Timeline
+          </th>
+
+          <td width="380" valign="top">
+            Provides a set of patients who met the defined criteria
+            and automatically generates a timeline in the timeline view.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <p class="jdwebnormal">By default Number of patients and Timeline are selected.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995222">Run Query Button</a></p>
+
+    <p class="jdwebnormal">In Step 3, the Footer is different. Instead of another "Next"
+    button, a <b>Submit Query Button</b> is there instead. It allows users to execute the
+    query they have built in Step 1 and Step 2.</p>
+
+    <p class="jdwebnormal">After pressing Submit Query, the button will become inactive
+    to prevent inadvertent submission. A "Processing..." text will display to indicate
+    that the query is being sent to the server for processing. The red rectangular button
+    allows users to cancel the query submission.</p>
+
+    <p class="jdwebnormal"><img width="524" height="141" alt="queryStatusRun" src="images/qtQueryStatusRunMI.png"></p>
+
+    <p class="jdwebnormal">When the server completes the processing, the number of patients found will be returned:</p>
+
+    <p class="jdwebnormal"><img src="images/qtQueryStatusFinishMI.png" alt="queryStatusFinish" width="524" height="141" /></p>
+
+    <p class="jdwebnormal">If the query takes too long, a message will be
+    displayed instead, in addition, the <b>Submit Query Button</b> will become available
+    again. Users are advised to monitor the <b>Previous Queries</b> view to see when the
+    query finishes.</p>
+	<table id="note">
+	<tbody>
+		<tr>
+			<td>
+				<p class="NoteHeading">NOTE: </p>
+				<p class="NoteParagraph">
+					The result types that appear will depend on what you have selected when running the query..
+				</p>
+			</td>
+		</tr>
+	</tbody>
+	</table>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995223">Popup Editors</a></p>
+    </div>
+
+    <p class="jdwebnormal">Many of the UI elements discussed above are for display only.
+    That is, they display the content of a Group or an Event or a Query, but they do not
+    themselves allow editing of the values. Instead, users have to click on display
+    components to launch an editor. The various editors are presented here.</p>
+
+    <p class="jdwebnormal">This dialogs are all modal. That means no other actions can be
+    performed when the dialog is launched. Users must first dismiss (typically by either
+    selecting OK or Cancel) the dialog before other UI elements in the Web Client can be
+    interacted with.</p>
+
+    <p class="jdwebnormal">The dialogs can be moved by dragging the blue title area
+    around, and they usually appear where the mouse pointer is when launched.</p>
+	
+	<ol>
+    <li>
+    <b>(Date Constraint Editor)</b> The <b>Date Constraint Editor</b> is launched when
+    user clicks on a <b>Date Constraint Control</b> in every <b>Group Panel</b>, in the
+    title area of an <b>Event</b>, in the <b>Supplemental Control Panel</b> in Step 1,
+    and in the <b>View Population Panel</b> in Step 2.</p>
+
+    <p class="jdwebnormal">The editor starts up as the left-most figure below. Clicking
+    on either of the orange-yellow-highlighted textboxes will launch a calendar widget
+    for users to select the start (middle figure) or the end date (right-most figure).
+    When finished, users should click on the <b>OK</b> button in the gray footer area to
+    accept the constraints. Alternatively, clicking the <b>Cancel</b> button will leave
+    the original date constraints unmodified.</p>
+
+    <p class="jdwebnormal">The start and end date constraints are both inclusive. That is
+    if the start date is January 1, 1999, and the end date is December 31, 1999, the
+    range of the constraint spans from 1/1/1999 00:00:00.000 to 12/31/1999
+    23:59:59.999.</p>
+
+    <p class="jdwebnormal"><img src="images/qtConstDateWindow.png" alt="qtConstDateWindow" /></p>
+	</li>
+
+    <li>
+    <b>(Group Binding Editor)</b> The <b>Group Binding Editor</b> is found in every
+    <b>Group Panel</b>. It lets users change the binding for that <b>Group</b>. The left
+    figure depicts the initial appearance when a <b>Group Binding Editor</b> is launched.
+    It consists of three rows, each represent a binding option. The last option
+    (<b>Bound-by-Observation</b>) is only available as a choice if a modifier is dropped
+    in the <b>Group</b>. Selecting one of the radio buttons and clicking on <b>OK</b>
+    will set the new binding. <b>Cancel</b> will cancel the operation and leave the
+    original binding unmodified.</p>
+
+    <p class="jdwebnormal"><img width="213" height="207" src="images/tqt_patencounterobserv.png" /></p>
+	</li>
+
+    <li>
+    <b>(Occurrence Count Constraint Editor)</b> This editor can be launched in every
+    Group by clicking on its <b>Count Control</b> area. Users can specify how many (or
+    few) times the terms in a <b>Group</b> must occur. The editor itself is simple: a
+    dropdown box specifies the type of operator and a spinner allowing for a number to be
+    specified.</p>
+
+    <p class="jdwebnormal">The left figure shows the dialog at startup, and the right
+    figure shows all the operator options.</p>
+
+    <p class="jdwebnormal"><img alt="qtConstOccurSelect" src="images/qtConstOccurSelect.png"><img alt="qtConstOccurWindow" src="images/qtConstOccurWindow.png"></p>
+	</li>
+
+    <li>
+    <b>(Value Editor)</b> When users drop an ontology term that can be further
+    constrained by values into a <b>Group</b>, a <b>Value Editor</b> will automatically
+    launch. Users can use this editor to select a way to constrain the value of the term
+    and specify what values to constrain the term by. If a term that supports values
+    already exists in a <b>Group</b>, users can right click on the term and select
+    "<b>Edit Value...</b>" to launch the <b>Value Editor</b> for that term. Please note
+    that some <b>Modifiers</b> do not support values (e.g. Circulatory Systems [Primary
+    diagnosis]).</p>
+
+    <p class="jdwebnormal"><b><img alt="qtConstValSelect" src="images/qtConstValSelect.png"></b>(Right click on a term that supports value
+    constraints to launch the <b>Value Editor</b>)</p>
+
+    <p class="jdwebnormal">Note that the constraint is optional. The default constraint
+    put on these terms is "<b>No Value</b>," and by closing the dialog immediately, users
+    can quickly accept the default constraint. Please note that closing the dialog does
+    not cancel the value editing operation, it instead accepts the values that are
+    currently set.</p>
+
+    <p class="jdwebnormal">If multiple terms were dropped at the same time, all terms
+    that support value constraints in the same drop will appear in a list the left side
+    of dialog. Users can select the terms on the list to view and edit its value
+    constraint. Alternatively, users can use the navigation buttons "<b>Previous</b>",
+    "<b>Next</b>" to navigate. Finally, to finish, users should select the last term on
+    the list and click on "<b>Finish</b>."</p>
+
+    <p class="jdwebnormal"><img alt="qtConstValTropI1" src="images/qtConstValTropI1.png">(The <b>Value Editor</b> 
+	shows two terms on its list on the left. The right half shows the currently set value constraints for the selected
+    term on list. The default is "No Value." Users can also navigate the list by using
+    the "<b>Next</b>" "<b>Previous</b>" buttons on the bottom of the right half. When
+    finished, click on the "<b>Finish</b>" button or simply close the dialog.)</p>
+
+    <p class="jdwebnormal">Different terms support different kinds of value constraint,
+    some are constrained by text, some by numeric value, some by a list of pre-arranged
+    values, and some by abnormal flags. For example, the Color term supports abnormal
+    flags and a list of pre-arranged values. These options are shown on the right half of
+    the dialog. By selecting the radio buttons, users can choose the kind of constraint
+    they want. Here are the screen shots of the right half of the dialog when radio
+    buttons other than "<b>No Value</b>" are chosen for the term Color.</p>
+
+    <p class="jdwebnormal"><img alt="qtConstValTropI2" src="images/qtConstValTropI2.png"><img alt="qtConstValCpk2" src="images/qtConstValCpk2.png"></p>
+	</li>
+	</ol>
+	
+    <h2><a name="tqtCreateQuery" id="tqtCreateQuery"></a>Creating a Query</h2>
+
+    <p class="jdwebnormal">This section describes the process of adding items to the
+    query tool, "AND" / "OR" operators and setting constraints.</p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995225">Draggable Items</a></p>
+    </div>
+
+    <p class="jdwebnormal">In order to create your query, you will need to define what
+    information will be retrieved from the databases. Selected items from other i2b2
+    Web Client views can be dragged and dropped (copied) into the <b>Temporal</b> <b>Query
+    Tool view</b>.</p>
+	
+	<ol>
+
+    <li> Concepts
+
+    <p class="jdwebnormal" ><b>Concepts</b> <span class='c8'>(<img width="16"
+    height="16" src="images/tqt_image038.gif" />)</span> can be defined as terms,
+    results, providers, etc. They can be added as a group (folder <span class=
+    'c8'>(<img width="16" height="16" src="images/tqt_image039.gif" />)</span>) or
+    individually by dragging the item(s) from <b>Navigate Terms</b>, <b>Find Terms</b>,
+    and <b>Workplace</b> views.</p>
+	</li>
+
+    <li> Modifiers
+
+    <p class="jdwebnormal" ><b>Modifiers</b> <span class='c8'>(<img width="14" height="13" src="images/tqt_image040.gif" />)</span> 
+	are associated with a concept or group of concepts. They can be added as a group (modifier folder 
+	<span class='c8'>(<img width="14" height="14" src="images/tqt_image041.gif" />)</span>) or
+    individually by dragging the item(s) from <b>Navigate Terms</b>, <b>Find Terms</b>, and <b>Workplace</b> views.</p>
+	</li>
+
+    <li> Previous Query
+
+    <p class="jdwebnormal" >A new query can be created from one that has already
+    been run by dragging the <b>previous query</b> <span class='c8'>(<img width="16" height="16" src="images/tqt_image042.gif" /></span> 
+	<span class='c9'>or</span><span class='c8'><img width="16" height="16" src="images/tqt_image043.gif" />)</span> 
+	from <b>Previous Query</b> and <b>Workplace</b> views.</p>
+	</li>
+
+    <li>
+    Patient List
+
+    <p class="jdwebnormal" >A <b>patient list</b> <span class='c8'>(<img width="10" height="10" src="images/tqt_image044.jpg" />)</span> 
+	can be used in a query by dragging the item(s) from <b>Previous Query</b> and <b>Workplace</b> views.</p>
+	</li>
+
+    <li> Individual Patient
+
+    <p class="jdwebnormal" >A patient (<img width="16" height="16" src="images/tqt_image045.gif" />) or several patients can be used in a 
+	query by dragging them from <b>Previous Query</b> view and <b>Workplace</b> views.</p>
+	</li>
+
+    <li> Event List
+
+    <p class="jdwebnormal" >An <b>event list</b> <span class='c8'>(<img width="10" height="10" src="images/tqt_image044.jpg" />)</span> 
+	can be used in a query by dragging the item(s) from <b>Previous Query</b> and <b>Workplace</b> views.</p>
+	</li>
+    <li> Query Definition
+
+    <p class="jdwebnormal" >A new query can be created from one that has already
+    been run by dragging the <b>query definition</b> <span class='c8'>(<img width="16" height="16" src="images/tqt_image046.gif" />)</span> 
+	from the <b>Workplace</b> view.</p>
+	</li>
+    <li> Group Template
+
+    <p class="jdwebnormal" >Users can define a group of concepts that they
+    frequently run and save them in their workplace view. This grouping of concepts is
+    referred to as a <b>group template</b> <span class='c8'>(<img width="16" height="16" src="images/tqt_image047.gif" />)</span>.</p>
+
+    <p class="jdwebnormal" >A new query can be created using the group template
+    by dragging the template from <b>Workplace</b> view to the Group Header.</p>
+	</li>
+	</ol>
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc222041017"></a><a name="_Toc222025472"></a><a name="_Toc370995226">Operators</a></p>
+    </div>
+
+    <p class="jdwebnormal">There are two operators, known as <b>SQL Logical
+    Operators</b>, which are necessary when running a query that has more than one term.
+    These operators provide a way to specify exactly what users want to retrieve. The
+    operators are the '<b>AND</b>' and '<b>OR</b>' operators.</p>
+
+    <p class="jdwebnormal">The query tool knows which operator to use based on the panels
+    used when defining the query. It is important to verify the users are setting up
+    their query correctly as each operator will return different results.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995227">AND Operator</a></p>
+
+    <p class="jdwebnormal">The <b>AND operator</b> returns a record if both the first
+    condition <i>and</i> the second conditions are true.</p>
+
+    <p class="jdwebnormal">The query tool uses the AND operator when concepts are listed
+    in different panels.</p>
+
+    <p class="jdwebnormal">Example:</p>
+
+    <p class="jdwebnormal" ><b>WHAT:</b> Return only those patients who have
+    Acute Myocardial Infarction AND Angina Pectoris.</p>
+
+    <p class="jdwebnormal" ><b>HOW:</b> In the query tool add the concept Acute
+    Myocardial Infarction to Group 1 and then add the concept Angina Pectoris to Group 2
+    .</p>
+
+    <p class="jdwebnormal" ><b>RESULT:</b> The population is limited by
+    requiring the patients to have both Acute myocardial infarction and Angina pectoris..</p>
+
+    <p class="jdwebnormal"><img width="524" height="353" src="images/qtOperatorAnd.png" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995228">OR Operator</a></p>
+
+    <p class="jdwebnormal">The <b>OR operator</b> returns a record if either the first
+    condition <i>or</i> the second conditions is true.</p>
+
+    <p class="jdwebnormal">The query tool uses the OR operator when concepts are listed
+    in the same panel.</p>
+
+    <p class="jdwebnormal">Example:</p>
+
+    <p class="jdwebnormal" ><b>WHAT:</b> Return any patients who have Acute
+    Myocardial Infarction or Angina Pectoris associated to them.</p>
+
+    <p class="jdwebnormal" ><b>HOW:</b> In the query tool you add both concepts,
+    Acute Myocardial Infarction and Angina Pectoris, to <b>Group 1</b>.</p>
+
+    <p class="jdwebnormal" ><b>RESULT:</b> The population is limited to include
+    all patients who fit either one of those criteria.</p>
+
+    <p class="jdwebnormal"><img width="524" height="353" src="images/qtOperatorOr.png" /></p>
+
+    <p class="jdwebnormal">In short, terms within a <b>Group</b> are <b>ORed</b>
+    together, while different <b>Groups</b> are <b>ANDed</b> together.</p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995229">Add Concepts</a></p>
+    </div>
+
+    <p class="jdwebnormal">Concepts can be added to the <i>Query Tool view</i> by simply
+    dragging the concept from one of the following views.</p>
+
+    <p class="jdwebnormal"><span>1.<span class='c2'>&nbsp;</span></span> Navigate Terms view</p>
+
+    <p class="jdwebnormal"><span>2.<span class='c2'>&nbsp;</span></span> Find Terms view</p>
+
+    <p class="jdwebnormal"><span>3.<span class='c2'>&nbsp;</span></span> Workplace view</p>
+
+    <p class="jdwebnormal">How to add a concept from each of these views is explained in the next few sections.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995230">Navigate Terms View</a></p>
+
+    <p class="jdwebnormal">The <b>Navigate Terms view</b> contains a hierarchical display
+    of all the items that can be used to search the database.</p>
+
+    <p class="jdwebnormal"><b class="c11"><span class='c10'>Note</span></b>: How the
+    items are grouped and displayed is dependent on how the database is setup.</p>
+
+    <p class="jdwebnormal c12"><img width="301" height="172" src="images/ntView.png" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc222025473">Add Concept From Navigate Terms  View</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Navigate Terms view</b>,
+    expand the folder(s) that contain the concept or grouping of concepts that you want to add.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>concept</b>
+    <span class='c8'>(<img width="16" height="17" src="images/tqt_image051.gif" />)</span> or <b>folder</b> 
+	<span class='c8'>(<img width="16" height="18" src="images/tqt_image052.gif" />)</span> by clicking on its name.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button down</i>, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the item into the <b>panel</b>
+    labeled <b>Group 1</b>.</p>
+
+    <p class="jdwebnormal"><img width="524" height="353" src="images/qtDragFolderCardioAgents.png" /></p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The item will now display in the
+    panel for Group 1.</p>
+
+    <p class="jdweblistnumbers"><img width="524" height="353" src="images/qtDropFolderCardioAgents.png" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995232">Find Terms View</a></p>
+
+    <p class="jdwebnormal">The <b>Find Terms view</b> provides a way to search for a particular concept and modifier.</p>
+
+    <p class="jdwebnormal"><img src="images/ftView.png" alt="ftView" width="303" height="174" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc222025474">Add Concept From Find Terms View</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Find Terms view</b>,
+    search for the item(s) you want to add.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>concept</b>
+    <span class='c8'>(<img width="16" height="17" src="images/tqt_image051.gif" />)</span> or <b>folder</b> 
+	<span class='c8'>(<img width="16" height="18" src="images/tqt_image052.gif" />)</span> by clicking on its name.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button down</i>, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the item into the <b>panel</b>
+    labeled <b>Group 1</b>.</p>
+
+    <p class="jdwebnormal c12"><img src="images/qtDragFolderCardioAgents.png" alt="qtDragFolderCardioAgents" /></p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The item will now display in the
+    panel for Group 1.</p>
+
+    <p class="jdwebnormal"><img src="images/qtDropFolderCardioAgents.png" alt="qtDropFolderCardio" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995234">Workplace</a></p>
+
+    <p class="jdwebnormal">Information in the <b>Workplace</b> is related to the most
+    common concepts, modifiers, and queries that an individual uses and in essence
+    becomes their personal workplace.</p>
+
+    <p class="jdwebnormal"><img src="images/wpView.png" alt="wpView" width="296" height="164" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc222025475">Add Concept From Workplace View</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Workplace view</b>, expand
+    the folder(s) that contain the concept or grouping of concepts you want to add.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>concept</b>
+    <span class='c8'>(<img width="16" height="17" src="images/tqt_image051.gif" />)</span> or <b>folder</b> 
+	<span class='c8'>(<img width="16" height="18" src="images/tqt_image052.gif" />)</span> by clicking on its name.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button down</i>, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the item into the <b>panel</b>
+    labeled <b>Group 1</b>.</p>
+
+    <p class="jdwebnormal"><img src="images/qtDragFolderCardioAgents.png" alt="qtDragFolderCardioAgents" /></p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+	The item will now display in the panel for Group 1.</p>
+
+    <p class="jdweblistnumbers"><img src="images/qtDropFolderCardioAgents.png" alt="qtDragFolderCardioAgents" /></p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995236">Add Modifiers</a></p>
+    </div>
+
+    <p class="jdwebnormal">Modifiers can be added to the <i>Query Tool view</i> by simply
+    dragging the modifier from one of the following views.</p>
+
+    <p class="jdwebnormal"><span>1.<span class='c2'>&nbsp;</span></span> Navigate Terms view</p>
+
+    <p class="jdwebnormal"><span>2.<span class='c2'>&nbsp;</span></span> Find Terms view</p>
+
+    <p class="jdwebnormal"><span>3.<span class='c2'>&nbsp;</span></span> Workplace view</p>
+
+    <p class="jdwebnormal">How to add a modifier from each of these views is explained in the next few sections.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995237">Navigate Terms View</a></p>
+
+    <p class="jdwebnormal">The <b>Navigate Terms view</b> contains a hierarchical display
+    of all the items that can be used to search the database.</p>
+
+    <p class="jdwebnormal"><b class="c11"><span class='c10'>Note</span></b>: How the
+    items are grouped and displayed is dependent on how the database is setup.</p>
+
+    <p class="jdwebnormal c12"><img src="images/ntView.png" alt="ntView" width="301" height="172" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc370995238">Add modifier From Navigate Terms View</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Navigate Terms view</b>,
+    expand the folder(s) that contains the modifier or grouping of modifiers that you
+    want to add.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>modifier</b>
+    <span class='c8'>(<img width="14" height="13" src="images/tqt_image040.gif" />)</span> or <b>modifier</b> <b>folder</b> 
+	<span class='c8'>(<img width="14" height="14" src="images/tqt_image041.gif" />)</span> by
+    clicking on its name.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button down</i>, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the item into the <b>panel</b>
+    labeled <b>Group 1</b>.</p>
+
+    <p class="jdwebnormal"><img src="images/qtDragModPrincDx.png" alt="qtDragFolderCardioAgents" /></p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The item will now display in the
+    panel for Group 1.</p>
+
+    <p class="jdwebnormal"><img src="images/qtDropModPrincDx.png" alt="qtDropFolderCardio" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995239">Find Terms View</a></p>
+
+    <p class="jdwebnormal">The <b>Find Terms view</b> provides a way to search for a particular concept and modifier.</p>
+
+    <p class="jdwebnormal"><img src="images/ftView.png" alt="ftView" width="303" height="174" /></p>
+
+    <p class="jdwebnormal"><b class="c11"><span class='c10'>Note</span></b>: For detailed
+    information on how to search for terms and modifiers, please see the i2b2 Find Terms View chapter.</p>
+
+    <p class="jdwebheading4"><a name="_Toc370995240">Add Modifier From Find Terms View</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Find Terms view</b>,
+    search for the modifier(s) you want to add.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>modifier</b>
+    <span class='c8'>(<img width="14" height="13" src="images/tqt_image040.gif" />)</span> or <b>modifier</b> <b>folder</b> 
+	<span class='c8'>(<img width="14" height="14" src="images/tqt_image041.gif" />)</span> by clicking on its name.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button down</i>, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the item into the <b>panel</b>
+    labeled <b>Group 1</b>.</p>
+
+    <p class="jdweblistnumbers"><img src="images/qtDragModPrincDx.png" alt="qtDragModPrincDx" /></p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The item will now display in the
+    panel for Group 1.</p>
+
+    <p class="jdwebnormal"><img src="images/qtDropModPrincDx.png" alt="qtDropFolderCardio" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995241">Workplace</a></p>
+
+    <p class="jdwebnormal">Information in the <b>Workplace</b> is related to the most
+    common concepts, modifiers, and queries that an individual uses and in essence
+    becomes their personal workplace.</p>
+
+    <p class="jdwebnormal"><img src="images/wpView.png" alt="wpView" width="296" height="164" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc370995242">Add Modifier From Workplace View</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Workplace view</b>, expand
+    the folder(s) that contain the modifier or grouping of modifiers you want to add.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>modifier</b>
+    <span class='c8'>(<img width="14" height="13" src="images/tqt_image040.gif" />)</span> or <b>modifier</b> <b>folder</b> 
+	<span class='c8'>(<img width="14" height="14" src="images/tqt_image041.gif" />)</span> by clicking on its name.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button down</i>, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+		Drop the item into the <b>panel</b> labeled <b>Group 1</b>.
+	</p>
+
+    <p class="jdwebnormal c12"><img src="images/qtDragModPrincDx.png" alt="qtDragModPrincDx" /></p>
+
+    <p class="jdweblistnumbers">5.
+		<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+		The item will now display in the panel for Group 1.
+	</p>
+
+    <p class="jdwebnormal"><img src="images/qtDropModPrincDx.png" alt="qtDropModPrincDx" /></p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995243">Add Previous Query</a></p>
+    </div>
+
+    <p class="jdwebnormal">A <b>previous query</b> can be used to run a new query or as
+    an item within a query (query-in-query). To add a previous query to the <i>Query Tool
+    view</i> simply drag the query name from one of the following views.</p>
+
+    <p class="jdwebnormal"><span>1.<span class='c2'>&nbsp;</span></span> Previous Query view</p>
+
+    <p class="jdwebnormal"><span>2.<span class='c2'>&nbsp;</span></span> Workplace view</p>
+
+    <p class="jdwebnormal">Within the Query Tool view, the previous query can be added to one of the following two locations.</p>
+
+    <table border="1" cellspacing="0" cellpadding="0">
+      <tr>
+        <th valign="top">
+          Query Name field
+        </th>
+
+        <td width="496" valign="top">
+          The item(s) and constraints from the original query will
+          be used to create a new query. This information can be edited to make a new
+          query or can be used as is to run the query again.
+		  <br /><br />
+
+          Please note that the tool does not currently support
+          dropping of a previous query of a previous query or a previous query of a temporal query.
+        </td>
+      </tr>
+
+      <tr>
+        <th valign="top">
+          Panel (Group)
+        </th>
+
+        <td width="496" valign="top">
+          Used within a new query (query-in-query). Add additional search criteria (items) to be used in the new query.
+        </td>
+      </tr>
+    </table>
+
+    <p class="jdwebnormal">How to add a previous query from each of the views listed above is explained in the next few sections.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995244">Previous Query View</a></p>
+
+    <p class="jdwebnormal">The <b>Previous Query view</b> displays the queries that were run by the user.</p>
+
+    <p class="jdwebnormal"><img src="images/pqView.png" alt="pqView" width="296" height="141" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc370995245">Add Previous Query From Previous Query View (New Query)</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Previous Query view</b>
+    highlight the <b>previous query</b> <span class='c8'>(<img width="10" height="10"
+    src="images/tqt_image060.jpg" />)</span> by clicking on its name</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button</i> down, drag the item over to the <b>Temporal</b> <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the previous query into the
+    <b>Query Drop</b> <b>Area</b> in either Step 1 or Step 2.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The terms, <b>Groups</b>,
+    <b>Events</b>, and <b>Temporal Relationships</b> defined in that previous query will
+    be reconstituted in the current interface. If the previous query is a non-temporal
+    query, then only the Population portion of the UI will be reconstituted. If the
+    previous query is a temporal query, then both the Population portion and the temporal
+    relationship portion of the UI will be reconstituted.</p>
+
+    <p class="jdwebheading4"><a name="_Toc370995246">Add Previous Query From Previous Query View (Query-In-Query)</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Previous Query view</b>
+    highlight the <b>previous query</b> <span class='c8'>(<img width="10" height="10" src="images/tqt_image060.jpg" />)</span> 
+	by clicking on its name</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button</i> down, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the previous query into the
+    <b>panel</b> labeled <b>Group 1</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+	The previous query will now display in the panel for Group 1.</p>
+
+    <p class="jdwebnormal"><img src="images/qtDragPqIschemicHrtPanel.png" alt="qtDragPqToPanel" width="524" height="353" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995247">Workplace View</a></p>
+
+    <p class="jdwebnormal">Information in the workplace is related to the most
+    common concepts, modifiers, and queries that an individual uses and in essence
+    becomes their personal workplace.</p>
+
+    <p class="jdwebnormal"><img src="images/wpView.png" alt="wpView" width="296" height="164" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc370995248">Add Previous Query From workplace View (New Query)</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Workplace view</b>, expand
+    the folder(s) that contains the previous query you want to add.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>previous query</b>
+    <span class='c8'>(<img width="10" height="10" src="images/tqt_image060.jpg" />)</span> by clicking on its name</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button</i> down, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the previous query into the
+    <b>Query Drop Area</b> in either Step 1 or Step 2.</p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The terms, <b>Groups</b>,
+    <b>Events</b>, and <b>Temporal Relationships</b> defined in that previous query will
+    be reconstituted in the current interface. If the previous query is a non-temporal
+    query, then only the Population portion of the UI will be reconstituted. If the
+    previous query is a temporal query, then both the Population portion and the temporal
+    relationship portion of the UI will be reconstituted.</p>
+
+    <p class="jdwebheading4"><a name="_Toc370995249">Add Previous Query From Previous Query View (Query-In-Query)</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Workplace view</b>, expand
+    the folder(s) that contains the previous query you want to add.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>previous query</b>
+    <span class='c8'>(<img width="10" height="10" src="images/tqt_image060.jpg" />)</span> by clicking on its name</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button</i> down, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the previous query into the
+    <b>panel</b> labeled <b>Group 1</b>.</p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The previous query will now display in the panel for Group 1.</p>
+
+    <p class="jdwebnormal"><img src="images/qtDropPqIschemicHrtPanel.png" alt="qtDropPqPanel" /></p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995250">Add Patient List</a></p>
+    </div>
+
+    <p class="jdwebnormal">A <b>patient list</b> can be added to the <i>Query Tool
+    view</i> by simply dragging the list of patients from one of the following views.</p>
+
+    <p class="jdwebnormal"><span>1.<span class='c2'>&nbsp;</span></span> Previous Query view</p>
+
+    <p class="jdwebnormal"><span>2.<span class='c2'>&nbsp;</span></span> Workplace view</p>
+
+    <p class="jdwebnormal">How to add a patient list from each of the views is explained in the next few sections.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995251">Previous Query View</a></p>
+
+    <p class="jdwebnormal">The <b>Previous Query view</b> displays the queries that were run by the user.</p>
+
+    <p class="jdwebnormal"><img src="images/pqView.png" alt="pqView" width="296" height="141" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc370995252">Add Patient List From Previous Query View</a></p>
+
+    <p class="jdweblistnumbers">6.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Previous Query view</b>
+    click on the plus sign <span class='c8'>(<img width="11" height="11" src="images/tqt_image063.gif" />)</span> next to the name of the previous query that
+    contains the patient set.</p>
+
+    <p class="jdweblistnumbers">7.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Click on the plus sign <span class=
+    'c8'>(<img width="11" height="11" src="images/tqt_image063.gif" />)</span> next to the results folder.</p>
+
+    <p class="jdweblistnumbers">8.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>patient list</b>
+    <span class='c8'>(<img width="10" height="10" src="images/tqt_image044.jpg" />)</span> by clicking on its name</p>
+
+    <p class="jdweblistnumbers"><img width="347" height="184" src="images/tqt_patient_list.png" /></p>
+
+    <p class="jdweblistnumbers">9.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button</i> down, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">10.<span class='c2'>&nbsp;&nbsp;</span> Drop the patient set into the <b>panel</b> labeled <b>Group 1</b>.</p>
+
+    <p class="jdweblistnumbers"><img src="images/qtDragPtSet.png" alt="qtDragPtSet" width="524" height="353" /></p>
+
+    <p class="jdweblistnumbers">11.<span class='c2'>&nbsp;&nbsp;</span> The patient set  will now display in the panel for Group 1.</p>
+
+    <p class="jdwebnormal"><img src="images/qtDropPtSet.png" alt="qtDropPtSet" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995253">Workplace View</a></p>
+
+    <p class="jdwebnormal" >Information in the workplace is related to the most
+    common concepts, modifiers, and queries that an individual uses and in essence
+    becomes their personal workplace.</p>
+
+    <p class="jdwebnormal"><img src="images/wpView.png" alt="wpView" width="296" height="164" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc370995254">Add Patient List From Workplace View</a></p>
+
+    <p class="jdweblistnumbers">12.<span class='c2'>&nbsp;&nbsp;</span> In the
+    <b>Workplace view</b> find the patient list you want to add.</p>
+
+    <p class="jdweblistnumbers">13.<span class='c2'>&nbsp;&nbsp;</span> Highlight the
+    <b>patient list</b> <span class='c8'>(<img width="10" height="10" src="images/tqt_image044.jpg" />)</span> by clicking on its name</p>
+
+    <p class="jdweblistnumbers">14.<span class='c2'>&nbsp;&nbsp;</span> While holding the
+    <i>left mouse button</i> down, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">15.<span class='c2'>&nbsp;&nbsp;</span> Drop the patient set into the <b>panel</b> labeled <b>Group 1</b>.</p>
+
+    <p class="jdweblistnumbers">16.<span class='c2'>&nbsp;&nbsp;</span> The patient set will now display in the panel for Group 1.</p>
+
+    <p class="jdwebnormal"><img src="images/qtDropPtSet.png" alt="qtDropPtSet" /></p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995255">Add Encounter Set</a></p>
+    </div>
+
+    <p class="jdwebnormal">An <b>encounter set</b> can be added to the <i>Query Tool
+    view</i> by simply dragging the encounter set from one of the following views.</p>
+
+    <p class="jdwebnormal"><span>1.<span class='c2'>&nbsp;</span></span> Previous Query view</p>
+
+    <p class="jdwebnormal"><span>2.<span class='c2'>&nbsp;</span></span> Workplace view</p>
+
+    <p class="jdwebnormal">How to add an event list from each of the views is explained in the next few sections.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995256">Previous Query View</a></p>
+
+    <p class="jdwebnormal">The <b>Previous Query view</b> displays the queries that were run by the user.</p>
+
+    <p class="jdwebnormal"><img src="images/pqView.png" alt="pqView" width="296" height="141" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc370995257">Add Event List From Previous Query View</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Previous Query view</b>
+    click on the plus sign <span class='c8'>(<img width="11" height="11" src="images/tqt_image063.gif" />)</span> 
+	next to the name of the previous query that contains the encounter set.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Click on the plus sign 
+	<span class='c8'>(<img width="11" height="11" src="images/tqt_image063.gif" />)</span> next to the results folder.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>encounter set</b>
+    <span class='c8'>(<img width="15" height="15" src="images/tqt_image069.gif" />)</span> by clicking on its name</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button</i> down, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the encounter set into the <b>Group 1</b>.</p>
+
+    <p class="jdweblistnumbers">6.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The encounter set will now display
+    in the panel for <b>Group 1</b>.</p>
+
+    <p class="jdwebnormal"><img src="images/qtDropEncSet.png" alt="qtDropEncSet" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995258">Workplace View</a></p>
+
+    <p class="jdwebnormal" >Information in the workplace is related to the most
+    common concepts, modifiers, and queries that an individual uses and in essence
+    becomes their personal workplace.</p>
+
+    <p class="jdwebnormal"><img src="images/wpView.png" alt="wpView" width="296" height="164" /></p>
+
+    <p class="jdwebheading4"><a name="_Toc370995259">Add Event List From Workplace View</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Workplace view</b> find
+    the encounter set you want to add.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>encounter set</b>
+    <span class='c8'>(<img width="15" height="15" src="images/tqt_image069.gif" />)</span> by clicking on its name</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button</i> down, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the encounter set into <b>Group 1</b>.</p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The encounter set will now display
+    in the panel for <b>Group 1</b>.</p>
+
+    <p class="jdwebnormal c12"><img src="images/qtDropEncSet.png" alt="qtDropEncSet" /></p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995260">Add Query Definition</a></p>
+    </div>
+
+    <p class="jdwebnormal">A query definition can be added to the query tool view by simply dragging the query name from the workplace view.</p>
+
+    <p class="jdwebheading4"><a name="_Toc370995261">Add Query Definition From Workplace View</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> In the <b>Workplace view</b>, find
+    the query definition you want to add.</p>
+
+    <p class="jdweblistnumbers"><img src="images/wpView.png" alt="wpView" width="296" height="164" /></p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Highlight the <b>query
+    definition</b> <span class='c8'>(<img width="10" height="10" src="images/tqt_image060.jpg" />)</span> by clicking on its name</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> While holding the <i>left mouse
+    button</i> down, drag the item over to the <b>Query Tool View</b>.</p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Drop the query definition into the
+    <b>Query Drop Area</b> in Step 1 or Step 2.</p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The item(s) associated with the
+    query definition will display in the appropriate group(s), the name of the query will
+    appear at <b>Query Name</b>, and any constraints that were defined when the original
+    query was run will now default with the new query.</p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995263">Add a Group Panel</a></p>
+    </div>
+
+    <p class="jdwebnormal">Three <b>Group Panels</b> are displayed in Step 1 by default.
+    In step 2, only one <b>Group Panel</b> is available per <b>Event</b>. Some complex
+    queries may require the use of additional panels. Users may use the "Add Group"
+    button to add more Groups.</p>
+
+    <p class="jdwebnormal">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    Click on the <b>Add Group button</b>.</p>
+
+    <p class="jdwebnormal"><img src="images/qtToolbarNewGrpButton.png" alt="qtToolbarNewGroup" width="524" height="44" /></p>
+
+    <p class="jdwebnormal">(<b>Add Group</b> button in Step 1)</p>
+
+    <p class="jdwebnormal">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    A new panel is added with each click (two clicks are performed here to create a total
+    of three <b>Group Panels</b>).</p>
+
+    <p class="jdwebnormal"><img src="images/qtPanelAdd.png" alt="qtPanelAdd" /></p>
+
+    <p class="jdwebnormal">In Step 2, there is an "Add Group" button for each Event, and
+    an additional one to add Group to the population. These "Add Group" button work
+    exactly the same as the one described above.</p>
+
+    <p class="jdwebnormal"><img width="557" height="368" src="images/tqt_add_group_btn.png" /></p>
+
+    <p class="jdwebnormal">(Step 2 "Add Group" button)</p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995264"></a><a name="_Toc222041021"></a><a name="_Toc222025476">Delete/Remove</a></p>
+    </div>
+
+    <p class="jdwebnormal">Users can remove a <b>Group</b> from a query (or <b>Event</b> in the temporal query UI) or a term in a <b>Group</b>.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995265">Remove Groups</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Click on the <b>Remove Group</b>
+    button <span class='c13'>(</span><img width="11" height="13" src="images/tqt_image079.jpg" /><span class='c13'>)</span> located to the right top of
+    every Group.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The Group and all its content will be removed</p>
+
+    <p class="jdweblistnumbers"><img width="189" height="175" src="images/tqt_buttonDelete.png" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995266"></a><a name="_Toc222041023"></a><a name="_Toc222025478">Delete a Single</a> Item</p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Right click on the item in the group
+    that you want to remove.</p>
+
+    <p class="jdweblistnumbers"><img src="images/qtDeleteItem.png" alt="deleteItem" /></p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Select <b>Delete Item</b> from the list.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The item will be removed from the
+    <a name="_Toc222041028"></a><a class="c14" name="_Toc222025483">Group Panel</a></p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995267">Setting Constraints</a></p>
+    </div>
+
+    <p class="jdwebnormal">Constraints are used to narrow down the search criteria to a
+    particular time from, number of occurrences or a specific value or range of values.
+    In i2b2, there are several types of constraints that can be defined in the Query Tool
+    view.</p>
+
+    <table border="1" cellspacing="0" cellpadding="0" align="center">
+      <tr>
+        <th valign="top">
+          Constraint Type
+        </th>
+
+        <th width="505" valign="top">
+          Description
+        </th>
+      </tr>
+
+      <tr>
+        <td valign="top">
+         Group Binding (Panel Timing)
+        </td>
+
+        <td width="505" valign="top">
+          Constraint is defined on the Group and utilizes the
+          patient encounters and / or instance number when determining eligibility. There
+          are three binding choices. The most general one is bound-by-patient, followed
+          by bound-by-encounter, and finally, the strictest one is
+          bound-by-observation.
+        </td>
+      </tr>
+
+      <tr>
+        <td valign="top">
+          Date
+        </td>
+
+        <td width="505" valign="top">
+          Constraint uses a date range when determining  eligibility.
+        </td>
+      </tr>
+
+      <tr>
+        <td valign="top">
+          Occurrence
+        </td>
+
+        <td width="505" valign="top">
+          Constraint is by the number of occurrences an item is  documented.
+        </td>
+      </tr>
+
+      <tr>
+        <td valign="top">
+          Value
+        </td>
+
+        <td width="505" valign="top">
+          Constraint is by the value associated to a concept or  modifier. Not all items have values.
+        </td>
+      </tr>
+    </table>
+
+    <p class="jdwebnormal"><b class="c11"><span class='c10'>Note</span></b>: In the
+    client, the value constraints are currently the only ones that directly correspond to
+    a single concept. All others are defined on the query or Group level.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995268">Group Binding Constraints</a></p>
+
+    <p class="jdwebnormal">Group binding constraints utilize the encounter/observation
+    information along with the items defined to determine if a patient meets the search
+    criteria.</p>
+
+    <p class="jdwebnormal">Note that this is previously known as Panel Timing in the
+    classic <b>Query Tool</b>. In the classic <b>Query Tool</b>, users can also specify
+    Query Timing. In the <b>Temporal Query Tool</b>, Query Timing is automatically set by
+    the choice of Group Bindings. That is, the strictest Group Binding dictates what the
+    Query Timing is:</p>
+
+    <p class="jdwebnormal">-<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> if there is a
+    Group that is "bound-by-observation," then the query timing will be
+    "bound-by-observation" (or in the classical terminology, "same instance.")</p>
+
+    <p class="jdwebnormal">-<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> If there is a
+    Group that is bound-by-encounter," but no Groups "bound-by-observation," then the
+    query timing will be "bound-by-encounter," (or classically, "same encounter.")</p>
+
+    <p class="jdwebnormal">-<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Otherwise the
+    query timing is "bound-by-patient" ("treat independently.")</p>
+
+    <p class="jdwebheading4"><a name="_Toc370995269">Group Binding</a></p>
+
+    <p class="jdwebnormal">Group Binding sets the binding for each Group. Possible values
+    are <b>Bound-by-Patient</b>, <b>Bound-by-Encounter</b>, and
+    <b>Bound-by-Observation</b>. These constraints tell the query processor that these
+    Groups describe the same <b>patient</b>, <b>encounters</b> or <b>observation</b>.</p>
+
+    <p class="jdwebnormal">In step 1, the default binding for each <b>Group</b> changes
+    depending on whether users are defining a Patient Population or an Encounter
+    Population. If Patient Population is used, then <b>Bound-by-Patient</b> is the
+    default, and it is unchangeable. If Encounter Population is used, then
+    <b>Bound-by-Encounter</b> is the default. However, in this case, users can change
+    each Group's binding to <b>Bound-by-Patient</b> if they so desire or to
+    <b>Bound-by-Observation</b> if a modifier term is used in that <b>Group</b>.</p>
+
+    <p class="jdwebnormal">Users can select one of three available options:</p>
+
+    <p class="jdweblistnumbers"><b>1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></b> <b>(Bound-by-Patient)</b> The
+    items (facts) can occur at any time in the <b>patient's</b> history.</p>
+
+    <p class="jdweblistnumbers"><b>2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></b> <b>(Bound-by-Encounter)</b> The
+    items (facts) occur during the same <b>encounter</b> (e.g. visit to hospital).</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <b>(Bound-by-Observation)</b> The
+    items (facts) occur during the same <b>observation</b>.</p>
+
+    <p class="jdwebnormal">The values are hierarchical: a <b>Group</b> that is
+    bound-by-observation is also bound-by-encounter and bound-by-patient. A group that is
+    bound-by-encounter is also bound-by-patient. Every group is bound-by-patient.</p>
+
+    <p class="jdwebnormal">The Group Binding for a <b>Group</b> can be set by launching
+    the <b>Group Binding Editor</b>, by clicking on the highlighted area in a Group:</p>
+
+    <p class="jdwebnormal c15"><img width="213" height="207" src="images/tqt_patencounterobserv2.png" /></p>
+
+    <p class="jdwebnormal">The Group Binding Editor consists of 3 rows, each representing
+    a possible Group Binding value. Selecting one will set the value.
+ 
+    <p class="jdwebnormal">Users can also set the <b>Group</b> binding for all
+    <b>Groups</b> using the <b>Group Binding Control Panel</b> in <b>the Supplemental
+    Control Panel</b> in Step 1.</p>
+
+    <p class="jdwebheading5"><a name="_Toc370995270">Bound-by-Patient</a></p>
+
+    <p class="jdwebnormal">The items (facts) can occur at any time in the <b>patient's</b> history.</p>
+
+    <p class="jdwebnormal"><img width="190" height="207" src="images/tqt_bound_by_patient.png" /></p>
+
+    <p class="jdwebheading5"><a name="_Toc370995271">Bound-by-Encounter</a></p>
+
+    <p class="jdwebnormal">The items (facts) occur during the same <b>encounter</b> (e.g. visit to hospital).</p>
+
+    <p class="jdwebnormal"><img width="187" height="204" src="images/tqt_bound_by_encounter.png" /></p>
+
+    <p class="jdwebnormal c6">Example:</p>
+
+    <p class="jdwebnormal">Patient has a diagnosis of Acute MI documented at <b class=
+    "c11">any time</b> in their history and they have a medication with a dose greater
+    than 500 mg <b class="c11">and</b> a medication that is taken once a day documented
+    during the <b class="c11">same encounter</b>.</p>
+
+    <p class="jdwebnormal"><img width="524" height="353" alt="qtTimingExample4" src="images/qtTimingEx04.png"></p>
+
+    <p class="jdwebnormal"><b>RESULTS:</b> In our database, there are 4 patients who have
+    had a medication with a dose greater than 500 mg and a frequency of once a day
+    entered as a fact in the observation_fact table, where the medication dose and
+    frequency have the <i class="c16">same</i> <b>encounter_num</b> <i>AND</i> the
+    diagnosis of acute MI, the medication dose and frequency all have the <i class="c16">same</i> <b>patient_num</b>.</p>
+	
+	<p class="jdwebheading5"><a name="_Toc370995272">Bound-by-Observation</a></p>
+	
+	<p class="jdwebnormal">The items (facts) listed in the panel occur during the <i>same	observation</i> of a visit.</p>
+	
+	<p class="jdwebnormal"><b>Example:</b></p>
+	
+	<p class="jdwebnormal">Patient has a diagnosis of Acute MI documented at <b><i>any
+	time</i></b> in their history and they have a medication with a dose greater
+	than 500 mg <b><i>and</i></b> a medication that is taken once a day documented
+	during the <b><i>same instance</i></b>.</p>
+	
+	<p class="jdwebnormal"><img width="524" height="353" alt="qtTimingExample5" src="images/qtTimingEx05.png"></p>
+	
+	<p class="jdwebnormal"><b>RESULTS:</b> In our database, there are 3 patients who
+	have had a medication with a dose greater than 500 mg and a frequency of once a
+	day entered as a fact in the observation_fact table, where the medication dose
+	and frequency have the <i><u>same</u></i> <b>encounter_num</b> <i>AND</i> <b>instance_num</b>
+	<i>AND</i> the diagnosis of acute MI, the medication dose and frequency all
+	have the <i><u>same</u></i> <b>patient_num</b>.</p>
+
+    <p class="jdwebheading3"><a name="_Toc222041029"></a><a name="_Toc222025484">Date Constraint</a></p>
+
+    <p class="jdwebnormal">Users can define a date range to be used when querying the
+    database. This date range can be in any one of the following combinations. Note that
+    all start and end dates are inclusive.</p>
+
+    <p class="jdwebheading4"><a name="_Toc222041030"></a><a name="_Toc222025485">SPECIFIED</a> DATE RANGE: FROM AND TO
+    DATES DEFINED</p>
+
+    <p class="jdwebnormal">Only data with activity within the defined date range will be used.</p>
+
+    <p class="jdwebnormal">Example:</p>
+
+    <p class="jdwebnormal c17"><img alt="qtConstDateSelect" src="images/qtConstDateSelect.png"></p>
+
+    <p class="jdwebnormal"><i>Concept:</i> Acute Myocardial Infarction</p>
+
+    <p class="jdwebnormal"><i>From date:</i> 01/01/2001</p>
+
+    <p class="jdwebnormal"><i>To date:</i> 12/31/2005</p>
+
+    <p class="jdwebnormal" >In this example, if a patient has a diagnosis of
+    Acute Myocardial Infarction (MI) entered on the record from 01/01/2001 to 12/31/2005
+    then their data will be included. If the patient does have an MI diagnosis but it was
+    entered prior to 01/01/2001 or after 12/31/2005 then their information will not be
+    included.</p>
+
+    <p class="jdwebheading4"><a name="_Toc222025486">SPECIFIC START DATE: ONLY THE FROM DATE
+    IS DEFINED</a></p>
+
+    <p class="jdwebnormal">Data from the defined start date to the latest date available. No end date defined.</p>
+
+    <p class="jdwebnormal">Example:</p>
+
+    <p class="jdwebnormal"><img alt="qtConstDateFrom" src="images/qtConstDateFrom.png"></p>
+
+    <p class="jdwebnormal"><i>Concept:</i> Acute Myocardial Infarction</p>
+
+    <p class="jdwebnormal"><i>From date:</i> 01/01/2001</p>
+
+    <p class="jdwebnormal c17">To date:</p>
+
+    <p class="jdwebnormal" >In this example, if a patient has a diagnosis of
+    Acute Myocardial Infarction (MI) entered on the record any time on or after
+    01/01/2001 will be included. If the diagnosis was entered prior to 01/01/2001 then
+    the data will not be included.</p>
+
+    <p class="jdwebheading4"></a><a name="_Toc222025487">SPECIFIC END DATE: ONLY THE TO DATE IS
+    DEFINED</a></p>
+
+    <p class="jdwebnormal">All data up until the defined end date. No start date
+    defined.</p>
+
+    <p class="jdwebnormal">Example:</p>
+
+    <p class="jdwebnormal"><img width="402" height="218" alt="qtConstDateTo" src="images/qtConstDateTo.png"></p>
+
+    <p class="jdwebnormal"><i>Concept:</i> Acute Myocardial Infarction</p>
+
+    <p class="jdwebnormal c17">From date:</p>
+
+    <p class="jdwebnormal"><i>To date:</i> 12/31/2005</p>
+
+    <p class="jdwebnormal" >In this example, if a patient has a diagnosis of
+    Acute Myocardial Infarction (MI) entered on the record prior to and including
+    12/31/2005 then their data will be included. If the diagnosis was entered after
+    12/31/2005 then it will not be included.</p>
+	
+	<p class="jdwebheading4"><a name="_Toc222025488">SETTING THE DATE CONSTRAINT</a></p>
+    <ol>
+		<li>Click on the <b>Dates button</b> located in the selection criteria section of the panel.</li>
+		<p><img src="images/qtConstDateSelect.png" alt="qtConstDateSelect" /></p>
+		<li>A new window will open.</li>
+		<p><img src="images/qtConstDateWindow.png" alt="qtConstDateWindow" /></p>
+		<li>Click the <b>check box</b> next to the date in the <b>From box</b>.</li>
+		<li>At this point there are two methods of entering your <i>starting</i> date.</li>
+		<ol type="a">
+			<li>Manually type it in the text box.</li>
+			<li>Click on the <b>drop-down arrow</b> <span style="color:#CCCCCC">(<img src="images/dropDownArrow.png" alt="dropDownArrow" />)</span> to open the calendar view and click on the desired date.
+			</li>
+			<p><img src="images/qtConstDateCal1.png" alt="qtConstDateCal1" /></p>
+			<p>Once you click on the desired date the calendar window will close.</p>
+			<p><img src="images/qtConstDateFrom.png" alt="qtConstDateFrom" /></p>
+		</ol>
+		<li>Click the <b>check box</b> next to the date in the <b>To box</b>.</li>
+		<li>Highlight the default date or click on  the <b>drop-down arrow </b>and enter the date you want to use as your <i>ending</i> date.
+		</li>
+		<p><img src="images/qtConstDateFromTo.png" alt="qtConstDateFromTo" /></p>
+		<li>Click on the <b>OK button</b>.</li>
+		<li><b>Dates</b> will now be underlined to indicate a date constraint has been set.</li>
+		<p><img src="images/qtConstDateSet.png" alt="qtConstDateSet" /></p>
+	</ol>
+    <p class="jdwebheading3"><a name="_Toc370995278">Occurrences Constraint</a></p>
+
+    <p class="jdwebnormal">Users can define a number of times an item has to occur in
+    order to be considered a positive "hit". Please note that the <b>Occurrence
+    Constraint</b> and <b>Exclusion</b> from the classic query tool have been rolled into
+    the same constraint. Here is an example of conversions from the classical query tool
+    occurrence and exclude specification to the new occurrence constraint
+    specification:</p>
+
+    <p class="jdwebnormal">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <b>(Exclude 1)</b> (exclude anyone who has one or more occurrence of the desired
+    terms) <b>-&gt;</b> Edit the occurrence to <b>(=0)</b>.</p>
+
+    <p class="jdwebnormal">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <b>(Exclude 2)</b> (Exclude anyone who has two or more occurrences of the desired
+    terms) <b>-&gt;</b> Edit the occurrence to <b>(&lt;2).</b></p>
+
+    <p class="jdwebnormal">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <b>(1)</b> (Only take those who have one or more occurrences of the desired terms)
+    <b>-&gt;</b> Edit the occurrence to (<b>&gt;0</b>). (This is the default)</p>
+
+    <p class="jdwebnormal">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <b>(2)</b> (Only take those who have two or more occurrences of the desired terms)
+    <b>-&gt;</b> Edit the occurrence to (<b>&gt;2</b>).</p>
+
+    <p class="jdwebheading4"><a name="_Toc370995279">Setting the Occurrences Constraint</a></p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Click on the <b>Occurrence Count
+    Control</b> located in the top part of a <b>Group Panel</b>.</p>
+
+    <p class="jdwebnormal"><img alt="qtConstOccurSelect" src="images/qtConstOccurSelect.png"></p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+	The <b>Occurrence Count Editor</b> will open.</p>
+
+    <p class="jdwebnormal c12"><img alt="qtConstOccurWindow" src="images/qtConstOccurWindow.png"></p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Use the dropbox to select the
+    desired operator and the spinner to choose the desired number. The dropbox has the following options:</p>
+
+    <p class="jdweblistnumbers"><img alt="qtConstOccurSelection" src="images/qtConstOccurSelection.png"></p>
+
+    <p class="jdweblistnumbers">4.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Click on the <b>OK</b> button to accept.</p>
+
+    <p class="jdweblistnumbers">5.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <b>Occurrence Count Control</b> will
+    update to the new constraint (4 examples provided below):</p>
+
+    <p class="jdwebnormal c12"><img alt="qtConstOccurSet" src="images/qtConstOccurSet.png"></p>
+
+    <p class="jdwebnormal">Different operator/number combinations will have different
+    background. The default (&gt;0) is white with gray text. If the operator is &gt; and
+    the number is greater than 0, then it will be green. If the operator is &lt; or =,
+    then the background will be pink. Please note that choosing the <i>equal</i> (=)
+    operator restricts the number to <i>zero</i> (0) - you cannot choose <i>equals x</i>
+    (=x), where x is any non-zero number.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995280"></a><a name="_Toc222041036"></a><a name="_Toc222025491">Value Constraint</a></p>
+
+    <p class="jdwebnormal">Value constraints can be associated with concept and modifiers
+    but not all of them will have values. For instance, the diagnosis of Acute Myocardial
+    Infarction does not have a value but the tests used to make the diagnosis do have
+    values (high/ low flags, or numeric values, etc.).</p>
+
+    <p class="jdwebheading4"><a name="qtFlagValueConstraint" id="qtFlagValueConstraint"></a>Flag Value</p>
+		
+		<p class="jdwebnormal"><b>Flags</b> are defined in the source system when the value is entered. The following are some examples that can be found in the i2b2 Demo database.
+		</p>
+		
+		<ul>
+			<li>High</li>
+			<li>Low</li>
+			<li>Abnormal</li>
+		</ul>
+		
+		
+		
+		<p class="jdwebheading5"><a name="qtFlagValueConstraintSetConcept" id="qtFlagValueConstraintSetConcept"></a>Setting the Value Constraint (Flag) for a Concept</p>
+		
+		
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						The value constraint window will open automatically when you drop a concept into a panel in the Query Tool view. This will only happen if the concept is set up in the database with XML metadata. The first three steps can be used if you did not add a value constraint when you added the item or if you wish to edit an existing item.
+					</p>
+				</td>
+			</tr>
+		</table>
+		
+		
+		
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the item listed in the panel.</li>
+			<li>A pop-up menu will open.</li>
+			<li>Select <b>Set Value</b> from the list.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValSelect.png" alt="qtConstValSelect" /></p>
+			
+			
+			
+			<li>A new window will open.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValTropI1.png" alt="qtConstValTropI1" /></p>
+			
+			
+			
+			<li>Click on the <i>radial dial</i> next to <b>By flag</b>.</li>
+			<li>A new field with a drop-down selection box will appear.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValTropI2.png" alt="qtConstValTropI2" /></p>
+			
+			
+			
+			<li>Click on the <b>drop-down arrow</b> to change the flag or accept the default.</li>
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The value constraint has been set.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValTropI3.png" alt="qtConstValTropI3" /></p>
+		</ol>
+		
+		
+		
+		<p class="jdwebheading5"><a name="qtFlagValueConstraintSetModifier" id="qtFlagValueConstraintSetModifier"></a>Setting the Value Constraint (Flag) for a Modifier</p>
+		
+		
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						The modifier value constraint window will open automatically when you drop a modifier into a panel in the Query Tool view. This will only happen if the modifier is set up in the database with XML metadata. The first three steps can be used if you did not add a value constraint when you added the item or if you wish to edit an existing item.
+					</p>
+				</td>
+			</tr>
+		</table>
+		
+		
+		
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the item listed in the panel.</li>
+			<li>A pop-up menu will open.</li>
+			<li>Select <b>Set Value</b> from the list.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValSelectMod.png" alt="qtConstValSelectMod" /></p>
+			
+			
+			
+			<li>A new window will open.</li>
+			<li>Click on the <i>radial dial</i> next to <b>By flag</b>.</li>
+			<li>A new field with a drop-down selection box will appear.</li>
+			<li>Click on the <b>drop-down arrow</b> to change the flag or accept the default.</li>
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The value constraint has been set.</li>
+		</ol>
+		
+		
+		
+		<p class="jdwebheading4"><a name="qtTextValueConstraint" id="qtTextValueConstraint"></a>Text Value</p>
+		
+		<p class="jdwebnormal">The<b> text value</b> is defined in the source system when the value is entered. The following are some examples that can be found in the i2b2 Demo database.
+		</p>
+		
+		<ul>
+			<li>Test Not Performed</li>
+			<li>Borderline</li>
+			<li>Positive</li>
+		</ul>
+		<p class="jdwebheading5"><a name="qtTextValueConstraintSetConcept" id="qtTextValueConstraintSetConcept"></a>Setting the Value Constraint (Text) for a Concept</p>
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						The value constraint window will open automatically when you drop a concept into a panel in the Query Tool view. This will only happen if the concept is set up in the database with XML metadata. The first three steps can be used if you did not add a value constraint when you added the item or if you wish to edit an existing item.
+					</p>
+				</td>
+			</tr>
+		</table>
+		
+		
+		
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the item listed in the panel.</li>
+			<li>A pop-up menu will open.</li>
+			<li>Select <b>Set Value</b> from the list.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValSelect.png" alt="qtConstValSelect" /></p>
+			
+			
+			
+			<li>A new window will open.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValCkmb1.png" alt="qtConstValCkmb1" width="602" height="239" /></p>
+			
+			
+			
+			<li>Click on the <i>radial dial</i> next to <b>By value</b>.</li>
+			<li>A new field listing the enumerated values will appear.</li>
+			<li>Click on the name of the value you want to include.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValCkmb2.png" alt="qtConstValCkmb2" width="602" height="367" /></p>
+			
+			
+			
+			<table id=tip>
+				<tr>
+					<td>
+						<p class=TipHeading>TIP: </p>
+						<p class=TipParagraph>
+							To select more than one you can hold down the &lt;Ctrl&gt; key while clicking on each name. On the Macintosh you can hold down the command key instead of the &lt;Ctrl&gt; key.
+						</p>
+					</td>
+				</tr>
+			</table>
+			
+			
+			
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The value constraint has been set.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValCkmb3.png" alt="qtConstValCkmb3" /></p>
+		</ol>
+		
+		
+		
+		<p class="jdwebheading5"><a name="qtTextValueConstraintSetModifier" id="qtTextValueConstraintSetModifier"></a>Setting the Value Constraint (Text) for a Modifier</p>
+		
+		
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						The modifier value constraint window will open automatically when you drop a modifier into a panel in the Query Tool view. This will only happen if the modifier is set up in the database with XML metadata. The first three steps can be used if you did not add a value constraint when you added the item or if you wish to edit an existing item.
+					</p>
+				</td>
+			</tr>
+		</table>
+		
+		
+		
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the item listed in the panel.</li>
+			<li>A pop-up menu will open.</li>
+			<li>Select <b>Set Modifier Value</b> from the list.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValSelectMod.png" alt="qtConstValSelectMod" /></p>
+			
+			
+			
+			<li>A new window will open.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValTrimoxFreq1.png" alt="qtConstValTrimoxFreq1"  /></p>
+			
+			
+			
+			<li>Click on the <i>radial dial</i> next to <b>By value</b>.</li>
+			<li>A new field listing the enumerated values will appear.</li>
+			<li>Click on the name of the value you want to include.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValTrimoxFreq2.png" alt="qtConstValTrimoxFreq2" /></p>
+			
+			
+			
+			<table id=tip>
+				<tr>
+					<td>
+						<p class=TipHeading>TIP: </p>
+						<p class=TipParagraph>
+							To select more than one you can hold down the &lt;Ctrl&gt; key while clicking on each name. On the Macintosh you can hold down the command key instead of the &lt;Ctrl&gt; key.
+						</p>
+					</td>
+				</tr>
+			</table>
+			
+			
+			
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The value constraint has been set.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValTrimoxFreq3.png" alt="qtConstValTrimox3" /></p>
+		</ol>
+		
+		
+		
+		<p class="jdwebheading4"><a name="qtNumValueConstraint" id="qtNumValueConstraint"></a>Numeric Value</>
+		<p class="jdwebnormal">The <b>numeric value</b> is defined in the source system when the result is entered. The following are some example formats that can be found in the i2b2 Demo database.
+		</p>
+		
+		<ul>
+			<li>200</li>
+			<li>1.3</li>
+		</ul>
+		
+		
+		<p class="jdwebnormal">Unlike flag and text values, numeric values use operators, such as greater than or less than when setting the constraints. The following is a listing of operators currently in use.
+		</p>
+		
+		<table width="85%" border="1" cellspacing="1" cellpadding="1">
+			<tr>
+				<th scope="col">Operator</th>
+				<th scope="col">Description / Use</th>
+			</tr>
+			<tr>
+				<td>Less Than (&lt;)</td>
+				<td>Any value less than the number entered.</td>
+			</tr>
+			<tr>
+				<td>Less Than or Equal To (&lt;=)</td>
+				<td>Any value less than or equal to the number entered (inclusive).</td>
+			</tr>
+			<tr>
+				<td>Equal To (=)</td>
+				<td>An exact match to the number entered.</td>
+			</tr>
+			<tr>
+				<td>Between</td>
+				<td>Any value in the range of numbers entered.</td>
+			</tr>
+			<tr>
+				<td>Greater Than (&gt;)</td>
+				<td>Any value greater than the number entered.</td>
+			</tr>
+			<tr>
+				<td>Greater Than or Equal To (&gt;=)</td>
+				<td>Any value greater than or equal to the number entered (inclusive).</td>
+			</tr>
+		</table>
+		
+		
+		
+		<p class="jdwebheading5"><a name="qtNumValueConstraintSetConcept" id="qtNumValueConstraintSetConcept"></a>Setting the Value Constraint (Numeric) for a Concept</p>
+		
+		
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						The value constraint window will open automatically when you drop a concept into a panel in the Query Tool view. This will only happen if the concept is set up in the database with XML metadata. The first three steps can be used if you did not add a value constraint when you added the item or if you wish to edit an existing item.
+					</p>
+				</td>
+			</tr>
+		</table>
+		
+		
+		
+		<p class="jdwebnormal"></p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the item listed in the panel.</li>
+			<li>A pop-up menu will open.</li>
+			<li>Select <b>Set Value</b> from the list.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValSelect.png" alt="qtConstValSelect" /></p>
+			
+			
+			
+			<li>A new window will open.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValCpk1.png" alt="qtConstValCpk1" width="602" height="239" /></p>
+			
+			
+			
+			<li>Click on the <i>radial dial</i> next to <b>By value</b>.</li>
+			<li>Two new fields  will appear; one with a drop down selection box and the other a text box.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValCpk2.png" alt="qtConstValCpk2" /></p>
+			
+			
+			
+			<li>Click on the <b>drop-down arrow</b> to change the operator or accept the default.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValOperator.png" alt="qtConstValOperator" width="412" height="135" /></p>
+			
+			
+			
+			<li>Enter a numerical value at the <b>Please enter a value</b> field.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValEnterVal.png" alt="qtConstValEnter" /></p>
+			
+			
+			
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The value constraint has been set.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValCpk3.png" alt="qtConstValCpk3" /></p>
+		</ol>
+		<p class="jdwebnormal"></p>
+		
+		
+		
+		<p class="jdwebheading5"><a name="qtNumValueConstraintSetModifier" id="qtNumValueConstraintSetModifier"></a>Setting the Value Constraint (Numeric) for a Modifier</p>
+		
+		
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						The modifier value constraint window will open automatically when you drop a modifier into a panel in the Query Tool view. This will only happen if the modifier is set up in the database with XML metadata. The first three steps can be used if you did not add a value constraint when you added the item or if you wish to edit an existing item.
+					</p>
+				</td>
+			</tr>
+		</table>
+		
+		
+		
+		<p class="jdwebnormal"></p>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the item listed in the panel.</li>
+			<li>A pop-up menu will open.</li>
+			<li>Select <b>Set Modifier Value</b> from the list.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValSelectMod.png" alt="qtConstValSelectMod" /></p>
+			
+			
+			
+			<li>A new window will open.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValTrimoxDose1.png" alt="qtConstValTrimoxDose1"  /></p>
+			
+			
+			
+			<li>Click on the <i>radial dial</i> next to <b>By value</b>.</li>
+			<li>Two new fields  will appear; one with a drop down selection box and the other a text box.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValTrimoxDose2.png" alt="qtConstValTrimoxDose2" /></p>
+			
+			
+			
+			<li>Click on the <b>drop-down arrow</b> to change the operator or accept the default.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValOperator.png" alt="qtConstValOperator" width="412" height="135" /></p>
+			
+			
+			
+			<li>Enter a numerical value at the <b>Please enter a value</b> field.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValEnterVal.png" alt="qtConstValEnter" /></p>
+			
+			
+			
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The value constraint has been set.</li>
+			
+			
+			<p class="jdwebnormal"><img src="images/qtConstValTrimoxDose3.png" alt="qtConstValTrimoxDose3" /></p>
+		</ol>
+		
+		
+		
+		<p class="jdwebheading4"><a name="qtNumValueConstraintUnits" id="qtNumValueConstraintUnits"></a>Using Units In Value Constraints</p>
+		<p class="jdwebnormal">Units in regards to i2b2 are the standard units of measurement associated with a value. For instance, a medication may have &quot;mg&quot; listed as the unit for the dose, while a HGB lab test may have &quot;gm/dL&quot;.
+		</p>
+		
+		<p class="jdwebnormal">The units are defined in the source system and although it is recommended that all numerical facts are stored in normalized units it is recognized that this is not always feasible. Therefore, the Web Client has the ability to convert the units when running a query.
+		</p>
+		
+		<p class="jdwebnormal">In order for this feature to work a parameter called CRC_ENABLE_UNITCD_CONVERSION must be defined for the project. If this is not defined you need to contact your system administrator.
+		</p>
+		
+		
+		
+		<p class="jdwebheading5"><a name="qtNumValueConstraintUnitsSet" id="qtNumValueConstraintUnitsSet"></a>Defining the Units When Running a Query</p>
+		
+		<table id=note>
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						The modifier value constraint window will open automatically when you drop a modifier into a panel in the Query Tool view. This will only happen if the modifier is set up in the database with XML metadata. The first three steps can be used if you did not add a value constraint when you added the item or if you wish to edit an existing item.
+					</p>
+				</td>
+			</tr>
+		</table>
+		<ol>
+			<li>Using the <i>right mouse button</i>, click on the item listed in the panel.</li>
+			<li>A pop-up menu will open.</li>
+			<li>Select <b>Set Modifier Value</b> from the list.</li>
+			<p class="jdwebnormal"><img src="images/qtConstValSelectMod.png" alt="qtConstValSelectMod" /></p>
+			<li>A new window will open.</li>
+			<p class="jdwebnormal"><img src="images/qtConstValUnits1.png" alt="qtConstValUnits1" /></p>
+			<li>Click on the <i>radial dial</i> next to <b>By value</b>.</li>
+			<li>Two new fields  will appear; one with a drop down selection box and the other a text box.</li>
+			<p class="jdwebnormal"><img src="images/qtConstValUnits2.png" alt="qtConstValUnits2" /></p>
+			<li>The <b>Units</b> will default to the normal units defined for the item.</li>
+			<li>Click on the <b>drop-down arrow</b> to change the units.</li>
+			<p class="jdwebnormal"><img src="images/qtConstValUnitsList.png" alt="qtConstValUnitsList"  /></p>
+			<li>Click on the <b>drop-down arrow</b> to change the operator or accept the default.</li>
+			<p class="jdwebnormal"><img src="images/qtConstValOperator.png" alt="qtConstValOperator" width="412" height="135" /></p>
+			<li>Enter a numerical value at the <b>Please enter a value</b> field.</li>
+			<p class="jdwebnormal"><img src="images/qtConstValEnterVal.png" alt="qtConstValEnter" /></p>
+			<li>Click on the <b>OK button</b>.</li>
+			<li>The value constraint has been set and the numerical value has been converted to the normal units.</li>
+			<p class="jdwebnormal"><img src="images/qtConstValUnits3.png" alt="qtConstValUnits3" /></p>
+		</ol>
+		<p class="jdwebnormal">In the above scenario, the normal units are &quot;mg&quot;. When setting up the value constraint the units were changed to &quot;gm&quot; and the numerical value was set to 5. Upon saving the value constraint, the Web Client converted 5 gm to 5000 mg. When the query is run it will look at those facts that have both 5 gm and 5000 mg defined in the observation_fact table.
+		<table id="note">
+			<tr>
+				<td>
+					<p class=NoteHeading>NOTE: </p>
+					<p class=NoteParagraph>
+						The unit conversion information is specific to the term and is defined in the i2b2 metadata table.
+					</p>
+				</td>
+			</tr>
+		</table>
+
+    <h2><a name="tqtRunningQuery" id="tqtRunningQuery"></a>Running a Query</h2>
+
+    <p class="jdwebnormal">This section describes the process of running a query and getting results.</p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995289">Analysis Types</a></p>
+    </div>
+
+    <p class="jdwebnormal">Before users submit their query to the server, they must
+    select the analysis types they want from the Analysis Type Area in Step 3. There are
+    several result types available, each of which will yield a different output.</p>
+
+    <p class="jdwebnormal"><img src="images/qtRunQueryWindow.png" alt="qtRunQueryWindow" width="402" height="310" /></p>
+
+    <table border="1" cellspacing="0" cellpadding="0">
+      <tr>
+        <th width="216" valign="top">
+          Patient list
+        </th>
+
+        <td width="391" valign="top">
+          Provides a set of patients who met the search criteria.
+        </td>
+      </tr>
+
+      <tr>
+        <th width="216" valign="top">
+          Event list
+        </th>
+
+        <td width="391" valign="top">
+          Provides a set of encounters for those patients who met the search criteria.
+        </td>
+      </tr>
+
+      <tr>
+        <th width="216" valign="top">
+          Number of patients
+        </th>
+
+        <td width="391" valign="top">
+          Provides the total number of patients who met the search criteria.
+        </td>
+      </tr>
+
+      <tr>
+        <th width="216" valign="top">
+          Gender patient breakdown
+        </th>
+
+        <td width="391" valign="top">
+        	Provides a breakdown of the patients by their gender.
+        </td>
+      </tr>
+
+      <tr>
+        <th width="216" valign="top">
+          Vital Status patient breakdown
+        </th>
+
+        <td width="391" valign="top">
+          Provides a breakdown of the patients by their vital status.
+        </td>
+      </tr>
+
+      <tr>
+        <th width="216" valign="top">
+          Race patient breakdown
+        </th>
+
+        <td width="391" valign="top">
+          Provides a breakdown of the patients by their race.
+        </td>
+      </tr>
+
+      <tr>
+        <th width="216" valign="top">
+          Age patient breakdown
+        </th>
+
+        <td width="391" valign="top">
+          Provides a breakdown of the patients by their age
+        </td>
+      </tr>
+
+      <tr>
+        <th width="216" valign="top">
+          Timeline
+        </th>
+
+        <td width="391" valign="top">
+          Provides a set of patients who met the defined criteria and automatically generates a timeline in the timeline view.
+        </td>
+      </tr>
+    </table>
+
+    <p class="jdwebnormal">By default <b>Number of patients</b> and <b>Timeline</b> are selected.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995290">Patient List</a></p>
+
+    <p class="jdwebnormal">This option will return a list of patients who met the defined
+    criteria and will add the query and patient list to the <b>previous query view</b>.</p>
+
+    <p class="jdwebnormal c12"><img alt="pqPtSet" src="images/pqPtSet.png"></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995291">Event List</a></p>
+
+    <p class="jdwebnormal">This option will return a set of encounters for those patients
+    who meet the defined criteria and will add the query and patient list to the
+    <b>previous query view</b>.</p>
+
+    <p class="jdwebnormal c12"><img width="425" height="140" alt="pqEncSet" src="images/pqEncSet.png"></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995292">Number of Patients</a></p>
+
+    <p class="jdwebnormal">This option will return a total count for those patients who
+    meet the defined criteria and will display the appropriate information in the
+    following two views.</p>
+
+    <p class="jdwebnormal"><b>Previous Query View</b> - displays the query and the results returned.</p>
+
+    <p class="jdwebnormal c12"><img src="images/pqPtCount.png" alt="pqPtCount" width="425" height="141" /></p>
+
+    <p class="jdwebnormal"><b class="c11"><span class='c10'>Note</span></b>: The number
+    is displayed in the tool tip, which can be seen by hovering over <b>Number of
+    Patients</b>.</p>
+
+    <p class="jdwebheading3"><a name="_Toc370995293">Gender Patient Breakdown</a></p>
+
+    <p class="jdwebnormal">This option will return a breakdown by gender for those
+    patients who meet the defined criteria and will display the appropriate information
+    in the following two views.</p>
+
+    <p class="jdwebnormal"><b>Previous Query View</b> - displays the query and the results returned.</p>
+
+    <p class="jdwebnormal c12"><img src="images/pqGender.png" alt="pqGender" width="425" height="141" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995294">Vital Status Patient Breakdown</a></p>
+
+    <p class="jdwebnormal">This option will return a breakdown by vital status for those
+    patients who met the defined criteria and will display the appropriate information in
+    the following two views.</p>
+
+    <p class="jdwebnormal"><b>Previous Query View</b> - displays the query and the results returned.</p>
+
+    <p class="jdwebnormal"><img src="images/pqVitalStatus.png" alt="pqVitalStatus" width="425" height="141" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995295">Race Patient Breakdown</a></p>
+
+    <p class="jdwebnormal">This option will return a breakdown by race for those patients
+    who met the defined criteria and will display the appropriate information in the
+    following two views.</p>
+
+    <p class="jdwebnormal"><b>Previous Query View</b> - displays the query and the results returned.</p>
+
+    <p class="jdwebnormal"><img src="images/pqRace.png" alt="pqRace" width="426" height="140" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995296">Age Patient Breakdown</a></p>
+
+    <p class="jdwebnormal">This option will return a breakdown by age for those patients
+    who met the defined criteria and will display the appropriate information in the
+    following two views.</p>
+
+    <p class="jdwebnormal"><b>Previous Query View</b> - displays the query and the results returned.</p>
+
+    <p class="jdwebnormal"><img src="images/pqAge.png" alt="pqAge" width="425" height="140" /></p>
+
+    <p class="jdwebheading3"><a name="_Toc370995297">Timeline</a></p>
+
+    <p class="jdwebnormal">This option will return a list of patients who met the defined
+    criteria and will display the appropriate information in the following two views. The
+    current implementation of Temporal QueryTool does not automatically launch the
+    Timeline visualization. Instead, users will need to drag the previous query (or the
+    patient set) and drop it into Timeline's configuration panel.</p>
+
+    <p class="jdwebnormal">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <b>Timeline View</b> - displays the patients and associated concepts in the format of
+    a timeline.</p>
+
+    <p class="jdwebnormal c12"><img width="484" height="468" src="images/tqt_timeline.png" /></p>
+
+    <p class="jdwebnormal">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <b>Previous Query View</b> - displays the query and the results returned.</p>
+
+    <p class="jdwebnormal c12"><img width="291" height="269" src="images/tqt_pat_set.png" /></p>
+
+    <div class='c1'>
+      <p class="jdwebheading2"><a name="_Toc370995298">Running a Query</a></p>
+    </div>
+
+    <p class="jdwebnormal">Once the query has been created and the Analysis types
+    selected, the final step to retrieve your information is to run the query. This is
+    done by clicking on the <b>Submit Query</b> in the query tool.</p>
+
+    <p class="jdwebnormal"><img src="images/qtToolbarRunQuery.png" alt="qtToolbarRunQuery" /></p>
+
+    <p class="jdwebnormal">
+    	Once you begin the process of running the query the button become inactive, and a processing indicator will appear:
+	</p>
+
+    <p class="jdwebnormal"><img src="images/qtQueryStatusRunMI.png" alt="qtQueryStatusRunMI" width="524" height="141" /></p>
+
+    <p class="jdwebnormal">When the query process concludes, the results will be shown:</p>
+
+    <p class="jdwebnormal"><img src="images/qtQueryStatusFinishMI.png" alt="queryStatusFinish" width="524" height="141" /></p>
+
+    <p class="jdwebnormal">If the query takes longer than the Web Client expects, the
+    query will be queued up on the server side and will be finished at a later time. An
+    entry is created in the <b>Previous Query</b> view immediately and users are to check
+    the entry periodically to see when the query completes. The following message will
+    also be displayed at the Footer. The <b>Submit Query</b> button will become active so
+    users can submit another query.</p>
+
+    <p class="jdwebnormal"><img width="487" height="25" src="images/tqt_image031.gif" /></p>
+    <h2><a name="tqtCancelQuery" id="tqtCancelQuery"></a>Cancel a Query</h2>
+
+    <p class="jdwebnormal">To cancel a query you simply click on the <b>Cancel Query button</b>.</p>
+
+    <table id="note">
+      <tr>
+        <td>
+          <p class="NoteHeading">NOTE:</p>
+
+          <p class="NoteParagraph">
+          	Keep in mind "Cancel Query" and the associated action will only appear when the query is still in the process of running
+		  </p>
+        </td>
+      </tr>
+    </table>
+
+    <ol>
+      <li>To cancel a query that is running, simply click on the <b>Cancel Query button</b>.
+        <p class="jdwebnormal"><img src="images/qtToolbarCancelQuery.png" alt="qtToolbarCancelQuery" /></p>
+      </li>
+
+      <li>Cancel will display in the <b>Query Status view</b>.
+        
+        <p class="jdwebnormal"><img src="images/qtQueryStatusCancel.png" alt="qtQueryStatusCancel" /></p>
+      </li>
+    </ol>
+	
+    <h2><a name="tqtSaveQueryGrp" id="tqtSaveQueryGrp"></a>Saving a Query</h2>
+
+    <p class="jdwebnormal">A previous query <span class='c8'>(<img width="16" height="16"
+    src="images/tqt_image043.gif" />)</span> is created automatically when the query is
+    run from the <b>Temporal Query Tool</b>. The query is stored and displayed in the
+    <b>Previous Query</b> View. <b>Temporal Query Tool</b> does not currently support
+    saving query definitions.</p>
+
+    <p class="jdwebnormal"><b class="c11"><span class='c10'>Note</span></b>: Previous
+    queries can also be seen in Workplace View if the user copied it to their workplace
+    or shared folder in workplace view.</p>
+
+    <p class="jdweblistnumbers">1.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Run a query.</p>
+
+    <p class="jdweblistnumbers">2.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Go to the Previous Query View.</p>
+
+    <p class="jdweblistnumbers">3.<span class='c2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+	The query you just ran will now appear in the list of previous queries.</p>
+
+    <p class="jdwebnormal c12"><img src="images/pqView.png" alt="pqView" /></p>
+
+    
+    <h2><a name="tqtPrintQuery" id="tqtPrintQuery"></a>Printing a Query</h2>
+    <p class="jdwebnormal">Users are able to print out the query information if they wish to have a hard copy of the search criteria defined for a query.</p>
+
+    <p class="jdwebnormal">When printing a query you can either print the information for a current query or
+    you can drag a previous query to the query tool view and print the information
+    associated with that query.</p>
+    <p class="jdwebnormal">The following steps outline the process of printing a query once you have the
+    appropriate query in the Query Tool.</p>
+    <ol>
+      <li>Click on the <b>Print Query button</b> located on the toolbar at the bottom of the <i>Query Tool view</i>
+       <p class="jdwebnormal"><img src="images/qtToolbarPrintQuery.png" alt="qtToolbarPrintQuery" /></p></li>
+
+      <li>A new window will open displaying the information about the query.
+		<p class="jdwebnormal"><img src="images/qtPrintWindow.png" alt="qtPrintWindow" /></p>
+      </li>
+
+      <li>On the menu bar, click on <b>File</b> to display the menu options.</li>
+
+      <li>Select <b>Print</b> from the menu.</li>
+    </ol>
+  </div>
+</body>
+</html>

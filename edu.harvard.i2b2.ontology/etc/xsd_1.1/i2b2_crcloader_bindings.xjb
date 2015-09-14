@@ -1,0 +1,35 @@
+<jxb:bindings version="2.0"
+               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <jxb:bindings schemaLocation="../../../edu.harvard.i2b2.xml/xsd/cell/crc/loader_1.1/CRC_UPLOADER_QRY.xsd" node="/xs:schema">
+        <jxb:schemaBindings>
+               
+	           <jxb:package name="edu.harvard.i2b2.ontology.datavo.crcloader.query">
+	  	     </jxb:package>
+	  	    
+    </jxb:schemaBindings>
+    
+    <jxb:bindings schemaLocation="../../../edu.harvard.i2b2.xml/xsd/cell/crc/loader_1.1/CRC_UPLOADER_QRY_response.xsd" node="/xs:schema">
+    <jxb:bindings node="//xs:complexType[@name='load_data_responseType']">
+  <jxb:class>
+    <jxb:javadoc>
+<![CDATA[First line of documentation for a <b>USAddress</b>.]]>
+    </jxb:javadoc>
+  </jxb:class>
+  <!--
+  <jxb:bindings node=".//xs:element[@ref='pdo:patient_data']">
+<jxb:property name="customFoo">
+<jxb:baseType name="edu.harvard.i2b2.common.datavo.pdo.PatientDataType">
+
+</jxb:baseType>
+</jxb:property>
+</jxb:bindings>
+ -->
+
+    
+  
+</jxb:bindings>
+</jxb:bindings>
+  
+</jxb:bindings>
+</jxb:bindings> 

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:element name="success" type="rootTerms_Type"/>
+    
+    <!-- rootpathType (Top level type) -->			
+    <xs:complexType name="rootTerms_Type"> 
+        <xs:sequence>
+            <xs:element name="accessedResource" type="xs:string"/>	
+            <xs:element name="accessDate" type="xs:dateTime" />   
+            <xs:element name="data" type="dataType" />
+        </xs:sequence>
+    </xs:complexType>            
+            
+    <xs:complexType name="dataType">  
+		<xs:sequence>    
+			<xs:element name="classBean" type="classBeanType"/>
+			<xs:element name="page" type="pageType"/>
+        </xs:sequence>
+   </xs:complexType>   
+                
+ 	<xs:complexType name="classBeanType">  
+		<xs:sequence>
+			<xs:element name="id" type="xs:string"/>	
+        	<xs:element name="fullId" type="xs:string" /> 
+			<xs:element name="label" type="xs:string"/>	
+        	<xs:element name="type" type="xs:string" />
+        	<xs:element name="synonyms">
+                  <xs:complexType>
+                	<xs:sequence>
+						<xs:element name="string" maxOccurs="unbounded" type="xs:string"/>
+					 </xs:sequence>
+    			  </xs:complexType>   
+    		</xs:element>
+ 			<xs:element name="relations">
+                  <xs:complexType>
+                	<xs:sequence>
+						<xs:element name="entry" maxOccurs="unbounded" type="entryType"/>
+					 </xs:sequence>
+    			  </xs:complexType>   
+    		</xs:element>
+    	 </xs:sequence>
+   </xs:complexType>   
+    		
+    
+  <xs:complexType name="entryType">  
+		<xs:sequence>
+			<xs:element name="string" type="xs:string" />
+			<xs:element name="int" type="xs:int" />
+			<xs:element name="list" type="listType"/>
+      </xs:sequence>
+   </xs:complexType>
+   
+     <xs:complexType name="listType">  
+		<xs:sequence>
+			<xs:element name="classBean" maxOccurs="unbounded" type="classBeanType"/>
+   			<xs:element name="string" maxOccurs="unbounded" type="xs:string" />
+   		</xs:sequence>
+   </xs:complexType>
+                      
+   <xs:complexType name="pageType">  
+		<xs:sequence>
+			<xs:element name="pageNum" type="xs:int"/>
+			<xs:element name="numPages" type="xs:int"/>
+			<xs:element name="pageSize" type="xs:int"/>
+            <xs:element name="numResultsPage" type="xs:int"/>
+            <xs:element name="numResultsTotal" type="xs:int"/>	                
+            <xs:element name="contents" type="contentsType"/>	
+        </xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="contentsType">  
+		<xs:sequence>
+			<xs:element name="searchResultList" type="searchResultListType"/>	
+			<xs:element name="ontologyHitList" type="ontologyHitListType"/>	
+        </xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="searchResultListType">  
+   		<xs:sequence>
+			<xs:element name="searchBean" maxOccurs="unbounded" type="searchBeanType"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="searchBeanType">  
+		<xs:sequence>
+			<xs:element name="ontologyVersionId" type="xs:int"/>
+			<xs:element name="ontologyId" type="xs:int"/>
+			<xs:element name="ontologyDisplayLabel" type="xs:string"/>
+            <xs:element name="recordType" type="xs:string"/>
+            <xs:element name="conceptId" type="xs:string"/>
+             <xs:element name="conceptIdShort" type="xs:string"/>	                
+            <xs:element name="preferredName" type="xs:string"/>
+             <xs:element name="contents" type="xs:string"/>	
+        </xs:sequence>
+   </xs:complexType>
+   
+    <xs:complexType name="ontologyHitListType">  
+   		<xs:sequence>
+			<xs:element name="ontologyHitBean" maxOccurs="unbounded" type="ontologyHitBeanType"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+      <xs:complexType name="ontologyHitBeanType">  
+		<xs:sequence>
+			<xs:element name="ontologyVersionId" type="xs:int"/>
+			<xs:element name="ontologyId" type="xs:int"/>
+			<xs:element name="ontologyDisplayLabel" type="xs:string"/>
+            <xs:element name="numHits" type="xs:int"/>
+        </xs:sequence>
+   </xs:complexType>
+        
+</xs:schema>

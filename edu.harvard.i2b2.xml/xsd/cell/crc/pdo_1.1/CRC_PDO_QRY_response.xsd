@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:crc="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/"
+    xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/">
+    
+    <xs:import schemaLocation="../../../hive/pdo_1.1/i2b2_PDO.xsd"
+        namespace="http://www.i2b2.org/xsd/hive/pdo/1.1/"/>
+
+     
+    <xs:element name="response" type="crc:responseType"/>
+    
+    <xs:complexType name="patient_data_responseType">
+        <xs:complexContent>
+            <xs:extension base="crc:responseType">
+                <xs:sequence>
+                    <xs:element name="page" type="crc:pageType"/>
+                    <xs:element ref="pdo:patient_data"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    <xs:complexType name="responseType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>responseType is abstract so a concrete type must be declared in the
+                instance document using the xsi:type attribute.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="status" type="crc:statusType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="statusType">
+        <xs:sequence>
+            <xs:element name="condition" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="type" use="required">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="ERROR"/>
+                                        <xs:enumeration value="FATAL_ERROR"/>
+                                        <xs:enumeration value="WARNING"/>
+                                        <xs:enumeration value="INFO"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="coding_system" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+
+
+
+
+    <xs:complexType name="pageType">
+        <xs:sequence>
+            <xs:element name="paging_by_patients" type="crc:pageByPatient_Type"/>
+        </xs:sequence>    
+    </xs:complexType>
+            
+    <xs:complexType name="pageByPatient_Type">
+            <xs:sequence>
+                <xs:element name="patients_requested" type="crc:pageRange_Type"/>
+                <xs:element name="patients_returned" type="crc:pageRange_Type"/>
+                <xs:element name="patients_skipped" type="crc:pageRange_Type" />
+            </xs:sequence>
+        <xs:attribute name="page_size" type="xs:long" />
+        <xs:attribute name="facts_total" type="xs:long" />
+        <xs:attribute name="facts_returned" type="xs:long" />
+    </xs:complexType>
+    
+    <xs:complexType name="pageRange_Type">
+        <xs:attribute name="first_index" type="xs:int" />
+        <xs:attribute name="last_index" type="xs:int" />
+        <xs:attribute name="total" type="xs:int" />
+    </xs:complexType>
+    
+</xs:schema>

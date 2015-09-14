@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:pdo="http://www.i2b2.org/xsd/hive/pdo/1.1/" 
+	targetNamespace="http://www.i2b2.org/xsd/hive/pdo/1.1/" >
+	<xs:include  schemaLocation="./i2b2_PDODataType.xsd"/>
+
+	<xs:element name="patient_data" type="pdo:patient_dataType"/>
+
+	<!-- PatientDataType (Top level type) -->			
+	<xs:complexType name="patient_dataType"> 
+			<xs:sequence>
+				<xs:element ref="pdo:event_set" />
+				<xs:element ref="pdo:concept_set"/>
+				<xs:element ref="pdo:modifier_set"/>
+				<xs:element ref="pdo:observer_set" />
+				<xs:element ref="pdo:pid_set" />
+				<xs:element ref="pdo:eid_set" />
+				<xs:element ref="pdo:patient_set"/>
+				<xs:element ref="pdo:observation_set" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	
+</xs:schema>

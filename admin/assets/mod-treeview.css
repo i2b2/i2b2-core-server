@@ -1,0 +1,17 @@
+
+.ygtvtn, .ygtvtm, .ygtvtmh,
+.ygtvtp, .ygtvtph, .ygtvln,
+.ygtvlm, .ygtvlmh, .ygtvlp,
+.ygtvlph, .ygtvloading, .ygtvdepthcell,
+.ygtvblankdepthcell {
+	width:16px !important; 
+	height:18px !important;
+}
+
+.ygtvspacer { 
+	height: 10px !important; 
+	width: 10px !important; 
+	margin:0px 4px !important;
+	text-decoration: none !important;
+	display: block;
+}

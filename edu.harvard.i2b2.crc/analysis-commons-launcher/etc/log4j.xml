@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!--
+   Copyright 2002-2004 The Apache Software Foundation
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+                     
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+           <layout class="org.apache.log4j.PatternLayout" >
+              <param name="ConversionPattern" value="%-5p [%c{1}]: %m%n"/>
+           </layout>	    
+	</appender>
+
+	<appender name="file" class="org.apache.log4j.FileAppender">
+            <param name="File"   value="${log.dir}/demo.log" />
+            <param name="Append" value="true" />	    	
+            <layout class="org.apache.log4j.TTCCLayout">
+               <param name="dateFormat" value="ISO8601"/>
+            </layout>	    
+	</appender>
+	
+	<logger name="prefix">
+          <level value="debug" />
+        </logger>
+    
+	<root>
+	   <priority value="info" />
+   	   <appender-ref ref="console"/>
+   	   <appender-ref ref="file"/>
+	</root>
+	
+</log4j:configuration>
+

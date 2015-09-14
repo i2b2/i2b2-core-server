@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    targetNamespace="http://www.i2b2.org/xsd/cell/bioportal/1.0/">
+    
+    <xs:element name="success" type="allOntologies_Type"/>
+    <xs:element name="errorStatus" type="errorStatus_Type"/>
+    
+    
+    <!-- AllOntologiesType (Top level type) -->			
+    <xs:complexType name="allOntologies_Type"> 
+        <xs:sequence>
+            <xs:element name="accessedResource" type="xs:string"/>	
+            <xs:element name="accessDate" type="xs:dateTime" />   
+            <xs:element name="data" type="dataType" />
+        </xs:sequence>
+    </xs:complexType>            
+               
+   <xs:complexType name="dataType">  
+		<xs:sequence>
+			<xs:element name="list" type="listType"/>	
+        </xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="listType">  
+   		<xs:sequence>
+			<xs:element name="ontologyBean" maxOccurs="unbounded" type="ontologyBeanType"/>
+			<xs:element name="list" maxOccurs="unbounded" type="listType"/>
+   		</xs:sequence>
+   </xs:complexType>
+   
+ 	<xs:complexType name="ontologyBeanType">  
+		<xs:sequence>
+			<xs:element name="id" type="xs:string"/>	
+        	<xs:element name="ontologyId" type="xs:string" /> 
+			<xs:element name="displayLabel" type="xs:string"/>	
+        	<xs:element name="description" type="xs:string" />
+        	<xs:element name="abbreviation" type="xs:string"/>	
+        	<xs:element name="format" type="xs:string" />         	        	<xs:element name="downloadLocation" type="xs:string" /> 
+			<xs:element name="internalVersionNumber" type="xs:string"/>	
+        	<xs:element name="versionNumber" type="xs:string" />
+        	<xs:element name="versionStatus" type="xs:string"/>	
+        	<xs:element name="contactName" type="xs:string" /> 
+			<xs:element name="contactEmail" type="xs:string"/>	
+        	<xs:element name="statusId" type="xs:string" />
+	       	<xs:element name="dateCreated" type="xs:string" />
+        </xs:sequence>
+   </xs:complexType>   
+    		
+
+    <!-- errorStatusType (Top level type) -->			
+    <xs:complexType name="errorStatus_Type"> 
+        <xs:sequence>
+            <xs:element name="accessedResource" type="xs:string"/>	
+            <xs:element name="accessDate" type="xs:dateTime" />   
+            <xs:element name="shortMessage" type="xs:string" />
+            <xs:element name="longMessage" type="xs:string" />
+            <xs:element name="errorCode" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>            
+   
+      
+</xs:schema>

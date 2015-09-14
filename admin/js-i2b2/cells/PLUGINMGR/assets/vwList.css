@@ -1,0 +1,156 @@
+DIV#anaPluginListBox {
+	position: absolute;
+}
+
+DIV#anaPluginListBox DIV.tabTextBox {
+	background: #BBCCEE none repeat scroll 0%;
+	border-color: #667788;
+	border-style: solid solid none;
+	border-width: 1px;
+	cursor: pointer;
+	float: left;
+	height: 20px;
+	margin-right: 5px;
+	padding: 5px 5px 0px;
+	width: 136px;
+	position:relative;
+	z-index:10;
+}
+
+DIV.tabText {
+	background: #6677AA none repeat scroll 0%;
+	border: 1px solid #667788;
+	color: #FFFFFF;
+	font-family: arial,helvetica;
+	font-size: 12px;
+	font-weight: bold;
+	height: 18px;
+	line-height: 17px;
+	text-align: center;
+}
+	
+DIV#anaPluginListBox DIV.PluginListBox {
+	background: #BBCCEE none repeat scroll 0%;
+	border: 1px solid #667788;
+	clear: both;
+	display: block;
+	overflow: hidden;
+	padding: 5px;
+	position: relative;
+	top: -1px;
+	height: auto;
+	width: auto;
+	z-index: 0;
+}
+
+DIV#anaPluginListBox DIV.PluginListBox DIV.topmenu {
+	padding: 2px;
+	background: #DBE8EF;
+	border: 1px solid #888;
+	height: 21px;
+	text-align: right;
+	overflow:hidden;
+}
+
+DIV#anaPluginListBox DIV#anaPluginList {
+	background: #FFF;
+	border: 1px solid #667788;
+	height: 144px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+DIV#anaPluginListBox A.pluginRecordBox {
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	border-right: 1px solid #FFFFFF;
+	border-bottom: 1px solid #667788;
+	padding: 1px 5px;
+	display: block;
+	cursor: pointer;
+	background: #DBE8EF;
+}
+
+DIV#anaPluginListBox A.pluginRecordBox:hover {
+	background-color:#FFFFCC;
+	
+}
+
+DIV#anaPluginListBox A.pluginRecordBox DIV.Icon {
+	float: left;
+	background: #ffffff;
+	border: solid 1px #678;
+}
+
+DIV#anaPluginListBox A.pluginRecordBox DIV.Name {
+	font-family: arial,helvetica;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 12px;
+}
+
+
+
+
+DIV#anaPluginListBox A.pluginRecordBox.DETAIL DIV.txtBoundBox {
+	padding: 0 2px;
+	margin: 0px 36px 0px;
+}
+
+DIV#anaPluginListBox A.pluginRecordBox.DETAIL DIV.Name {
+	line-height: 14px;
+}
+
+DIV#anaPluginListBox A.pluginRecordBox.DETAIL DIV.Descript {
+	font-family: arial,helvetica;
+	font-size: 10px;
+	line-height: 10px;
+}
+
+DIV#anaPluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
+	height: 32px;
+	width: 32px;
+}
+
+
+
+
+DIV#anaPluginListBox A.pluginRecordBox.SUMMARY {
+	padding: 0px 5px;
+	height: 16px;
+	overflow: hidden;
+}
+
+DIV#anaPluginListBox A.pluginRecordBox.SUMMARY DIV.txtBoundBox {
+	margin: 0px 26px 0px;
+}
+
+DIV#anaPluginListBox A.pluginRecordBox.SUMMARY DIV.Name {
+	line-height: 15px;
+	font-weight: normal;
+}
+
+DIV#anaPluginListBox A.pluginRecordBox.SUMMARY DIV.Descript {
+	font-family: arial,helvetica;
+	font-size: 10px;
+	line-height: 12px;
+}
+
+DIV#anaPluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
+	height: 11px;
+	width: 11px;
+	overflow: hidden;
+	margin-top: 1px;
+}
+
+
+
+
+
+
+
+
+
+DIV#anaPluginListBox DIV.PluginListBox SELECT {
+	border: 1px solid #ABADB3;
+}
