@@ -117,14 +117,14 @@ public abstract class RequestHandler {
 
 		// :TODO value come from property file
 		// pollingType.setValue(
-		// "http://phsi2b2appdev:8080/QueryProcessor/getResult");
+		// "http://host:port/QueryProcessor/getResult");
 		ResultStatusType resultStatusType = new ResultStatusType();
 		resultStatusType.setStatus(statusType);
 		resultStatusType.setPollingUrl(pollingType);
 
 		InfoType infoType = new InfoType();
 		// :TODO value come from property file
-		//infoType.setUrl("http://phsi2b2appdev:8080/QueryProcessor/getStatus");
+		//infoType.setUrl("http://host:port/QueryProcessor/getStatus");
 		infoType.setValue("Log information");
 
 		ResponseHeaderType responseHeader = new ResponseHeaderType();

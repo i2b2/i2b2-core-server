@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request xmlns="http://www.i2b2.org/xsd/hive/msg/"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.i2b2.org/xsd/hive/msg/ file:/Users/mem61/Documents/workspace-FEB-25/edu.harvard.i2b2.xml/xsd/hive/msg/i2b2_request.xsd">
+ xsi:schemaLocation="http://www.i2b2.org/xsd/hive/msg/ file:/.../Documents/workspace-FEB-25/edu.harvard.i2b2.xml/xsd/hive/msg/i2b2_request.xsd">
     <message_header xmlns="">
         <i2b2_version_compatible>3.141592653589</i2b2_version_compatible>
         <hl7_version_compatible>3.141592653589</hl7_version_compatible>
