@@ -58,8 +58,8 @@ public class SendfileResponseType
      * <p>
      * You are getting this "catch-all" property because of the following reason: 
      * The field name "Status" is used by two different parts of a schema. See: 
-     * line 37 of file:/Users/mem61/Documents/workspace/edu.harvard.i2b2.xml/xsd/cell/fr_1.0/FR_QRY_response.xsd
-     * line 54 of file:/Users/mem61/Documents/workspace/edu.harvard.i2b2.xml/xsd/cell/fr_1.0/FR_QRY_response.xsd
+     * line 37 of file:/.../Documents/workspace/edu.harvard.i2b2.xml/xsd/cell/fr_1.0/FR_QRY_response.xsd
+     * line 54 of file:/.../Documents/workspace/edu.harvard.i2b2.xml/xsd/cell/fr_1.0/FR_QRY_response.xsd
      * <p>
      * To get rid of this property, apply a property customization to one 
      * of both of the following declarations to change their names: 

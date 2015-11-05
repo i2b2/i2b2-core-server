@@ -7,10 +7,6 @@ where concept_path like '\i2b2\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Ch
 -->
 <ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/">
 	<message_header>
-		<proxy>
-            <redirect_url>http://phsi2b2appdev.mgh.harvard.edu:8080/i2b2/rest/QueryToolService/request</redirect_url>
-        </proxy>
-
 		<sending_application>
 			<application_name>i2b2_QueryTool</application_name>
 			<application_version>1.6</application_version>
@@ -28,7 +24,7 @@ where concept_path like '\i2b2\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Ch
 		<security>
 			<domain>i2b2dev</domain>
 			<username>demo</username>
-			<password token_ms_timeout="1800000" is_token="true">SessionKey:IErU8vlngT9TovSKhT72</password>
+			<password is_token="false">demouser</password>
 		</security>
 		<message_type>
 			<message_code>Q04</message_code>
