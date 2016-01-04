@@ -1757,10 +1757,15 @@ public class ConceptDao extends JdbcDaoSupport {
 			synonym = " and c_synonym_cd = 'N'";
 
 		//	Removed dependency on m_applied_path 8/4/14 lcp
-//		String sql = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname = ? and m_applied_path = ?"; 
+		String sqlWpath = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname = ? and m_applied_path = ?"; 
 		String sql = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname = ? "; 
 
-		sql = sql + hidden + synonym + " order by upper(c_name) ";
+		// Putting applied path back..  1/4/16   CORE-203
+		// Was originally omitted for SHRINE (paths would be invalid) but result is that MANY modifiers return and messes up i2b2
+		// So first search via applied path; if that returns zero then search w/o applied path
+		
+		
+		sqlWpath = sqlWpath + hidden + synonym + " order by upper(c_name) ";
 
 		//log.info(sql + " " + path + " " + level);
 
@@ -1770,12 +1775,22 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		List queryResult = null;
 		try {
-//			queryResult = jt.query(sql, modMapper, searchPath, modifierInfoType.getAppliedPath() );
-			queryResult = jt.query(sql, modMapper, searchPath);
 
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			throw e;
+		}
+		
+		if(queryResult.size() == 0){
+			sql = sql + hidden + synonym + " order by upper(c_name) ";
+
+			try {
+				queryResult = jt.query(sql, modMapper, searchPath);
+
+			} catch (DataAccessException e) {
+				log.error(e.getMessage());
+				throw e;
+			}
 		}
 
 		log.debug("Get ModInfo result size = " + queryResult.size());
