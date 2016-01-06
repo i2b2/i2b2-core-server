@@ -1775,7 +1775,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		List queryResult = null;
 		try {
-
+ 			queryResult = jt.query(sql, modMapper, searchPath, modifierInfoType.getAppliedPath());
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			throw e;
