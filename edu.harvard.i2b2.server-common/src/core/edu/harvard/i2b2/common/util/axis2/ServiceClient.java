@@ -46,7 +46,7 @@ import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 public class ServiceClient {
 	private static Log log = LogFactory.getLog(ServiceClient.class.getName());
 
-	private static org.apache.axis2.client.ServiceClient serviceClient = null;
+	//private static org.apache.axis2.client.ServiceClient serviceClient = null;
 
 	
 
@@ -61,9 +61,9 @@ public class ServiceClient {
 	public static String sendREST(String restEPR, OMElement request) throws Exception{	
 
 		String response = null;
+		org.apache.axis2.client.ServiceClient serviceClient = null;
 		try {
 			
-			if (serviceClient == null)
 				serviceClient = new org.apache.axis2.client.ServiceClient();
 
 
@@ -92,6 +92,8 @@ public class ServiceClient {
 				log.debug(response);
 			}
 		} catch (Exception e) {
+			 log.debug("Cleanup Error .",
+					 e); 
 			e.printStackTrace();
 			throw new I2B2Exception("" + StackTraceUtil.getStackTrace(e));
 		} finally {
@@ -114,7 +116,7 @@ public class ServiceClient {
 	public static MessageContext getSOAPFile(String frUrl, OMElement requestElement, String frOperationName, String timeout) throws AxisFault
 	{
 
-		if (serviceClient == null)
+		 org.apache.axis2.client.ServiceClient serviceClient =  null; 
 			serviceClient = new org.apache.axis2.client.ServiceClient();
 
        // OMElement getRequestElmt = getRequestPayLoad();
@@ -172,6 +174,9 @@ public class ServiceClient {
 	
 	public static String sendSOAP(String soapEPR, String requestString, String action, String operation) throws Exception{	
 
+		 org.apache.axis2.client.ServiceClient serviceClient = null;
+		serviceClient = new
+				 org.apache.axis2.client.ServiceClient(); 
 		OperationClient operationClient = serviceClient
 				.createClient(org.apache.axis2.client.ServiceClient.ANON_OUT_IN_OP);
 
@@ -230,6 +235,8 @@ public class ServiceClient {
 	}
 
 	public static  org.apache.axis2.client.ServiceClient getServiceClient() throws AxisFault{
+		 org.apache.axis2.client.ServiceClient serviceClient =
+				 null; 
 		if (serviceClient == null) {
 			try {
 				serviceClient = new org.apache.axis2.client.ServiceClient();

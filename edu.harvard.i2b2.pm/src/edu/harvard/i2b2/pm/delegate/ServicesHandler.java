@@ -344,6 +344,7 @@ public class ServicesHandler extends RequestHandler {
 				uType.setFullName(user.getFullName());
 				uType.setUserName(rmt.getUsername());
 				uType.setDomain(rmt.getDomain());
+				uType.setIsAdmin(user.isIsAdmin());
 				PasswordType passType = new PasswordType();
 				passType.setIsToken(true);
 				passType.setValue(password);
