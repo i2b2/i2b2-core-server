@@ -676,6 +676,38 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 
 		}
 		
+		
+		public int checkForTableExistence(DBInfoType dbInfo, String tableName) throws Exception {
+			
+			String metadataSchema = dbInfo.getDb_fullSchema();
+			setDataSource(dbInfo.getDb_dataSource());
+			
+			String checkForTableSql = "SELECT count(*) from information_schema.tables where table_name = ?";
+			
+			if(dbInfo.getDb_serverType().equals("ORACLE"))
+				checkForTableSql = "SELECT count(*) from user_tab_cols where table_name = ?";
+			
+			
+			if(dbInfo.getDb_serverType().equals("SQLSERVER"))
+				checkForTableSql = "SELECT count(*) from " + metadataSchema.replace("dbo.", "") + "information_schema.tables where table_name = ?";
+			
+	//		log.info(checkForTableSql);
+			
+			int count = -1;
+			try {
+				 count = jt.queryForInt(checkForTableSql, tableName)	;
+	//			log.info(checkForTableSql + " count " + count);
+			} catch (Exception e) {
+				
+				throw e;
+			}
+			
+			return count;
+		}
+		
+		
+		
+		
 		public void createMetadataTable(DBInfoType dbInfo, String tableName) throws Exception {
 			
 			String metadataSchema = dbInfo.getDb_fullSchema();
@@ -793,14 +825,14 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 				try {
 					xml = null;
 					if(concept.getMetadataxml() == null){
-						log.info("metadata xml is null");
+			//			log.info("metadata xml is null");
 					}
 					if(concept.getMetadataxml() != null){
 						List ele = concept.getMetadataxml().getAny();
 						if(ele != null && ele.size() > 0){
 							Element element = concept.getMetadataxml().getAny().get(0);
 							if(element != null){
-								log.info("trying element to string");
+				//				log.info("trying element to string");
 								xml = XMLUtil.convertDOMElementToString(element);
 								xml = xml.replaceAll("\n", "");
 							}
