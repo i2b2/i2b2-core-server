@@ -347,6 +347,7 @@ public class PatientListTypeHandler extends CRCDAO implements
 
 		String tempTableName = this.getTempTableName();
 		deleteTempTableFlag = true;
+		deleteTempTable(conn);
 		// create temp table
 		java.sql.Statement tempStmt = conn.createStatement();
 		if (dataSourceLookup.getServerType().equalsIgnoreCase(
@@ -420,7 +421,7 @@ public class PatientListTypeHandler extends CRCDAO implements
 						"delete " + getTempTableName());
 			}
 		} catch (SQLException sqle) {
-			throw sqle;
+			//throw sqle;
 		} finally {
 			try {
 				deleteStmt.close();
