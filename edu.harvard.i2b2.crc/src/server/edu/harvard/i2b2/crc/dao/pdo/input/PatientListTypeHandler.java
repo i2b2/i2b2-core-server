@@ -191,7 +191,15 @@ public class PatientListTypeHandler extends CRCDAO implements
 			// this.getEnumerationList();
 			String tempTableName = this.getTempTableName();
 
-			sqlString = " select char_param1 from " + tempTableName + "  ";
+			if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.POSTGRESQL))
+			{
+			sqlString = " select cast(char_param1 as integer) from " + tempTableName + "  ";
+			}
+			else {
+				sqlString = " select char_param1 from " + tempTableName + "  ";
+
+			}
 		} else if (patientListType.getEntirePatientSet() != null) {
 			// by default get first 100 rows
 			if ((minIndex == 0) && (maxIndex == 0)) {
@@ -429,6 +437,10 @@ public class PatientListTypeHandler extends CRCDAO implements
 				DAOFactoryHelper.ORACLE)) {
 			tempTableName = this.getDbSchemaName()
 					+ FactRelatedQueryHandler.TEMP_PARAM_TABLE;
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL)) {
+			tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
+			
 		} else {
 			tempTableName = this.getDbSchemaName()
 					+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
