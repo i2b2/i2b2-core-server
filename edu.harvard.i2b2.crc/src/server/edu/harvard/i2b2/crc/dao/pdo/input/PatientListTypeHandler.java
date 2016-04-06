@@ -347,7 +347,13 @@ public class PatientListTypeHandler extends CRCDAO implements
 					+ getTempTableName()
 					+ " (set_index int, char_param1 varchar(100) )";
 			tempStmt.executeUpdate(createTempInputListTable);
-		}
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL))
+		{
+			String createTempInputListTable = "create temp table "
+					+ getTempTableName()
+					+ " (set_index int, char_param1 varchar(100) )";
+			tempStmt.executeUpdate(createTempInputListTable);
 		int i = 0, j = 1;
 
 		List<PatientId> pidList = patientListType.getPatientId();
