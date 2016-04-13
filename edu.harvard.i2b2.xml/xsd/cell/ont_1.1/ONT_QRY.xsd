@@ -33,7 +33,8 @@
  	<xs:element name="get_modifier_info" type="ont:get_modifier_infoType"/>
  	<xs:element name="get_modifier_name_info" type="ont:vocab_requestType"/>
  	<xs:element name="get_modifier_code_info" type="ont:vocab_requestType"/>
- 
+    <xs:element name="load_metadata" type="ont:metadataLoadType"/> 
+
     <xs:complexType name="get_childrenType">
         <xs:sequence>
             <xs:element name="parent" type="xs:string"/>
@@ -248,5 +249,52 @@
         </xs:sequence>
         <xs:attributeGroup ref="ont:return_attributeGroup"/>
     </xs:complexType>
-    
+
+     
+    <xs:complexType name="metadataLoadType">
+        <xs:sequence>
+            <xs:element name="metadata" type="ont:ontologyDataType" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="table_name" type="xs:string"/>
+    </xs:complexType> 
+       
+    <xs:complexType name="ontologyDataType">
+        <xs:sequence>
+            <xs:element name="table_cd" type="xs:string" />
+            <xs:element name="table_name" type="xs:string" />
+            <xs:element name="protected_access" type="xs:string" />
+            <xs:element name="level" type="xs:int" />
+            <xs:element name="fullname" type="xs:string" />
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="synonym_cd" type="xs:string" />
+            <xs:element name="visualattributes" type="xs:string" />
+            <xs:element name="totalnum" nillable="true" type="xs:int" />
+            <xs:element name="basecode" type="xs:string" />
+            <xs:element name="metadataxml" type="ont:xml_valueType" /> 
+            <xs:element name="facttablecolumn" type="xs:string" />
+            <xs:element name="dimtablename" type="xs:string" />
+            <xs:element name="columnname" type="xs:string" />
+            <xs:element name="columndatatype" type="xs:string" />
+            <xs:element name="operator" type="xs:string" />
+            <xs:element name="dimcode" type="xs:string" />
+            <xs:element name="comment" type="xs:string" />
+            <xs:element name="tooltip" type="xs:string" />
+            <xs:element name="entry_date" type="xs:dateTime" />
+            <xs:element name="change_date" type="xs:dateTime" />
+	        <xs:element name="valuetype_cd" type="xs:string" />
+            <xs:element name="status_cd" type="xs:string" />
+            <xs:element name="update_date" type="xs:dateTime" />
+            <xs:element name="download_date" type="xs:dateTime" />
+            <xs:element name="import_date" type="xs:dateTime" />
+            <xs:element name="sourcesystem_cd" type="xs:string" />
+            <xs:element name="key" type="xs:string" />
+            <xs:element name="description" type="xs:string" />
+            <xs:element name="applied_path" type="xs:string" />
+            <xs:element name="exclusion_cd" type="xs:string" />
+            <xs:element name="path" type="xs:string" />
+            <xs:element name="symbol" type="xs:string" />
+             <xs:element name="pcori_basecode" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+     
 </xs:schema>
