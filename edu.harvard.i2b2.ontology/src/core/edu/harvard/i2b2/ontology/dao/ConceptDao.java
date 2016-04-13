@@ -44,7 +44,7 @@ import edu.harvard.i2b2.ontology.datavo.vdo.GetCategoriesType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetChildrenType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetModifierChildrenType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetModifierInfoType;
-import edu.harvard.i2b2.ontology.datavo.vdo.GetReturnType;
+
 import edu.harvard.i2b2.ontology.datavo.vdo.GetTermInfoType;
 import edu.harvard.i2b2.ontology.datavo.vdo.VocabRequestType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ModifierType;
@@ -1775,6 +1775,11 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		List queryResult = null;
 		try {
+<<<<<<< HEAD
+=======
+			
+			queryResult = jt.query(sqlWpath, modMapper, searchPath, modifierInfoType.getAppliedPath());
+>>>>>>> refs/remotes/origin/ontology_08
 
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());

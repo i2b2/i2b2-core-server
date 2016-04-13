@@ -19,6 +19,7 @@ import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.ontology.delegate.AddChildHandler;
 import edu.harvard.i2b2.ontology.delegate.AddModifierHandler;
 import edu.harvard.i2b2.ontology.delegate.CRCConceptUpdateHandler;
+import edu.harvard.i2b2.ontology.delegate.CheckMetadataTableHandler;
 import edu.harvard.i2b2.ontology.delegate.DeleteChildHandler;
 import edu.harvard.i2b2.ontology.delegate.ExcludeModifierHandler;
 import edu.harvard.i2b2.ontology.delegate.GetCategoriesHandler;
@@ -34,6 +35,9 @@ import edu.harvard.i2b2.ontology.delegate.GetNameInfoHandler;
 import edu.harvard.i2b2.ontology.delegate.GetOntProcessStatusHandler;
 import edu.harvard.i2b2.ontology.delegate.GetSchemesHandler;
 import edu.harvard.i2b2.ontology.delegate.GetTermInfoHandler;
+import edu.harvard.i2b2.ontology.delegate.LoadMetadataHandler;
+import edu.harvard.i2b2.ontology.delegate.LoadSchemesHandler;
+import edu.harvard.i2b2.ontology.delegate.LoadTableAccessHandler;
 import edu.harvard.i2b2.ontology.delegate.ModifyChildHandler;
 import edu.harvard.i2b2.ontology.delegate.RequestHandler;
 import edu.harvard.i2b2.ontology.delegate.UpdateTotalNumHandler;
@@ -50,7 +54,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a vocab query request object. The response is also
 	 * will be in i2b2 message format, which will wrap vocab data object. Vocab
 	 * data object will have all the results returned by the query.
@@ -99,7 +103,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a vocab query request object. The response is also
 	 * will be in i2b2 message format, which will wrap vocab data object. Vocab
 	 * data object will have all the results returned by the query.
@@ -149,7 +153,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a vocab query request object. The response is also
 	 * will be in i2b2 message format, which will wrap vocab data object. Vocab
 	 * data object will have all the results returned by the query.
@@ -199,7 +203,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a vocab query request object. The response is also
 	 * will be in i2b2 message format, which will wrap vocab data object. Vocab
 	 * data object will have all the results returned by the query.
@@ -250,7 +254,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a vocab query request object. The response is also
 	 * will be in i2b2 message format, which will wrap vocab data object. Vocab
 	 * data object will have all the results returned by the query.
@@ -301,7 +305,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a vocab query request object. The response is also
 	 * will be in i2b2 message format, which will wrap vocab data object. Vocab
 	 * data object will have all the results returned by the query.
@@ -660,7 +664,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a vocab query request object. The response is also
 	 * will be in i2b2 message format, which will wrap vocab data object. Vocab
 	 * data object will have all the results returned by the query.
@@ -710,7 +714,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get modifier data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a modifier query request object. The response is also
 	 * will be in i2b2 message format, which will wrap modifier data object. Modifier
 	 * data object will have all the results returned by the query.
@@ -758,7 +762,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get modifier data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a modifier query request object. The response is also
 	 * will be in i2b2 message format, which will wrap modifier data object. Modifier
 	 * data object will have all the results returned by the query.
@@ -807,7 +811,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get modifier data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a modifier query request object. The response is also
 	 * will be in i2b2 message format, which will wrap modifier data object. Modifier
 	 * data object will have all the results returned by the query.
@@ -924,7 +928,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a vocab query request object. The response is also
 	 * will be in i2b2 message format, which will wrap vocab data object. Vocab
 	 * data object will have all the results returned by the query.
@@ -975,7 +979,7 @@ public class OntologyService {
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
 	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
+	 * It accepts incoming request in i2b2 message format, which wraps an
 	 * Ontology query inside a vocab query request object. The response is also
 	 * will be in i2b2 message format, which will wrap vocab data object. Vocab
 	 * data object will have all the results returned by the query.
@@ -1021,4 +1025,92 @@ public class OntologyService {
 		// ExecutorRunnable er = new ExecutorRunnable();
 		return execute(new GetModifierCodeInfoHandler(codeInfoDataMsg), waitTime);
 	}
+	
+	
+	public OMElement loadMetadata(OMElement loadElement) throws I2B2Exception {
+
+		OMElement returnElement = null;
+		String ontologyDataResponse = null;
+		String unknownErrorMessage = "Error message delivered from the remote server \n"
+				+ "You may wish to retry your last action";
+
+		if (loadElement == null) {
+			log.error("Incoming Ontology request is null");
+			ResponseMessageType responseMsgType = MessageFactory
+					.doBuildErrorResponse(null, unknownErrorMessage);
+			ontologyDataResponse = MessageFactory
+					.convertToXMLString(responseMsgType);
+			return MessageFactory
+					.createResponseOMElementFromString(ontologyDataResponse);
+		}
+		String requestElementString = loadElement.toString();
+		
+		LoadDataMessage loadDataMsg = new LoadDataMessage(
+				requestElementString);
+		
+		log.info(loadDataMsg.getMetadataLoad().getTableName());
+		long waitTime = 0;
+		if (loadDataMsg.getRequestMessageType() != null) {
+			if (loadDataMsg.getRequestMessageType().getRequestHeader() != null) {
+				waitTime = loadDataMsg.getRequestMessageType()
+						.getRequestHeader().getResultWaittimeMs();
+			}
+		}
+
+		// do Ontology query processing inside thread, so that
+		// service could sends back message with timeout error.
+		// ExecutorRunnable er = new ExecutorRunnable();
+		if(loadDataMsg.getMetadataLoad().getTableName().equals("SCHEMES")) {
+			log.info(requestElementString);
+			return execute(new LoadSchemesHandler(loadDataMsg), waitTime);
+		}
+		else if(loadDataMsg.getMetadataLoad().getTableName().equals("TABLE_ACCESS")) {
+			log.info(requestElementString);
+			return execute(new LoadTableAccessHandler(loadDataMsg), waitTime);
+		}
+		else
+			return execute(new LoadMetadataHandler(loadDataMsg), waitTime);
+
+	}
+	
+	
+	public OMElement checkForTableExistence(OMElement loadElement) throws I2B2Exception {
+
+		OMElement returnElement = null;
+		String ontologyDataResponse = null;
+		String unknownErrorMessage = "Error message delivered from the remote server \n"
+				+ "You may wish to retry your last action";
+
+		if (loadElement == null) {
+			log.error("Incoming Ontology request is null");
+			ResponseMessageType responseMsgType = MessageFactory
+					.doBuildErrorResponse(null, unknownErrorMessage);
+			ontologyDataResponse = MessageFactory
+					.convertToXMLString(responseMsgType);
+			return MessageFactory
+					.createResponseOMElementFromString(ontologyDataResponse);
+		}
+		String requestElementString = loadElement.toString();
+		
+		LoadDataMessage loadDataMsg = new LoadDataMessage(
+				requestElementString);
+		
+		log.info(loadDataMsg.getMetadataLoad().getTableName());
+		long waitTime = 0;
+		if (loadDataMsg.getRequestMessageType() != null) {
+			if (loadDataMsg.getRequestMessageType().getRequestHeader() != null) {
+				waitTime = loadDataMsg.getRequestMessageType()
+						.getRequestHeader().getResultWaittimeMs();
+			}
+		}
+
+		// do Ontology query processing inside thread, so that
+		// service could sends back message with timeout error.
+		// ExecutorRunnable er = new ExecutorRunnable();
+		
+
+		return execute(new CheckMetadataTableHandler(loadDataMsg), waitTime);
+
+	}
+	
 }
