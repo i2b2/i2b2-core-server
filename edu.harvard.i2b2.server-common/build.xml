@@ -76,14 +76,16 @@
 		<!-- copy jar to jboss lib -->
 		<antcall target="copy_jdbc_jar" />
 		<antcall target="copy_app_jar" />
-				
+		
+		<!--		
 		<echo> Copying axis2.xml to conf directory</echo>
 		<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/conf">
 			<fileset dir="${etc}/axis2">
 				<include name="axis2.xml" />
 			</fileset>
 		</copy>
-		
+	  	-->
+	
 		<!-- copy endosed jar to jboss endorsed lib 
 		<antcall target="copy_endosed_jar" />
 		<echo> Copying axis2.xml to conf directory</echo>
