@@ -40,6 +40,8 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryConstraintType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.util.PMServiceAccountUtil;
+import edu.harvard.i2b2.crc.util.ParamUtil;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
  * Temporal Query Object
@@ -106,11 +108,26 @@ public class TemporalQuery {
 	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, String queryXml, boolean allowLargeTextValueConstrainFlag, int processingLevel) throws JAXBUtilException, I2B2Exception{
 		dsLookup = dataSourceLookup;
 		projectParamMap = projectParameterMap;
+		
+		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+		String queryConstraintLogic= "";
+		try{
+			queryConstraintLogic = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.setfinderquery.constraintlogic");
+		}catch (I2B2Exception e) {
+			// ignore this default will be WITH
+		}
+	
+				
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
 		this.processingLevel = processingLevel;
 		options = new TemporalQueryOptions();
-		if (getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) || 
-				getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)){
+		if (getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER)){
+			if (queryConstraintLogic.equalsIgnoreCase("TEMP")||queryConstraintLogic.equalsIgnoreCase("TEMPTABLES"))
+				options.setQueryConstraintLogic(QueryConstraintStrategy.TEMP_TABLES);
+			else 
+				options.setQueryConstraintLogic(QueryConstraintStrategy.WITH_STATEMENT);
+		}
+		else if (getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)){
 			options.setQueryConstraintLogic(QueryConstraintStrategy.WITH_STATEMENT);
 		}
 		else if (getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE)){
@@ -135,10 +152,25 @@ public class TemporalQuery {
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
 		this.processingLevel = processingLevel;
 		options = new TemporalQueryOptions();
-		if (getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
-				getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)){
+		
+		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+		String queryConstraintLogic= "";
+		try{
+			queryConstraintLogic = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.setfinderquery.constraintlogic");
+		}catch (I2B2Exception e) {
+			// ignore this default will be WITH
+		}
+	
+		if (getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER)){
 			//no default options at this time
-			
+			if (queryConstraintLogic.equalsIgnoreCase("TEMP")||queryConstraintLogic.equalsIgnoreCase("TEMPTABLES"))
+				options.setQueryConstraintLogic(QueryConstraintStrategy.TEMP_TABLES);
+			else 
+				options.setQueryConstraintLogic(QueryConstraintStrategy.WITH_STATEMENT);
+		}
+		else if (getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)){
+				//no default options at this time
+				
 			options.setQueryConstraintLogic(QueryConstraintStrategy.WITH_STATEMENT);
 		}
 		else if (getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE)){
