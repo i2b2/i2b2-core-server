@@ -42,8 +42,8 @@
 	<!-- =================================================================== -->
 	<target name="jaxb_gen" depends="init" description="Generate JAXB classes for i2b2 and Vocab Data messages">
 				<xjc destdir="${gensrc}" removeOldOutput="no">
-					<schema dir="../${i2b2xmlproject}/xsd/cell/ont_1.1" includes="ONT_QRY.xsd" />
 					<schema dir="../${i2b2xmlproject}/xsd/cell/ont_1.1" includes="ONT_RESP.xsd" />
+					<schema dir="../${i2b2xmlproject}/xsd/cell/ont_1.1" includes="ONT_QRY.xsd" />
 					<schema dir="../${i2b2xmlproject}/xsd/cell/pm_1.1" includes="PM_USER.xsd" />
 					<schema dir="../${i2b2xmlproject}/xsd/hive/msg_1.1" includes="i2b2_response.xsd" />
 					<schema dir="../${i2b2xmlproject}/xsd/cell/fr_1.0" includes="FR_QRY.xsd" />
