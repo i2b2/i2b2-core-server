@@ -87,10 +87,10 @@ public class QueryResultPatientCountGenerator extends CRCDAO implements
 					strWriter.toString());
 		} catch (Exception sqlEx) {
 			log.error(
-					"QueryResultPatientSetGenerator.generateResult:"
+					"QueryResultPatientCountGenerator.generateResult:"
 							+ sqlEx.getMessage(), sqlEx);
 			throw new I2B2DAOException(
-					"QueryResultPatientSetGenerator.generateResult:"
+					"QueryResultPatientCountGenerator.generateResult:"
 							+ sqlEx.getMessage(), sqlEx);
 		} finally {
 			IQueryResultInstanceDao resultInstanceDao = sfDAOFactory

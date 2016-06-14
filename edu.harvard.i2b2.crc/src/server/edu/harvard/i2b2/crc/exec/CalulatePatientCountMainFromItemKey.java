@@ -249,10 +249,10 @@ public class CalulatePatientCountMainFromItemKey extends CRCDAO {
 			return strWriter.toString();
 
 		} catch (Exception sqlEx) {
-			log.error("QueryResultPatientSetGenerator.generateResult:"
+			log.error("CalulatePatientCountMainFromItemKey.buildXmlResult:"
 					+ sqlEx.getMessage(), sqlEx);
 			throw new I2B2DAOException(
-					"QueryResultPatientSetGenerator.generateResult:"
+					"CalulatePatientCountMainFromItemKey.buildXmlResult:"
 							+ sqlEx.getMessage(), sqlEx);
 		} finally {
 			try {

@@ -80,10 +80,10 @@ public class QueryResultPatientRaceCdCountGenerator extends CRCDAO implements
 					.toString());
 
 		} catch (Exception sqlEx) {
-			log.error("QueryResultPatientSetGenerator.generateResult:"
+			log.error("QueryResultPatientRaceCdCountGenerator.generateResult:"
 					+ sqlEx.getMessage(), sqlEx);
 			throw new I2B2DAOException(
-					"QueryResultPatientSetGenerator.generateResult:"
+					"QueryResultPatientRaceCdCountGenerator.generateResult:"
 							+ sqlEx.getMessage(), sqlEx);
 		} finally {
 			IQueryResultInstanceDao resultInstanceDao = sfDAOFactory

@@ -115,10 +115,10 @@ public class QueryResultPatientAgeCountGenerator extends CRCDAO implements
 					.toString());
 
 		} catch (Exception sqlEx) {
-			log.error("QueryResultPatientSetGenerator.generateResult:"
+			log.error("QueryResultPatientAgeCountGenerator.generateResult:"
 					+ sqlEx.getMessage(), sqlEx);
 			throw new I2B2DAOException(
-					"QueryResultPatientSetGenerator.generateResult:"
+					"QueryResultPatientAgeCountGenerator.generateResult:"
 							+ sqlEx.getMessage(), sqlEx);
 		} finally {
 			IQueryResultInstanceDao resultInstanceDao = sfDAOFactory

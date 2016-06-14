@@ -110,10 +110,10 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 			}
 		} catch (SQLException sqlEx) {
 			exception = sqlEx;
-			log.error("QueryResultPatientSetGenerator.generateResult:"
+			log.error("QueryResultEncounterSetGenerator.generateResult:"
 					+ sqlEx.getMessage(), sqlEx);
 			throw new I2B2DAOException(
-					"QueryResultPatientSetGenerator.generateResult:"
+					"QueryResultEncounterSetGenerator.generateResult:"
 							+ sqlEx.getMessage(), sqlEx);
 
 		} catch (Throwable throwable) {
