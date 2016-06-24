@@ -20,8 +20,62 @@
     <xs:element name="set_key" type="im:set_keyType"/>
     <xs:element name="is_key_set" type="im:set_keyType"/>
     <xs:element name="get_audit" type="im:get_auditType"/>
-    
-    
+	<xs:element name="get_all_dblookups" type="im:get_dblookupsType"/><!-- swc20160520 added --> 
+	<xs:element name="get_dblookup" type="im:get_dblookupType"/><!-- swc20160520 added --> 
+	<xs:element name="set_dblookup" type="im:set_dblookupType"/><!-- swc20160520 added --> 
+	<xs:element name="delete_dblookup" type="im:delete_dblookupType"/><!-- swc20160520 added --> 
+ 
+    <xs:complexType name="delete_dblookupType"><!-- swc20160520 added --><!-- swc20160606 updated -->
+        <xs:attribute name="project_path" type="xs:string" use="required" />
+        <xs:attribute name="domain_id" type="xs:string" use="required" />
+        <xs:attribute name="owner_id" type="xs:string" use="required" />
+    </xs:complexType>
+ 
+	<xs:complexType name="set_dblookupType"><!-- swc20160520 added, 20160606 updated -->
+		<xs:sequence>
+			<xs:element name="domain_id" type="xs:string"/>
+		 	<xs:element name="owner_id" type="xs:string"/>
+			<xs:element name="db_fullschema" type="xs:string"/>
+			<xs:element name="db_datasource" type="xs:string"/>
+			<xs:element name="db_servertype" type="xs:string"/>
+			<xs:element name="db_nicename" type="xs:string"/>
+			<xs:element name="db_tooltip" type="xs:string"/>
+			<xs:element name="comment" type="xs:string"/>
+			<xs:element name="status_cd" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="project_path" type="xs:string" use="required" />
+	</xs:complexType>
+		
+    <xs:complexType name="get_dblookupType"><!-- swc20160520 added, 20160606 updated -->
+        <xs:attribute name="field" default="project_path">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="project_path"/>
+                    <xs:enumeration value="domain_id"/>
+                    <xs:enumeration value="owner_id"/>
+                    <xs:enumeration value="db_fullschema"/>
+                    <xs:enumeration value="db_datasource"/>
+                    <xs:enumeration value="db_servertype"/>
+                    <xs:enumeration value="db_nicename"/>
+                    <xs:enumeration value="db_tooltip"/>
+                    <xs:enumeration value="status_cd"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="value" type="xs:string" use="required" />
+    </xs:complexType>    
+		
+    <xs:complexType name="get_dblookupsType"><!-- swc20160520 added -->
+        <xs:attribute name="type" default="default">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="default"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>    
+		    
+        
     <xs:complexType name="get_auditType">
         <xs:all>
         <xs:element name="user_id" type="xs:string" />

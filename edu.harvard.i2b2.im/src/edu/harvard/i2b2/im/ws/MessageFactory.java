@@ -7,6 +7,7 @@
  * Contributors:
  * 		Raj Kuttan
  * 		Lori Phillips
+ * 		Wayne Chan
  */
 package edu.harvard.i2b2.im.ws;
 
@@ -27,14 +28,15 @@ import edu.harvard.i2b2.im.datavo.i2b2message.ResultStatusType;
 import edu.harvard.i2b2.im.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.im.datavo.pdo.query.PdoRequestTypeType;
 import edu.harvard.i2b2.im.datavo.wdo.AuditsType;
+import edu.harvard.i2b2.im.datavo.wdo.DblookupsType;
 import edu.harvard.i2b2.im.datavo.wdo.IsKeySetType;
 
-import org.apache.axiom.om.OMAbstractFactory;
+//import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
+//import org.apache.axiom.om.OMFactory;
+//import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.apache.axis2.AxisFault;
+//import org.apache.axis2.AxisFault;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +48,7 @@ import java.math.BigDecimal;
 
 import java.util.Date;
 
-import javax.xml.stream.FactoryConfigurationError;
+//import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -99,7 +101,7 @@ public class MessageFactory {
     
     public static BodyType createBodyType(PdoRequestTypeType workplaceData) {
 
-		edu.harvard.i2b2.im.datavo.pdo.query.ObjectFactory of = new edu.harvard.i2b2.im.datavo.pdo.query.ObjectFactory();
+//		edu.harvard.i2b2.im.datavo.pdo.query.ObjectFactory of = new edu.harvard.i2b2.im.datavo.pdo.query.ObjectFactory();
         BodyType bodyType = new BodyType();
  //MM       bodyType.getAny().add(of..createFolders(workplaceData));
 
@@ -128,12 +130,29 @@ public class MessageFactory {
 
     public static BodyType createBodyType(String workplaceData) {
 
-        edu.harvard.i2b2.im.datavo.pdo.query.ObjectFactory of = new edu.harvard.i2b2.im.datavo.pdo.query.ObjectFactory();
+//        edu.harvard.i2b2.im.datavo.pdo.query.ObjectFactory of = new edu.harvard.i2b2.im.datavo.pdo.query.ObjectFactory();
         BodyType bodyType = new BodyType();
 //MM        bodyType.getAny().add(of.createRequestXML(workplaceData));  //  createFolders(workplaceData));
 
         return bodyType;
     }
+
+	
+	/**swc20160520
+	 * Function to build concepts body type
+	 * 
+	 * @param dblookups
+	 *            Concept set to be returned to requester
+	 * @return BodyType object
+	 */
+	public static BodyType createBodyType(DblookupsType dblookups) {
+		edu.harvard.i2b2.im.datavo.wdo.ObjectFactory of = new edu.harvard.i2b2.im.datavo.wdo.ObjectFactory();
+		BodyType bodyType = new BodyType();
+		bodyType.getAny().add(of.createDblookups(dblookups));
+
+		return bodyType;
+	}
+
     
     /**
      * Function to create response  message header based
@@ -312,6 +331,55 @@ public class MessageFactory {
             
             return respMessageType;
         }
+    
+    
+	/**swc20160520
+	 * Function to build Response message type and return it as an XML string
+	 * 
+	 * @param dblookups
+	 *            The set of i2b2hive.work_db_lookup entries, per request
+	 * 
+	 * @return A String data type containing the ResponseMessage in XML format
+	 * @throws Exception
+	 */
+	public static ResponseMessageType createBuildResponse(MessageHeaderType messageHeaderType, DblookupsType dblookups) {
+		ResponseMessageType respMessageType = null;
+		ResponseHeaderType respHeader = createResponseHeader("DONE", "IM processing completed");
+		BodyType bodyType = createBodyType(dblookups);
+		respMessageType = createResponseMessageType(messageHeaderType, respHeader, bodyType);
+		return respMessageType;
+	}
+
+	/**swc20160520
+	 * Function to build Response message type and return it as an XML string
+	 * 
+	 * @return A String data type containing the ResponseMessage in XML format
+	 * @throws Exception
+	 */
+	public static ResponseMessageType createBuildResponse(MessageHeaderType messageHeaderType) {
+		ResponseMessageType respMessageType = null;
+		ResponseHeaderType respHeader = createResponseHeader("DONE", "IM processing completed");
+		respMessageType = createResponseMessageType(messageHeaderType, respHeader, null);
+		return respMessageType;
+	}
+
+	/**swc20160520
+	 * Function to build 'Non Standard' Response message and return it as an XML string
+	 * 
+	 * @param messageHeaderType
+	 * @param msg
+	 * 
+	 * @return A String data type containing the ResponseMessage in XML format
+	 * @throws Exception
+	 */
+	public static ResponseMessageType createNonStandardResponse(MessageHeaderType messageHeaderType, String msg) {
+		ResponseMessageType respMessageType = null;
+		ResponseHeaderType respHeader = createResponseHeader("DONE", msg + " - IM processing completed");
+		respMessageType = createResponseMessageType(messageHeaderType, respHeader, null);
+		return respMessageType;
+	}
+
+    
     /**
      * Function to get i2b2 Request message header
      *
