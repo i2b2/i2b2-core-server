@@ -1775,16 +1775,8 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		List queryResult = null;
 		try {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-			
 			queryResult = jt.query(sqlWpath, modMapper, searchPath, modifierInfoType.getAppliedPath());
->>>>>>> refs/remotes/origin/ontology_08
 
-=======
-			queryResult = jt.query(sqlWpath, modMapper, searchPath, modifierInfoType.getAppliedPath());
->>>>>>> origin/master
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			throw e;
