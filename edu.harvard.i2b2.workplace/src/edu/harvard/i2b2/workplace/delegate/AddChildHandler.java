@@ -12,12 +12,12 @@ package edu.harvard.i2b2.workplace.delegate;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.ResponseMessageType;
-import edu.harvard.i2b2.workplace.datavo.wdo.DeleteChildType;
+//import edu.harvard.i2b2.workplace.datavo.wdo.DeleteChildType;
 import edu.harvard.i2b2.workplace.datavo.wdo.FolderType;
 import edu.harvard.i2b2.workplace.datavo.pm.ProjectType;
 import edu.harvard.i2b2.workplace.dao.FolderDao;
 import edu.harvard.i2b2.workplace.ws.AddChildDataMessage;
-import edu.harvard.i2b2.workplace.ws.DeleteChildDataMessage;
+//import edu.harvard.i2b2.workplace.ws.DeleteChildDataMessage;
 import edu.harvard.i2b2.workplace.ws.MessageFactory;
 
 public class AddChildHandler extends RequestHandler {
@@ -72,7 +72,8 @@ public class AddChildHandler extends RequestHandler {
 			}
 			else {
 				MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(addChildMsg.getMessageHeaderType());          
-				responseMessageType = MessageFactory.createBuildResponse(messageHeader, null);
+//				responseMessageType = MessageFactory.createBuildResponse(messageHeader, null);
+				responseMessageType = MessageFactory.createBuildResponse(messageHeader);
 			}
 		}
         String responseWdo = null;

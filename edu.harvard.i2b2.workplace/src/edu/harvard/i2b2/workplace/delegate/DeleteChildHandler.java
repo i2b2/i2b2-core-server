@@ -69,7 +69,8 @@ public class DeleteChildHandler extends RequestHandler {
 			}
 			else {
 				MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(deleteChildMsg.getMessageHeaderType());          
-				responseMessageType = MessageFactory.createBuildResponse(messageHeader, null);
+//				responseMessageType = MessageFactory.createBuildResponse(messageHeader, null);
+				responseMessageType = MessageFactory.createBuildResponse(messageHeader);
 			}
 		}
         String responseWdo = null;

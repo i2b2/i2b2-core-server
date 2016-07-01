@@ -69,7 +69,8 @@ public class MoveChildHandler extends RequestHandler {
 			}
 			else {
 				MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(childMsg.getMessageHeaderType());          
-				responseMessageType = MessageFactory.createBuildResponse(messageHeader, null);
+//				responseMessageType = MessageFactory.createBuildResponse(messageHeader, null);
+				responseMessageType = MessageFactory.createBuildResponse(messageHeader);
 			}
 		}
         String responseWdo = null;
