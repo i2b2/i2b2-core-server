@@ -36,8 +36,8 @@ public class DblookupDao extends JdbcDaoSupport {
     private static DataSource ds = null;
     private static SimpleJdbcTemplate jt;
     private static String dbluTable;
-    private static String key = " LOWER(c_domain_id)=? AND (LOWER(c_owner_id)=? OR c_owner_id='@') ";
-    private static String keyOrder = " LOWER(c_domain_id)=? AND (LOWER(c_owner_id)=? OR c_owner_id='@') ORDER BY c_project_path ";
+    private static String key = " LOWER(c_domain_id)=LOWER(?) AND (LOWER(c_owner_id)=LOWER(?) OR c_owner_id='@') ";
+    private static String keyOrder = " LOWER(c_domain_id)=LOWER(?) AND (LOWER(c_owner_id)=LOWER(?) OR c_owner_id='@') ORDER BY c_project_path ";
     private String domainId = null;
     private String userId = null;
 
