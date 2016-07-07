@@ -132,7 +132,7 @@ public class ProcessQueue implements Runnable{
 							preparedStmt = conn.prepareStatement(finalSql);
 
 							//conn = dataSource.getConnection();
-
+							queryInstanceId = 0;
 							ResultSet resultSet = preparedStmt.executeQuery();
 							if (resultSet.next()) {
 								queryInstanceId = resultSet.getInt("query_instance_id");
@@ -162,7 +162,7 @@ public class ProcessQueue implements Runnable{
 								
 								int waitTime = readTimeoutPropertyValue(queue) * 1000;
 
-								log.debug("Waittime for " + queue+ " is  " + waitTime);
+								log.info("Waittime for " + queue+ " is  " + waitTime);
 
 							
 
@@ -173,13 +173,13 @@ public class ProcessQueue implements Runnable{
 									while((exec.isJobCompleteFlag() == false)&& (deltaTime < waitTime)){ 
 										if (waitTime > 0) { 
 											//log.info("In ExecRunnable Thread QueryId: " +  queryInstanceId + "  Waiting: " + (waitTime - deltaTime));
-											t.wait(waitTime - deltaTime); 
+											//t.wait(waitTime - deltaTime); 
 											deltaTime = System.currentTimeMillis() - startTime; 
-										} else { 
-											t.wait(); 
-										} 
+										} //else { 
+											//t.wait(); 
+										//} 
 									} 
-									log.debug("Finished Thread of queryid " + queryInstanceId  + " in" + queue);
+									log.info("Finished Thread of queryid " + queryInstanceId  + " in" + queue);
 
 									log.debug("Start waiting: " + startTime);
 									log.debug("End waiting: " +  System.currentTimeMillis() );
@@ -228,7 +228,7 @@ public class ProcessQueue implements Runnable{
 
 									} 
 								}
-								catch (InterruptedException e) {
+								catch (Exception e) {
 					//				isRunning = false;
 									log.error("Error in thread ProcessQueue: " + e.getMessage());
 									if (e.getMessage().startsWith("javax.naming.NameNotFoundException"))
@@ -268,6 +268,7 @@ public class ProcessQueue implements Runnable{
 									//exec = null;
 									//t = null;
 	//								isRunning = false;
+									queryInstanceId = 0;
 								}
 								
 								
