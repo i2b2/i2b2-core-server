@@ -38,6 +38,7 @@ import edu.harvard.i2b2.ontology.delegate.GetOntProcessStatusHandler;
 import edu.harvard.i2b2.ontology.delegate.GetSchemesHandler;
 import edu.harvard.i2b2.ontology.delegate.GetTermInfoHandler;
 import edu.harvard.i2b2.ontology.delegate.ModifyChildHandler;
+import edu.harvard.i2b2.ontology.delegate.CheckMetadataTableHandler;
 import edu.harvard.i2b2.ontology.delegate.LoadMetadataHandler;
 import edu.harvard.i2b2.ontology.delegate.LoadSchemesHandler;
 import edu.harvard.i2b2.ontology.delegate.LoadTableAccessHandler;
