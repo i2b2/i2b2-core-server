@@ -608,6 +608,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		}
 
 		String path = StringUtil.getPath(termInfoType.getSelf());
+		/*
 		if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
 			//path = path.replaceAll("\\[", "[[]");
 			path = StringUtil.escapeSQLSERVER(path);
@@ -618,7 +619,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
 			path = StringUtil.escapePOSTGRESQL(path); 
 		}		
-
+		*/
+		
 		String searchPath = path;
 
 
@@ -630,7 +632,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		if(termInfoType.isSynonyms() == false)
 			synonym = " and c_synonym_cd = 'N'";
 
-		String sql = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + ""; 
+//		String sql = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + ""; 
+		String sql = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname = ? "; 
 		sql = sql + hidden + synonym + " order by upper(c_name) ";
 
 		//log.info(sql + " " + path + " " + level);

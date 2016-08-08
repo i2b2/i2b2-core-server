@@ -38,6 +38,10 @@ import edu.harvard.i2b2.ontology.delegate.GetOntProcessStatusHandler;
 import edu.harvard.i2b2.ontology.delegate.GetSchemesHandler;
 import edu.harvard.i2b2.ontology.delegate.GetTermInfoHandler;
 import edu.harvard.i2b2.ontology.delegate.ModifyChildHandler;
+import edu.harvard.i2b2.ontology.delegate.CheckMetadataTableHandler;
+import edu.harvard.i2b2.ontology.delegate.LoadMetadataHandler;
+import edu.harvard.i2b2.ontology.delegate.LoadSchemesHandler;
+import edu.harvard.i2b2.ontology.delegate.LoadTableAccessHandler;
 import edu.harvard.i2b2.ontology.delegate.RequestHandler;
 import edu.harvard.i2b2.ontology.delegate.SetDblookupHandler;
 import edu.harvard.i2b2.ontology.delegate.UpdateTotalNumHandler;
@@ -1024,6 +1028,94 @@ public class OntologyService {
 
 		// ExecutorRunnable er = new ExecutorRunnable();
 		return execute(new GetModifierCodeInfoHandler(codeInfoDataMsg), waitTime);
+	}
+	
+	
+		
+	public OMElement loadMetadata(OMElement loadElement) throws I2B2Exception {
+
+		OMElement returnElement = null;
+		String ontologyDataResponse = null;
+		String unknownErrorMessage = "Error message delivered from the remote server \n"
+				+ "You may wish to retry your last action";
+
+		if (loadElement == null) {
+			log.error("Incoming Ontology request is null");
+			ResponseMessageType responseMsgType = MessageFactory
+					.doBuildErrorResponse(null, unknownErrorMessage);
+			ontologyDataResponse = MessageFactory
+					.convertToXMLString(responseMsgType);
+			return MessageFactory
+					.createResponseOMElementFromString(ontologyDataResponse);
+		}
+		String requestElementString = loadElement.toString();
+		
+		LoadDataMessage loadDataMsg = new LoadDataMessage(
+				requestElementString);
+		
+		log.info(loadDataMsg.getMetadataLoad().getTableName());
+		long waitTime = 0;
+		if (loadDataMsg.getRequestMessageType() != null) {
+			if (loadDataMsg.getRequestMessageType().getRequestHeader() != null) {
+				waitTime = loadDataMsg.getRequestMessageType()
+						.getRequestHeader().getResultWaittimeMs();
+			}
+		}
+
+		// do Ontology query processing inside thread, so that
+		// service could sends back message with timeout error.
+		// ExecutorRunnable er = new ExecutorRunnable();
+		if(loadDataMsg.getMetadataLoad().getTableName().equals("SCHEMES")) {
+			log.info(requestElementString);
+			return execute(new LoadSchemesHandler(loadDataMsg), waitTime);
+		}
+		else if(loadDataMsg.getMetadataLoad().getTableName().equals("TABLE_ACCESS")) {
+			log.info(requestElementString);
+			return execute(new LoadTableAccessHandler(loadDataMsg), waitTime);
+		}
+		else
+			return execute(new LoadMetadataHandler(loadDataMsg), waitTime);
+
+	}
+	
+	
+	public OMElement checkForTableExistence(OMElement loadElement) throws I2B2Exception {
+
+		OMElement returnElement = null;
+		String ontologyDataResponse = null;
+		String unknownErrorMessage = "Error message delivered from the remote server \n"
+				+ "You may wish to retry your last action";
+
+		if (loadElement == null) {
+			log.error("Incoming Ontology request is null");
+			ResponseMessageType responseMsgType = MessageFactory
+					.doBuildErrorResponse(null, unknownErrorMessage);
+			ontologyDataResponse = MessageFactory
+					.convertToXMLString(responseMsgType);
+			return MessageFactory
+					.createResponseOMElementFromString(ontologyDataResponse);
+		}
+		String requestElementString = loadElement.toString();
+		
+		LoadDataMessage loadDataMsg = new LoadDataMessage(
+				requestElementString);
+		
+		log.info(loadDataMsg.getMetadataLoad().getTableName());
+		long waitTime = 0;
+		if (loadDataMsg.getRequestMessageType() != null) {
+			if (loadDataMsg.getRequestMessageType().getRequestHeader() != null) {
+				waitTime = loadDataMsg.getRequestMessageType()
+						.getRequestHeader().getResultWaittimeMs();
+			}
+		}
+
+		// do Ontology query processing inside thread, so that
+		// service could sends back message with timeout error.
+		// ExecutorRunnable er = new ExecutorRunnable();
+		
+
+		return execute(new CheckMetadataTableHandler(loadDataMsg), waitTime);
+
 	}
 	
 	/** swc20160515

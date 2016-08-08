@@ -56,14 +56,16 @@ public class SetDblookupHandler extends RequestHandler {
 			return response;	
 		}		
 		log.info(dblookupType.getProjectPath() + ", " + dblookupType.getDomainId() + ", " + dblookupType.getOwnerId() + ", " + 
-				 dblookupType.getDbFullschema() + ", " + dblookupType.getDbDatasource() + ", " + dblookupType.getDbServertype());
+				 dblookupType.getDbFullschema() + ", " + dblookupType.getDbDatasource() + ", " + dblookupType.getDbServertype() + ", " + 
+				 dblookupType.getDbNicename());
 		if (null == dblookupType.getDomainId() || dblookupType.getDomainId().trim().equals("") ||
 			null == dblookupType.getProjectPath() || dblookupType.getProjectPath().trim().equals("") ||
 			null == dblookupType.getOwnerId() || dblookupType.getOwnerId().trim().equals("") ||
 			null == dblookupType.getDbFullschema() || dblookupType.getDbFullschema().trim().equals("") ||
 			null == dblookupType.getDbDatasource() || dblookupType.getDbDatasource().trim().equals("") ||
-			null == dblookupType.getDbServertype() || dblookupType.getDbServertype().trim().equals("")) {
-			String fields = "'project_path', 'domain_id', 'owner_id', 'db_fullschema', 'db_datasource', or 'db_servertype' can't be missing or blank!";
+			null == dblookupType.getDbServertype() || dblookupType.getDbServertype().trim().equals("") ||
+			null == dblookupType.getDbNicename() || dblookupType.getDbNicename().trim().equals("")) {
+			String fields = "'project_path', 'domain_id', 'owner_id', 'db_fullschema', 'db_datasource', 'db_servertype', or 'db_nicename' can't be missing or blank!";
 			responseMessageType = MessageFactory.doBuildErrorResponse(msgHdr, fields);
 			response = MessageFactory.convertToXMLString(responseMessageType);
 			log.warn(fields);
