@@ -82,8 +82,8 @@ public class QueryManagerBeanUtil {
 	public static final String SMALL_QUEUE = "SMALL_QUEUE";
 	public static final String MEDIUM_QUEUE = "MEDIUM_QUEUE";
 	public static final String LARGE_QUEUE = "LARGE_QUEUE";
-	public static final String MEDIUM_QUEUE_RUNNING = "MEDIUM_QUEUE";
-	public static final String LARGE_QUEUE_RUNNING = "LARGE_QUEUE";
+	public static final String MEDIUM_QUEUE_RUNNING = "MEDIUM_QUEUE_RUNNING";
+	public static final String LARGE_QUEUE_RUNNING = "LARGE_QUEUE_RUNNING";
 	public static final String RUNNING = "RUNNING";
 	public final static String QUERY_STATUS_PARAM = "QUERY_STATUS_PARAM";
 	public final static String QT_QUERY_RESULT_INSTANCE_ID_PARAM = "QT_QUERY_RESULT_INSTANCE_ID_PARAM";

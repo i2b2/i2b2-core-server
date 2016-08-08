@@ -103,7 +103,7 @@ public class QueryManagerBean{ // implements SessionBean {
 			String sessionId = String.valueOf(System.currentTimeMillis());
 			QueryManagerBeanUtil qmBeanUtil = new QueryManagerBeanUtil();
 			long timeout = qmBeanUtil.getTimeout(xmlRequest);
-
+ 
 			DataSourceLookup dsLookupInput = qmBeanUtil
 					.getDataSourceLookupInput(xmlRequest);
 			SetFinderDAOFactory sfDAOFactory = null;
