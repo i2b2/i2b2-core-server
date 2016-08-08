@@ -61,7 +61,7 @@ public class ExecRunnable implements Runnable{
 
 	private Exception ex = null;
 
-	private String callingMDBName = QueryManagerBeanUtil.SMALL_QUEUE, sessionId = "";
+	private String callingMDBName = QueryManagerBeanUtil.RUNNING, sessionId = "";
 	// default timeout three minutes
 	int transactionTimeout = 0;
 
@@ -94,6 +94,8 @@ public class ExecRunnable implements Runnable{
 		boolean allowLargeTextValueConstrainFlag = true;
 		int queryResultInstanceId = 0;
 
+		QtQueryInstance queryInstance = null;
+		IQueryInstanceDao queryInstanceDao = null;
 		try {
 
 			//    			if (message != null) {
@@ -153,9 +155,9 @@ public class ExecRunnable implements Runnable{
 
 			//try {
 			// check if the status is cancelled
-			IQueryInstanceDao queryInstanceDao = sfDAOFactory
+			 queryInstanceDao = sfDAOFactory
 					.getQueryInstanceDAO();
-			QtQueryInstance queryInstance = queryInstanceDao
+			 queryInstance = queryInstanceDao
 					.getQueryInstanceByInstanceId(queryInstanceId);
 			int queryStatusId = queryInstance.getQtQueryStatusType()
 					.getStatusTypeId();
@@ -174,7 +176,13 @@ public class ExecRunnable implements Runnable{
 				}
 			} else {
 				// set the query instance batch mode to queue name
-				queryInstance.setBatchMode(this.callingMDBName);
+				if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.MEDIUM_QUEUE))
+					queryInstance.setBatchMode(QueryManagerBeanUtil.MEDIUM_QUEUE_RUNNING);
+				else 				if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.LARGE_QUEUE))
+					queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE_RUNNING);
+				else
+					queryInstance.setBatchMode(this.callingMDBName);
+				
 				//queryInstance.setEndDate(new Date(System
 				//		.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
@@ -245,13 +253,21 @@ public class ExecRunnable implements Runnable{
 			setJobCompleteFlag(true);
 			log.debug("Finished Running Query, my queryResultId is : " + queryResultInstanceId);
 
+			queryInstance.setBatchMode(QueryManagerBeanUtil.COMPLETED);
+			queryInstanceDao.update(queryInstance, false);
 			returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "DONE");
 			returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
 		}
 		catch (CRCTimeOutException daoEx) {
 			// catch this error and ignore. send general reply message.
 			log.error(daoEx.getMessage(), daoEx);
-
+			if (queryInstance != null)
+			{
+				queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
+				try {
+				queryInstanceDao.update(queryInstance, false);
+				} catch (Exception e) {}
+			}
 			returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
 			returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
 			setJobCompleteFlag(false);
@@ -277,6 +293,13 @@ public class ExecRunnable implements Runnable{
 
 
 		} catch (Exception e) {
+			if (queryInstance != null)
+			{
+				queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
+				try {
+				queryInstanceDao.update(queryInstance, false);
+				} catch (Exception e2) {}
+			}
 			returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
 			returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
 			setJobCompleteFlag(true);

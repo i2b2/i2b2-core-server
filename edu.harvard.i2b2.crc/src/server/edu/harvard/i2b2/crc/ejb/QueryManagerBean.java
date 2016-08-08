@@ -132,7 +132,7 @@ public class QueryManagerBean{ // implements SessionBean {
 			String groupId = userType.getGroup();
 			String queryInstanceId = queryInstanceDao.createQueryInstance(
 					queryMasterId, userId, groupId,
-					"SMALL_QUEUE", 5);
+					"QUEUED", 5);
 //					QueryExecutorMDB.SMALL_QUEUE, 5);
 			log.debug("New Query instance id " + queryInstanceId);
 
@@ -167,7 +167,10 @@ public class QueryManagerBean{ // implements SessionBean {
 
 			// tm.commit();
 //			transaction.commit();
+			QtQueryInstance queryInstance = queryInstanceDao
+					.getQueryInstanceByInstanceId(queryInstanceId);
 
+			queryInstance.setBatchMode(QueryManagerBeanUtil.PROCESSING);
 			log.debug("getting responsetype");
 			ResultResponseType responseType = executeSqlInQueue(
 					dsLookupInput.getDomainId(),
@@ -198,8 +201,8 @@ public class QueryManagerBean{ // implements SessionBean {
 			masterInstanceResultType.setQueryMaster(queryMasterType);
 
 			// fetch query instance by queryinstance id and build response
-			QtQueryInstance queryInstance = queryInstanceDao
-					.getQueryInstanceByInstanceId(queryInstanceId);
+		//	QtQueryInstance queryInstance = queryInstanceDao
+		//			.getQueryInstanceByInstanceId(queryInstanceId);
 			QueryInstanceType queryInstanceType = PSMFactory
 					.buildQueryInstanceType(queryInstance);
 			// set query instance
