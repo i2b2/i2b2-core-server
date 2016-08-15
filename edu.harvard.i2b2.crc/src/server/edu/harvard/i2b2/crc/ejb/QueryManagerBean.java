@@ -44,6 +44,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryInstanceType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryMasterType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryStatusTypeType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultResponseType;
@@ -230,7 +231,16 @@ public class QueryManagerBean{ // implements SessionBean {
 				e.setValue("RUNNING");
 				stype.getCondition().add(e);
 				responseType1.setStatus(stype);
-			}			
+			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("3"))
+			{
+				QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
+status.setStatusTypeId("3");
+status.setDescription("FINISHED");
+status.setName("FINISHED");
+				queryInstanceType.setQueryStatusType(status);
+				
+				
+			}
 			// set result instance
 			masterInstanceResultType.getQueryResultInstance().addAll(
 					responseType1.getQueryResultInstance());
