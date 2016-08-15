@@ -35,6 +35,7 @@ import edu.harvard.i2b2.crc.datavo.PSMFactory;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.PasswordType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
@@ -238,8 +239,16 @@ status.setStatusTypeId("3");
 status.setDescription("FINISHED");
 status.setName("FINISHED");
 				queryInstanceType.setQueryStatusType(status);
-				
-				
+				QtQueryStatusType status1 = queryInstance.getQtQueryStatusType();
+				status1.setStatusTypeId(3);
+				status1.setName("DONE");
+				status1.setDescription("DONE");
+				queryInstance.setQtQueryStatusType(status1);
+				//masterInstanceResultType.setQueryInstance(queryInstanceType);
+
+				queryInstance.setBatchMode("COMPLETED");
+				queryInstanceDao.update(queryInstance, false);
+
 			}
 			// set result instance
 			masterInstanceResultType.getQueryResultInstance().addAll(
