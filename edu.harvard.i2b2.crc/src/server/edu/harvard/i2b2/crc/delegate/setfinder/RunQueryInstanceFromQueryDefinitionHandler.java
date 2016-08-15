@@ -134,6 +134,9 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 				status.getCondition().add(condition);
 				masterInstanceResponse.setStatus(status);
 				errorFlag = true;
+			} else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("5")) {
+				masterInstanceResponse.setStatus(this.buildCRCStausType(
+						 "ERROR", "ERROR"));
 			} else if (statusType.getStatusTypeId() != null && !statusType.getStatusTypeId().trim().equals("6")) {
 				masterInstanceResponse.setStatus(this.buildCRCStausType(
 						 "RUNNING", "RUNNING"));
