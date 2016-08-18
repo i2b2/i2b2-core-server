@@ -203,6 +203,11 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	public void FindDemographics() throws Exception {
 		String filename = testFileDir + "/find_demographics.xml";
 		String conceptName = "11 years old demo";
+		try {
+		    Thread.sleep(3000);
+		} catch(InterruptedException ex) {
+		    Thread.currentThread().interrupt();
+		}
 		try { 
 			ResponseMessageType r = serviceRequest(getNameInfo, filename);
 			checkResponseStatus(r, "DONE");
