@@ -193,9 +193,9 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 		}
 	}
 
-
-	@Test
 	/*
+	@Test
+	
 	 *  <ns4:get_name_info category="demo" max="200"  hiddens="false" blob="true" type="core">
 	 *      <match_str strategy="contains">11 years old</match_str>
 	 *  </ns4:get_name_info>
