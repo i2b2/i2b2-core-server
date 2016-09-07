@@ -722,10 +722,10 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 			if(dbInfo.getDb_serverType().equals("SQLSERVER"))
 				checkForTableSql = "SELECT count(*) from " + metadataSchema.replace("dbo.", "") + "information_schema.tables where table_name = ?";
 			
-			log.info(checkForTableSql);
+	//		log.info(checkForTableSql);
 			
 			int count = jt.queryForInt(checkForTableSql, tableName)	;
-			log.info(checkForTableSql + " count " + count);
+	//		log.info(checkForTableSql + " count " + count);
 			
 			if(count == 0){
 				String createSql = "CREATE TABLE " + metadataSchema + tableName +
@@ -777,15 +777,19 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 				try {
 					jt.execute(createSql);
 					
-					String index1Sql = " CREATE INDEX META_FULLNAME_IDX ON " + metadataSchema+tableName +"(C_FULLNAME)";
+					String indexTableName = tableName;
+					if (tableName.length() > 8)
+						indexTableName = tableName.substring(0,7);
+					
+					String index1Sql = " CREATE INDEX META_FULLNAME_" + indexTableName + "_IDX ON " + metadataSchema+tableName +"(C_FULLNAME)";
 					jt.execute(index1Sql);
-					String index2Sql = " CREATE INDEX META_APPLIED_PATH_IDX ON "+  metadataSchema+tableName +"(M_APPLIED_PATH)";
+					String index2Sql = " CREATE INDEX META_APPLIED_PATH_" + indexTableName + "_IDX ON "+  metadataSchema+tableName +"(M_APPLIED_PATH)";
 					jt.execute(index2Sql);
-					String index3Sql = " CREATE INDEX META_EXCLUSION_IDX ON " +  metadataSchema+tableName + "(M_EXCLUSION_CD)";
+					String index3Sql = " CREATE INDEX META_EXCLUSION_" + indexTableName + "_IDX ON " +  metadataSchema+tableName + "(M_EXCLUSION_CD)";
 					jt.execute(index3Sql);
-					String index4Sql = " CREATE INDEX META_HLEVEL_IDX ON " +  metadataSchema+tableName + "(C_HLEVEL)";
+					String index4Sql = " CREATE INDEX META_HLEVEL_" + indexTableName + "_IDX ON " +  metadataSchema+tableName + "(C_HLEVEL)";
 					jt.execute(index4Sql);
-					String index5Sql = " CREATE INDEX META_SYNONYM_IDX ON " +  metadataSchema+tableName +"(C_SYNONYM_CD)";
+					String index5Sql = " CREATE INDEX META_SYNONYM_" + indexTableName + "_IDX ON " +  metadataSchema+tableName +"(C_SYNONYM_CD)";
 					jt.execute(index5Sql);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
