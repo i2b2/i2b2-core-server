@@ -81,7 +81,7 @@ public class PSMFactory {
 		queryInstanceType.setGroupId(queryInstance.getGroupId());
 		queryInstanceType
 				.setQueryInstanceId(queryInstance.getQueryInstanceId());
-
+		queryInstanceType.setBatchMode(queryInstance.getBatchMode());
 		if (queryInstance.getStartDate() != null) {
 			queryInstanceType.setStartDate(dtoFactory
 					.getXMLGregorianCalendar(queryInstance.getStartDate()

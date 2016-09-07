@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ont="http://www.i2b2.org/xsd/cell/ont/1.1/"
+    targetNamespace="http://www.i2b2.org/xsd/cell/ont/1.1/">
+    
+    <xs:element name="ontology_catalog" type="ont:ontologyCatalogType"/>
+    
+    
+        <!-- ontologyCatalogType (Top level type) -->			
+    <xs:complexType name="ontologyCatalogType">
+    	  <xs:sequence>
+              <xs:element name="ontology" maxOccurs="unbounded" type="ont:ontologyLoadType" />
+          </xs:sequence>
+     </xs:complexType>
+			
+    <xs:complexType name="ontologyLoadType"> 
+        <xs:sequence>
+            <xs:element name="display_name" type="xs:string"/>	
+            <xs:element name="description" type="xs:string" />   
+            <xs:element name="URL" type="xs:string"/>	
+            <xs:element name="file_name" type="xs:string"/>	
+            <xs:element name="version" type="xs:string"/>	
+            <xs:element name="source" type="xs:string"/>	
+            <xs:element name="file_type" type="xs:string"/>	
+            <xs:element name="file_creation_date" type="xs:string"/>	
+            <xs:element name="contact" type="xs:string"/>	
+            <xs:element name="comments" type="xs:string"/>	
+            <xs:element name="table_name" type="xs:string"/>	
+            <xs:element name="enabled" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+  
+</xs:schema>

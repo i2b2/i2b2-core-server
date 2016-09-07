@@ -35,6 +35,7 @@ import edu.harvard.i2b2.crc.datavo.PSMFactory;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.PasswordType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
@@ -44,6 +45,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryInstanceType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryMasterType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryStatusTypeType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultResponseType;
@@ -103,7 +105,7 @@ public class QueryManagerBean{ // implements SessionBean {
 			String sessionId = String.valueOf(System.currentTimeMillis());
 			QueryManagerBeanUtil qmBeanUtil = new QueryManagerBeanUtil();
 			long timeout = qmBeanUtil.getTimeout(xmlRequest);
-
+ 
 			DataSourceLookup dsLookupInput = qmBeanUtil
 					.getDataSourceLookupInput(xmlRequest);
 			SetFinderDAOFactory sfDAOFactory = null;
@@ -132,7 +134,7 @@ public class QueryManagerBean{ // implements SessionBean {
 			String groupId = userType.getGroup();
 			String queryInstanceId = queryInstanceDao.createQueryInstance(
 					queryMasterId, userId, groupId,
-					"SMALL_QUEUE", 5);
+					"QUEUED", 5);
 //					QueryExecutorMDB.SMALL_QUEUE, 5);
 			log.debug("New Query instance id " + queryInstanceId);
 
@@ -167,7 +169,10 @@ public class QueryManagerBean{ // implements SessionBean {
 
 			// tm.commit();
 //			transaction.commit();
+			QtQueryInstance queryInstance = queryInstanceDao
+					.getQueryInstanceByInstanceId(queryInstanceId);
 
+			queryInstance.setBatchMode(QueryManagerBeanUtil.PROCESSING);
 			log.debug("getting responsetype");
 			ResultResponseType responseType = executeSqlInQueue(
 					dsLookupInput.getDomainId(),
@@ -198,8 +203,8 @@ public class QueryManagerBean{ // implements SessionBean {
 			masterInstanceResultType.setQueryMaster(queryMasterType);
 
 			// fetch query instance by queryinstance id and build response
-			QtQueryInstance queryInstance = queryInstanceDao
-					.getQueryInstanceByInstanceId(queryInstanceId);
+		//	QtQueryInstance queryInstance = queryInstanceDao
+		//			.getQueryInstanceByInstanceId(queryInstanceId);
 			QueryInstanceType queryInstanceType = PSMFactory
 					.buildQueryInstanceType(queryInstance);
 			// set query instance
@@ -227,7 +232,24 @@ public class QueryManagerBean{ // implements SessionBean {
 				e.setValue("RUNNING");
 				stype.getCondition().add(e);
 				responseType1.setStatus(stype);
-			}			
+			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("3"))
+			{
+				QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
+status.setStatusTypeId("3");
+status.setDescription("FINISHED");
+status.setName("FINISHED");
+				queryInstanceType.setQueryStatusType(status);
+				QtQueryStatusType status1 = queryInstance.getQtQueryStatusType();
+				status1.setStatusTypeId(3);
+				status1.setName("DONE");
+				status1.setDescription("DONE");
+				queryInstance.setQtQueryStatusType(status1);
+				//masterInstanceResultType.setQueryInstance(queryInstanceType);
+
+				queryInstance.setBatchMode("COMPLETED");
+				queryInstanceDao.update(queryInstance, false);
+
+			}
 			// set result instance
 			masterInstanceResultType.getQueryResultInstance().addAll(
 					responseType1.getQueryResultInstance());
