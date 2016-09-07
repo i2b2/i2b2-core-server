@@ -68,7 +68,7 @@ public class ProcessQueue implements Runnable{
 			log.debug("My DBserver is: " + qpUtil.getCRCDBLookupServerType());
 			log.debug("My source is: " + qpUtil.getCRCDBLookupDataSource());
 			log.debug("My schemaName is: " + qpUtil.getCRCDBLookupSchemaName());
- 
+
 
 			DataSourceLookupDAO dsLookupDao =  DataSourceLookupDAOFactory.getDataSourceLookupDAO();
 			log.debug("My dslookupis " + dsLookupDao);
@@ -219,7 +219,7 @@ public class ProcessQueue implements Runnable{
 										}
 										else if (queue.equals(QueryManagerBeanUtil.LARGE_QUEUE))
 										{
-											queryInstance.setBatchMode("NEVER_FINISHED");
+											queryInstance.setBatchMode("NO_MORE_QUEUE");
 
 											queryInstance.setEndDate(new Date(System
 													.currentTimeMillis()));
@@ -255,7 +255,7 @@ public class ProcessQueue implements Runnable{
 									}
 									else if (queue.equals(QueryManagerBeanUtil.LARGE_QUEUE))
 									{
-										queryInstance.setBatchMode("NEVER_FINISHED");
+										queryInstance.setBatchMode("NO_MORE_QUEUE");
 
 										queryInstance.setEndDate(new Date(System
 												.currentTimeMillis()));
