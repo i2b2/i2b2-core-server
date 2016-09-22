@@ -294,6 +294,11 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	public void validatesiteid() throws Exception {
 		String filename = testFileDir + "/validate_site.xml";
 		try { 
+			try {
+				Thread.sleep(3000);
+			} catch(InterruptedException ex) {
+				Thread.currentThread().interrupt();
+			}
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
 			OMElement responseElement = getServiceClient(imTargetEPR + validateSiteId).sendReceive(requestElement);
@@ -311,7 +316,11 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 			//assertEquals(condition.getType(),"DONE","checking crc message status 'DONE'");
 			assertTrue("checking patient set size = 2 ",patientDataResponseType.getPatientData().getPidSet().getPid().get(0).getPatientMapId().size()==2);
 			//System.out.println(patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().get(0).getPatientId().getSource());
-
+			try {
+				Thread.sleep(3000);
+			} catch(InterruptedException ex) {
+				Thread.currentThread().interrupt();
+			}
 			
 			boolean found = false;
 			for (PatientMapId results : patientDataResponseType.getPatientData().getPidSet().getPid().get(0).getPatientMapId())
@@ -322,6 +331,11 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 				}
 			}
 			assertTrue(found);
+			try {
+				Thread.sleep(3000);
+			} catch(InterruptedException ex) {
+				Thread.currentThread().interrupt();
+			}
 			 found = false;
 				for (PatientMapId results : patientDataResponseType.getPatientData().getPidSet().getPid().get(0).getPatientMapId())
 			{

@@ -219,6 +219,11 @@ public abstract class RequestHandler {
 
 				}
 
+				if (configureType.getUser().isIsAdmin())
+				{
+					 projectType =  new ProjectType();
+					projectType.getRole().add("ADMIN");
+				}
 				//	projectType = pmConfigure.getUser().getProject().get(0);
 			} catch (AxisFault e) {
 				log.error("Cant connect to PM service");

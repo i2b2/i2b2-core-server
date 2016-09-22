@@ -194,12 +194,12 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 
 
-	@Test
+	
 	/*
 	 *  <ns4:get_name_info category="demo" max="200"  hiddens="false" blob="true" type="core">
 	 *      <match_str strategy="contains">11 years old</match_str>
 	 *  </ns4:get_name_info>
-	 */
+	@Test 
 	public void FindDemographics() throws Exception {
 		String filename = testFileDir + "/find_demographics.xml";
 		String conceptName = "11 years old demo";
@@ -212,7 +212,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 			assertTrue(false);
 		}
 	}
-
+	*/
 	@Test
 	public void FindWithCategoryMissing() throws Exception {
 		String filename1 = testFileDir + "/find_category_validation_1.xml"; // category="" in request xml

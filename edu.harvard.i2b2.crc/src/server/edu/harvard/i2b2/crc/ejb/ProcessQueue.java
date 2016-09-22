@@ -219,7 +219,7 @@ public class ProcessQueue implements Runnable{
 										}
 										else if (queue.equals(QueryManagerBeanUtil.LARGE_QUEUE))
 										{
-											queryInstance.setBatchMode("NO_MORE_QUEUE");
+											queryInstance.setBatchMode("NEVER_FINISHED");
 
 											queryInstance.setEndDate(new Date(System
 													.currentTimeMillis()));
@@ -255,7 +255,7 @@ public class ProcessQueue implements Runnable{
 									}
 									else if (queue.equals(QueryManagerBeanUtil.LARGE_QUEUE))
 									{
-										queryInstance.setBatchMode("NO_MORE_QUEUE");
+										queryInstance.setBatchMode("NEVER_FINISHED");
 
 										queryInstance.setEndDate(new Date(System
 												.currentTimeMillis()));
