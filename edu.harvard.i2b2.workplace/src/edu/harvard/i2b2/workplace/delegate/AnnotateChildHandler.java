@@ -75,7 +75,8 @@ public class AnnotateChildHandler extends RequestHandler {
 			}
 			else {
 				MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(annotateChildMsg.getMessageHeaderType());          
-				responseMessageType = MessageFactory.createBuildResponse(messageHeader, null);
+//				responseMessageType = MessageFactory.createBuildResponse(messageHeader, null);
+				responseMessageType = MessageFactory.createBuildResponse(messageHeader);
 			}
 		}
         String responseWdo = null;

@@ -75,7 +75,8 @@ public class RenameChildHandler extends RequestHandler {
 			}
 			else {
 				MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(renameChildMsg.getMessageHeaderType());          
-				responseMessageType = MessageFactory.createBuildResponse(messageHeader, null);
+//				responseMessageType = MessageFactory.createBuildResponse(messageHeader, null);
+				responseMessageType = MessageFactory.createBuildResponse(messageHeader);
 			}
 		}
         String responseWdo = null;

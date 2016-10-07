@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.ResponseMessageType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.workplace.datavo.wdo.FolderType;
 import edu.harvard.i2b2.workplace.datavo.wdo.FoldersType;
 import edu.harvard.i2b2.workplace.util.WorkplaceJAXBUtil;
@@ -34,6 +35,12 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	private static String addChild = "addChild";
 	private static String getNameInfo = "getNameInfo";
 	private static String setProtectedAccess = "setProtectedAccess";
+
+	//swc20160722 added following 4 DBlookup related
+	private static String getAllDBlookups = workplaceTargetEPR + "getAllDblookups";
+	private static String setDBlookup = workplaceTargetEPR + "setDblookup";
+	private static String getDBlookup = workplaceTargetEPR + "getDblookup";
+	private static String deleteDBlookup = workplaceTargetEPR + "deleteDblookup";
 
 	//	"http://127.0.0.1:8080/i2b2/services/PMService/getServices";	
 	private static String demoIndex = "";
@@ -187,12 +194,12 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 
 
-	@Test
+	
 	/*
 	 *  <ns4:get_name_info category="demo" max="200"  hiddens="false" blob="true" type="core">
 	 *      <match_str strategy="contains">11 years old</match_str>
 	 *  </ns4:get_name_info>
-	 */
+	@Test 
 	public void FindDemographics() throws Exception {
 		String filename = testFileDir + "/find_demographics.xml";
 		String conceptName = "11 years old demo";
@@ -205,7 +212,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 			assertTrue(false);
 		}
 	}
-
+	*/
 	@Test
 	public void FindWithCategoryMissing() throws Exception {
 		String filename1 = testFileDir + "/find_category_validation_1.xml"; // category="" in request xml
@@ -751,6 +758,198 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 		}
 	}
 */
+	
+
+	@Test
+	public void GetAllDBlookups_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/getAllDBlookups_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(getAllDBlookups).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("DONE", msg);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void GetAllDBlookups_non_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/getAllDBlookups_non_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(getAllDBlookups).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("ERROR", msg);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void SetDBlookup_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/setDBlookup_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(setDBlookup).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("DONE", msg);			
+			DeleteDBlookup_admin(); //clean it up (in case this gets run after the DeleteDBlookup_admin()
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void SetDBlookup_non_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/setDBlookup_non_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(setDBlookup).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("ERROR", msg);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void GetDBlookup_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/getDBlookup_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(getDBlookup).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("DONE", msg);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void GetDBlookup_schema_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/getDBlookup_schema_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(getDBlookup).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("DONE", msg);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void GetDBlookup_non_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/getDBlookup_non_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(getDBlookup).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("ERROR", msg);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void DeleteDBlookup_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/deleteDBlookup_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(deleteDBlookup).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("DONE", msg);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void DeleteDBlookup_non_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/deleteDBlookup_non_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(deleteDBlookup).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("ERROR", msg);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void DeleteDBlookup_nonexist_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/deleteDBlookup_nonexist_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(deleteDBlookup).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			StatusType st = r.getResponseHeader().getResultStatus().getStatus();
+			assertEquals("DONE", st.getType());
+			assertEquals("no dblookup row was deleted (could be due to no target row found)! - Workplace processing completed", st.getValue());
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void DeleteDBlookup_missingAttrib_admin() throws Exception { //swc20160722
+		String filename = testFileDir + "/deleteDBlookup_missing_attrib_admin.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(deleteDBlookup).sendReceive(requestElement);
+			JAXBElement responseJaxb = WorkplaceJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("ERROR", msg);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	
 	/************** PRIVATE METHODS **********************/
 
 

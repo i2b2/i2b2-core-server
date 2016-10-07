@@ -72,6 +72,32 @@ public class GetUserConfigurationRequestMessage extends ProjectManagementRequest
 			return requestString;
 		}
 		
+
+		/**
+		 * Function to build PM Request message type and return it as an XML string
+		 * 
+		 * @param GetUserConfigurationType (user config data)
+		 * 		  MessageHeaderType
+		 * 		  boolean (not used, only to render this method different from the previous one)
+		 * @return A String data type containing the PM RequestMessage in XML format
+		 */
+		public String buildXML(GetUserConfigurationType userConfig, MessageHeaderType header) { 
+			String requestString = null;
+			try {
+				MessageHeaderType messageHeader = getMessageHeader(); 				
+				messageHeader.setSecurity(header.getSecurity());
+				messageHeader.setProjectId(header.getProjectId());				
+				RequestHeaderType reqHeader = getRequestHeader();
+				BodyType bodyType = getBodyType(userConfig);
+				RequestMessageType reqMessageType = getRequestMessageType(messageHeader, reqHeader, bodyType);
+				requestString = getXMLString(reqMessageType);
+			} catch (JAXBUtilException e) {
+				log.error(e.getMessage());
+			} 
+			return requestString;
+		}
+
+		
 		/**
 		 * Function to convert Ont Request message type to an XML string
 		 * 

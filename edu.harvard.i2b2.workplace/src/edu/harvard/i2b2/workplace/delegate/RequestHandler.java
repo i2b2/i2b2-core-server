@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.MessageHeaderType;
-import edu.harvard.i2b2.workplace.datavo.i2b2message.PasswordType;
+//import edu.harvard.i2b2.workplace.datavo.i2b2message.PasswordType;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.workplace.datavo.pm.CellDataType;
@@ -40,6 +40,28 @@ public abstract class RequestHandler {
 		return securityType;
 	}
 
+    
+    //swc20160519
+    public boolean isAdmin(MessageHeaderType header) {
+		try {
+			GetUserConfigurationType userConfigType = new GetUserConfigurationType();
+			String response = PMServiceDriver.getRoles(userConfigType, header);		
+			log.debug(response);
+			PMResponseMessage msg = new PMResponseMessage();
+			StatusType procStatus = msg.processResult(response);
+			if(procStatus.getType().equals("ERROR")) return false;
+			ConfigureType pmConfigure = msg.readUserInfo();
+			if (pmConfigure.getUser().isIsAdmin()) return true;
+		} catch (AxisFault e) {
+				log.error("Can't connect to PM service");
+		} catch (I2B2Exception e) {
+				log.error("Problem processing PM service address");
+		} catch (Exception e) {
+				log.error("General PM processing problem: "+ e.getMessage());
+		}
+		return false;
+    }        
+    
 
 	public ProjectType getRoleInfo(MessageHeaderType header) 
     {

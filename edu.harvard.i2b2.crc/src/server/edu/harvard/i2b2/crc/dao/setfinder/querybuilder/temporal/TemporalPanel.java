@@ -1332,6 +1332,13 @@ public class TemporalPanel implements Comparable<Object> {
 
 		StringBuilder panelSql = new StringBuilder();
 		boolean addDelimiter = false;
+		StringBuilder tempItemSql = new StringBuilder();
+		
+		boolean useTempTables = false;
+		if (parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER)
+				&& parent.getQueryOptions().getQueryConstraintLogic() == QueryConstraintStrategy.TEMP_TABLES) {
+			useTempTables = true;
+		}
 
 		for (String itemSql : itemSqlList) {
 
@@ -1368,22 +1375,67 @@ public class TemporalPanel implements Comparable<Object> {
 				if (oldPanelIndex<0)
 					oldPanelIndex = 0;
 
-				nonFirstPanelItemSql += " update " + tempTableName
+				if (useTempTables){
+					String suffix = "";
+					
+					nonFirstPanelItemSql += parent.buildTempTableCheckDrop("t" + suffix);
+					nonFirstPanelItemSql += parent.getSqlDelimiter();
+			
+					nonFirstPanelItemSql += buildSelectIntoStatement(itemSql, "t");
+					nonFirstPanelItemSql += parent.getSqlDelimiter();
+					
+					nonFirstPanelItemSql += " update " + tempTableName
+							+ " set panel_count = -1 " + " where " + tempTableName
+							+ ".panel_count =  " + oldPanelIndex + " and exists ( "
+							+ "select 1 " + "from #t t " + "where "
+							+ tempTableName + ".patient_num = t.patient_num "
+							+ encounterNumClause + instanceNumClause + " )  ";
+					
+					nonFirstPanelItemSql += parent.getSqlDelimiter();
+					nonFirstPanelItemSql += parent.buildTempTableCheckDrop("t" + suffix);
+			
+				}
+				else {
+					nonFirstPanelItemSql += " update " + tempTableName
 						+ " set panel_count = -1 " + " where " + tempTableName
 						+ ".panel_count =  " + oldPanelIndex + " and exists ( "
 						+ "select 1 " + "from (" + itemSql + ") t " + "where "
 						+ tempTableName + ".patient_num = t.patient_num "
 						+ encounterNumClause + instanceNumClause + " )  ";
+				}
 
 			} else {
-
-				nonFirstPanelItemSql += "update " + tempTableName
-						+ " set panel_count =" + panelIndex + " where "
-						+ tempTableName + ".panel_count =  " + oldPanelIndex
-						+ " and exists ( " + "select 1 " + "from (" + itemSql
-						+ ") t " + "where " + tempTableName
-						+ ".patient_num = t.patient_num " + encounterNumClause
-						+ instanceNumClause + " ) ";
+				
+				if (useTempTables){
+					String suffix = "";
+					
+					nonFirstPanelItemSql += parent.buildTempTableCheckDrop("t" + suffix);
+					nonFirstPanelItemSql += parent.getSqlDelimiter();
+			
+					nonFirstPanelItemSql += buildSelectIntoStatement(itemSql, "t");
+					nonFirstPanelItemSql += parent.getSqlDelimiter();
+					
+					nonFirstPanelItemSql += "update " + tempTableName
+							+ " set panel_count =" + panelIndex + " where "
+							+ tempTableName + ".panel_count =  " + oldPanelIndex
+							+ " and exists ( " + "select 1 " + "from #t"
+							+ " t " + "where " + tempTableName
+							+ ".patient_num = t.patient_num " + encounterNumClause
+							+ instanceNumClause + " ) ";
+					
+					nonFirstPanelItemSql += parent.getSqlDelimiter();
+					nonFirstPanelItemSql += parent.buildTempTableCheckDrop("t" + suffix);
+			
+				}
+				else {
+					nonFirstPanelItemSql += "update " + tempTableName
+							+ " set panel_count =" + panelIndex + " where "
+							+ tempTableName + ".panel_count =  " + oldPanelIndex
+							+ " and exists ( " + "select 1 " + "from (" + itemSql
+							+ ") t " + "where " + tempTableName
+							+ ".patient_num = t.patient_num " + encounterNumClause
+							+ instanceNumClause + " ) ";
+				}
 			}
 			if (addDelimiter) {
 				panelSql.append(parent.getSqlDelimiter());

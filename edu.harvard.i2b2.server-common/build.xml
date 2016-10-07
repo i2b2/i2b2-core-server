@@ -76,14 +76,16 @@
 		<!-- copy jar to jboss lib -->
 		<antcall target="copy_jdbc_jar" />
 		<antcall target="copy_app_jar" />
-				
+		
+		<!--		
 		<echo> Copying axis2.xml to conf directory</echo>
 		<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/conf">
 			<fileset dir="${etc}/axis2">
 				<include name="axis2.xml" />
 			</fileset>
 		</copy>
-		
+	  	-->
+	
 		<!-- copy endosed jar to jboss endorsed lib 
 		<antcall target="copy_endosed_jar" />
 		<echo> Copying axis2.xml to conf directory</echo>
@@ -108,6 +110,31 @@
 			<fileset dir="${lib}/jdbc" includes="postgresql-9.2-1002.jdbc4.jar"/>
 		</copy>
 	</target>
+	
+	<target name="copy_new_jdbc_jar">
+			<echo>Copying to ${jboss.home} directory</echo>
+			<delete file="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib/ojdbc6.jar"/>
+			<delete file="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib/sqljdbc4.jar"/>
+			<delete file="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib/postgresql-9.2-1002.jdbc4.jar"/>
+			<delete file="${jboss.home}/standalone/deployments/ojdbc6.jar"/>
+			<delete file="${jboss.home}/standalone/deployments/sqljdbc4.jar"/>
+			<delete file="${jboss.home}/standalone/deployments/postgresql-9.2-1002.jdbc4.jar"/>
+			<delete file="${jboss.home}/standalone/deployments/ojdbc6.jar.dodeploy"/>
+			<delete file="${jboss.home}/standalone/deployments/sqljdbc4.jar.dodeploy"/>
+			<delete file="${jboss.home}/standalone/deployments/postgresql-9.2-1002.jdbc4.jar.dodeploy"/>
+			
+			<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib">
+				<fileset dir="${lib}/jdbc" includes="ojdbc7.jar" />
+				<fileset dir="${lib}/jdbc" includes="sqljdbc42.jar"/>
+				<fileset dir="${lib}/jdbc" includes="postgresql-9.4.1209.jar"/>
+			</copy>
+			<copy todir="${jboss.home}/standalone/deployments">
+				<fileset dir="${lib}/jdbc" includes="ojdbc7.jar" />
+				<fileset dir="${lib}/jdbc" includes="sqljdbc42.jar"/>
+			<fileset dir="${lib}/jdbc" includes="postgresql-9.4.1209.jar"/>
+			</copy>
+
+		</target>
 	
 	<target name="copy_app_jar">
 		<echo>Copying to ${jboss.home} directory</echo>

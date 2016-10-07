@@ -7,6 +7,7 @@
  * Contributors:
  * 		Raj Kuttan
  * 		Lori Phillips
+ * 		Wayne Chan
  */
 package edu.harvard.i2b2.im.ws;
 
@@ -19,8 +20,16 @@ import edu.harvard.i2b2.im.delegate.SetKeyHandlerHandler;
 import edu.harvard.i2b2.im.delegate.ValidationHandlerHandler;
 import edu.harvard.i2b2.im.ws.ExecutorRunnable;
 import edu.harvard.i2b2.im.ws.MessageFactory;
-import edu.harvard.i2b2.im.datavo.i2b2message.MessageHeaderType;
-import edu.harvard.i2b2.im.datavo.i2b2message.ResponseHeaderType;
+import edu.harvard.i2b2.im.delegate.DeleteDblookupHandler;
+import edu.harvard.i2b2.im.delegate.GetAllDblookupsHandler;
+import edu.harvard.i2b2.im.delegate.GetDblookupHandler;
+import edu.harvard.i2b2.im.delegate.SetDblookupHandler;
+import edu.harvard.i2b2.im.ws.DeleteDblookupDataMessage;
+import edu.harvard.i2b2.im.ws.GetAllDblookupsDataMessage;
+import edu.harvard.i2b2.im.ws.GetDblookupDataMessage;
+import edu.harvard.i2b2.im.ws.SetDblookupDataMessage;
+//import edu.harvard.i2b2.im.datavo.i2b2message.MessageHeaderType;
+//import edu.harvard.i2b2.im.datavo.i2b2message.ResponseHeaderType;
 import edu.harvard.i2b2.im.datavo.i2b2message.ResponseMessageType;
 
 import org.apache.axiom.om.OMElement;
@@ -42,7 +51,7 @@ public class IMService {
     public OMElement validateSiteId(OMElement requestElement) throws Exception {
     	log.debug("In Validate Site ID");
 
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -77,7 +86,7 @@ public class IMService {
     public OMElement pdorequest(OMElement requestElement) throws Exception {
     	log.debug("In pdorequest");
 
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -112,7 +121,7 @@ public class IMService {
     public OMElement setKey(OMElement requestElement) throws Exception {
     	log.debug("In setKey");
 
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -146,7 +155,7 @@ public class IMService {
     public OMElement isKeySet(OMElement requestElement) throws Exception {
     	log.debug("In Is Key Set");
 
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -181,7 +190,7 @@ public class IMService {
     public OMElement getAudit(OMElement requestElement) throws Exception {
     	log.debug("In Get Audit");
 
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -299,5 +308,140 @@ public class IMService {
 
         	return returnElement;
         }
+
     
+	/** swc20160520
+	 * This function is main webservice interface to get the I2B2HIVE.IM_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllDblookupsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement getAllDblookups(OMElement getAllDblookupsElement) throws I2B2Exception {
+		log.info("getAllDblookups");
+		String wpDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getAllDblookupsElement) {
+			log.error("Incoming IM request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			wpDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(wpDataResponse);
+		}
+		String requestElementString = getAllDblookupsElement.toString();
+		GetAllDblookupsDataMessage dblookupsDataMsg = new GetAllDblookupsDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupsDataMsg.getRequestMessageType()) {
+			if (null != dblookupsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		log.info("relaying to data handler to process data type");
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new GetAllDblookupsHandler(dblookupsDataMsg), waitTime);
+	}
+	
+	/** swc20160520
+	 * This function is main webservice interface to get specific I2B2HIVE.IM_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getDblookupElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement getDblookup(OMElement getDblookupElement) throws I2B2Exception {
+		String wpDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getDblookupElement) {
+			log.error("Incoming IM request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			wpDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(wpDataResponse);
+		}
+		String requestElementString = getDblookupElement.toString();
+		GetDblookupDataMessage dblookupDataMsg = new GetDblookupDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupDataMsg.getRequestMessageType()) {
+			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new GetDblookupHandler(dblookupDataMsg), waitTime);
+	}
+	
+	/** swc20160520
+	 * This function is main webservice interface to add a new entry to the I2B2HIVE.IM_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllDblookupsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement setDblookup(OMElement setDblookupElement) throws I2B2Exception {
+		String wpDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == setDblookupElement) {
+			log.error("Incoming IM request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			wpDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(wpDataResponse);
+		}
+		String requestElementString = setDblookupElement.toString();
+		SetDblookupDataMessage dblookupDataMsg = new SetDblookupDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupDataMsg.getRequestMessageType()) {
+			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new SetDblookupHandler(dblookupDataMsg), waitTime);
+	}
+	
+	/** swc20160520
+	 * This function is main webservice interface to delete specific I2B2HIVE.IM_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            deleteDblookupElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement deleteDblookup(OMElement deleteDblookupElement) throws I2B2Exception {
+		String wpDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == deleteDblookupElement) {
+			log.error("Incoming IM request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			wpDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(wpDataResponse);
+		}
+		String requestElementString = deleteDblookupElement.toString();
+		DeleteDblookupDataMessage dblookupDataMsg = new DeleteDblookupDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupDataMsg.getRequestMessageType()) {
+			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new DeleteDblookupHandler(dblookupDataMsg), waitTime);
+	}
+	    
 }

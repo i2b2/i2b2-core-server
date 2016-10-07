@@ -191,7 +191,15 @@ public class PatientListTypeHandler extends CRCDAO implements
 			// this.getEnumerationList();
 			String tempTableName = this.getTempTableName();
 
-			sqlString = " select char_param1 from " + tempTableName + "  ";
+			if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.POSTGRESQL))
+			{
+			sqlString = " select cast(char_param1 as integer) from " + tempTableName + "  ";
+			}
+			else {
+				sqlString = " select char_param1 from " + tempTableName + "  ";
+
+			}
 		} else if (patientListType.getEntirePatientSet() != null) {
 			// by default get first 100 rows
 			if ((minIndex == 0) && (maxIndex == 0)) {
@@ -339,11 +347,19 @@ public class PatientListTypeHandler extends CRCDAO implements
 
 		String tempTableName = this.getTempTableName();
 		deleteTempTableFlag = true;
+		deleteTempTable(conn);
 		// create temp table
 		java.sql.Statement tempStmt = conn.createStatement();
 		if (dataSourceLookup.getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.SQLSERVER)) {
 			String createTempInputListTable = "create table "
+					+ getTempTableName()
+					+ " (set_index int, char_param1 varchar(100) )";
+			tempStmt.executeUpdate(createTempInputListTable);
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL))
+		{
+			String createTempInputListTable = "create temp table "
 					+ getTempTableName()
 					+ " (set_index int, char_param1 varchar(100) )";
 			tempStmt.executeUpdate(createTempInputListTable);
@@ -405,7 +421,7 @@ public class PatientListTypeHandler extends CRCDAO implements
 						"delete " + getTempTableName());
 			}
 		} catch (SQLException sqle) {
-			throw sqle;
+			//throw sqle;
 		} finally {
 			try {
 				deleteStmt.close();
@@ -422,6 +438,10 @@ public class PatientListTypeHandler extends CRCDAO implements
 				DAOFactoryHelper.ORACLE)) {
 			tempTableName = this.getDbSchemaName()
 					+ FactRelatedQueryHandler.TEMP_PARAM_TABLE;
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL)) {
+			tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
+			
 		} else {
 			tempTableName = this.getDbSchemaName()
 					+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
