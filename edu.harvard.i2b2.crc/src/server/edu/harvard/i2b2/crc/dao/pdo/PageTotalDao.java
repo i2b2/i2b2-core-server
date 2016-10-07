@@ -244,6 +244,7 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 	private void upLoadTempTableForMin(Connection conn,
 			IInputOptionListHandler inputOptionListHandler) throws SQLException {
 		List<String> enumList = inputOptionListHandler.getEnumerationList();
+		deleteTempTable(conn);
 		// create temp table
 		java.sql.Statement tempStmt = conn.createStatement();
 		String createTempInputListTable = "create table "

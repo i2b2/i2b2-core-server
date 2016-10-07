@@ -11,6 +11,14 @@
 package edu.harvard.i2b2.workplace.ws;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.workplace.delegate.DeleteDblookupHandler;
+import edu.harvard.i2b2.workplace.delegate.GetAllDblookupsHandler;
+import edu.harvard.i2b2.workplace.delegate.GetDblookupHandler;
+import edu.harvard.i2b2.workplace.delegate.SetDblookupHandler;
+import edu.harvard.i2b2.workplace.ws.DeleteDblookupDataMessage;
+import edu.harvard.i2b2.workplace.ws.GetAllDblookupsDataMessage;
+import edu.harvard.i2b2.workplace.ws.GetDblookupDataMessage;
+import edu.harvard.i2b2.workplace.ws.SetDblookupDataMessage;
 import edu.harvard.i2b2.workplace.delegate.RequestHandler;
 import edu.harvard.i2b2.workplace.ws.ExecutorRunnable;
 import edu.harvard.i2b2.workplace.ws.MessageFactory;
@@ -63,7 +71,7 @@ public class WorkplaceService {
     public OMElement getChildren(OMElement getChildrenElement) 
         throws I2B2Exception {
 
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -115,7 +123,7 @@ public class WorkplaceService {
     public OMElement getFoldersByProject(OMElement getFoldersElement)
         throws Exception {
     	
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -155,7 +163,7 @@ public class WorkplaceService {
     public OMElement getFoldersByUserId(OMElement getFoldersElement) 
     throws Exception {
     	
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     	"You may wish to retry your last action";
@@ -246,7 +254,7 @@ public class WorkplaceService {
 
     
     public OMElement deleteChild(OMElement deleteNodeElement)throws Exception {
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -283,7 +291,7 @@ public class WorkplaceService {
     
     
     public OMElement moveChild(OMElement nodeElement)throws Exception {
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -319,7 +327,7 @@ public class WorkplaceService {
     
     
     public OMElement renameChild(OMElement renameNodeElement) throws Exception {
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -355,7 +363,7 @@ public class WorkplaceService {
     }    
     
     public OMElement annotateChild(OMElement annotateNodeElement) throws Exception {
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -392,7 +400,7 @@ public class WorkplaceService {
 
     public OMElement exportChild(OMElement aexportNodeElement) throws Exception {
     	log.debug("In export Child");
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -430,7 +438,7 @@ public class WorkplaceService {
 
     
     public OMElement addChild(OMElement addNodeElement) throws Exception {
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -467,7 +475,7 @@ public class WorkplaceService {
     
     public OMElement setProtectedAccess(OMElement requestElement) throws Exception {
     	    	
-    	OMElement returnElement = null;
+//    	OMElement returnElement = null;
     	String workplaceDataResponse = null;
     	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
     			"You may wish to retry your last action";
@@ -584,4 +592,137 @@ public class WorkplaceService {
         	return returnElement;
         }
     
+	/** swc20160519
+	 * This function is main webservice interface to get the I2B2HIVE.WORK_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllDblookupsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement getAllDblookups(OMElement getAllDblookupsElement) throws I2B2Exception {
+		log.info("getAllDblookups");
+		String wpDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getAllDblookupsElement) {
+			log.error("Incoming Workplace request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			wpDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(wpDataResponse);
+		}
+		String requestElementString = getAllDblookupsElement.toString();
+		GetAllDblookupsDataMessage dblookupsDataMsg = new GetAllDblookupsDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupsDataMsg.getRequestMessageType()) {
+			if (null != dblookupsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new GetAllDblookupsHandler(dblookupsDataMsg), waitTime);
+	}
+	
+	/** swc20160519
+	 * This function is main webservice interface to get specific I2B2HIVE.WORK_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getDblookupElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement getDblookup(OMElement getDblookupElement) throws I2B2Exception {
+		String wpDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getDblookupElement) {
+			log.error("Incoming Workplace request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			wpDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(wpDataResponse);
+		}
+		String requestElementString = getDblookupElement.toString();
+		GetDblookupDataMessage dblookupDataMsg = new GetDblookupDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupDataMsg.getRequestMessageType()) {
+			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new GetDblookupHandler(dblookupDataMsg), waitTime);
+	}
+	
+	/** swc20160519
+	 * This function is main webservice interface to add a new entry to the I2B2HIVE.WORK_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllDblookupsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement setDblookup(OMElement setDblookupElement) throws I2B2Exception {
+		String wpDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == setDblookupElement) {
+			log.error("Incoming Workplace request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			wpDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(wpDataResponse);
+		}
+		String requestElementString = setDblookupElement.toString();
+		SetDblookupDataMessage dblookupDataMsg = new SetDblookupDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupDataMsg.getRequestMessageType()) {
+			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new SetDblookupHandler(dblookupDataMsg), waitTime);
+	}
+	
+	/** swc20160519
+	 * This function is main webservice interface to delete specific I2B2HIVE.WORK_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            deleteDblookupElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement deleteDblookup(OMElement deleteDblookupElement) throws I2B2Exception {
+		String wpDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == deleteDblookupElement) {
+			log.error("Incoming Workplace request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			wpDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(wpDataResponse);
+		}
+		String requestElementString = deleteDblookupElement.toString();
+		DeleteDblookupDataMessage dblookupDataMsg = new DeleteDblookupDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupDataMsg.getRequestMessageType()) {
+			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new DeleteDblookupHandler(dblookupDataMsg), waitTime);
+	}
+	
 }

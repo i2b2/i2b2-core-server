@@ -6,6 +6,7 @@
  * 
  * Contributors: 
  *     Rajesh Kuttan
+ *     Wayne Chan
  */
 package edu.harvard.i2b2.crc.axis2;
 
@@ -32,7 +33,19 @@ import edu.harvard.i2b2.crc.loader.delegate.BulkLoadRequestHandler;
 import edu.harvard.i2b2.crc.loader.delegate.GetLoadStatusRequestHandler;
 import edu.harvard.i2b2.crc.loader.delegate.LoaderQueryRequestDelegate;
 import edu.harvard.i2b2.crc.loader.delegate.PublishDataRequestHandler;
-import edu.harvard.i2b2.crc.loader.ws.ProviderRestService;
+//import edu.harvard.i2b2.crc.loader.ws.ProviderRestService;
+import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
+import edu.harvard.i2b2.crc.delegate.DbLookupReqHandler;
+//import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
+import edu.harvard.i2b2.crc.delegate.DeleteDblookupHandler;
+import edu.harvard.i2b2.crc.delegate.GetAllDblookupsHandler;
+import edu.harvard.i2b2.crc.delegate.GetDblookupHandler;
+import edu.harvard.i2b2.crc.delegate.SetDblookupHandler;
+import edu.harvard.i2b2.crc.axis2.DeleteDblookupDataMessage;
+import edu.harvard.i2b2.crc.axis2.GetAllDblookupsDataMessage;
+import edu.harvard.i2b2.crc.axis2.GetDblookupDataMessage;
+import edu.harvard.i2b2.crc.axis2.MessageFactory;
+import edu.harvard.i2b2.crc.axis2.SetDblookupDataMessage;
 
 /**
  * <b>Axis2's service class<b>
@@ -172,6 +185,197 @@ public class QueryService {
 		return responseElement;
 
 	}	
+	
+    
+	//swc20160523 copied from edu.harvard.i2b2.im/src/edu/harvard/i2b2/im/ws/IMService.java
+    private OMElement execute(DbLookupReqHandler handler, long waitTime) throws I2B2Exception {
+        //do processing inside thread, so that service could send back message with timeout error.  
+    	OMElement returnElement = null;   	
+        String unknownErrorMessage = "Error message delivered from the remote server \nYou may wish to retry your last action";  
+        ExecutorRunnable er = new ExecutorRunnable();        
+        er.setDbLookupReqHandler(handler);
+        Thread t = new Thread(er);
+        String dataResponse = null;
+        log.info("waiting " + waitTime + "ms for response from remote server processing " + handler.getClass().getName());
+        synchronized (t) {
+        	t.start();
+        	try {
+        		long startTime = System.currentTimeMillis();
+        		long deltaTime = -1;
+        		while((er.isJobCompleteFlag() == false) && (deltaTime < waitTime)) {
+        			if (waitTime > 0) {
+        				t.wait(waitTime - deltaTime);
+        				deltaTime = System.currentTimeMillis() - startTime;
+        			} else {
+       					t.wait();
+       				}
+       			}
+            	dataResponse = er.getOutputString();
+           		if (dataResponse == null) {
+           			ResponseMessageType responseMsgType = null;
+             		if (!er.isJobCompleteFlag()) {
+            			String timeOuterror = "Remote server timed out after waittime of " + waitTime + "ms.";            				
+            			log.error(timeOuterror);
+            		    responseMsgType = MessageFactory.doBuildErrorResponse(null, timeOuterror);
+             		} else {
+             			if (null != er.getJobException()) {
+            			log.error("jobException: " + er.getJobException().getMessage());            		    	
+            			dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+                 		} else {
+                			log.error("CRC data response is null!");
+               				log.info("CRC waited " + deltaTime + "ms for " + handler.getClass().getName());
+                 		}
+            		    log.info("waitTime is " + waitTime);
+            			responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrorMessage);
+           			   	dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+            		}
+        			dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+            	}
+        	} catch (InterruptedException e) {
+        		log.error(e.getMessage());
+       			throw new I2B2Exception("Thread error while running CRC job!");
+       		} finally {
+       			t.interrupt();
+       			er = null;
+       			t = null;
+       		}
+       	}
+        returnElement = MessageFactory.createResponseOMElementFromString(dataResponse);
+        return returnElement;
+    }
+
+	
+	/** swc20160523
+	 * This function is main webservice interface to get the I2B2HIVE.CRC_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllDblookupsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement getAllDblookups(OMElement getAllDblookupsElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getAllDblookupsElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = getAllDblookupsElement.toString();
+		GetAllDblookupsDataMessage dblookupsDataMsg = new GetAllDblookupsDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupsDataMsg.getRequestMessageType()) {
+			if (null != dblookupsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new GetAllDblookupsHandler(dblookupsDataMsg), waitTime);
+	}
+	
+	/** swc20160523
+	 * This function is main webservice interface to get specific I2B2HIVE.CRC_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getDblookupElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement getDblookup(OMElement getDblookupElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getDblookupElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = getDblookupElement.toString();
+		GetDblookupDataMessage dblookupDataMsg = new GetDblookupDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupDataMsg.getRequestMessageType()) {
+			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new GetDblookupHandler(dblookupDataMsg), waitTime);
+	}
+	
+	/** swc20160523
+	 * This function is main webservice interface to add a new entry to the I2B2HIVE.CRC_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllDblookupsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement setDblookup(OMElement setDblookupElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == setDblookupElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = setDblookupElement.toString();
+		SetDblookupDataMessage dblookupDataMsg = new SetDblookupDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupDataMsg.getRequestMessageType()) {
+			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new SetDblookupHandler(dblookupDataMsg), waitTime);
+	}
+	
+	/** swc20160523
+	 * This function is main webservice interface to delete specific I2B2HIVE.CRC_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            deleteDblookupElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement deleteDblookup(OMElement deleteDblookupElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == deleteDblookupElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = deleteDblookupElement.toString();
+		DeleteDblookupDataMessage dblookupDataMsg = new DeleteDblookupDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != dblookupDataMsg.getRequestMessageType()) {
+			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		// do processing inside thread, so that service could send back message with timeout error.
+		return execute(new DeleteDblookupHandler(dblookupDataMsg), waitTime);
+	}
 	
 
 	

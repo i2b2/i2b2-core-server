@@ -7,6 +7,7 @@
  * Contributors:
  * 		Raj Kuttan
  * 		Lori Phillips
+ * 		Wayne Chan
  */
 package edu.harvard.i2b2.ontology.ws;
 
@@ -39,6 +40,7 @@ import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.ResultStatusType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptsType;
+import edu.harvard.i2b2.ontology.datavo.vdo.DblookupsType;
 import edu.harvard.i2b2.ontology.datavo.vdo.DirtyValueType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ModifiersType;
 import edu.harvard.i2b2.ontology.datavo.vdo.OntologyProcessStatusListType;
@@ -80,6 +82,7 @@ public class MessageFactory {
 		return returnElement;
 	}
 
+	
 	/**
 	 * Function to build concepts body type
 	 * 
@@ -126,6 +129,22 @@ public class MessageFactory {
 		return bodyType;
 	}
 	
+	
+	/**swc20160515
+	 * Function to build concepts body type
+	 * 
+	 * @param dblookups
+	 *            Concept set to be returned to requester
+	 * @return BodyType object
+	 */
+	public static BodyType createBodyType(DblookupsType dblookups) {
+		edu.harvard.i2b2.ontology.datavo.vdo.ObjectFactory of = new edu.harvard.i2b2.ontology.datavo.vdo.ObjectFactory();
+		BodyType bodyType = new BodyType();
+		bodyType.getAny().add(of.createDblookups(dblookups));
+
+		return bodyType;
+	}
+
 	
 	/**
 	 * Function to create response message header based on request message
@@ -342,6 +361,40 @@ public class MessageFactory {
 	}
 
 	
+	/**swc20160515
+	 * Function to build Response message type and return it as an XML string
+	 * 
+	 * @param dblookups
+	 *            The set of i2b2hive.ont_db_lookup entries, per request
+	 * 
+	 * @return A String data type containing the ResponseMessage in XML format
+	 * @throws Exception
+	 */
+	public static ResponseMessageType createBuildResponse(MessageHeaderType messageHeaderType, DblookupsType dblookups) {
+		ResponseMessageType respMessageType = null;
+		ResponseHeaderType respHeader = createResponseHeader("DONE", "Ontology processing completed");
+		BodyType bodyType = createBodyType(dblookups);
+		respMessageType = createResponseMessageType(messageHeaderType, respHeader, bodyType);
+		return respMessageType;
+	}
+
+	/**swc20160518
+	 * Function to build 'Non Standard' Response message and return it as an XML string
+	 * 
+	 * @param messageHeaderType
+	 * @param msg
+	 * 
+	 * @return A String data type containing the ResponseMessage in XML format
+	 * @throws Exception
+	 */
+	public static ResponseMessageType createNonStandardResponse(MessageHeaderType messageHeaderType, String msg) {
+		ResponseMessageType respMessageType = null;
+		ResponseHeaderType respHeader = createResponseHeader("DONE", msg + " - Ontology processing completed");
+		respMessageType = createResponseMessageType(messageHeaderType, respHeader, null);
+		return respMessageType;
+	}
+
+	
 	public static ResponseMessageType createProcessStatusResponse(
 			MessageHeaderType messageHeaderType,
 			OntologyProcessStatusType ontProcessStatusType) {
@@ -360,6 +413,7 @@ public class MessageFactory {
 
 		return respMessageType;
 	}
+	
 	
 	public static ResponseMessageType createProcessStatusListResponse(
 			MessageHeaderType messageHeaderType,
@@ -432,8 +486,6 @@ public class MessageFactory {
 		respHeader.setResultStatus(resStat);
 
 		return respHeader;
-	}
-	
-	
+	}	
 
 }

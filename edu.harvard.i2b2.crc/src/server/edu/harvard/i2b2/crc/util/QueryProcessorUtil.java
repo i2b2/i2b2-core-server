@@ -169,9 +169,11 @@ public class QueryProcessorUtil {
 		log.debug("Starting queue");
 		//Start queues
 		
-		//TURN OFF QUEUE
-		pqMedium.start();
-		pqLarge.start();
+		Thread m1 = new Thread(pqMedium);
+		m1.start();
+
+		Thread m2 = new Thread(pqLarge);
+		m2.start();
 
 	}
 

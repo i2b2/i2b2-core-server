@@ -18,7 +18,32 @@
 
     <xs:element name="requestXML" type="xs:string"/>
 
+    <xs:element name="dblookups" type="work:dblookupsType"/><!-- swc20160518 added -->      
     
+    <xs:complexType name="dblookupsType"><!-- swc20160518 added -->
+        <xs:sequence>
+            <xs:element name="dblookup" type="work:dblookupType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+	<xs:complexType name="dblookupType"><!-- swc20160518 added, 20160606 updated -->
+		<xs:sequence>
+			<xs:element name="domain_id" type="xs:string"/>
+		 	<xs:element name="owner_id" type="xs:string"/>
+			<xs:element name="db_fullschema" type="xs:string"/>
+			<xs:element name="db_datasource" type="xs:string"/>
+			<xs:element name="db_servertype" type="xs:string"/>
+			<xs:element name="db_nicename" type="xs:string"/>
+			<xs:element name="db_tooltip" type="xs:string"/>
+			<xs:element name="comment" type="xs:string"/>
+			<xs:element name="entry_date" type="xs:string"/>
+			<xs:element name="change_date" type="xs:string"/>
+			<xs:element name="status_cd" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="project_path" type="xs:string"/>
+	</xs:complexType>
+
+		    
     <xs:element name="folders" type="work:foldersType"/>
 
     <xs:complexType name="foldersType">
@@ -47,6 +72,6 @@
             <xs:element name="work_xml_schema" type="work:xml_valueType" /> 
             <xs:element name="work_xml_i2b2_type" type="xs:string" />
         </xs:sequence>
-    </xs:complexType>
-    
+    </xs:complexType>    
+
 </xs:schema>

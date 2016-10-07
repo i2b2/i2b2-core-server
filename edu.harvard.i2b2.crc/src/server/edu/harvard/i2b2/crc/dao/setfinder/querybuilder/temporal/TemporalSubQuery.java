@@ -964,7 +964,10 @@ public class TemporalSubQuery implements Comparable{
 		
 		String indexClause = "";
 		if (useSqlServerTempTables()){
-			indexClause = "CREATE NONCLUSTERED INDEX m" + getSubQueryId() + "_idx on #m" + getSubQueryId() + " (patient_num, temporal_start_date, level_no)";
+			indexClause = "CREATE NONCLUSTERED INDEX m" + getSubQueryId() + "_idx on #m" + getSubQueryId() + " (patient_num, " + 
+					(startDateRtn!=null ? "temporal_start_date, " : "") + 
+					(endDateRtn!=null ? "temporal_end_date, " : "") + 
+					"level_no)";
 		}
 		
 		masterSql.append(insertClause.toString());
