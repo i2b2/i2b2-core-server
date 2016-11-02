@@ -182,7 +182,7 @@ public class ExecRunnable implements Runnable{
 					queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE_RUNNING);
 				else
 					queryInstance.setBatchMode(this.callingMDBName);
-				queryInstance.setBatchMode(this.callingMDBName);
+				//queryInstance.setBatchMode(this.callingMDBName);
 				//queryInstance.setEndDate(new Date(System
 				//		.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
