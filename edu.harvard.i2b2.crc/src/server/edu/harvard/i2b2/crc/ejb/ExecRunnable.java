@@ -182,7 +182,7 @@ public class ExecRunnable implements Runnable{
 					queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE_RUNNING);
 				else
 					queryInstance.setBatchMode(this.callingMDBName);
-				queryInstance.setBatchMode(this.callingMDBName);
+				//queryInstance.setBatchMode(this.callingMDBName);
 				//queryInstance.setEndDate(new Date(System
 				//		.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
@@ -261,13 +261,6 @@ public class ExecRunnable implements Runnable{
 		catch (CRCTimeOutException daoEx) {
 			// catch this error and ignore. send general reply message.
 			log.error(daoEx.getMessage(), daoEx);
-			if (queryInstance != null)		
-			{
-				queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
-				try {
-					queryInstanceDao.update(queryInstance, false);
-				} catch (Exception e) {}
-			}
 			returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
 			returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
 			setJobCompleteFlag(false);
