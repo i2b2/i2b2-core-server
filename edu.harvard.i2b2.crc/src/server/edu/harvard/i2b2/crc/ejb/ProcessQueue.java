@@ -305,7 +305,7 @@ public class ProcessQueue implements Runnable{
 		{
 			queryInstance.setBatchMode("NEVER_FINISHED");
 			QtQueryStatusType queryStatusType = queryInstance.getQtQueryStatusType();
-			queryStatusType.setStatusTypeId(5);
+			queryStatusType.setStatusTypeId(10);
 			Set<QtQueryResultInstance> queryResultStatusType = queryInstance.getQtQueryResultInstances();
 			for (QtQueryResultInstance results: queryResultStatusType )
 			{
