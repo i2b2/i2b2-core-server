@@ -331,14 +331,14 @@ public class PdoQueryHandler {
 			DataSourceLookup dataSourceLookup = pdoDaoFactory
 					.getDataSourceLookup();
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					DAOFactoryHelper.ORACLE)) {
+					DAOFactoryHelper.ORACLE) ||
+					dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.POSTGRESQL)) {
 				factRelatedQry = new FactRelatedQueryHandler(pdoDaoFactory
 						.getDataSourceLookup(), inputList, filterList,
 						outputOptionList);
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					DAOFactoryHelper.SQLSERVER) ||
-					dataSourceLookup.getServerType().equalsIgnoreCase(
-							DAOFactoryHelper.POSTGRESQL)) {
+					DAOFactoryHelper.SQLSERVER)) {
 				factRelatedQry = new SQLServerFactRelatedQueryHandler(
 						pdoDaoFactory.getDataSourceLookup(), inputList,
 						filterList, outputOptionList);
