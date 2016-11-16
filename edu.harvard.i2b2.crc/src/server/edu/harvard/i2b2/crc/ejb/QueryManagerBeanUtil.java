@@ -103,63 +103,7 @@ public class QueryManagerBeanUtil {
 		log.debug("in testSend");
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 		ServiceLocator serviceLocator = ServiceLocator.getInstance();
-		/*
-		QueueConnection conn = serviceLocator.getQueueConnectionFactory(
-				QUEUE_CONN_FACTORY_NAME).createQueueConnection();
-		Queue sendQueue = serviceLocator.getQueue(SMALL_QUEUE_NAME);
-		Queue responseQueue = serviceLocator.getQueue(RESPONSE_QUEUE_NAME);
-		QueueSession session = conn.createQueueSession(false,
-				javax.jms.Session.AUTO_ACKNOWLEDGE);
-		String id = sessionId;
-		String selector = "JMSCorrelationID='" + id + "'";
-		QueueSender sender = session.createSender(sendQueue);
-		MapMessage mapMsg = session.createMapMessage();
-		mapMsg.setJMSCorrelationID(id);
-		mapMsg.setJMSReplyTo(responseQueue);
-
-		mapMsg.setString(XML_REQUEST_PARAM, xmlRequest);
-		mapMsg.setString(QUERY_MASTER_GENERATED_SQL_PARAM, generatedSql);
-		mapMsg.setString(QUERY_INSTANCE_ID_PARAM, queryInstanceId);
-		mapMsg.setString(QUERY_PATIENT_SET_ID_PARAM, patientSetId);
-		mapMsg.setString(DS_LOOKUP_DOMAIN_ID, domainId);
-		mapMsg.setString(DS_LOOKUP_PROJECT_ID, projectId);
-		mapMsg.setString(DS_LOOKUP_OWNER_ID, ownerId);
-		sender.send(mapMsg);
-
-		QueueConnection conn1 = serviceLocator.getQueueConnectionFactory(
-				QUEUE_CONN_FACTORY_NAME).createQueueConnection();
-		conn1.start();
-
-		QueueSession recvSession = conn1.createQueueSession(false,
-				javax.jms.Session.AUTO_ACKNOWLEDGE);
-
-		QueueReceiver rcvr = recvSession
-				.createReceiver(responseQueue, selector);
-		MapMessage receivedMsg = (MapMessage) rcvr.receive(timeout);
-
-
-		if (receivedMsg == null) {
-			status = "RUNNING";
-			log.info("STATUS IS RUNNING " + status);
-		} else {
-			String responseObj = (String) receivedMsg.getString("para1");
-			status = (String) receivedMsg
-					.getString(QueryManagerBeanUtil.QUERY_STATUS_PARAM);
-			log.debug("Got back response from executor " + responseObj);
-
-			if (status != null && status.indexOf("LOCKEDOUT") > -1) {
-				;
-			} else {
-				status = "DONE";
-			}
-			queryResultInstanceId = receivedMsg
-					.getInt(QT_QUERY_RESULT_INSTANCE_ID_PARAM);
-			log.info("RESULT INSTANCE ID " + queryResultInstanceId);
-		}
-		 */
-		//TODO mm bypass JMS and call directly
-
-
+	
 
 		long waitTime = getTimeout(xmlRequest);
 
@@ -323,33 +267,7 @@ public class QueryManagerBeanUtil {
 				// check jms
 				QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 				ServiceLocator serviceLocator = ServiceLocator.getInstance();
-				/*
-				conn1 = serviceLocator.getQueueConnectionFactory(
-						"ConnectionFactory").createQueueConnection();
-				conn1.start();
-
-				responseQueue = serviceLocator.getQueue(RESPONSE_QUEUE_NAME);
-				recvSession = conn1.createQueueSession(false,
-						javax.jms.Session.AUTO_ACKNOWLEDGE);
-				// TopicSubscriber rcvr =
-				// recvSession.createSubscriber(responseTopic,selector,false);
-				rcvr = recvSession.createReceiver(responseQueue);
-				String selector = "JMSCorrelationID='" + sessionId + "'";
-				log.debug("SessionId getResult" + sessionId);
-				recvSession.createReceiver(responseQueue, selector);
-				MapMessage receivedMsg = (MapMessage) rcvr.receiveNoWait();
-
-				if (receivedMsg == null) {
-					log.debug("No Reply Message Received");
-					status = "PROCESSING";
-
-				} else {
-					String responseObj = (String) receivedMsg
-							.getString("para1");
-					log.debug("got back response from executor " + responseObj);
-					status = "DONE";
-				}
-				 */
+		
 			} catch (Exception e) {
 				status = "ERROR";
 				e.printStackTrace();
@@ -399,32 +317,5 @@ public class QueryManagerBeanUtil {
 		}
 		return strWriter.toString();
 	}
-	/*
-	public void closeAll(QueueSender send, QueueReceiver recv,
-			QueueConnection conn, QueueSession session) {
-		try {
-			if (send != null) {
-				send.close();
-			}
-			if (recv != null) {
-				recv.close();
-			}
 
-			if (conn != null) {
-				conn.stop();
-				if (conn != null) {
-					conn.close();
-				}
-
-			}
-
-			if (session != null) {
-				session.close();
-			}
-		} catch (JMSException jmse) {
-			jmse.printStackTrace();
-		}
-
-	}
-	 */
 }
