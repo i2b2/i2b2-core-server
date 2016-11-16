@@ -60,6 +60,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.ItemType.ConstrainByDate;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PanelType.TotalItemOccurrences;
 import edu.harvard.i2b2.crc.util.ItemKeyUtil;
 import edu.harvard.i2b2.crc.util.ParamUtil;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
  * Observation fact handler class for pdo request. This class uses given pdo
@@ -143,6 +144,11 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 	private Map projectParamMap = null; 
 	private Map<String,XmlValueType> modifierMetadataXmlMap = null;
 	private String requestVersion = "";
+	
+
+	private String factTable = "observation_FACT";
+	private boolean derivedFactTable = QueryProcessorUtil.getInstance().getDerivedFactTable();
+
 
 	/**
 	 * Constructor with parameter
@@ -198,6 +204,15 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 	public void setRequestVersion(String requestVersion) { 
 		this.requestVersion = requestVersion;
 	}
+	
+	public String getFactTable(){
+		return this.factTable;
+	}
+
+	public void setFactTable(String table){
+		this.factTable = table;
+	}
+
 
 	/**
 	 * Function to build and execute pdo sql and build plain pdo's observation
@@ -391,8 +406,10 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 				}
 			}
 		} catch (SQLException sqlEx) {
+			log.error(sqlEx.getMessage());
 			throw new I2B2DAOException("", sqlEx);
 		} catch (IOException ioEx) {
+			log.error(ioEx.getMessage());
 			throw new I2B2DAOException("", ioEx);
 		} finally {
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
@@ -475,6 +492,23 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 			throws I2B2DAOException {
 		String obsFactSelectClause = null;
 
+		// OMOP addition
+		if(panel != null){
+			if(derivedFactTable == true){
+				if(panel.getItem().get(0).getFacttablecolumn().contains(".")){
+
+					String factColumnName = panel.getItem().get(0).getFacttablecolumn();
+
+					int lastIndex = factColumnName.lastIndexOf(".");
+					setFactTable(factColumnName.substring(0, lastIndex));
+
+
+					//		if ((lastIndex+1)<factColumnName.length())
+					//			panel.getItem().get(0).setFacttablecolumn(factColumnName.substring(lastIndex+1));
+				}
+			}
+		}
+				
 		if (obsFactFactRelated != null) {
 			obsFactSelectClause = obsFactFactRelated
 					.getSelectClauseWithoutBlob();
@@ -530,7 +564,7 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 
 		// String mainQuerySql = "SELECT * FROM ( \n";
 		String mainQuerySql = "SELECT b.* " + mainSelectBlobClause + " FROM "
-				+ this.getDbSchemaName() + "observation_FACT obs ,( \n";
+				+ this.getDbSchemaName() + getFactTable() + " obs ,( \n";
 		try {
 			if (panel != null) {
 				factByConceptSql = factQueryWithDimensionFilter(
@@ -757,12 +791,33 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 
 				}
 				factByProviderSql += ", " + this.getDbSchemaName()
-						+ "observation_FACT obs \n";
+				+ getFactTable() + " obs \n";
 
 				String tempSqlClause = "",containsJoinSql = "";
+				
+				//OMOP addition
+				String facttablecolumn = item.getFacttablecolumn();
+				if(derivedFactTable == true){
+
+					if(item.getFacttablecolumn().contains(".")){
+
+						String factColumnName = item.getFacttablecolumn();
+
+						int lastIndex = factColumnName.lastIndexOf(".");
+
+						facttablecolumn = (factColumnName.substring(lastIndex+1));
+					}
+				}
+
+				// OMOP WAS item.getFacttablecolumn();
+				//	String fullWhereClause1 = fullWhereClause
+				//			+ (" AND obs." + item.getFacttablecolumn()
+				//					+ " = dimension." + item.getFacttablecolumn());
+
+
 				String fullWhereClause1 = fullWhereClause
-						+ (" AND obs." + item.getFacttablecolumn()
-								+ " = dimension." + item.getFacttablecolumn());
+						+ (" AND obs." + facttablecolumn
+						+ " = dimension." + facttablecolumn);
 
 				//factByProviderSql += tableLookupJoinClause;
 				tempSqlClause+= tableLookupJoinClause;
@@ -941,7 +996,7 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 		if (invert == 1) {
 			String invertSql = ("( SELECT " + obsFactSelectClause + " FROM \n");
 			invertSql += " " + this.getDbSchemaName()
-					+ "observation_FACT obs \n";
+			+ getFactTable() + " obs \n";
 			invertSql += tableLookupJoinClause;
 			invertSql += (" WHERE \n" + fullWhereClause + ")\n");
 			factByProviderSql = invertSql + " EXCEPT \n " + "("
@@ -975,7 +1030,7 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 			String tableLookupJoinClause, String fullWhereClause) {
 		String factSql = "SELECT  b.*, ROWNUM rnum FROM (\n";
 		factSql += (" SELECT  "
-				+ obsFactSelectClause + " FROM " + this.getDbSchemaName() + "observation_FACT obs\n");
+				+ obsFactSelectClause + " FROM " + this.getDbSchemaName() +  getFactTable() + " obs\n");
 
 		factSql += tableLookupJoinClause;
 
@@ -1004,9 +1059,11 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 				+ this.getDbSchemaName()
 				+ "code_lookup modifier_lookup \n"
 				+ " ON (obs.modifier_cd = modifier_lookup.code_Cd AND modifier_lookup.column_cd = 'MODIFIER_CD') \n"
-				+ " left JOIN " + this.getDbSchemaName()
-				+ "concept_dimension concept_lookup \n"
-				+ " ON (obs.concept_cd = concept_lookup.concept_Cd) \n"
+				+ " left JOIN " 
+				+ "(select name_char, concept_cd from "
+				+ this.getDbSchemaName()
+				+ "concept_dimension group by name_char, concept_cd) concept_lookup "
+				+ "ON (obs.concept_cd = concept_lookup.concept_Cd)  \n"
 				+ " left JOIN " + this.getDbSchemaName()
 				+ "provider_dimension provider_lookup \n"
 				+ " ON (obs.provider_id = provider_lookup.provider_id) \n";

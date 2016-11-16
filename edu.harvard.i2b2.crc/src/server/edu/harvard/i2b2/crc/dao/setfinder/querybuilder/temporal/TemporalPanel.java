@@ -65,6 +65,13 @@ public class TemporalPanel implements Comparable<Object> {
 	private List<TemporalPanelItem> panelItemList = null;
 	private int missingItemTotals = 0;
 
+	protected class TemporalPanelItemSql{
+		protected String itemSql = null;
+		protected String factTable = null;
+		protected String joinTable = null;
+		protected boolean valueConstraint = false;
+		protected boolean textConstraint = false;
+	}
 	/**
 	 * Constructor
 	 * 
@@ -167,7 +174,9 @@ public class TemporalPanel implements Comparable<Object> {
 		StringBuilder panelSqlBuffer = new StringBuilder();
 
 		boolean addDelimiter = false;
-		List<String> itemSqlList = getItemSql();
+		// OMOP WAS...
+		//		List<String> itemSqlList = getItemSql();
+		List<TemporalPanelItemSql> itemSqlList = getItemSql();
 		if (itemSqlList!=null&&itemSqlList.size()>0){
 			if (this.hasPanelOccurrenceConstraint()
 					&& this.applyOccurrenceToPanelLevel()
@@ -216,13 +225,34 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @return List<String> list of sql statements for all the times contained in the panel
 	 * @throws I2B2DAOException
 	 */
-	private List<String> getItemSql() throws I2B2DAOException {
+	//OMOP WAS..
+/*	private List<String> getItemSql() throws I2B2DAOException {
 		List<String> itemList = null;
 		if (panelItemList.size() > 0) {
 			itemList = new ArrayList<String>(panelItemList.size());
 			for (TemporalPanelItem item : panelItemList) {
 				try {
 					itemList.add(item.buildSql());
+				}
+				catch (ConceptNotFoundException ce){
+					parent.addIgnoredMessage(ce.getMessage() + " panel#" + parent.getPanelIndex(this));
+				}
+			}
+		}
+		return itemList;
+	}
+	*/
+	private List<TemporalPanelItemSql> getItemSql() throws I2B2DAOException {
+		List<TemporalPanelItemSql> itemList = null;
+		if (panelItemList.size() > 0) {
+			itemList = new ArrayList<TemporalPanelItemSql>(panelItemList.size());
+			for (TemporalPanelItem item : panelItemList) {
+				try {
+					TemporalPanelItemSql itemSql = new TemporalPanelItemSql();
+					itemSql.itemSql = item.buildSql();
+					itemSql.factTable = item.factTable;
+					itemSql.joinTable = item.tableName;
+					itemList.add(itemSql);
 				}
 				catch (ConceptNotFoundException ce){
 					parent.addIgnoredMessage(ce.getMessage() + " panel#" + parent.getPanelIndex(this));
@@ -241,11 +271,16 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @param itemSqlList List of individual sql statements
 	 * @return String one sql statement that unions individual statement together
 	 */
-	private String unionItemSql(List<String> itemSqlList) {
+	//OMOP WAS..
+	//	private String unionItemSql(List<String> itemSqlList) {
+	private String unionItemSql(List<TemporalPanelItemSql> itemSqlList) {
 		StringBuilder unionSql = new StringBuilder();
 
 		boolean first = true;
-		for (String itemSql : itemSqlList) {
+		// OMOP WAS...
+		//for (String itemSql : itemSqlList) {
+		for (TemporalPanelItemSql itemSqlItem : itemSqlList) {
+			String itemSql = itemSqlItem.itemSql;
 			if (!first)
 				unionSql.append("\n union all \n");
 			else
@@ -266,12 +301,17 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @param itemSql List of individual sql statements
 	 * @return String one sql statement that combines all statements from the individual list
 	 */
-	private String consolidateItemSql(List<String> itemSql) {
+	//OMOP WAS..
+//	private String consolidateItemSql(List<String> itemSql) {
+	private String consolidateItemSql(List<TemporalPanelItemSql> itemSqlList) {	
 		StringBuilder itemSqlBuffer = new StringBuilder();
 
 		HashMap<String, List<TemporalQuerySimpleSqlParser>> tableMatch = new HashMap<String, List<TemporalQuerySimpleSqlParser>>();
 		int index = 0;
-		for (String sql : itemSql) {
+		//OMOP WAS..
+		//		for (String sql : itemSql) {
+		for (TemporalPanelItemSql itemSql : itemSqlList) {
+			String sql = itemSql.itemSql;
 			TemporalQuerySimpleSqlParser simpleSql = new TemporalQuerySimpleSqlParser(
 					sql);
 
@@ -404,13 +444,16 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @return String sql representation that joins the item sql to the panel
 	 *         sql
 	 */
-	private String firstPanelItemSql(List<String> itemSqlList) {
-
+	//OMOP WAS...
+	//	private String firstPanelItemSql(List<String> itemSqlList) {
+	private String firstPanelItemSql(List<TemporalPanelItemSql> itemSqlList) {
 		StringBuilder panelSql = new StringBuilder();
 		boolean addDelimiter = false;
 
-		for (String itemSql : itemSqlList) {
-
+		//OMOP WAS..
+		//	for (String itemSql : itemSqlList) {
+		for (TemporalPanelItemSql itemSqlItem : itemSqlList) {
+			String itemSql = itemSqlItem.itemSql;
 			String insertValuesClause = buildInsertValuesClause();
 
 			StringBuilder withItemSql = new StringBuilder();
@@ -632,7 +675,9 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @param itemSqlList List of individual sql statements for all items in this panel
 	 * @return String sql statement that applies invert clause to all items in first panel
 	 */
-	private String buildFirstPanelInvertSql(List<String> itemSqlList) {
+		//OMOP WAS...
+	//	private String buildFirstPanelInvertSql(List<String> itemSqlList) {
+		private String buildFirstPanelInvertSql(List<TemporalPanelItemSql> itemSqlList) {
 
 		String insertValuesClause = buildInsertValuesClause();
 		StringBuilder withItemSql = new StringBuilder();
@@ -903,7 +948,9 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @throws I2B2DAOException
 	 *             thrown when an i2b2 data related error is encountered
 	 */
-	private String firstPanelItemSqlWithOccurrence(List<String> itemSqlList)
+		//OMOP WAS..
+		//	private String firstPanelItemSqlWithOccurrence(List<String> itemSqlList)
+	private String firstPanelItemSqlWithOccurrence(List<TemporalPanelItemSql> itemSqlList)
 			throws I2B2DAOException {
 
 		String itemSql = consolidateItemSql(itemSqlList);
@@ -1230,7 +1277,7 @@ public class TemporalPanel implements Comparable<Object> {
 	 *             thrown when an i2b2 data related error is encountered
 	 */
 	private String nonFirstPanelItemSqlWithOccurrence(int panelIndex,
-			List<String> itemSqlList) throws I2B2DAOException {
+			List<TemporalPanelItemSql> itemSqlList) throws I2B2DAOException {	
 		String encounterNumClause = " ", instanceNumClause = " ";
 		String tempTableName = parent.getTempTableName();
 		int oldPanelIndex = panelIndex - 1;
@@ -1328,7 +1375,7 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @return String sql representation that joins the item sql to the panel
 	 *         sql
 	 */
-	private String nonFirstPanelItemSql(List<String> itemSqlList, int panelIndex) {
+	private String nonFirstPanelItemSql(List<TemporalPanelItemSql> itemSqlList, int panelIndex) {
 
 		StringBuilder panelSql = new StringBuilder();
 		boolean addDelimiter = false;
@@ -1340,7 +1387,10 @@ public class TemporalPanel implements Comparable<Object> {
 			useTempTables = true;
 		}
 
-		for (String itemSql : itemSqlList) {
+		// OMOP WAS..
+		//for (String itemSql : itemSqlList) {
+		for (TemporalPanelItemSql itemSqlItem : itemSqlList) {
+			String itemSql = itemSqlItem.itemSql;
 
 			String encounterNumClause = " ", instanceNumClause = " ";
 			String tempTableName = parent.getTempTableName();

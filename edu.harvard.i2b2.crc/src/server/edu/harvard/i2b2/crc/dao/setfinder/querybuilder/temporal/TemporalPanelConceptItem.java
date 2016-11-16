@@ -40,15 +40,25 @@ public class TemporalPanelConceptItem extends TemporalPanelItem {
 
 	@Override
 	protected String getJoinTable() {
-		String joinTableName = "observation_fact";
-		
+		//OMOP WAS..
+		//String joinTableName = "observation_fact";
+
+		String joinFact = this.factTable;
+		if ((joinFact==null)||(joinFact.trim().isEmpty())){
+			joinFact = "observation_fact";
+		}
+		String joinTableName = joinFact;		
 		if (tableName.equalsIgnoreCase("patient_dimension")) {
 			joinTableName = "patient_dimension";
 			if (parent.hasPanelOccurrenceConstraint()) {
-				joinTableName = "observation_fact";
+				//OMOP WAS..
+				//joinTableName = "observation_fact";
+				joinTableName = joinFact;
 			} 
 			else if (returnInstanceNum()) {
-				joinTableName = "observation_fact";
+				//OMOP WAS..
+				//joinTableName = "observation_fact";
+				joinTableName = joinFact;
 			}
 			else if (returnEncounterNum()) {
 				joinTableName = "visit_dimension";
@@ -61,7 +71,9 @@ public class TemporalPanelConceptItem extends TemporalPanelItem {
 			joinTableName = "visit_dimension";
 			if (returnInstanceNum()
 					||parent.hasPanelOccurrenceConstraint()) {
-				joinTableName = "observation_fact";
+				//OMOP WAS..
+				//joinTableName = "observation_fact";
+				joinTableName = joinFact;
 			}
 		}
 

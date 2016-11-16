@@ -141,6 +141,8 @@ public class QueryProcessorUtil {
 	public static final String PAGING_METHOD = "edu.harvard.i2b2.crc.pdo.paging.method";
 
 	public static final String PAGING_ITERATION = "edu.harvard.i2b2.crc.pdo.paging.iteration";
+	
+	public static final	String DERIVED_FACT_TABLE = "queryprocessor.derivedfacttable";
 
 	/** class instance field* */
 	private static QueryProcessorUtil thisInstance = null;
@@ -433,6 +435,29 @@ public class QueryProcessorUtil {
 	public String getOntologyUrl() throws I2B2Exception {
 		return getPropertyValue(ONTOLOGYCELL_WS_URL_PROPERTIES);
 	}
+	
+	public boolean getDerivedFactTable()  {
+		String setting = "false";
+		try {
+			setting = (getPropertyValue(DERIVED_FACT_TABLE));
+			//		log.info("DERIVED FACT TABLE PARAMETER = " + setting);
+		} catch (I2B2Exception e) {
+			log.error(e.getMessage());
+			return false;
+		}
+		if (setting == null){
+			return false;
+		}
+		else{
+			if(setting.equals("true"))
+				return true;
+			else if(setting.equals("TRUE"))
+				return true;
+			else
+				return false;
+		}
+	}
+	
 
 	/**
 	 * Return app server datasource

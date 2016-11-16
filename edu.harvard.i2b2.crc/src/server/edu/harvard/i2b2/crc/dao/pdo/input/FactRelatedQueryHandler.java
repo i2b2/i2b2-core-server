@@ -57,6 +57,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.ItemType.ConstrainByDate;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PanelType.TotalItemOccurrences;
 import edu.harvard.i2b2.crc.util.ItemKeyUtil;
 import edu.harvard.i2b2.crc.util.ParamUtil;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
  * Observation fact handler class for pdo request. This class uses given pdo
@@ -142,6 +143,9 @@ IFactRelatedQueryHandler {
 	private Map projectParamMap = null;
 	private Map<String,XmlValueType> modifierMetadataXmlMap = null;
 	private String requestVersion = "";
+	
+	private String factTable = "observation_FACT";
+	private boolean derivedFactTable = QueryProcessorUtil.getInstance().getDerivedFactTable();
 
 	/**
 	 * Constructor with parameter
@@ -436,6 +440,22 @@ IFactRelatedQueryHandler {
 			throws I2B2DAOException {
 		String obsFactSelectClause = null;
 
+		if(panel != null){
+			if(derivedFactTable == true){
+				if(panel.getItem().get(0).getFacttablecolumn().contains(".")){
+
+					String factColumnName = panel.getItem().get(0).getFacttablecolumn();
+
+					int lastIndex = factColumnName.lastIndexOf(".");
+					setFactTable(factColumnName.substring(0, lastIndex));
+
+
+					//		if ((lastIndex+1)<factColumnName.length())
+					//			panel.getItem().get(0).setFacttablecolumn(factColumnName.substring(lastIndex+1));
+				}
+			}
+		}
+		
 		if (obsFactFactRelated != null) {
 			obsFactSelectClause = obsFactFactRelated
 					.getSelectClauseWithoutBlob();
@@ -488,8 +508,12 @@ IFactRelatedQueryHandler {
 		if (obsFactFactRelated.isSelectBlob()) {
 			mainSelectBlobClause = " , observation_blob obs_observation_blob";
 		}
+		//OMOP WAS...
+		//		String mainQuerySql = "SELECT a.* " + mainSelectBlobClause + " FROM "
+		//				+ this.getDbSchemaName() + "observation_FACT obs ,( \n";
+		 
 		String mainQuerySql = "SELECT a.* " + mainSelectBlobClause + " FROM "
-				+ this.getDbSchemaName() + "observation_FACT obs ,( \n";
+				+ this.getDbSchemaName() + getFactTable() + " obs ,( \n";				
 
 		try {
 			if (panel != null) {
@@ -691,14 +715,28 @@ IFactRelatedQueryHandler {
 
 				}
 
+				String facttablecolumn = item.getFacttablecolumn();
+				if(derivedFactTable == true){
+
+					if(item.getFacttablecolumn().contains(".")){
+						String factColumnName = item.getFacttablecolumn();
+
+						int lastIndex = factColumnName.lastIndexOf(".");
+						facttablecolumn = (factColumnName.substring(lastIndex+1));
+
+					}
+				}
+				// OMOP WAS...
+				//				factByProviderSql += ", " + this.getDbSchemaName()
+				//				+ "observation_FACT obs \n";
 				factByProviderSql += ", " + this.getDbSchemaName()
-						+ "observation_FACT obs \n";
+				+ factTable + " obs \n";
 
 				String tempSqlClause = "",containsJoinSql = "";
 
 				String fullWhereClause1 = fullWhereClause
-						+ (" AND obs." + item.getFacttablecolumn()
-								+ " = dimension." + item.getFacttablecolumn());
+						+ (" AND obs." + facttablecolumn
+								+ " = dimension." + facttablecolumn);
 
 				//factByProviderSql += tableLookupJoinClause;
 				tempSqlClause += tableLookupJoinClause;
@@ -875,7 +913,7 @@ IFactRelatedQueryHandler {
 		if (invert == 1) {
 			String invertSql = ("( SELECT " + obsFactSelectClause + " FROM \n");
 			invertSql += " " + this.getDbSchemaName()
-					+ "observation_FACT obs \n";
+				+ getFactTable() + " obs \n";
 			invertSql += tableLookupJoinClause;
 			invertSql += (" WHERE \n" + fullWhereClause + ")\n");
 			factByProviderSql = invertSql + " MINUS \n " + "("
@@ -912,8 +950,12 @@ IFactRelatedQueryHandler {
 	private String factQueryWithoutFilter(String obsFactSelectClause,
 			String tableLookupJoinClause, String fullWhereClause) {
 		String factSql = "SELECT  b.*, ROWNUM rnum FROM (\n";
+		// OMOP WAS
+		//		factSql += (" SELECT  "
+		//				+ obsFactSelectClause + " FROM " + this.getDbSchemaName() + "observation_FACT obs\n");
+
 		factSql += (" SELECT  "
-				+ obsFactSelectClause + " FROM " + this.getDbSchemaName() + "observation_FACT obs\n");
+				+ obsFactSelectClause + " FROM " + this.getDbSchemaName() + getFactTable() + " obs\n");
 
 		factSql += tableLookupJoinClause;
 
@@ -944,9 +986,10 @@ IFactRelatedQueryHandler {
 					+ "code_lookup modifier_lookup \n"
 					+ " ON (obs.modifier_cd = modifier_lookup.code_Cd AND modifier_lookup.column_cd = 'MODIFIER_CD') \n"
 					+ " left JOIN "
+					+ "(select name_char, concept_cd from "
 					+ this.getDbSchemaName()
-					+ "concept_dimension concept_lookup \n"
-					+ " ON (obs.concept_cd = concept_lookup.concept_Cd) \n"
+					+ "concept_dimension group by name_char, concept_cd) concept_lookup "
+					+ "ON (obs.concept_cd = concept_lookup.concept_Cd)  \n"
 					+ " left JOIN "
 					+ this.getDbSchemaName()
 					+ "provider_dimension provider_lookup \n"
@@ -1160,6 +1203,12 @@ IFactRelatedQueryHandler {
 		return dateConstrainSql;
 	}
 
+	public String getFactTable(){
+		return this.factTable;
+	}
 
+	public void setFactTable(String table){
+		this.factTable = table;
+	}
 
 }

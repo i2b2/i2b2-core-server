@@ -81,7 +81,8 @@ public abstract class TemporalPanelItem {
 	protected String operator = null;
 	protected String columnName = null;
 	protected XmlValueType metaDataXml = null;
-
+	protected String factTable = "observation_fact";
+	
 	/**
 	 * Constructor
 	 * 
@@ -134,6 +135,8 @@ public abstract class TemporalPanelItem {
 			operator = conceptType.getOperator();
 			columnName = conceptType.getColumnname();
 			metaDataXml = conceptType.getMetadataxml();
+			//OMOP addition
+			parseFactColumn(factTableColumn);
 		}
 	}
 
@@ -693,10 +696,26 @@ public abstract class TemporalPanelItem {
 
 		return havingSql;
 	}
+	
+	private void parseFactColumn(String factColumnName){
+		this.factTable= "observation_fact";
+		this.factTableColumn = factColumnName;
+		if (this.parent.getQueryOptions()!=null&&this.parent.getQueryOptions().useDerivedFactTable())
+		{
+			if (factColumnName!=null&&factColumnName.contains(".")){
+				int lastIndex = factColumnName.lastIndexOf(".");
+				this.factTable= factColumnName.substring(0, lastIndex);
+				if ((lastIndex+1)<factColumnName.length()){
+					this.factTableColumn = factColumnName.substring(lastIndex+1);
+				}
+			}
+	//		log.info("using derived fact table: " + factTable);
+		}
+	}
 
 
 	protected String getJoinTable(){
-		return "observation_fact";
+		return factTable;
 	}
 
 
