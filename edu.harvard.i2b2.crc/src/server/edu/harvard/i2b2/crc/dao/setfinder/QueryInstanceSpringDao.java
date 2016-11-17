@@ -212,7 +212,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 				queryInstance.getEndDate(),
 				statusTypeId,
 				(queryInstance.getMessage() == null) ? "" : queryInstance
-						.getMessage(), queryInstance.getQueryInstanceId() });
+						.getMessage(), Integer.parseInt(queryInstance.getQueryInstanceId()) });
 		} else { 
 			String sql = "UPDATE "
 				+ getDbSchemaName()
