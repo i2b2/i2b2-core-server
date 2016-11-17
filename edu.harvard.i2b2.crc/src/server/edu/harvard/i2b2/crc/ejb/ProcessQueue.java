@@ -24,12 +24,17 @@ import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.pdo.PdoTempTableUtil;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
+import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultInstanceDao;
+import edu.harvard.i2b2.crc.datavo.PSMFactory;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
 import edu.harvard.i2b2.crc.datavo.db.StatusEnum;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceResultResponseType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryInstanceType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryResultInstanceType;
 import edu.harvard.i2b2.crc.quartz.AnalysisQueue.QueueType;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
@@ -303,18 +308,52 @@ public class ProcessQueue implements Runnable{
 		}
 		else if (queue.equals(QueryManagerBeanUtil.LARGE_QUEUE))
 		{
+			
+			sfDAOFactory.getQueryResultTypeDao();
 			queryInstance.setBatchMode("NEVER_FINISHED");
 			QtQueryStatusType queryStatusType = queryInstance.getQtQueryStatusType();
 			queryStatusType.setStatusTypeId(10);
+			
+			InstanceResultResponseType instanceResultResponseType = new InstanceResultResponseType();
+
+			IQueryResultInstanceDao queryResultInstanceDao = sfDAOFactory
+					.getPatientSetResultDAO();			
+			List<QtQueryResultInstance> resultInstanceList = queryResultInstanceDao
+					.getResultInstanceList(Integer.toString(queryInstanceId));
+			//QueryInstanceType queryInstanceResponse = PSMFactory
+			//		.buildQueryInstanceType(queryInstance);
+			//instanceResultResponseType.setQueryInstance(queryInstanceResponse);
+
+			
+			// update cancelled status to all the result instance
+			String resultInstanceId = "";
+			int statusTypeId = 0;
+			for (QtQueryResultInstance resultInstance : resultInstanceList) {
+				resultInstanceId = resultInstance.getResultInstanceId();
+				queryResultInstanceDao.updatePatientSet(resultInstanceId, 10, 
+						 resultInstance.getMessage(), 0, 0, resultInstance.getObfuscateMethod());
+						
+				//resultInstance.getQtQueryStatusType().setStatusTypeId(10);
+				
+				
+				//QueryResultInstanceType resultInstanceResponse = PSMFactory
+				//		.buildQueryResultInstanceType(resultInstance);
+				//instanceResultResponseType.getQueryResultInstance().add(
+				//		resultInstanceResponse);
+			}
+			//queryInstanceResponse.
+			/*
 			Set<QtQueryResultInstance> queryResultStatusType = queryInstance.getQtQueryResultInstances();
+			
 			for (QtQueryResultInstance results: queryResultStatusType )
 			{
 				QtQueryStatusType status = results.getQtQueryStatusType();
 				status.setStatusTypeId(10);
 				results.setQtQueryStatusType(status);
 			}
+			*/
 			queryInstance.setQtQueryStatusType(queryStatusType);
-			queryInstance.setQtQueryResultInstances(queryResultStatusType);
+			//queryInstance.setQtQueryResultInstances(queryResultStatusType);
 			
 			queryInstance.setEndDate(new Date(System
 					.currentTimeMillis()));
