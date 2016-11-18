@@ -3,6 +3,7 @@ package edu.harvard.i2b2.crc.ejb;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
@@ -73,7 +74,16 @@ public class ExecRunnable implements Runnable{
 
 	MapMessage message = null;
 	private boolean jobCompleteFlag = false;
+	private boolean jobErrorFlag = false;
 
+
+	public boolean isJobErrorFlag() {
+		return jobErrorFlag;
+	}
+
+	public void setJobErrorFlag(boolean jobErrorFlag) {
+		this.jobErrorFlag = jobErrorFlag;
+	}
 
 	public Exception getJobException() {
 		return ex;
@@ -205,13 +215,19 @@ public class ExecRunnable implements Runnable{
 				}
 				catch (CRCTimeOutException daoEx) {
 					// catch this error and ignore. send general reply message.
+					setJobCompleteFlag(false);
+					setJobException(daoEx);
+					setJobErrorFlag(true);
+
 					log.error(daoEx.getMessage(), daoEx);
 					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
 					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
-					setJobCompleteFlag(false);
-
+					Thread.sleep(10000);
 
 				} catch (Exception e) {
+					setJobException(e);
+					setJobErrorFlag(true);
+
 					if (queryInstance != null)
 					{
 						queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
@@ -222,13 +238,17 @@ public class ExecRunnable implements Runnable{
 					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
 					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
 					//setJobCompleteFlag(true);
-					//setJobException(e);
-					log.error("Got an excpetion in ExecRunnable (RUN): " + e.getMessage());
-					e.printStackTrace();
+
+					log.error("Job Exception: " + getJobException().getMessage());
+					//e.printStackTrace();
 					//throw(e);
+					Thread.sleep(10000);
+					log.error("Got an excpetion in ExecRunnable (RUN): " + e.getMessage());
+
 				}
 			} catch (Exception e) {
 				log.error("Exception", e);
+				
 				//running = false;
 			}
 	//	}
