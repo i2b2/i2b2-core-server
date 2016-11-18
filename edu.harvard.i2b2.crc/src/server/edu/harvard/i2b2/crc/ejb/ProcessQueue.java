@@ -62,8 +62,22 @@ public class ProcessQueue implements Runnable{
 		return jobCompleteFlag;
 	}
 
-
 	public void run() {
+		  log.info(queue + " Going into  while look in ProcessQueue");
+
+		
+		  while(!Thread.interrupted())
+		      try {
+		    	  runQueues();
+		      }
+		      catch(Exception e) {
+		    	  log.error("Failed in " + queue );
+		          e.printStackTrace();
+		      }
+		  log.info(queue + " Out of while look in ProcessQueue");
+	}
+
+	public void runQueues() {
 
 		log.debug("In ProcessQueue");
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
@@ -182,7 +196,18 @@ public class ProcessQueue implements Runnable{
 
 									long startTime = System.currentTimeMillis(); 
 									long deltaTime = -1; 
-									while((exec.isJobCompleteFlag() == false)&& (deltaTime < waitTime)){ 
+									while((exec.isJobCompleteFlag() == false)&& (exec.isJobErrorFlag() == false) && (deltaTime < waitTime)){ 
+
+										if (t.isAlive() == false)
+											log.debug("32 - Job Exception: " + exec.getJobException().getMessage());
+										if (t.isInterrupted() == true)
+											log.debug("42 - Job Exception: " + exec.getJobException().getMessage());
+										
+										if (exec.isJobErrorFlag() == true)
+											log.debug("12 - Job Exception: " + exec.getJobException().getMessage());
+
+										if (exec.getJobException() != null)
+											log.debug("22 - Job Exception: " + exec.getJobException().getMessage());
 										if (waitTime > 0) { 
 											//log.info("In ExecRunnable Thread QueryId: " +  queryInstanceId + "  Waiting: " + (waitTime - deltaTime));
 											//t.wait(waitTime - deltaTime); 
@@ -217,7 +242,7 @@ public class ProcessQueue implements Runnable{
 								}
 								catch (Exception e) {
 									//				isRunning = false;
-									log.error("Error in thread ProcessQueue: " + e.getMessage());
+									log.debug("Error in thread ProcessQueue: " + e.getMessage());
 									if (e.getMessage().startsWith("javax.naming.NameNotFoundException"))
 										break;
 
@@ -227,13 +252,18 @@ public class ProcessQueue implements Runnable{
 									e.printStackTrace();
 
 								} finally {
+									log.debug("Process Queue (runQueus-106-" + queue );
 
 									if (t != null) {
 										//exec.terminate();
 										//t.join();
+										log.debug("Process Queue (runQueus-108-" + queue );
+
 										t.interrupt();
 										log.debug("Thread successfully stopped.");
 									}
+									log.debug("Process Queue (runQueus-107-" + queue );
+
 									//t.interrupt();
 									//exec = null;
 									//t = null;
@@ -249,6 +279,8 @@ public class ProcessQueue implements Runnable{
 						}
 						Thread.sleep(10000);
 					} catch (Exception e) {
+						log.debug("Process Queue (runQueus-105-" + queue );
+
 						try {
 							//							isRunning = false;
 							if (conn != null)
@@ -259,12 +291,14 @@ public class ProcessQueue implements Runnable{
 							e1.printStackTrace();
 						}
 
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+							// TODO Auto-generated catch block
 					} finally {
 						//						isRunning = false;
+						log.debug("Process Queue (runQueus-104-" + queue );
+
 						if (conn != null)
 							conn.close();
+	
 					}
 
 					log.debug(queue + " - Current count: " + count);
@@ -274,15 +308,14 @@ public class ProcessQueue implements Runnable{
 			}
 
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			//e.printStackTrace();
+			log.info("Process Queue (runQueus-103-" + queue  + " error: " + e.getMessage());
+
 			//	isRunning = false;
 			//throw new I2B2DAOException(
 			//		"Error while calculating query count by set size"
 			//				+ StackTraceUtil.getStackTrace(e));
-		} catch (I2B2Exception e) {
-			//		isRunning = false;
-			e.printStackTrace();
 		} 
 	}
 
