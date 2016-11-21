@@ -321,6 +321,7 @@ public class ProcessQueue implements Runnable{
 
 	private void setToNextQueue(DataSourceLookup dslookup, String projectId, String ownerId, int queryInstanceId) throws I2B2DAOException
 	{
+		
 		DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
 				dslookup.getDomainId(), projectId, ownerId);
 
@@ -334,8 +335,11 @@ public class ProcessQueue implements Runnable{
 				.getQueryInstanceDAO();
 		QtQueryInstance queryInstance = queryInstanceDao
 				.getQueryInstanceByInstanceId(Integer.toString(queryInstanceId));
-
-		if (queue.equals(QueryManagerBeanUtil.MEDIUM_QUEUE))
+		if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.ERROR))
+		{
+			return;
+		}
+		else if (queue.equals(QueryManagerBeanUtil.MEDIUM_QUEUE))
 		{
 			queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE);
 		}
@@ -353,10 +357,6 @@ public class ProcessQueue implements Runnable{
 					.getPatientSetResultDAO();			
 			List<QtQueryResultInstance> resultInstanceList = queryResultInstanceDao
 					.getResultInstanceList(Integer.toString(queryInstanceId));
-			//QueryInstanceType queryInstanceResponse = PSMFactory
-			//		.buildQueryInstanceType(queryInstance);
-			//instanceResultResponseType.setQueryInstance(queryInstanceResponse);
-
 			
 			// update cancelled status to all the result instance
 			String resultInstanceId = "";
@@ -366,27 +366,8 @@ public class ProcessQueue implements Runnable{
 				queryResultInstanceDao.updatePatientSet(resultInstanceId, 10, 
 						 resultInstance.getMessage(), 0, 0, resultInstance.getObfuscateMethod());
 						
-				//resultInstance.getQtQueryStatusType().setStatusTypeId(10);
-				
-				
-				//QueryResultInstanceType resultInstanceResponse = PSMFactory
-				//		.buildQueryResultInstanceType(resultInstance);
-				//instanceResultResponseType.getQueryResultInstance().add(
-				//		resultInstanceResponse);
 			}
-			//queryInstanceResponse.
-			/*
-			Set<QtQueryResultInstance> queryResultStatusType = queryInstance.getQtQueryResultInstances();
-			
-			for (QtQueryResultInstance results: queryResultStatusType )
-			{
-				QtQueryStatusType status = results.getQtQueryStatusType();
-				status.setStatusTypeId(10);
-				results.setQtQueryStatusType(status);
-			}
-			*/
 			queryInstance.setQtQueryStatusType(queryStatusType);
-			//queryInstance.setQtQueryResultInstances(queryResultStatusType);
 			
 			queryInstance.setEndDate(new Date(System
 					.currentTimeMillis()));
