@@ -218,6 +218,7 @@ public class ExecRunnable implements Runnable{
 					setJobCompleteFlag(false);
 					setJobException(daoEx);
 					setJobErrorFlag(true);
+					
 
 					log.error(daoEx.getMessage(), daoEx);
 					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
@@ -231,6 +232,11 @@ public class ExecRunnable implements Runnable{
 					if (queryInstance != null)
 					{
 						queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
+						QtQueryStatusType queryStatusType = queryInstance.getQtQueryStatusType();
+						queryStatusType.setStatusTypeId(4);
+						queryInstance.setQtQueryStatusType(queryStatusType);
+						queryInstance.setEndDate(new Date(System
+								.currentTimeMillis()));
 						try {
 							queryInstanceDao.update(queryInstance, false);
 						} catch (Exception e2) {}
