@@ -3,6 +3,7 @@ package edu.harvard.i2b2.crc.ejb;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
@@ -65,9 +66,24 @@ public class ExecRunnable implements Runnable{
 	// default timeout three minutes
 	int transactionTimeout = 0;
 
+//	private volatile boolean running = true;
+
+//	public void terminate() {
+//		running = false;
+//	}
+
 	MapMessage message = null;
 	private boolean jobCompleteFlag = false;
+	private boolean jobErrorFlag = false;
 
+
+	public boolean isJobErrorFlag() {
+		return jobErrorFlag;
+	}
+
+	public void setJobErrorFlag(boolean jobErrorFlag) {
+		this.jobErrorFlag = jobErrorFlag;
+	}
 
 	public Exception getJobException() {
 		return ex;
@@ -89,220 +105,162 @@ public class ExecRunnable implements Runnable{
 		return returnMap;
 	}
 
+	@Override
 	public void run() {
-		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-		boolean allowLargeTextValueConstrainFlag = true;
-		int queryResultInstanceId = 0;
+//		while (running) {
+			try {
+				QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+				boolean allowLargeTextValueConstrainFlag = true;
+				int queryResultInstanceId = 0;
 
-		QtQueryInstance queryInstance = null;
-		IQueryInstanceDao queryInstanceDao = null;
-		try {
+				QtQueryInstance queryInstance = null;
+				IQueryInstanceDao queryInstanceDao = null;
+				try {
 
-			//    			if (message != null) {
-				/*
-    				replyToQueue = (Queue) message.getJMSReplyTo();
-    				String sqlString = message
-    						.getString(QueryManagerBeanUtil.QUERY_MASTER_GENERATED_SQL_PARAM);
-    				String queryInstanceId = message
-    						.getString(QueryManagerBeanUtil.QUERY_INSTANCE_ID_PARAM);
-    				String patientSetId = message
-    						.getString(QueryManagerBeanUtil.QUERY_PATIENT_SET_ID_PARAM);
-    				String xmlRequest = message
-    						.getString(QueryManagerBeanUtil.XML_REQUEST_PARAM);
+				
+					log.debug("domain id" + dsLookupDomainId + " "
+							+ dsLookupProjectId + " " + dsLookupOwnerId
+							+ " *********************");
 
-    				String dsLookupDomainId = message
-    						.getString(QueryManagerBeanUtil.DS_LOOKUP_DOMAIN_ID);
-    				String dsLookupProjectId = message
-    						.getString(QueryManagerBeanUtil.DS_LOOKUP_PROJECT_ID);
-    				String dsLookupOwnerId = message
-    						.getString(QueryManagerBeanUtil.DS_LOOKUP_OWNER_ID);
-				 */
-			log.debug("domain id" + dsLookupDomainId + " "
-					+ dsLookupProjectId + " " + dsLookupOwnerId
-					+ " *********************");
+					DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
+							dsLookupDomainId, dsLookupProjectId, dsLookupOwnerId);
 
-			DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
-					dsLookupDomainId, dsLookupProjectId, dsLookupOwnerId);
+					/*
+					 * DataSourceLookupHelper dataSourceHelper = new
+					 * DataSourceLookupHelper(); DataSourceLookup dsLookup =
+					 * dataSourceHelper.matchDataSource( dsLookupDomainId,
+					 * dsLookupProjectId, dsLookupOwnerId);
+					 */
 
-			/*
-			 * DataSourceLookupHelper dataSourceHelper = new
-			 * DataSourceLookupHelper(); DataSourceLookup dsLookup =
-			 * dataSourceHelper.matchDataSource( dsLookupDomainId,
-			 * dsLookupProjectId, dsLookupOwnerId);
-			 */
+					IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
 
-			IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
+					SetFinderDAOFactory sfDAOFactory = daoFactory
+							.getSetFinderDAOFactory();
+					DataSourceLookup dsLookup = sfDAOFactory.getDataSourceLookup();
+					log.debug("ORIG domain id"
+							+ sfDAOFactory.getOriginalDataSourceLookup()
+							.getDomainId()
+							+ " ORIG "
+							+ sfDAOFactory.getOriginalDataSourceLookup()
+							.getProjectPath()
+							+ " ORIG "
+							+ sfDAOFactory.getOriginalDataSourceLookup()
+							.getOwnerId());
 
-			SetFinderDAOFactory sfDAOFactory = daoFactory
-					.getSetFinderDAOFactory();
-			DataSourceLookup dsLookup = sfDAOFactory.getDataSourceLookup();
-			log.debug("ORIG domain id"
-					+ sfDAOFactory.getOriginalDataSourceLookup()
-					.getDomainId()
-					+ " ORIG "
-					+ sfDAOFactory.getOriginalDataSourceLookup()
-					.getProjectPath()
-					+ " ORIG "
-					+ sfDAOFactory.getOriginalDataSourceLookup()
-					.getOwnerId());
+					try { 
+						AuthrizationHelper authHelper = new AuthrizationHelper(dsLookupDomainId, dsLookupProjectId, dsLookupOwnerId, daoFactory);
+						authHelper.checkRoleForProtectionLabel("SETFINDER_QRY_WITH_LGTEXT");
+					} catch(I2B2Exception i2b2Ex) {
+						allowLargeTextValueConstrainFlag = false;
+					}
 
-			try { 
-				AuthrizationHelper authHelper = new AuthrizationHelper(dsLookupDomainId, dsLookupProjectId, dsLookupOwnerId, daoFactory);
-				authHelper.checkRoleForProtectionLabel("SETFINDER_QRY_WITH_LGTEXT");
-			} catch(I2B2Exception i2b2Ex) {
-				allowLargeTextValueConstrainFlag = false;
-			}
-
-			//try {
-			// check if the status is cancelled
-			 queryInstanceDao = sfDAOFactory
-					.getQueryInstanceDAO();
-			 queryInstance = queryInstanceDao
-					.getQueryInstanceByInstanceId(queryInstanceId);
-			int queryStatusId = queryInstance.getQtQueryStatusType()
-					.getStatusTypeId();
-			if (queryStatusId == 9) {
-				log
-				.info("Ignoring this query, query status was 'Cancelled'");
-				//check end date, if not set set now
-				if (queryInstance.getEndDate() == null)
-				{
+					//try {
+					// check if the status is cancelled
+					queryInstanceDao = sfDAOFactory
+							.getQueryInstanceDAO();
+					queryInstance = queryInstanceDao
+							.getQueryInstanceByInstanceId(queryInstanceId);
+					int queryStatusId = queryInstance.getQtQueryStatusType()
+							.getStatusTypeId();
+					if (queryStatusId == 9) {
+						log
+						.info("Ignoring this query, query status was 'Cancelled'");
+						//check end date, if not set set now
+						if (queryInstance.getEndDate() == null)
+						{
 
 
-					queryInstance.setEndDate(new Date(System
-							.currentTimeMillis()));
-					queryInstanceDao.update(queryInstance, false);										
+							queryInstance.setEndDate(new Date(System
+									.currentTimeMillis()));
+							queryInstanceDao.update(queryInstance, false);										
+
+						}
+					} else {
+						// set the query instance batch mode to queue name
+						if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.MEDIUM_QUEUE))
+							queryInstance.setBatchMode(QueryManagerBeanUtil.MEDIUM_QUEUE_RUNNING);
+						else 				if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.LARGE_QUEUE))
+							queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE_RUNNING);
+						else
+							queryInstance.setBatchMode(this.callingMDBName);
+						//queryInstance.setBatchMode(this.callingMDBName);
+						//queryInstance.setEndDate(new Date(System
+						//		.currentTimeMillis()));
+						queryInstanceDao.update(queryInstance, false);
+
+						log.debug("ExecRunnable my pmXml is" + pmXml);
+						// process the query request
+						patientSetId = processQueryRequest(
+								transactionTimeout, dsLookup, sfDAOFactory,
+								xmlRequest, sqlString, sessionId,
+								queryInstanceId, patientSetId,allowLargeTextValueConstrainFlag, pmXml);
+						log
+						.debug("QueryExecutorMDB completed processing query instance ["
+								+ queryInstanceId + "]");
+						// finally send reply to queue
+						//		sendReply(sessionId, patientSetId, "", replyToQueue);
+					}
+
+
+
+
+					//  outputString = reqHandler.execute();
+					setJobCompleteFlag(true);
+					log.debug("Finished Running Query, my queryResultId is : " + queryResultInstanceId);
+
+					queryInstance.setBatchMode(QueryManagerBeanUtil.COMPLETED);
+					queryInstanceDao.update(queryInstance, false);
+					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "DONE");
+					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
+				}
+				catch (CRCTimeOutException daoEx) {
+					// catch this error and ignore. send general reply message.
+					setJobCompleteFlag(false);
+					setJobException(daoEx);
+					setJobErrorFlag(true);
+					
+
+					log.error(daoEx.getMessage(), daoEx);
+					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
+					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
+					Thread.sleep(10000);
+
+				} catch (Exception e) {
+					setJobException(e);
+					setJobErrorFlag(true);
+
+					if (queryInstance != null)
+					{
+						queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
+						QtQueryStatusType queryStatusType = queryInstance.getQtQueryStatusType();
+						queryStatusType.setStatusTypeId(4);
+						queryInstance.setQtQueryStatusType(queryStatusType);
+						queryInstance.setEndDate(new Date(System
+								.currentTimeMillis()));
+						try {
+							queryInstanceDao.update(queryInstance, false);
+						} catch (Exception e2) {}
+					}
+					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
+					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
+					//setJobCompleteFlag(true);
+
+					log.error("Job Exception: " + getJobException().getMessage());
+					//e.printStackTrace();
+					//throw(e);
+					Thread.sleep(10000);
+					log.error("Got an excpetion in ExecRunnable (RUN): " + e.getMessage());
 
 				}
-			} else {
-				// set the query instance batch mode to queue name
-				if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.MEDIUM_QUEUE))
-					queryInstance.setBatchMode(QueryManagerBeanUtil.MEDIUM_QUEUE_RUNNING);
-				else 				if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.LARGE_QUEUE))
-					queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE_RUNNING);
-				else
-					queryInstance.setBatchMode(this.callingMDBName);
-				//queryInstance.setBatchMode(this.callingMDBName);
-				//queryInstance.setEndDate(new Date(System
-				//		.currentTimeMillis()));
-				queryInstanceDao.update(queryInstance, false);
-
-				log.debug("ExecRunnable my pmXml is" + pmXml);
-				// process the query request
-				patientSetId = processQueryRequest(
-						transactionTimeout, dsLookup, sfDAOFactory,
-						xmlRequest, sqlString, sessionId,
-						queryInstanceId, patientSetId,allowLargeTextValueConstrainFlag, pmXml);
-				log
-				.debug("QueryExecutorMDB completed processing query instance ["
-						+ queryInstanceId + "]");
-				// finally send reply to queue
-				//		sendReply(sessionId, patientSetId, "", replyToQueue);
+			} catch (Exception e) {
+				log.error("Exception", e);
+				
+				//running = false;
 			}
-
-			//			} catch (CRCTimeOutException daoEx) {
-			// catch this error and ignore. send general reply message.
-			//				log.error(daoEx.getMessage(), daoEx);
-			//				if (callingMDBName.equalsIgnoreCase(LARGE_QUEUE)) {
-			//				transaction.begin();
-			// set status to error
-			//					setQueryInstanceStatus(sfDAOFactory, queryInstanceId,
-			//							10,
-			//							"Could not complete the query in the large queue with transaction timeout "
-			//									+ transactionTimeout);
-			//					transaction.commit();
-
-			//				} else {
-
-			// send message to next queue and if the there is no
-			// next queue then update query instance to error
-			//				tryNextQueue(sfDAOFactory, sessionId, message,
-			//						queryInstanceId);
-
-			//    					}
-			/*	
-    				} catch (I2B2DAOException daoEx) {
-    					log.debug("got an error in ExecRunnable throwing: 1" + daoEx.getMessage() );
-    					if (daoEx instanceof LockedoutException) {
-    						log.debug("Lockedout happend"
-    								+ daoEx.getMessage());
-    						// message.
-    						log.error(daoEx.getMessage(), daoEx);
-    						// finally send reply to queue
-    		//				sendReply(sessionId, patientSetId, daoEx.getMessage(),
-    		//						replyToQueue);
-    						throw(daoEx);
-    					} else {
-    						// catch this error and ignore. send general reply
-    						// message.
-
-    						log.debug("got an error in ExecRunnable throwing: 2");
-    						log.error(daoEx.getMessage(), daoEx);
-
-    						// finally send reply to queue
-    	//					sendReply(sessionId, patientSetId, "", replyToQueue);
-    						//MM Dont throw?  throw(daoEx);
-    					}
-    				}
-			 */
-			//}
-			// setFinishedFlag(true);
-
-
-			//  outputString = reqHandler.execute();
-			setJobCompleteFlag(true);
-			log.debug("Finished Running Query, my queryResultId is : " + queryResultInstanceId);
-
-			queryInstance.setBatchMode(QueryManagerBeanUtil.COMPLETED);
-			queryInstanceDao.update(queryInstance, false);
-			returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "DONE");
-			returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
-		}
-		catch (CRCTimeOutException daoEx) {
-			// catch this error and ignore. send general reply message.
-			log.error(daoEx.getMessage(), daoEx);
-			returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
-			returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
-			setJobCompleteFlag(false);
-
-			//				if (callingMDBName.equalsIgnoreCase(LARGE_QUEUE)) {
-			//				transaction.begin();
-			// set status to error
-			//					setQueryInstanceStatus(sfDAOFactory, queryInstanceId,
-			//							10,
-			//							"Could not complete the query in the large queue with transaction timeout "
-			//									+ transactionTimeout);
-			//					transaction.commit();
-
-			//				} else {
-
-			// send message to next queue and if the there is no
-			// next queue then update query instance to error
-			//				tryNextQueue(sfDAOFactory, sessionId, message,
-			//						queryInstanceId);
-
-			//			}
-
-
-
-		} catch (Exception e) {
-			if (queryInstance != null)
-			{
-				queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
-				try {
-					queryInstanceDao.update(queryInstance, false);
-				} catch (Exception e2) {}
-			}
-			returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
-			returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
-			setJobCompleteFlag(true);
-			//setJobException(e);
-			log.error("Got an excpetion in ExecRunnable (RUN): " + e.getMessage());
-			e.printStackTrace();
-			//throw(e);
-		}
-
+	//	}
+	//	log.debug("Out of while loop");
 		//notify();
+
 	}
 
 	/**/
@@ -343,105 +301,6 @@ public class ExecRunnable implements Runnable{
 		this.dsLookupOwnerId =  dsLookupOwnerId;
 
 	}
-
-	/*
-	private void sendReply(String sessionId, String patientSetId,
-			String message, Queue replyToQueue) throws JMSException,
-			ServiceLocatorException {
-		QueueConnection conn = null;
-		QueueSession session = null;
-		QueueSender sender = null;
-		try {
-			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-			ServiceLocator serviceLocator = ServiceLocator.getInstance();
-			conn = serviceLocator.getQueueConnectionFactory(
-					QueryManagerBeanUtil.QUEUE_CONN_FACTORY_NAME)
-					.createQueueConnection();
-			session = conn.createQueueSession(false,
-					javax.jms.Session.AUTO_ACKNOWLEDGE);
-			MapMessage mapMessage = session.createMapMessage();
-			// mapMessage.setString("para1", responseXML);
-			log.debug("message session id " + sessionId);
-			mapMessage.setJMSCorrelationID(sessionId);
-			mapMessage.setString(
-					QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM,
-					patientSetId);
-			mapMessage.setString(QueryManagerBeanUtil.QUERY_STATUS_PARAM,
-					message);
-			sender = session.createSender(replyToQueue);
-			sender.send(mapMessage);
-		} catch (JMSException jmse) {
-			throw jmse;
-		} finally {
-			QueryManagerBeanUtil qmBeanUtil = new QueryManagerBeanUtil();
-	//		qmBeanUtil.closeAll(sender, null, conn, session);
-		}
-
-	}
-
-
-	private void tryNextQueue(SetFinderDAOFactory sfDAOFactory,
-			String sessionId, MapMessage msg, String queryInstanceId)
-			throws JMSException, ServiceLocatorException {
-		String jmsQueueName = null;
-
-		// check which queue is this
-		if (callingMDBName.equalsIgnoreCase(SMALL_QUEUE)) {
-			// set status to running
-			jmsQueueName = QueryManagerBeanUtil.MEDIUM_QUEUE_NAME;
-			// this.setQueryInstanceStatus(sfDAOFactory, queryInstanceId, 7,
-			// "Queued in MEDIUM queue");
-		} else if (callingMDBName.equalsIgnoreCase(MEDIUM_QUEUE)) {
-			// set status to running
-			jmsQueueName = QueryManagerBeanUtil.LARGE_QUEUE_NAME;
-			// this.setQueryInstanceStatus(sfDAOFactory, queryInstanceId, 8,
-			// "Queued in LARGE queue");
-		}
-
-		if (jmsQueueName != null) {
-			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-			ServiceLocator serviceLocator = ServiceLocator.getInstance();
-			QueueConnection conn = serviceLocator.getQueueConnectionFactory(
-					QueryManagerBeanUtil.QUEUE_CONN_FACTORY_NAME)
-					.createQueueConnection();
-			Queue responseQueue = serviceLocator
-					.getQueue(QueryManagerBeanUtil.RESPONSE_QUEUE_NAME);
-			Queue sendQueue = serviceLocator.getQueue(jmsQueueName);
-
-			QueueSession session = conn.createQueueSession(false,
-					javax.jms.Session.AUTO_ACKNOWLEDGE);
-			String id = sessionId;
-			String selector = "JMSCorrelationID='" + id + "'";
-			QueueSender sender = session.createSender(sendQueue);
-			MapMessage mapMsg = session.createMapMessage();
-			mapMsg.setJMSCorrelationID(id);
-			mapMsg.setJMSReplyTo(responseQueue);
-
-			mapMsg.setString(QueryManagerBeanUtil.XML_REQUEST_PARAM, msg
-					.getString(QueryManagerBeanUtil.XML_REQUEST_PARAM));
-			mapMsg
-					.setString(
-							QueryManagerBeanUtil.QUERY_MASTER_GENERATED_SQL_PARAM,
-							msg
-									.getString(QueryManagerBeanUtil.QUERY_MASTER_GENERATED_SQL_PARAM));
-			mapMsg.setString(QueryManagerBeanUtil.QUERY_INSTANCE_ID_PARAM, msg
-					.getString(QueryManagerBeanUtil.QUERY_INSTANCE_ID_PARAM));
-			mapMsg
-					.setString(
-							QueryManagerBeanUtil.QUERY_PATIENT_SET_ID_PARAM,
-							msg
-									.getString(QueryManagerBeanUtil.QUERY_PATIENT_SET_ID_PARAM));
-			mapMsg.setString(QueryManagerBeanUtil.DS_LOOKUP_DOMAIN_ID, msg
-					.getString(QueryManagerBeanUtil.DS_LOOKUP_DOMAIN_ID));
-			mapMsg.setString(QueryManagerBeanUtil.DS_LOOKUP_PROJECT_ID, msg
-					.getString(QueryManagerBeanUtil.DS_LOOKUP_PROJECT_ID));
-			mapMsg.setString(QueryManagerBeanUtil.DS_LOOKUP_OWNER_ID, msg
-					.getString(QueryManagerBeanUtil.DS_LOOKUP_OWNER_ID));
-
-			sender.send(mapMsg);
-		}
-	}
-	 */
 
 	private String processQueryRequest(
 			int transactionTimeout, DataSourceLookup dsLookup,

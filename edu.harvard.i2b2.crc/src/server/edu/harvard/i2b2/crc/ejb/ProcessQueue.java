@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -23,8 +24,17 @@ import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.pdo.PdoTempTableUtil;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
+import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultInstanceDao;
+import edu.harvard.i2b2.crc.datavo.PSMFactory;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
+import edu.harvard.i2b2.crc.datavo.db.StatusEnum;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceResultResponseType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryInstanceType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryResultInstanceType;
 import edu.harvard.i2b2.crc.quartz.AnalysisQueue.QueueType;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
@@ -47,13 +57,27 @@ public class ProcessQueue implements Runnable{
 
 	private  String queue;
 	private boolean isActive = false;
-//	private boolean isRunning = false;
+	//	private boolean isRunning = false;
 	public boolean isJobCompleteFlag() {
 		return jobCompleteFlag;
 	}
 
-
 	public void run() {
+		  log.info(queue + " Going into  while look in ProcessQueue");
+
+		
+		  while(!Thread.interrupted())
+		      try {
+		    	  runQueues();
+		      }
+		      catch(Exception e) {
+		    	  log.error("Failed in " + queue );
+		          e.printStackTrace();
+		      }
+		  log.info(queue + " Out of while look in ProcessQueue");
+	}
+
+	public void runQueues() {
 
 		log.debug("In ProcessQueue");
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
@@ -84,99 +108,112 @@ public class ProcessQueue implements Runnable{
 				//get list of available process to run
 
 
-//				log.debug("Running is " + isRunning);
+				//				log.debug("Running is " + isRunning);
 
-//				if (!isRunning) {
-					String finalSql = "";
-					String message = "";
-					int queryInstanceId = 0;
-					String ownerId = "";
-					String sqlString = "";
-					String projectId = "";
-					String xmlRequest= "";
-					String pmXml = "";
-					Connection conn = null;
-					PreparedStatement preparedStmt = null;
-					//getDataSourceLookupDAO();
+				//				if (!isRunning) {
+				String finalSql = "";
+				String message = "";
+				int queryInstanceId = 0;
+				String ownerId = "";
+				String sqlString = "";
+				String projectId = "";
+				String xmlRequest= "";
+				String pmXml = "";
+				Connection conn = null;
+				PreparedStatement preparedStmt = null;
+				//getDataSourceLookupDAO();
 
-					//conn = qpUtil.getConnection();
+				//conn = qpUtil.getConnection();
 
-					for (DataSourceLookup dslookup: dataSourceLookupList)
-					{
-						try {
+				for (DataSourceLookup dslookup: dataSourceLookupList)
+				{
+					try {
 
-							log.debug("Connecting to: " +  dslookup.getDataSource());
-							DataSource ds = qpUtil.getDataSource( dslookup.getDataSource());
-							conn = ds.getConnection();
+						log.debug("Connecting to: " +  dslookup.getDataSource());
+						DataSource ds = qpUtil.getDataSource( dslookup.getDataSource());
+						conn = ds.getConnection();
 
-							finalSql = 
-									"select qm.*, qi.query_instance_id, Row_number() " +
-											"over ( " +
-											"   PARTITION BY qm.QUERY_MASTER_ID " +
-											"  ORDER BY qm.QUERY_MASTER_ID desc) AS new_id " +
-											" from  " +dslookup.getFullSchema() + ".QT_QUERY_MASTER qm, " +
-											dslookup.getFullSchema() + ".qt_query_instance qi " +
-											" where qm.QUERY_MASTER_ID = qi.QUERY_master_id " +
-											"  and qi.batch_mode = '" + queue +  "' " +
-											" and qi.end_date is null ";
-							if (dslookup.equals("SQLSERVER"))
-								finalSql +=	" and  start_date < dateadd(minute, -3, getdate()) ";
-							//else
-							//	finalSql += " and "
+						finalSql = 
+								"select qm.*, qi.query_instance_id, Row_number() " +
+										"over ( " +
+										"   PARTITION BY qm.QUERY_MASTER_ID " +
+										"  ORDER BY qm.QUERY_MASTER_ID desc) AS new_id " +
+										" from  " +dslookup.getFullSchema() + ".QT_QUERY_MASTER qm, " +
+										dslookup.getFullSchema() + ".qt_query_instance qi " +
+										" where qm.QUERY_MASTER_ID = qi.QUERY_master_id " +
+										"  and qi.batch_mode = '" + queue +  "' " +
+										" and qi.end_date is null ";
+						if (dslookup.equals("SQLSERVER"))
+							finalSql +=	" and  start_date < dateadd(minute, -3, getdate()) ";
+						//else
+						//	finalSql += " and "
 
-							finalSql += " order by qi.start_date ";
-
-
-
-							log.debug("Execut SQL [" + finalSql + "]");
-							preparedStmt = conn.prepareStatement(finalSql);
-
-							//conn = dataSource.getConnection();
-							queryInstanceId = 0;
-							ResultSet resultSet = preparedStmt.executeQuery();
-							if (resultSet.next()) {
-								queryInstanceId = resultSet.getInt("query_instance_id");
-								ownerId = resultSet.getString("user_id");
-								sqlString = resultSet.getString("generated_sql");
-								projectId = resultSet.getString("group_id");
-								xmlRequest = resultSet.getString("i2b2_request_xml");
-								pmXml = resultSet.getString("pm_xml");
-							}
-
-							conn.close();
-							conn = null;
-
-							if (queryInstanceId != 0) { // && (!isRunning)) {
-		//						isRunning = true;
-		//						log.debug("Running is " + isRunning);
-								log.info("Working on in " + queryInstanceId + " in " + queue);
+						finalSql += " order by qi.start_date ";
 
 
-								log.debug("in ProcessQueue my pmXml is"+ pmXml);
-								ExecRunnable exec = new ExecRunnable(sqlString, Integer.toString(queryInstanceId), null,
-										xmlRequest, dslookup.getDomainId(), projectId, ownerId, pmXml);
 
-								Thread t = new Thread(exec);
+						log.debug("Execut SQL [" + finalSql + "]");
+						preparedStmt = conn.prepareStatement(finalSql);
 
+						//conn = dataSource.getConnection();
+						queryInstanceId = 0;
+						ResultSet resultSet = preparedStmt.executeQuery();
+						if (resultSet.next()) {
+							queryInstanceId = resultSet.getInt("query_instance_id");
+							ownerId = resultSet.getString("user_id");
+							sqlString = resultSet.getString("generated_sql");
+							projectId = resultSet.getString("group_id");
+							xmlRequest = resultSet.getString("i2b2_request_xml");
+							pmXml = resultSet.getString("pm_xml");
+						}
+
+						conn.close();
+						conn = null;
+
+						if (queryInstanceId != 0 && readTimeoutPropertyValue(queue) > 1) { // && (!isRunning)) {
+							//						isRunning = true;
+							//						log.debug("Running is " + isRunning);
+							log.info("Working on in " + queryInstanceId + " in " + queue);
+
+
+							log.debug("in ProcessQueue my pmXml is"+ pmXml);
+							ExecRunnable exec = new ExecRunnable(sqlString, Integer.toString(queryInstanceId), null,
+									xmlRequest, dslookup.getDomainId(), projectId, ownerId, pmXml);
+
+							Thread t = new Thread(exec);
+
+
+							synchronized (t) {
 								t.start();
-								
+
 								int waitTime = readTimeoutPropertyValue(queue) * 1000;
 
 								log.info("Waittime for " + queue+ " is  " + waitTime);
 
-							
+
 
 								try {
 
 									long startTime = System.currentTimeMillis(); 
 									long deltaTime = -1; 
-									while((exec.isJobCompleteFlag() == false)&& (deltaTime < waitTime)){ 
+									while((exec.isJobCompleteFlag() == false)&& (exec.isJobErrorFlag() == false) && (deltaTime < waitTime)){ 
+
+										if (t.isAlive() == false)
+											log.debug("32 - Job Exception: " + exec.getJobException().getMessage());
+										if (t.isInterrupted() == true)
+											log.debug("42 - Job Exception: " + exec.getJobException().getMessage());
+										
+										if (exec.isJobErrorFlag() == true)
+											log.debug("12 - Job Exception: " + exec.getJobException().getMessage());
+
+										if (exec.getJobException() != null)
+											log.debug("22 - Job Exception: " + exec.getJobException().getMessage());
 										if (waitTime > 0) { 
 											//log.info("In ExecRunnable Thread QueryId: " +  queryInstanceId + "  Waiting: " + (waitTime - deltaTime));
 											//t.wait(waitTime - deltaTime); 
 											deltaTime = System.currentTimeMillis() - startTime; 
 										} //else { 
-											//t.wait(); 
+										//t.wait(); 
 										//} 
 									} 
 									log.info("Finished Thread of queryid " + queryInstanceId  + " in" + queue);
@@ -196,143 +233,149 @@ public class ProcessQueue implements Runnable{
 
 
 
-										log.debug("Set to LARGE Queue");
-										//throw new Exception("Timed Out, setting to LARGE Queue");
+										log.debug("Set to Next Queue after " + queue);
 
-										DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
-												dslookup.getDomainId(), projectId, ownerId);
+										setToNextQueue( dslookup,  projectId,  ownerId, queryInstanceId);
 
-										IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
-
-										SetFinderDAOFactory sfDAOFactory = daoFactory
-												.getSetFinderDAOFactory();
-
-										// check if the status is cancelled
-										IQueryInstanceDao queryInstanceDao = sfDAOFactory
-												.getQueryInstanceDAO();
-										QtQueryInstance queryInstance = queryInstanceDao
-												.getQueryInstanceByInstanceId(Integer.toString(queryInstanceId));
-
-										if (queue.equals(QueryManagerBeanUtil.MEDIUM_QUEUE))
-										{
-											queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE);
-										}
-										else if (queue.equals(QueryManagerBeanUtil.LARGE_QUEUE))
-										{
-											queryInstance.setBatchMode("NEVER_FINISHED");
-
-											queryInstance.setEndDate(new Date(System
-													.currentTimeMillis()));
-										}
-										queryInstanceDao.update(queryInstance, false);										
 
 									} 
 								}
 								catch (Exception e) {
-					//				isRunning = false;
-									log.error("Error in thread ProcessQueue: " + e.getMessage());
+									//				isRunning = false;
+									log.debug("Error in thread ProcessQueue: " + e.getMessage());
 									if (e.getMessage().startsWith("javax.naming.NameNotFoundException"))
 										break;
 
 									log.error("Error in thread ProcessQueue: " + e.getMessage());
-									DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
-											dslookup.getDomainId(), projectId, ownerId);
+									setToNextQueue( dslookup,  projectId,  ownerId, queryInstanceId);
 
-									IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
-
-									SetFinderDAOFactory sfDAOFactory = daoFactory
-											.getSetFinderDAOFactory();
-
-									// check if the status is cancelled
-									IQueryInstanceDao queryInstanceDao = sfDAOFactory
-											.getQueryInstanceDAO();
-									QtQueryInstance queryInstance = queryInstanceDao
-											.getQueryInstanceByInstanceId(Integer.toString(queryInstanceId));
-
-									if (queue.equals(QueryManagerBeanUtil.MEDIUM_QUEUE))
-									{
-										queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE);
-									}
-									else if (queue.equals(QueryManagerBeanUtil.LARGE_QUEUE))
-									{
-										queryInstance.setBatchMode("NEVER_FINISHED");
-
-										queryInstance.setEndDate(new Date(System
-												.currentTimeMillis()));
-									}
-									queryInstanceDao.update(queryInstance, false);
 									e.printStackTrace();
 
 								} finally {
+									log.debug("Process Queue (runQueus-106-" + queue );
+
+									if (t != null) {
+										//exec.terminate();
+										//t.join();
+										log.debug("Process Queue (runQueus-108-" + queue );
+
+										t.interrupt();
+										log.debug("Thread successfully stopped.");
+									}
+									log.debug("Process Queue (runQueus-107-" + queue );
+
 									//t.interrupt();
 									//exec = null;
 									//t = null;
-	//								isRunning = false;
+									//								isRunning = false;
 									queryInstanceId = 0;
 								}
-								
-								
-								
-							}
-								
-							Thread.sleep(10000);
-						} catch (Exception e) {
-							try {
-	//							isRunning = false;
-								if (conn != null)
-									conn.close();
-							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
-	//							isRunning = false;
-								e1.printStackTrace();
-							}
 
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} finally {
-	//						isRunning = false;
+
+
+							}
+						} else if (queryInstanceId != 0) {
+							setToNextQueue( dslookup,  projectId,  ownerId, queryInstanceId);
+						}
+						Thread.sleep(10000);
+					} catch (Exception e) {
+						log.debug("Process Queue (runQueus-105-" + queue );
+
+						try {
+							//							isRunning = false;
 							if (conn != null)
 								conn.close();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							//							isRunning = false;
+							e1.printStackTrace();
 						}
 
-						log.debug(queue + " - Current count: " + count);
-						count++;
+							// TODO Auto-generated catch block
+					} finally {
+						//						isRunning = false;
+						log.debug("Process Queue (runQueus-104-" + queue );
 
+						if (conn != null)
+							conn.close();
+	
 					}
+
+					log.debug(queue + " - Current count: " + count);
+					count++;
+
 				}
-
-				//				DataSource ds = qpUtil.getDataSource( qpUtil.getCRCDBLookupDataSource());
-				//	conn = dsLookupDao.getDataSource().getConnection();
-				//ds.getConnection();
-
-				//Get all projects
-
-				//conn = dataSource.getConnection();
-
-				//	log.debug("getting list of datasources");
-				//	ResultSet resultSet = preparedStmt.executeQuery();
-				//	if (resultSet.next()) {
-				//		log.debug("found datasource: " + resultSet.getString("c_db_datasource"));
-				//	}
-
-	//		}
+			}
 
 
-			//			qpUtil.
-		} catch (SQLException e) {
-			e.printStackTrace();
-		//	isRunning = false;
+		} catch (Exception e) {
+			//e.printStackTrace();
+			log.info("Process Queue (runQueus-103-" + queue  + " error: " + e.getMessage());
+
+			//	isRunning = false;
 			//throw new I2B2DAOException(
 			//		"Error while calculating query count by set size"
 			//				+ StackTraceUtil.getStackTrace(e));
-		} catch (I2B2Exception e) {
-	//		isRunning = false;
-			e.printStackTrace();
 		} 
 	}
-		
 
+	private void setToNextQueue(DataSourceLookup dslookup, String projectId, String ownerId, int queryInstanceId) throws I2B2DAOException
+	{
 		
+		DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
+				dslookup.getDomainId(), projectId, ownerId);
+
+		IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
+
+		SetFinderDAOFactory sfDAOFactory = daoFactory
+				.getSetFinderDAOFactory();
+
+		// check if the status is cancelled
+		IQueryInstanceDao queryInstanceDao = sfDAOFactory
+				.getQueryInstanceDAO();
+		QtQueryInstance queryInstance = queryInstanceDao
+				.getQueryInstanceByInstanceId(Integer.toString(queryInstanceId));
+		if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.ERROR))
+		{
+			return;
+		}
+		else if (queue.equals(QueryManagerBeanUtil.MEDIUM_QUEUE))
+		{
+			queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE);
+		}
+		else if (queue.equals(QueryManagerBeanUtil.LARGE_QUEUE))
+		{
+			
+			sfDAOFactory.getQueryResultTypeDao();
+			queryInstance.setBatchMode("NEVER_FINISHED");
+			QtQueryStatusType queryStatusType = queryInstance.getQtQueryStatusType();
+			queryStatusType.setStatusTypeId(10);
+			
+			InstanceResultResponseType instanceResultResponseType = new InstanceResultResponseType();
+
+			IQueryResultInstanceDao queryResultInstanceDao = sfDAOFactory
+					.getPatientSetResultDAO();			
+			List<QtQueryResultInstance> resultInstanceList = queryResultInstanceDao
+					.getResultInstanceList(Integer.toString(queryInstanceId));
+			
+			// update cancelled status to all the result instance
+			String resultInstanceId = "";
+			int statusTypeId = 0;
+			for (QtQueryResultInstance resultInstance : resultInstanceList) {
+				resultInstanceId = resultInstance.getResultInstanceId();
+				queryResultInstanceDao.updatePatientSet(resultInstanceId, 10, 
+						 resultInstance.getMessage(), 0, 0, resultInstance.getObfuscateMethod());
+						
+			}
+			queryInstance.setQtQueryStatusType(queryStatusType);
+			
+			queryInstance.setEndDate(new Date(System
+					.currentTimeMillis()));
+		}
+		queryInstanceDao.update(queryInstance, false);
+
+	}
+
 	private int readTimeoutPropertyValue(String queueType) {
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 		String timeoutStr = "";
