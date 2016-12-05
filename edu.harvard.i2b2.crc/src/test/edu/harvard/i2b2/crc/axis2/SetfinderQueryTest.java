@@ -433,6 +433,34 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 
 
 	@Test
+	public void VerifyStatus() throws Exception {
+		String filename = testFileDir + "/setfinder_exclude_and_occurances_any_[63]_1432ms.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(setfinderUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			
+			assertEquals(masterInstanceResult.getStatus().getCondition().get(0).getValue(),"DONE");
+			assertEquals(masterInstanceResult.getStatus().getCondition().get(0).getType(),"DONE");
+			
+			assertEquals(masterInstanceResult.getQueryInstance().getBatchMode(), "FINISHED");
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+
+	@Test
 	public void ExcludeOccurancesMultiplePanelsAny() throws Exception {
 		String filename = testFileDir + "/setfinder_exclude_and_occurances_any_[63]_1432ms.xml";
 		try { 
