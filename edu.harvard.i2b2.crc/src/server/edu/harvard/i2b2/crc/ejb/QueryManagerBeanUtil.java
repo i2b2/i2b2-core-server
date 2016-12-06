@@ -77,7 +77,7 @@ public class QueryManagerBeanUtil {
 
 	public static final String QUEUED = "QUEUED";
 	public static final String ERROR = "ERROR";
-	public static final String COMPLETED = "COMPLETED";
+	public static final String FINISHED = "FINISHED";
 	public static final String PROCESSING = "PROCESSING";
 	public static final String SMALL_QUEUE = "SMALL_QUEUE";
 	public static final String MEDIUM_QUEUE = "MEDIUM_QUEUE";

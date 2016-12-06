@@ -25,6 +25,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.StatusType;
 import edu.harvard.i2b2.crc.delegate.RequestHandler;
 import edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate;
 import edu.harvard.i2b2.crc.ejb.QueryManagerBean;
+import edu.harvard.i2b2.crc.ejb.QueryManagerBeanUtil;
 import edu.harvard.i2b2.crc.ejb.role.PriviledgeLocal;
 import edu.harvard.i2b2.crc.util.CacheUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
@@ -134,21 +135,28 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 				status.getCondition().add(condition);
 				masterInstanceResponse.setStatus(status);
 				errorFlag = true;
-		//	} 
-		//	else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("5")) {
-		//						masterInstanceResponse.setStatus(this.buildCRCStausType(
-		//								 "ERROR", "ERROR"));
-		//					} else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("3")) {
-		//						masterInstanceResponse.setStatus(this.buildCRCStausType(
-		//								 "DONE", "DONE"));
+			} 
+			
+			else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("5")) {
+								masterInstanceResponse.setStatus(this.buildCRCStausType(
+										 "ERROR", "ERROR"));
+			/*
+			} else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("3")) {
+						masterInstanceResponse.setStatus(this.buildCRCStausType(
+								 "DONE", "DONE"));
 									
 			} else if (statusType.getStatusTypeId() != null && !statusType.getStatusTypeId().trim().equals("6")) {
 				masterInstanceResponse.setStatus(this.buildCRCStausType(
 						 "RUNNING", "RUNNING"));
+			 */
 			} else {
 			 masterInstanceResponse.setStatus(this.buildCRCStausType(
 			 RequestHandlerDelegate.DONE_TYPE, "DONE"));
 			}
+			//If Batchmode is equal to PROCESSING than set to finished
+			if (masterInstanceResponse.getQueryInstance().getBatchMode().equals(QueryManagerBeanUtil.PROCESSING))
+				masterInstanceResponse.getQueryInstance().setBatchMode(QueryManagerBeanUtil.FINISHED);
+			
 			 response = this.buildResponseMessage(requestXml, bodyType);
 		} catch (Exception ee) {
 			log.debug("Ran into a error: " + ee.getMessage());
