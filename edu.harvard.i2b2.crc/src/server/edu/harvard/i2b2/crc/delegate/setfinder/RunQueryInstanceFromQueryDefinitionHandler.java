@@ -158,8 +158,19 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 			{
 				masterInstanceResponse.setStatus(this.buildCRCStausType(
 						 RequestHandlerDelegate.DONE_TYPE, "DONE"));
-				masterInstanceResponse.getQueryInstance().setBatchMode(masterInstanceResponse.getQueryInstance().getQueryStatusType().getName());
-			
+				
+				if (masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("QUEUED"))
+				{
+					masterInstanceResponse.getQueryInstance().setBatchMode("MEDIUM_QUEUE");
+					QueryStatusTypeType newStatusType = new QueryStatusTypeType();
+					newStatusType.setName("MEDIUM_QUEUE");
+					newStatusType.setDescription("MEDIUM_QUEUE");
+					newStatusType.setStatusTypeId("7");
+					masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
+					
+				} else {
+					masterInstanceResponse.getQueryInstance().setBatchMode(masterInstanceResponse.getQueryInstance().getQueryStatusType().getName());
+				}
 			}
 			 response = this.buildResponseMessage(requestXml, bodyType);
 		} catch (Exception ee) {
