@@ -167,7 +167,14 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 					newStatusType.setDescription("MEDIUM_QUEUE");
 					newStatusType.setStatusTypeId("7");
 					masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
-					
+				} else 	if (masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("ERROR"))
+				{
+					masterInstanceResponse.getQueryInstance().setBatchMode("FINISHED");
+					QueryStatusTypeType newStatusType = new QueryStatusTypeType();
+					newStatusType.setName("ERROR");
+					newStatusType.setDescription("ERROR");
+					newStatusType.setStatusTypeId("4");
+					masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
 				} else {
 					masterInstanceResponse.getQueryInstance().setBatchMode(masterInstanceResponse.getQueryInstance().getQueryStatusType().getName());
 				}
