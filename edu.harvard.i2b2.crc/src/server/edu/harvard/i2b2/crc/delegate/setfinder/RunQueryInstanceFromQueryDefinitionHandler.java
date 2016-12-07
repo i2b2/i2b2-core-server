@@ -155,8 +155,12 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 			}
 			//If Batchmode is equal to PROCESSING than set to finished
 			if (masterInstanceResponse.getQueryInstance().getBatchMode().equals(QueryManagerBeanUtil.PROCESSING))
-				masterInstanceResponse.getQueryInstance().setBatchMode(QueryManagerBeanUtil.FINISHED);
+			{
+				masterInstanceResponse.setStatus(this.buildCRCStausType(
+						 RequestHandlerDelegate.DONE_TYPE, "DONE"));
+				masterInstanceResponse.getQueryInstance().setBatchMode(masterInstanceResponse.getQueryInstance().getQueryStatusType().getName());
 			
+			}
 			 response = this.buildResponseMessage(requestXml, bodyType);
 		} catch (Exception ee) {
 			log.debug("Ran into a error: " + ee.getMessage());

@@ -250,7 +250,20 @@ public class QueryManagerBean{ // implements SessionBean {
 				queryInstance.setBatchMode("COMPLETED");
 				queryInstanceDao.update(queryInstance, false);
 					
-			}		
+			} else if (queryInstance.getBatchMode().equals("PROCESSING"))
+			{
+				QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
+
+				status.setStatusTypeId("7");
+				status.setDescription("MEDIUM_QUEUE");
+				status.setName("MEDIUM_QUEUE");
+				queryInstanceType.setQueryStatusType(status);
+
+				queryInstance.setBatchMode("MEDIUM_QUEUE");
+				queryInstanceDao.update(queryInstance, false);
+
+				
+			}
 			// set result instance
 			masterInstanceResultType.getQueryResultInstance().addAll(
 					responseType1.getQueryResultInstance());

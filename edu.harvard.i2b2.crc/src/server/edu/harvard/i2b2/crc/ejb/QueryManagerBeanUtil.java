@@ -167,7 +167,7 @@ public class QueryManagerBeanUtil {
 					
 					log.debug("Set to MEDIUM Queue");
 							Map returnMap = new HashMap();
-							returnMap.put(QUERY_STATUS_PARAM, "RUNNING");
+							returnMap.put(QUERY_STATUS_PARAM, "MEDIUM_QUEUE");
 							int id =  Integer.parseInt(queryInstanceId);
 							returnMap.put(QT_QUERY_RESULT_INSTANCE_ID_PARAM, id);
 							return returnMap;
