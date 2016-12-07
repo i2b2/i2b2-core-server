@@ -249,7 +249,17 @@ public class QueryManagerBean{ // implements SessionBean {
 					
 				queryInstance.setBatchMode("COMPLETED");
 				queryInstanceDao.update(queryInstance, false);
-					
+			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("4"))
+			{
+
+				queryInstance.setBatchMode("COMPLETED");
+				queryInstanceDao.update(queryInstance, false);
+
+			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("5"))
+			{
+
+				queryInstance.setBatchMode("COMPLETED");
+				queryInstanceDao.update(queryInstance, false);
 			} else if (queryInstance.getBatchMode().equals("PROCESSING"))
 			{
 				QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
@@ -262,7 +272,7 @@ public class QueryManagerBean{ // implements SessionBean {
 				queryInstance.setBatchMode("MEDIUM_QUEUE");
 				queryInstanceDao.update(queryInstance, false);
 
-				
+				responseType1.getQueryResultInstance().get(0).setQueryStatusType(status);
 			}
 			// set result instance
 			masterInstanceResultType.getQueryResultInstance().addAll(
