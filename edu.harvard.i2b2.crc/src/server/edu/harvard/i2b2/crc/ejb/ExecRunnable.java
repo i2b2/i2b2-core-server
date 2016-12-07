@@ -223,7 +223,7 @@ public class ExecRunnable implements Runnable{
 					log.error(daoEx.getMessage(), daoEx);
 					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
 					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
-					Thread.sleep(10000);
+					Thread.sleep(1000);
 
 				} catch (Exception e) {
 					setJobException(e);
@@ -248,7 +248,7 @@ public class ExecRunnable implements Runnable{
 					log.error("Job Exception: " + getJobException().getMessage());
 					//e.printStackTrace();
 					//throw(e);
-					Thread.sleep(10000);
+					Thread.sleep(1000);
 					log.error("Got an excpetion in ExecRunnable (RUN): " + e.getMessage());
 
 				}

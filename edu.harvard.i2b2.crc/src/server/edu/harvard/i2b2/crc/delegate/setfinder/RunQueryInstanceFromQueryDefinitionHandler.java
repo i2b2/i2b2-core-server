@@ -169,7 +169,9 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 					masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
 				} else 	if (masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("ERROR"))
 				{
-					masterInstanceResponse.getQueryInstance().setBatchMode("FINISHED");
+					masterInstanceResponse.getStatus().getCondition().get(0).setType("ERROR");
+					masterInstanceResponse.getStatus().getCondition().get(0).setValue("ERROR");
+					masterInstanceResponse.getQueryInstance().setBatchMode("COMPLETED");
 					QueryStatusTypeType newStatusType = new QueryStatusTypeType();
 					newStatusType.setName("ERROR");
 					newStatusType.setDescription("ERROR");
