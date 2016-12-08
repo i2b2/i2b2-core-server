@@ -247,18 +247,27 @@ public class QueryManagerBean{ // implements SessionBean {
 				queryInstance.setQtQueryStatusType(status1);
 				//masterInstanceResultType.setQueryInstance(queryInstanceType);
 					
-				queryInstance.setBatchMode("COMPLETED");
+				queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
+
+				queryInstance.setEndDate(new Date(System
+						.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
 			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("4"))
 			{
 
-				queryInstance.setBatchMode("COMPLETED");
+				queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
+
+				queryInstance.setEndDate(new Date(System
+						.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
 
 			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("5"))
 			{
 
-				queryInstance.setBatchMode("COMPLETED");
+				queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
+
+				queryInstance.setEndDate(new Date(System
+						.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
 			} else if (queryInstance.getBatchMode().equals("PROCESSING"))
 			{
