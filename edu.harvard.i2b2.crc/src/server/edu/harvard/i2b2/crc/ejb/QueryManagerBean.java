@@ -248,6 +248,7 @@ public class QueryManagerBean{ // implements SessionBean {
 				//masterInstanceResultType.setQueryInstance(queryInstanceType);
 					
 				queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
+				queryInstance.setQueryInstanceId("3");
 
 				queryInstance.setEndDate(new Date(System
 						.currentTimeMillis()));
@@ -256,11 +257,12 @@ public class QueryManagerBean{ // implements SessionBean {
 			{
 
 				queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
-
+				queryInstance.setQueryInstanceId("3");
 				queryInstance.setEndDate(new Date(System
 						.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
-
+//SKIP this one and goto MEDIUM Queue
+				/*
 			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("5"))
 			{
 
@@ -269,6 +271,7 @@ public class QueryManagerBean{ // implements SessionBean {
 				queryInstance.setEndDate(new Date(System
 						.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
+				*/
 			} else if (queryInstance.getBatchMode().equals("PROCESSING"))
 			{
 				QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
