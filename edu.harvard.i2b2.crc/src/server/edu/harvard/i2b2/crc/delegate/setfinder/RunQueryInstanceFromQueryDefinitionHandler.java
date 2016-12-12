@@ -138,6 +138,13 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 			} 
 			
 			else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("5")) {
+				
+				QueryStatusTypeType newStatusType = new QueryStatusTypeType();
+				newStatusType.setName("ERROR");
+				newStatusType.setDescription("ERROR");
+				newStatusType.setStatusTypeId("4");
+				masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
+
 								masterInstanceResponse.setStatus(this.buildCRCStausType(
 										 "ERROR", "ERROR"));
 			/*
@@ -177,7 +184,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 				{
 					masterInstanceResponse.getStatus().getCondition().get(0).setType("ERROR");
 					masterInstanceResponse.getStatus().getCondition().get(0).setValue("ERROR");
-					masterInstanceResponse.getQueryInstance().setBatchMode("COMPLETED");
+					masterInstanceResponse.getQueryInstance().setBatchMode("ERROR");
 					QueryStatusTypeType newStatusType = new QueryStatusTypeType();
 					newStatusType.setName("ERROR");
 					newStatusType.setDescription("ERROR");
