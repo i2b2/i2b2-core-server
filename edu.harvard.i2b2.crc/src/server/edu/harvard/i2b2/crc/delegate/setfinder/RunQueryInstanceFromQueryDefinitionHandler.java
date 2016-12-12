@@ -159,8 +159,14 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 				masterInstanceResponse.setStatus(this.buildCRCStausType(
 						 RequestHandlerDelegate.DONE_TYPE, "DONE"));
 				
-				if (masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("QUEUED"))
+				if (masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("QUEUED")
+						|| masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("TIMEDOUT"))
 				{
+					
+					masterInstanceResponse.getStatus().getCondition().get(0).setType("RUNNING");
+					masterInstanceResponse.getStatus().getCondition().get(0).setValue("RUNNING");
+
+					
 					masterInstanceResponse.getQueryInstance().setBatchMode("MEDIUM_QUEUE");
 					QueryStatusTypeType newStatusType = new QueryStatusTypeType();
 					newStatusType.setName("MEDIUM_QUEUE");

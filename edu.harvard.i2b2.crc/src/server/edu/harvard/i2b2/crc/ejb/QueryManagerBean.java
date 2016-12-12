@@ -276,9 +276,9 @@ public class QueryManagerBean{ // implements SessionBean {
 			{
 				QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
 
-				status.setStatusTypeId("7");
-				status.setDescription("MEDIUM_QUEUE");
-				status.setName("MEDIUM_QUEUE");
+				status.setStatusTypeId("10");
+				status.setDescription("TIMEDOUT");
+				status.setName("TIMEDOUT");
 				queryInstanceType.setQueryStatusType(status);
 
 				queryInstance.setBatchMode("MEDIUM_QUEUE");
