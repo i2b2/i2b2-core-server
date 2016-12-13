@@ -127,19 +127,11 @@ public class ProcessQueue implements Runnable{
 
 				for (DataSourceLookup dslookup: dataSourceLookupList)
 				{
-					
-					
 					try {
 
 						log.debug("Connecting to: " +  dslookup.getDataSource());
 						DataSource ds = qpUtil.getDataSource( dslookup.getDataSource());
 						conn = ds.getConnection();
-						
-						//set any running queus back to in queue
-						finalSql = "update " + dslookup.getFullSchema() + ".qt_query_instance  set batch_mode = '" + queue +  "' " +
-						" where  batch_mode = '" + queue +  "_RUNNING' and end_date is null ";
-						//conn.
-						
 
 						finalSql = 
 								"select qm.*, qi.query_instance_id, Row_number() " +
