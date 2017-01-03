@@ -208,7 +208,7 @@ public class ExecRunnable implements Runnable{
 					setJobCompleteFlag(true);
 					log.debug("Finished Running Query, my queryResultId is : " + queryResultInstanceId);
 
-					queryInstance.setBatchMode(QueryManagerBeanUtil.COMPLETED);
+					queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
 					queryInstanceDao.update(queryInstance, false);
 					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "DONE");
 					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
