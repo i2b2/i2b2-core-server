@@ -247,10 +247,67 @@ public class QueryManagerBean{ // implements SessionBean {
 				queryInstance.setQtQueryStatusType(status1);
 				//masterInstanceResultType.setQueryInstance(queryInstanceType);
 					
-				queryInstance.setBatchMode("COMPLETED");
+				queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
+				//queryInstance.setQueryInstanceId("3");
+
+				queryInstance.setEndDate(new Date(System
+						.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
-					
-			}		
+			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("4"))
+			{
+
+	//			QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
+	//			status.setStatusTypeId("4");
+	//			status.setDescription("ERROR");
+	//			status.setName("ERROR");
+	//			queryInstanceType.setQueryStatusType(status);
+	//			QtQueryStatusType status1 = queryInstance.getQtQueryStatusType();
+	//			status1.setStatusTypeId(4);
+	//			status1.setName("ERROR");
+	//			status1.setDescription("ERROR");
+	//			queryInstance.setQtQueryStatusType(status1);
+				
+				queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
+				queryInstance.setEndDate(new Date(System
+						.currentTimeMillis()));
+				queryInstanceDao.update(queryInstance, false);
+//SKIP this one and goto MEDIUM Queue
+				/* */
+
+			} else if (queryInstance.getBatchMode().equals("PROCESSING"))
+			{
+				QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
+
+				status.setStatusTypeId("10");
+				status.setDescription("TIMEDOUT");
+				status.setName("TIMEDOUT");
+				queryInstanceType.setQueryStatusType(status);
+
+				queryInstance.setBatchMode("MEDIUM_QUEUE");
+				queryInstanceDao.update(queryInstance, false);
+
+				responseType1.getQueryResultInstance().get(0).setQueryStatusType(status);
+			
+		} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("5"))
+		{
+
+			queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
+
+			
+						QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
+						status.setStatusTypeId("4");
+						status.setDescription("ERROR");
+						status.setName("ERROR");
+						queryInstanceType.setQueryStatusType(status);
+						QtQueryStatusType status1 = queryInstance.getQtQueryStatusType();
+						status1.setStatusTypeId(4);
+						status1.setName("ERROR");
+						status1.setDescription("ERROR");
+						queryInstance.setQtQueryStatusType(status1);
+			queryInstance.setEndDate(new Date(System
+					.currentTimeMillis()));
+			queryInstanceDao.update(queryInstance, false);
+		}
 			// set result instance
 			masterInstanceResultType.getQueryResultInstance().addAll(
 					responseType1.getQueryResultInstance());
