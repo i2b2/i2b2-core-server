@@ -3,6 +3,7 @@ package edu.harvard.i2b2.crc.delegate.ontology;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.stream.XMLInputFactory;
@@ -34,6 +35,7 @@ import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
+import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.FacilityType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.MessageHeaderType;
@@ -43,6 +45,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptsType;
+import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.ontology.GetChildrenType;
 import edu.harvard.i2b2.crc.datavo.ontology.GetModifierInfoType;
 import edu.harvard.i2b2.crc.datavo.ontology.GetTermInfoType;
@@ -80,6 +83,21 @@ public class CallOntologyUtil {
 		return conceptType;
 	}
 
+	public static DerivedFactColumnsType callGetFactColumns(String itemKey, SecurityType securityType,  String projectId, String ontologyUrl )
+			throws XMLStreamException, JAXBUtilException, AxisFault,I2B2Exception  {
+			
+		RequestMessageType requestMessageType = getDerivedFactColumnsI2B2RequestMessage(itemKey, securityType, projectId.replaceAll("/", ""));
+		OMElement requestElement = buildOMElement(requestMessageType);
+		DerivedFactColumnsType factColumns = null;
+		try {
+			String response = ServiceClient.sendREST(ontologyUrl, requestElement);
+			factColumns = getFactColumnsFromResponse(response);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return factColumns;
+	}
+	
 	public static ConceptsType callGetChildren(String itemKey, SecurityType securityType,  String projectId, String ontologyUrl )
 			throws XMLStreamException, JAXBUtilException, AxisFault,I2B2Exception  {
 		RequestMessageType requestMessageType = getChildrenI2B2RequestMessage(itemKey, securityType, projectId.replaceAll("/", ""));
@@ -92,7 +110,7 @@ public class CallOntologyUtil {
 			conceptsType = getChildrenFromResponse(response);
 		} catch (Exception e)
 		{
-
+			log.error(e.getMessage());
 		}
 		return conceptsType;
 	}
@@ -184,6 +202,28 @@ public class CallOntologyUtil {
 		return conceptsType;
 	}
 
+	private static DerivedFactColumnsType getFactColumnsFromResponse(String response)
+			throws JAXBUtilException, I2B2DAOException {
+		JAXBElement responseJaxb =// CRCJAXBUtil.getJAXBUtil()
+				jaxbUtil.unMashallFromString(response);
+		ResponseMessageType r = (ResponseMessageType) responseJaxb.getValue();
+		log.debug("CRC's ontology call response xml from getFactColumnsFromResponse: " + response);
+		if (r.getResponseHeader() != null && r.getResponseHeader().getResultStatus() !=null) { 
+			if (r.getResponseHeader().getResultStatus().getStatus().getType().equalsIgnoreCase("ERROR")) {
+				throw new I2B2DAOException("Error when getting derived fact columns from ontology [" + r.getResponseHeader().getResultStatus().getStatus().getValue() +"]");
+			}
+		}
+		JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
+		DerivedFactColumnsType factColumns = (DerivedFactColumnsType) helper.getObjectByClass(r
+				.getMessageBody().getAny(), DerivedFactColumnsType.class);
+		if (factColumns != null) {
+				return factColumns;
+		} else {
+			return null; 
+		}
+
+	}
+	
 	private static ConceptType getConceptFromResponse(String response)
 			throws JAXBUtilException, I2B2DAOException {
 		JAXBElement responseJaxb =// CRCJAXBUtil.getJAXBUtil()
@@ -206,6 +246,7 @@ public class CallOntologyUtil {
 		}
 
 	}
+
 
 	private static OMElement buildOMElement(RequestMessageType requestMessageType)
 			throws XMLStreamException, JAXBUtilException {
@@ -314,6 +355,44 @@ public class CallOntologyUtil {
 
 	}
 
+	private static RequestMessageType getDerivedFactColumnsI2B2RequestMessage(String conceptPath, SecurityType securityType,  String projectId ) {
+		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
+		MessageHeaderType messageHeaderType = (MessageHeaderType) queryUtil
+				.getSpringBeanFactory().getBean("message_header");
+		messageHeaderType.setSecurity(securityType);
+		messageHeaderType.setProjectId(projectId);
+
+		messageHeaderType.setReceivingApplication(messageHeaderType
+				.getSendingApplication());
+		FacilityType facilityType = new FacilityType();
+		facilityType.setFacilityName("sample");
+		messageHeaderType.setSendingFacility(facilityType);
+		messageHeaderType.setReceivingFacility(facilityType);
+		// build message body
+		GetTermInfoType getTermInfo = new GetTermInfoType();
+		getTermInfo.setSelf(conceptPath);
+		getTermInfo.setHiddens(false);
+		getTermInfo.setSynonyms(false);
+		getTermInfo.setType("core");
+		getTermInfo.setBlob(false);
+
+		RequestMessageType requestMessageType = new RequestMessageType();
+		ObjectFactory of = new ObjectFactory();
+		BodyType bodyType = new BodyType();
+		bodyType.getAny().add(of.createGetTermInfo(getTermInfo));
+		requestMessageType.setMessageBody(bodyType);
+
+		requestMessageType.setMessageHeader(messageHeaderType);
+
+		RequestHeaderType requestHeader = new RequestHeaderType();
+		requestHeader.setResultWaittimeMs(180000);
+		requestMessageType.setRequestHeader(requestHeader);
+
+		return requestMessageType;
+
+	}
+
+	
 	private static RequestMessageType getModifierI2B2RequestMessage(String modifierPath, String appliedPath, SecurityType securityType,  String projectId ) {
 		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
 		MessageHeaderType messageHeaderType = (MessageHeaderType) queryUtil

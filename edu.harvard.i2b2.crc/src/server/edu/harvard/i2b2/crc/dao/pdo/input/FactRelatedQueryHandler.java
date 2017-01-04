@@ -15,17 +15,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.stream.XMLStreamException;
 
+import org.apache.axis2.AxisFault;
 import org.w3c.dom.Element;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.exception.StackTraceUtil;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.common.util.xml.XMLOperatorLookup;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
@@ -41,8 +46,12 @@ import edu.harvard.i2b2.crc.dao.pdo.output.PatientFactRelated;
 import edu.harvard.i2b2.crc.dao.pdo.output.PidFactRelated;
 import edu.harvard.i2b2.crc.dao.pdo.output.ProviderFactRelated;
 import edu.harvard.i2b2.crc.dao.pdo.output.VisitFactRelated;
+import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ConceptNotFoundException;
+import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.OntologyException;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.UnitConverstionUtil;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
+import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
+import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.ontology.XmlValueType;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationSet;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationType;
@@ -55,7 +64,9 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.OutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.ItemType.ConstrainByDate;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PanelType.TotalItemOccurrences;
+import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
 import edu.harvard.i2b2.crc.util.ItemKeyUtil;
+import edu.harvard.i2b2.crc.util.PMServiceAccountUtil;
 import edu.harvard.i2b2.crc.util.ParamUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
@@ -146,6 +157,9 @@ IFactRelatedQueryHandler {
 	
 	private String factTable = "observation_FACT";
 	private boolean derivedFactTable = QueryProcessorUtil.getInstance().getDerivedFactTable();
+	
+	private SecurityType security = null;
+	private String project = null;
 
 	/**
 	 * Constructor with parameter
@@ -201,6 +215,23 @@ IFactRelatedQueryHandler {
 		return this.panelSqlList;
 	}
 
+
+	public void setSecurity(SecurityType security){
+		this.security = security;
+	}
+	public void setProject(String project){
+		this.project = project;
+	}
+	
+	public String getProject(){
+		return this.project;
+	}
+		
+	public SecurityType getSecurity(){
+		return this.security;
+	}
+	
+	
 	/**
 	 * Function to build and execute pdo sql and build plain pdo's observation
 	 * fact
@@ -219,11 +250,40 @@ IFactRelatedQueryHandler {
 
 			int sqlParamCount = 1;
 			boolean createTempTable = true;
-			if (filterList.getPanel().size() == 0) {
+			if(checkFilter == false) {
+//WAS			if (filterList.getPanel().size() == 0) {
+	
+				if(derivedFactTable == true){
+
+					String sql=   "select * from pg_tables where lower(tablename) = 'observation_fact'";
+					sql += " and schemaname = '" + dataSourceLookup.getFullSchema() + "'";
+					if(dataSourceLookup.getServerType().equals("ORACLE")){
+						sql=   "SELECT * FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'TABLE' AND lower(OBJECT_NAME) = 'observation_fact'";
+						sql += " and OWNER = '" + dataSourceLookup.getFullSchema() + "'";
+					}
+					//log.info("no Filter sql: " + dataSourceLookup.getServerType() + " " + sql);
+					
+					PreparedStatement stmt1 = conn.prepareStatement(sql);
+					ResultSet resultSet1 = stmt1.executeQuery();
+
+					if(!(resultSet1.next())){
+						resultSet1.close();
+						createTempTable = false;
+						try {
+							JDBCUtil.closeJdbcResource(null, stmt1, conn);
+						} catch (SQLException e) {
+							log.error("Error trying to close connection:"+ e.getMessage());
+						}
+		
+						return observationFactSetList;
+					}
+					
+
+				}
 				// generate sql
 				String querySql = buildQuery(null,
 						PdoQueryHandler.PLAIN_PDO_TYPE);
-				log.debug("Executing sql[" + querySql + "]");
+				log.debug("Executing sql PLAIN PDO[" + querySql + "]");
 				panelSqlList.add(querySql);
 				if (createTempTable) {
 					if (inputOptionListHandler.isEnumerationSet()) {
@@ -243,7 +303,48 @@ IFactRelatedQueryHandler {
 					if (querySql.trim().length() == 0 ) { 
 						continue;
 					}
-					log.debug("Executing sql[" + querySql + "]");
+					String defaultTableName = this.getDbSchemaName() + "observation_FACT" ;
+					// OMOP addition for multi domains
+					if(panel != null){
+						if(derivedFactTable == true){
+							if(panel.getItem().get(0).getFacttablecolumn().contains(".")){
+
+								String baseItemFactColumn = panel.getItem().get(0).getFacttablecolumn();
+								int lastIndex = baseItemFactColumn.lastIndexOf(".");
+								String factTable = this.getDbSchemaName() + (baseItemFactColumn.substring(0, lastIndex));
+
+								DerivedFactColumnsType columns = getFactColumnsFromOntologyCell(panel.getItem().get(0).getItemKey());
+								if(columns != null){
+									if(columns.getDerivedFactTableColumn().size() > 1) {
+										// parse through solumns and build up replace string.
+
+										Iterator<String> it = columns.getDerivedFactTableColumn().iterator();
+										String column = it.next();
+										
+										lastIndex = column.lastIndexOf(".");
+										String table = this.getDbSchemaName() + (column.substring(0, lastIndex));
+
+										
+										factTable = "( select * from " + table;
+										while(it.hasNext()){
+											column = it.next();
+											
+											lastIndex = column.lastIndexOf(".");
+											table = this.getDbSchemaName() + (column.substring(0, lastIndex));
+
+											factTable += "\n UNION ALL \n"
+													+ " select * from " +  table;
+										}
+										factTable += " )";
+
+									}
+								}
+								log.debug("Parse columns " + factTable);
+								querySql=querySql.replaceAll(defaultTableName, factTable)	;
+							}
+						}
+					}
+					log.debug("Executing sql PLAIN PDO [" + querySql + "]");
 					panelSqlList.add(querySql);
 					// execute fullsql
 					sqlParamCount = panel.getItem().size();
@@ -272,7 +373,8 @@ IFactRelatedQueryHandler {
 			// IInputOptionListHandler inputOptionListHandler = PDOFactory
 			// .buildInputListHandler(inputList, dataSourceLookup);
 			try {
-				inputOptionListHandler.deleteTempTable(conn);
+				if(inputOptionListHandler != null && conn != null)
+					inputOptionListHandler.deleteTempTable(conn);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -307,12 +409,40 @@ IFactRelatedQueryHandler {
 
 			int sqlParamCount = 1;
 			boolean createTempTable = true;
-			if (filterList.getPanel().size() == 0) {
+			if(checkFilter == false) {
+//WAS			if (filterList.getPanel().size() == 0) {
+	
+				if(derivedFactTable == true){
+					
+					String sql=   "select * from pg_tables where lower(tablename) = 'observation_fact'";
+							sql += " and schemaname = '" + dataSourceLookup.getFullSchema() + "'";
+					if(dataSourceLookup.getServerType().equals("ORACLE")){
+						sql=   "SELECT * FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'TABLE' AND lower(OBJECT_NAME) = 'observation_fact'";
+						sql += " and OWNER = '" + dataSourceLookup.getFullSchema() + "'";
+					}
+					//log.info("no Filter sql: " + dataSourceLookup.getServerType() + " " + sql);
+					PreparedStatement stmt1 = conn.prepareStatement(sql);
+					ResultSet resultSet1 = stmt1.executeQuery();
+
+					if(!(resultSet1.next())){
+						resultSet1.close();
+						createTempTable = false;
+						try {
+							JDBCUtil.closeJdbcResource(null, stmt1, conn);
+						} catch (SQLException e) {
+							log.error("Error trying to close connection:"+ e.getMessage());
+						}
+
+						return observationSetList;
+					}
+					
+				}
+				
 				// generate sql
 				String querySql = buildQuery(null,
 						PdoQueryHandler.PLAIN_PDO_TYPE);
 
-				log.debug("Executing sql[" + querySql + "]");
+				log.debug("Executing sql PLAIN PDO [" + querySql + "]");
 				panelSqlList.add(querySql);
 				if (createTempTable) {
 					if (inputOptionListHandler.isEnumerationSet()) {
@@ -334,7 +464,7 @@ IFactRelatedQueryHandler {
 						continue;
 					}
 					log.debug("Executing sql[" + querySql + "]");
-					panelSqlList.add(querySql);
+			//		panelSqlList.add(querySql);
 					sqlParamCount = panel.getItem().size();
 					if (panel.getInvert() == 1) {
 						sqlParamCount++;
@@ -345,6 +475,51 @@ IFactRelatedQueryHandler {
 							.uploadEnumerationValueToTempTable(conn);
 						}
 					}
+
+					String defaultTableName = this.getDbSchemaName() + "observation_FACT" ;
+					// OMOP addition for multi domains
+					if(panel != null){
+						if(derivedFactTable == true){
+							if(panel.getItem().get(0).getFacttablecolumn().contains(".")){
+
+								String baseItemFactColumn = panel.getItem().get(0).getFacttablecolumn();
+								int lastIndex = baseItemFactColumn.lastIndexOf(".");
+								String factTable = this.getDbSchemaName() + (baseItemFactColumn.substring(0, lastIndex));
+
+								DerivedFactColumnsType columns = getFactColumnsFromOntologyCell(panel.getItem().get(0).getItemKey());
+								if(columns != null){
+									if(columns.getDerivedFactTableColumn().size() > 1) {
+										// parse through solumns and build up replace string.
+
+										Iterator<String> it = columns.getDerivedFactTableColumn().iterator();
+										String column = it.next();
+										
+										lastIndex = column.lastIndexOf(".");
+										String table = this.getDbSchemaName() + (column.substring(0, lastIndex));
+
+										
+										factTable = "( select * from " + table;
+										while(it.hasNext()){
+											column = it.next();
+											
+											lastIndex = column.lastIndexOf(".");
+											table = this.getDbSchemaName() + (column.substring(0, lastIndex));
+
+											factTable += "\n UNION ALL \n"
+													+ " select * from " +  table;
+										}
+										factTable += " )";
+
+									}
+								}
+								log.debug("Parse columns " + factTable);
+								querySql=querySql.replaceAll(defaultTableName, factTable)	;
+							}
+						}
+					}
+					
+					panelSqlList.add(querySql);
+					log.debug("TABLE PDO Executing sql [" + querySql + "]");
 					// execute fullsql
 					resultSet = executeQuery(conn, querySql, sqlParamCount);
 					// build facts
@@ -355,6 +530,7 @@ IFactRelatedQueryHandler {
 				}
 			}
 		} catch (SQLException sqlEx) {
+			log.error(sqlEx.getMessage());
 			throw new I2B2DAOException("", sqlEx);
 		} catch (IOException ioEx) {
 			throw new I2B2DAOException("", ioEx);
@@ -362,7 +538,8 @@ IFactRelatedQueryHandler {
 			// IInputOptionListHandler inputOptionListHandler = PDOFactory
 			// .buildInputListHandler(inputList, dataSourceLookup);
 			try {
-				inputOptionListHandler.deleteTempTable(conn);
+				if(inputOptionListHandler != null && conn != null)
+					inputOptionListHandler.deleteTempTable(conn);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -439,7 +616,8 @@ IFactRelatedQueryHandler {
 	public String buildQuery(PanelType panel, String pdoType)
 			throws I2B2DAOException {
 		String obsFactSelectClause = null;
-
+/*
+ * Original OMOP addition, superceded by mult domain solution.
 		if(panel != null){
 			if(derivedFactTable == true){
 				if(panel.getItem().get(0).getFacttablecolumn().contains(".")){
@@ -455,7 +633,7 @@ IFactRelatedQueryHandler {
 				}
 			}
 		}
-		
+		*/
 		if (obsFactFactRelated != null) {
 			obsFactSelectClause = obsFactFactRelated
 					.getSelectClauseWithoutBlob();
@@ -525,10 +703,18 @@ IFactRelatedQueryHandler {
 				}
 				mainQuerySql += factByConceptSql;
 			} else {
-				factWithoutFilterSql = factQueryWithoutFilter(
+				if(dataSourceLookup.getServerType().equals("ORACLE")){
+					factWithoutFilterSql = factQueryWithoutFilter(
 						obsFactSelectClause, tableLookupJoinClause,
 						fullWhereClause);
-				mainQuerySql += factWithoutFilterSql;
+					mainQuerySql += factWithoutFilterSql ;
+				}
+				else {
+					factWithoutFilterSql = postgresFactQueryWithoutFilter(
+							obsFactSelectClause, tableLookupJoinClause,
+							fullWhereClause);
+					mainQuerySql += factWithoutFilterSql +  ") b \n";
+				}
 			}
 		} catch (I2B2Exception i2b2Ex) {
 			throw new I2B2DAOException(i2b2Ex.getMessage(), i2b2Ex);
@@ -602,7 +788,7 @@ IFactRelatedQueryHandler {
 			}
 				
 		}
-
+	
 		return mainQuerySql;
 	}
 
@@ -969,6 +1155,31 @@ IFactRelatedQueryHandler {
 	}
 
 	/**
+	 * Function to uses given select, join and where clause to build core pdo
+	 * query, without any filter (concept and provider)
+	 * 
+	 * @param obsFactSelectClause
+	 * @param tableLookupJoinClause
+	 * @param fullWhereClause
+	 * @return
+	 */
+	private String postgresFactQueryWithoutFilter(String obsFactSelectClause,
+			String tableLookupJoinClause, String fullWhereClause) {
+		String factSql = "SELECT  b.*, ROW_NUMBER() OVER (order by obs_patient_num) rnum FROM (\n";
+		factSql += (" SELECT  "
+				+ obsFactSelectClause + " FROM " + this.getDbSchemaName() +  getFactTable() + " obs\n");
+
+		factSql += tableLookupJoinClause;
+
+		factSql += (" WHERE \n" + fullWhereClause + "\n");
+		if (this.outputOptionList.getObservationSet().isWithmodifiers() == false) {
+			factSql += " AND obs.modifier_cd = '@' ";
+		}
+
+		return factSql;
+	}
+	
+	/**
 	 * Generate fact's join clause for table pdo
 	 * 
 	 * @param detailFlag
@@ -1210,5 +1421,50 @@ IFactRelatedQueryHandler {
 	public void setFactTable(String table){
 		this.factTable = table;
 	}
+
+
+	protected DerivedFactColumnsType getFactColumnsFromOntologyCell(String itemKey)
+			throws ConceptNotFoundException, OntologyException {
+		DerivedFactColumnsType factColumns = new DerivedFactColumnsType();
+		try {
+			
+			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+			String ontologyUrl = qpUtil
+					.getCRCPropertyValue(QueryProcessorUtil.ONTOLOGYCELL_ROOT_WS_URL_PROPERTIES);
+
+			SecurityType securityType = PMServiceAccountUtil
+					.getServiceSecurityType(dataSourceLookup.getDomainId());
+			
+			factColumns = CallOntologyUtil.callGetFactColumns(itemKey,
+					securityType, dataSourceLookup.getProjectPath(),
+					ontologyUrl +"/getDerivedFactColumns");
+		} catch (JAXBUtilException e) {
+
+			log.error("Error while fetching metadata [" + itemKey
+					+ "] from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (I2B2Exception e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (AxisFault e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (XMLStreamException e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		}
+
+		return factColumns;
+	}
+
+	
 
 }

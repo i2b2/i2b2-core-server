@@ -32,6 +32,7 @@ import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.TotalItemOccurrenceHandle
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.UnitConverstionUtil;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ValueConstrainsHandler;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
+import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.ontology.ModifierType;
 import edu.harvard.i2b2.crc.datavo.ontology.XmlValueType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.TotOccuranceOperatorType;
@@ -123,8 +124,9 @@ public abstract class TemporalPanelItem {
 	 * @throws I2B2Exception - thrown when an i2b2 specific error is found
 	 */
 	protected void parseItem() throws I2B2Exception {
-		if (conceptType==null)
+		if (conceptType==null){
 			conceptType = getConceptType();
+		}
 		if (conceptType != null) {
 			if (conceptType.getTotalnum() != null) {
 				conceptTotal = conceptType.getTotalnum();
@@ -697,7 +699,7 @@ public abstract class TemporalPanelItem {
 		return havingSql;
 	}
 	
-	private void parseFactColumn(String factColumnName){
+	public void parseFactColumn(String factColumnName){
 		this.factTable= "observation_fact";
 		this.factTableColumn = factColumnName;
 		if (this.parent.getQueryOptions()!=null&&this.parent.getQueryOptions().useDerivedFactTable())
@@ -832,7 +834,6 @@ public abstract class TemporalPanelItem {
 
 		return conceptType;
 	}
-
 
 
 	protected ModifierType getModifierMetadataFromOntology(String modifierKey,

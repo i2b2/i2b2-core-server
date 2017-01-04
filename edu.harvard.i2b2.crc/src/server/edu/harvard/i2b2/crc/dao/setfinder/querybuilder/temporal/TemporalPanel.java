@@ -15,26 +15,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+
+import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.exception.StackTraceUtil;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ConceptNotFoundException;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.DateConstrainUtil;
+import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.OntologyException;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.QueryTimingHandler;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.TotalItemOccurrenceHandler;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalQueryOptions.InvertedConstraintStrategy;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalQueryOptions.QueryConstraintStrategy;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
+import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
+import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ItemType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType.TotalItemOccurrences;
+import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.TotOccuranceOperatorType;
 import edu.harvard.i2b2.crc.util.ItemKeyUtil;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
  * Temporal Panel Object
@@ -129,6 +139,8 @@ public class TemporalPanel implements Comparable<Object> {
 					panelItem = new TemporalPanelEncounterItem(this, itemType);
 				} else {
 					panelItem = new TemporalPanelConceptItem(this, itemType);
+					if(panelItem.getConceptType() == null)
+						panelItem.getConceptType();
 					if (panelItem != null
 							&& panelItem.getConceptType() != null
 							&& panelItem.getConceptType().getDimcode() != null
@@ -137,22 +149,106 @@ public class TemporalPanel implements Comparable<Object> {
 									.startsWith(ItemKeyUtil.ITEM_KEY_CELLID)) {
 						panelItem = new TemporalPanelCellQueryItem(this, itemType,
 								panelItem.getConceptType());
+							
 					}
+					/*
+					 * check for derived table parameter and look for other views for this item.
+					 * ...  i.e. item is found in multiple views.
+					 * ... if others found, then add them to the panel item list individually.
+					 */		
+					if (this.parent.getQueryOptions()!=null&&this.parent.getQueryOptions().useDerivedFactTable()) 
+					 {
+						 if(panelItem.getConceptType().getFacttablecolumn().contains("."))
+						 {
+							 String baseItemFactColumn = panelItem.getConceptType().getFacttablecolumn();
+							 DerivedFactColumnsType columns = getFactColumnsFromOntologyCell(itemType.getItemKey());
+							 if(columns.getDerivedFactTableColumn().size() > 1) {
+
+								 for (String column : columns.getDerivedFactTableColumn()) {
+									 // look for non-null fact table columns that are not equal to the base item's column
+									 if((column != null) && !(column.equals(baseItemFactColumn))){
+										 if(column.contains(".")){
+											 TemporalPanelItem	derivedPanelItem = new TemporalPanelConceptItem(this, itemType);
+											 if(derivedPanelItem.getConceptType() == null)
+												 derivedPanelItem.getConceptType();
+
+											 if (derivedPanelItem != null
+													 && derivedPanelItem.getConceptType() != null
+													 && derivedPanelItem.getConceptType().getDimcode() != null
+													 && derivedPanelItem.getConceptType().getDimcode()
+													 .toLowerCase().trim()
+													 .startsWith(ItemKeyUtil.ITEM_KEY_CELLID)) {
+												 derivedPanelItem = new TemporalPanelCellQueryItem(this, itemType,
+														 derivedPanelItem.getConceptType());
+											 }
+											 log.debug("setting a new fact column: " + column);
+											 derivedPanelItem.parseFactColumn(column);
+											 panelItemList.add(derivedPanelItem);
+										 }
+									 }
+								 }
+							 }
+
+						 }
+					 }
+					Integer conceptTotal = panelItem.getConceptTotal();
+					if (conceptTotal != null) {
+						estimatedPanelSize += conceptTotal;
+					} else
+						missingItemTotals++;
+					panelItemList.add(panelItem);
+
 				}
-
-				Integer conceptTotal = panelItem.getConceptTotal();
-				if (conceptTotal != null) {
-					estimatedPanelSize += conceptTotal;
-				} else
-					missingItemTotals++;
-				panelItemList.add(panelItem);
-
 			}
 			catch (ConceptNotFoundException ce){
 				log.debug("Concept not found error: " + ce.getMessage());
 				parent.addIgnoredMessage(ce.getMessage() + " panel#" + parent.getPanelIndex(this));
 			}
 		}
+	}
+
+	protected DerivedFactColumnsType getFactColumnsFromOntologyCell(String itemKey)
+			throws ConceptNotFoundException, OntologyException {
+		DerivedFactColumnsType factColumns = new DerivedFactColumnsType();
+		try {
+			
+			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+			String ontologyUrl = qpUtil
+					.getCRCPropertyValue(QueryProcessorUtil.ONTOLOGYCELL_ROOT_WS_URL_PROPERTIES);
+
+			factColumns = CallOntologyUtil.callGetFactColumns(itemKey,
+					parent.getSecurityType(), parent.getProjectId(),
+					ontologyUrl +"/getDerivedFactColumns");
+		} catch (JAXBUtilException e) {
+
+			log.error("Error while fetching metadata [" + itemKey
+					+ "] from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (I2B2Exception e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (AxisFault e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (XMLStreamException e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		}
+
+//		if (factColumns.isEmpty()) {
+//			throw new ConceptNotFoundException("[" + itemKey + "] ");
+
+//		} 
+
+		return factColumns;
 	}
 
 	/**

@@ -10,6 +10,7 @@
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ItemType;
 
 public class TemporalPanelConceptItem extends TemporalPanelItem {
@@ -19,7 +20,12 @@ public class TemporalPanelConceptItem extends TemporalPanelItem {
 		super(parent, item);
 	}
 
-
+	public TemporalPanelConceptItem(TemporalPanel parent, ItemType item, ConceptType concept)
+			throws I2B2Exception {
+		super(parent, item, concept);
+	}
+	
+	
 	@Override
 	protected String buildSqlHintClause() {
 		if (parent.getServerType().equalsIgnoreCase("ORACLE")&&

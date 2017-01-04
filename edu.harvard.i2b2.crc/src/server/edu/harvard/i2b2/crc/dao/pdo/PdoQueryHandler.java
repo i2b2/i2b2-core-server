@@ -34,6 +34,7 @@ import edu.harvard.i2b2.crc.dao.pdo.output.PidFactRelated;
 import edu.harvard.i2b2.crc.dao.pdo.output.ProviderFactRelated;
 import edu.harvard.i2b2.crc.dao.pdo.output.VisitFactRelated;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
+import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.ontology.XmlValueType;
 import edu.harvard.i2b2.crc.datavo.pdo.ConceptSet;
 import edu.harvard.i2b2.crc.datavo.pdo.EidSet;
@@ -55,6 +56,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PatientListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PidListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PidListType.Pid;
+import edu.harvard.i2b2.crc.datavo.pm.ProjectType;
 
 /**
  * <b>Main class for PDO queries.<b>
@@ -138,6 +140,7 @@ public class PdoQueryHandler {
 	private List<ParamType> patientMetaDataParamType = null, visitMetaDataParamType = null;
 
 
+	
 	/**
 	 * Parameter constructor to initialize helper classes
 	 * 
@@ -290,6 +293,7 @@ public class PdoQueryHandler {
 		return plainPdoType;
 	}
 
+
 	/**
 	 * 
 	 * @throws Exception
@@ -347,8 +351,6 @@ public class PdoQueryHandler {
 			factRelatedQry.setProjectParamMap(this.projectParamMap);
 			factRelatedQry.setModifierMetadataXmlMap(modifierMetadataXmlMap);
 			factRelatedQry.setRequestVersion(this.requestVersion);
-			
-			
 			
 			// execute query
 			if (pdoType.equalsIgnoreCase(TABLE_PDO_TYPE)) {
