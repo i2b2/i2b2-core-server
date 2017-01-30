@@ -487,7 +487,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				+ getDbSchemaName()
 				+ "qt_query_master set name = ? where query_master_id = ? and delete_flag = ?";
 		int updatedRow = jdbcTemplate.update(sql, new Object[] { queryNewName,
-				masterId, DELETE_NO_FLAG });
+				Integer.parseInt(masterId), DELETE_NO_FLAG });
 		if (updatedRow < 1) {
 			throw new I2B2DAOException("Query with master id " + masterId
 					+ " not found");
@@ -529,18 +529,19 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				+ "qt_query_master set delete_flag =?,delete_date=? where query_master_id = ? and delete_flag = ?";
 		Date deleteDate = new Date(System.currentTimeMillis());
 		int queryMasterCount = jdbcTemplate.update(queryMasterSql,
-				new Object[] { DELETE_YES_FLAG, deleteDate, masterId,
+				new Object[] { DELETE_YES_FLAG, deleteDate, Integer.parseInt(masterId),
 				DELETE_NO_FLAG });
-		if (queryMasterCount < 1) {
+		if (queryMasterCount < 1 && !dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL)) {
 			throw new I2B2DAOException("Query not found with masterid =["
 					+ masterId + "]");
 		}
 
 		int queryInstanceCount = jdbcTemplate.update(queryInstanceSql,
-				new Object[] { DELETE_YES_FLAG, masterId, DELETE_NO_FLAG });
+				new Object[] { DELETE_YES_FLAG, Integer.parseInt(masterId), DELETE_NO_FLAG });
 		log.debug("Total no. of query instance deleted" + queryInstanceCount);
 		int queryResultInstanceCount = jdbcTemplate.update(resultInstanceSql,
-				new Object[] { DELETE_YES_FLAG, masterId });
+				new Object[] { DELETE_YES_FLAG, Integer.parseInt(masterId) });
 		log.debug("Total no. of query result deleted "
 				+ queryResultInstanceCount);
 	}
