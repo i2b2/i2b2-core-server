@@ -271,7 +271,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		}
 		if ((findChildType.getCategory().toLowerCase().equals("pdo")) ||
 				(findChildType.getCategory().toLowerCase().equals("@"))) {
-			sql += "  qm.query_master_id,qm.name,qm.user_id,qm.group_id,qm.create_date,qm.delete_date,null as request_xml,qm.delete_flag,null as generated_sql, null as i2b2_request_xml, qm.master_type_cd, null as plugin_id  from "
+			sql += " distinct  qm.query_master_id,qm.name,qm.user_id,qm.group_id,qm.create_date,qm.delete_date,null as request_xml,qm.delete_flag,null as generated_sql, null as i2b2_request_xml, qm.master_type_cd, null as plugin_id  from "
 					+ getDbSchemaName()
 					+ "qt_query_master qm, "
 					+ getDbSchemaName()
