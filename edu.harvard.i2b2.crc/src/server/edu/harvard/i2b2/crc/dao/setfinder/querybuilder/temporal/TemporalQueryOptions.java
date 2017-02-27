@@ -9,6 +9,8 @@
  */
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
 
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
+
 public class TemporalQueryOptions {
 
 	
@@ -29,6 +31,7 @@ public class TemporalQueryOptions {
 	private TemporalConstraintStrategy temporalConstraintLogic = TemporalConstraintStrategy.TEMP_TABLE_UPDATE;
 	private boolean useItemGroupByStatement = true;
 	private boolean useSqlHints = true;
+	private boolean derivedFactTable = QueryProcessorUtil.getInstance().getDerivedFactTable();
 	
 	/**
 	 * @return the usePanelLevelOccurrence
@@ -120,5 +123,12 @@ public class TemporalQueryOptions {
 		this.useSqlHints = useSqlHints;
 	}
 
+	public boolean useDerivedFactTable() {
+		return derivedFactTable;
+	}
+
+	public void setUseDerivedFactTable(boolean derivedFactTable) {
+		this.derivedFactTable = derivedFactTable;
+	}
 	
 }

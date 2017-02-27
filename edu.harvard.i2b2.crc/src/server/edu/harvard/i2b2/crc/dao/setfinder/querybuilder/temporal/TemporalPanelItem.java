@@ -32,6 +32,7 @@ import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.TotalItemOccurrenceHandle
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.UnitConverstionUtil;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ValueConstrainsHandler;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
+import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.ontology.ModifierType;
 import edu.harvard.i2b2.crc.datavo.ontology.XmlValueType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.TotOccuranceOperatorType;
@@ -81,7 +82,8 @@ public abstract class TemporalPanelItem {
 	protected String operator = null;
 	protected String columnName = null;
 	protected XmlValueType metaDataXml = null;
-
+	protected String factTable = "observation_fact";
+	
 	/**
 	 * Constructor
 	 * 
@@ -122,8 +124,9 @@ public abstract class TemporalPanelItem {
 	 * @throws I2B2Exception - thrown when an i2b2 specific error is found
 	 */
 	protected void parseItem() throws I2B2Exception {
-		if (conceptType==null)
+		if (conceptType==null){
 			conceptType = getConceptType();
+		}
 		if (conceptType != null) {
 			if (conceptType.getTotalnum() != null) {
 				conceptTotal = conceptType.getTotalnum();
@@ -134,6 +137,8 @@ public abstract class TemporalPanelItem {
 			operator = conceptType.getOperator();
 			columnName = conceptType.getColumnname();
 			metaDataXml = conceptType.getMetadataxml();
+			//OMOP addition
+			parseFactColumn(factTableColumn);
 		}
 	}
 
@@ -693,10 +698,26 @@ public abstract class TemporalPanelItem {
 
 		return havingSql;
 	}
+	
+	public void parseFactColumn(String factColumnName){
+		this.factTable= "observation_fact";
+		this.factTableColumn = factColumnName;
+		if (this.parent.getQueryOptions()!=null&&this.parent.getQueryOptions().useDerivedFactTable())
+		{
+			if (factColumnName!=null&&factColumnName.contains(".")){
+				int lastIndex = factColumnName.lastIndexOf(".");
+				this.factTable= factColumnName.substring(0, lastIndex);
+				if ((lastIndex+1)<factColumnName.length()){
+					this.factTableColumn = factColumnName.substring(lastIndex+1);
+				}
+			}
+	//		log.info("using derived fact table: " + factTable);
+		}
+	}
 
 
 	protected String getJoinTable(){
-		return "observation_fact";
+		return factTable;
 	}
 
 
@@ -813,7 +834,6 @@ public abstract class TemporalPanelItem {
 
 		return conceptType;
 	}
-
 
 
 	protected ModifierType getModifierMetadataFromOntology(String modifierKey,

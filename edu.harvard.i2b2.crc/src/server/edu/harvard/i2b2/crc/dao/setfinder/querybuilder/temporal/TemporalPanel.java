@@ -15,26 +15,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+
+import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.exception.StackTraceUtil;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ConceptNotFoundException;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.DateConstrainUtil;
+import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.OntologyException;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.QueryTimingHandler;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.TotalItemOccurrenceHandler;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalQueryOptions.InvertedConstraintStrategy;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalQueryOptions.QueryConstraintStrategy;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
+import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
+import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ItemType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType.TotalItemOccurrences;
+import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.TotOccuranceOperatorType;
 import edu.harvard.i2b2.crc.util.ItemKeyUtil;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
  * Temporal Panel Object
@@ -65,6 +75,13 @@ public class TemporalPanel implements Comparable<Object> {
 	private List<TemporalPanelItem> panelItemList = null;
 	private int missingItemTotals = 0;
 
+	protected class TemporalPanelItemSql{
+		protected String itemSql = null;
+		protected String factTable = null;
+		protected String joinTable = null;
+		protected boolean valueConstraint = false;
+		protected boolean textConstraint = false;
+	}
 	/**
 	 * Constructor
 	 * 
@@ -122,6 +139,8 @@ public class TemporalPanel implements Comparable<Object> {
 					panelItem = new TemporalPanelEncounterItem(this, itemType);
 				} else {
 					panelItem = new TemporalPanelConceptItem(this, itemType);
+					if(panelItem.getConceptType() == null)
+						panelItem.getConceptType();
 					if (panelItem != null
 							&& panelItem.getConceptType() != null
 							&& panelItem.getConceptType().getDimcode() != null
@@ -130,22 +149,106 @@ public class TemporalPanel implements Comparable<Object> {
 									.startsWith(ItemKeyUtil.ITEM_KEY_CELLID)) {
 						panelItem = new TemporalPanelCellQueryItem(this, itemType,
 								panelItem.getConceptType());
+							
 					}
+					/*
+					 * check for derived table parameter and look for other views for this item.
+					 * ...  i.e. item is found in multiple views.
+					 * ... if others found, then add them to the panel item list individually.
+					 */		
+					if (this.parent.getQueryOptions()!=null&&this.parent.getQueryOptions().useDerivedFactTable()) 
+					 {
+						 if(panelItem.getConceptType().getFacttablecolumn().contains("."))
+						 {
+							 String baseItemFactColumn = panelItem.getConceptType().getFacttablecolumn();
+							 DerivedFactColumnsType columns = getFactColumnsFromOntologyCell(itemType.getItemKey());
+							 if(columns.getDerivedFactTableColumn().size() > 1) {
+
+								 for (String column : columns.getDerivedFactTableColumn()) {
+									 // look for non-null fact table columns that are not equal to the base item's column
+									 if((column != null) && !(column.equals(baseItemFactColumn))){
+										 if(column.contains(".")){
+											 TemporalPanelItem	derivedPanelItem = new TemporalPanelConceptItem(this, itemType);
+											 if(derivedPanelItem.getConceptType() == null)
+												 derivedPanelItem.getConceptType();
+
+											 if (derivedPanelItem != null
+													 && derivedPanelItem.getConceptType() != null
+													 && derivedPanelItem.getConceptType().getDimcode() != null
+													 && derivedPanelItem.getConceptType().getDimcode()
+													 .toLowerCase().trim()
+													 .startsWith(ItemKeyUtil.ITEM_KEY_CELLID)) {
+												 derivedPanelItem = new TemporalPanelCellQueryItem(this, itemType,
+														 derivedPanelItem.getConceptType());
+											 }
+											 log.debug("setting a new fact column: " + column);
+											 derivedPanelItem.parseFactColumn(column);
+											 panelItemList.add(derivedPanelItem);
+										 }
+									 }
+								 }
+							 }
+
+						 }
+					 }
+					Integer conceptTotal = panelItem.getConceptTotal();
+					if (conceptTotal != null) {
+						estimatedPanelSize += conceptTotal;
+					} else
+						missingItemTotals++;
+					panelItemList.add(panelItem);
+
 				}
-
-				Integer conceptTotal = panelItem.getConceptTotal();
-				if (conceptTotal != null) {
-					estimatedPanelSize += conceptTotal;
-				} else
-					missingItemTotals++;
-				panelItemList.add(panelItem);
-
 			}
 			catch (ConceptNotFoundException ce){
 				log.debug("Concept not found error: " + ce.getMessage());
 				parent.addIgnoredMessage(ce.getMessage() + " panel#" + parent.getPanelIndex(this));
 			}
 		}
+	}
+
+	protected DerivedFactColumnsType getFactColumnsFromOntologyCell(String itemKey)
+			throws ConceptNotFoundException, OntologyException {
+		DerivedFactColumnsType factColumns = new DerivedFactColumnsType();
+		try {
+			
+			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+			String ontologyUrl = qpUtil
+					.getCRCPropertyValue(QueryProcessorUtil.ONTOLOGYCELL_ROOT_WS_URL_PROPERTIES);
+
+			factColumns = CallOntologyUtil.callGetFactColumns(itemKey,
+					parent.getSecurityType(), parent.getProjectId(),
+					ontologyUrl +"/getDerivedFactColumns");
+		} catch (JAXBUtilException e) {
+
+			log.error("Error while fetching metadata [" + itemKey
+					+ "] from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (I2B2Exception e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (AxisFault e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (XMLStreamException e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		}
+
+//		if (factColumns.isEmpty()) {
+//			throw new ConceptNotFoundException("[" + itemKey + "] ");
+
+//		} 
+
+		return factColumns;
 	}
 
 	/**
@@ -167,7 +270,9 @@ public class TemporalPanel implements Comparable<Object> {
 		StringBuilder panelSqlBuffer = new StringBuilder();
 
 		boolean addDelimiter = false;
-		List<String> itemSqlList = getItemSql();
+		// OMOP WAS...
+		//		List<String> itemSqlList = getItemSql();
+		List<TemporalPanelItemSql> itemSqlList = getItemSql();
 		if (itemSqlList!=null&&itemSqlList.size()>0){
 			if (this.hasPanelOccurrenceConstraint()
 					&& this.applyOccurrenceToPanelLevel()
@@ -216,13 +321,34 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @return List<String> list of sql statements for all the times contained in the panel
 	 * @throws I2B2DAOException
 	 */
-	private List<String> getItemSql() throws I2B2DAOException {
+	//OMOP WAS..
+/*	private List<String> getItemSql() throws I2B2DAOException {
 		List<String> itemList = null;
 		if (panelItemList.size() > 0) {
 			itemList = new ArrayList<String>(panelItemList.size());
 			for (TemporalPanelItem item : panelItemList) {
 				try {
 					itemList.add(item.buildSql());
+				}
+				catch (ConceptNotFoundException ce){
+					parent.addIgnoredMessage(ce.getMessage() + " panel#" + parent.getPanelIndex(this));
+				}
+			}
+		}
+		return itemList;
+	}
+	*/
+	private List<TemporalPanelItemSql> getItemSql() throws I2B2DAOException {
+		List<TemporalPanelItemSql> itemList = null;
+		if (panelItemList.size() > 0) {
+			itemList = new ArrayList<TemporalPanelItemSql>(panelItemList.size());
+			for (TemporalPanelItem item : panelItemList) {
+				try {
+					TemporalPanelItemSql itemSql = new TemporalPanelItemSql();
+					itemSql.itemSql = item.buildSql();
+					itemSql.factTable = item.factTable;
+					itemSql.joinTable = item.tableName;
+					itemList.add(itemSql);
 				}
 				catch (ConceptNotFoundException ce){
 					parent.addIgnoredMessage(ce.getMessage() + " panel#" + parent.getPanelIndex(this));
@@ -241,11 +367,16 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @param itemSqlList List of individual sql statements
 	 * @return String one sql statement that unions individual statement together
 	 */
-	private String unionItemSql(List<String> itemSqlList) {
+	//OMOP WAS..
+	//	private String unionItemSql(List<String> itemSqlList) {
+	private String unionItemSql(List<TemporalPanelItemSql> itemSqlList) {
 		StringBuilder unionSql = new StringBuilder();
 
 		boolean first = true;
-		for (String itemSql : itemSqlList) {
+		// OMOP WAS...
+		//for (String itemSql : itemSqlList) {
+		for (TemporalPanelItemSql itemSqlItem : itemSqlList) {
+			String itemSql = itemSqlItem.itemSql;
 			if (!first)
 				unionSql.append("\n union all \n");
 			else
@@ -266,12 +397,17 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @param itemSql List of individual sql statements
 	 * @return String one sql statement that combines all statements from the individual list
 	 */
-	private String consolidateItemSql(List<String> itemSql) {
+	//OMOP WAS..
+//	private String consolidateItemSql(List<String> itemSql) {
+	private String consolidateItemSql(List<TemporalPanelItemSql> itemSqlList) {	
 		StringBuilder itemSqlBuffer = new StringBuilder();
 
 		HashMap<String, List<TemporalQuerySimpleSqlParser>> tableMatch = new HashMap<String, List<TemporalQuerySimpleSqlParser>>();
 		int index = 0;
-		for (String sql : itemSql) {
+		//OMOP WAS..
+		//		for (String sql : itemSql) {
+		for (TemporalPanelItemSql itemSql : itemSqlList) {
+			String sql = itemSql.itemSql;
 			TemporalQuerySimpleSqlParser simpleSql = new TemporalQuerySimpleSqlParser(
 					sql);
 
@@ -404,13 +540,16 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @return String sql representation that joins the item sql to the panel
 	 *         sql
 	 */
-	private String firstPanelItemSql(List<String> itemSqlList) {
-
+	//OMOP WAS...
+	//	private String firstPanelItemSql(List<String> itemSqlList) {
+	private String firstPanelItemSql(List<TemporalPanelItemSql> itemSqlList) {
 		StringBuilder panelSql = new StringBuilder();
 		boolean addDelimiter = false;
 
-		for (String itemSql : itemSqlList) {
-
+		//OMOP WAS..
+		//	for (String itemSql : itemSqlList) {
+		for (TemporalPanelItemSql itemSqlItem : itemSqlList) {
+			String itemSql = itemSqlItem.itemSql;
 			String insertValuesClause = buildInsertValuesClause();
 
 			StringBuilder withItemSql = new StringBuilder();
@@ -632,7 +771,9 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @param itemSqlList List of individual sql statements for all items in this panel
 	 * @return String sql statement that applies invert clause to all items in first panel
 	 */
-	private String buildFirstPanelInvertSql(List<String> itemSqlList) {
+		//OMOP WAS...
+	//	private String buildFirstPanelInvertSql(List<String> itemSqlList) {
+		private String buildFirstPanelInvertSql(List<TemporalPanelItemSql> itemSqlList) {
 
 		String insertValuesClause = buildInsertValuesClause();
 		StringBuilder withItemSql = new StringBuilder();
@@ -903,7 +1044,9 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @throws I2B2DAOException
 	 *             thrown when an i2b2 data related error is encountered
 	 */
-	private String firstPanelItemSqlWithOccurrence(List<String> itemSqlList)
+		//OMOP WAS..
+		//	private String firstPanelItemSqlWithOccurrence(List<String> itemSqlList)
+	private String firstPanelItemSqlWithOccurrence(List<TemporalPanelItemSql> itemSqlList)
 			throws I2B2DAOException {
 
 		String itemSql = consolidateItemSql(itemSqlList);
@@ -1230,7 +1373,7 @@ public class TemporalPanel implements Comparable<Object> {
 	 *             thrown when an i2b2 data related error is encountered
 	 */
 	private String nonFirstPanelItemSqlWithOccurrence(int panelIndex,
-			List<String> itemSqlList) throws I2B2DAOException {
+			List<TemporalPanelItemSql> itemSqlList) throws I2B2DAOException {	
 		String encounterNumClause = " ", instanceNumClause = " ";
 		String tempTableName = parent.getTempTableName();
 		int oldPanelIndex = panelIndex - 1;
@@ -1328,7 +1471,7 @@ public class TemporalPanel implements Comparable<Object> {
 	 * @return String sql representation that joins the item sql to the panel
 	 *         sql
 	 */
-	private String nonFirstPanelItemSql(List<String> itemSqlList, int panelIndex) {
+	private String nonFirstPanelItemSql(List<TemporalPanelItemSql> itemSqlList, int panelIndex) {
 
 		StringBuilder panelSql = new StringBuilder();
 		boolean addDelimiter = false;
@@ -1340,7 +1483,10 @@ public class TemporalPanel implements Comparable<Object> {
 			useTempTables = true;
 		}
 
-		for (String itemSql : itemSqlList) {
+		// OMOP WAS..
+		//for (String itemSql : itemSqlList) {
+		for (TemporalPanelItemSql itemSqlItem : itemSqlList) {
+			String itemSql = itemSqlItem.itemSql;
 
 			String encounterNumClause = " ", instanceNumClause = " ";
 			String tempTableName = parent.getTempTableName();

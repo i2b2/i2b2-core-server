@@ -129,7 +129,25 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
 			for (ConceptType conceptType : conceptsType.getConcept()) {
 
-				String joinTableName = "observation_fact";
+				// OMOP WAS...	
+				// String joinTableName = "observation_fact";
+				String factColumnName = conceptType.getFacttablecolumn();
+				String factTableColumn = factColumnName;
+				String factTable = "observation_fact";
+				if( QueryProcessorUtil.getInstance().getDerivedFactTable() == true) {
+
+
+					if (factColumnName!=null&&factColumnName.contains(".")){
+						int lastIndex = factColumnName.lastIndexOf(".");
+						factTable= factColumnName.substring(0, lastIndex);
+						if ((lastIndex+1)<factColumnName.length()){
+							factTableColumn = factColumnName.substring(lastIndex+1);
+						}
+					}
+
+				}
+				String joinTableName = factTable;
+				
 				if (conceptType.getTablename().equalsIgnoreCase(
 						"patient_dimension")) { 
 					joinTableName = "patient_dimension";
@@ -145,8 +163,12 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				 itemCountSql = " select count(distinct PATIENT_NUM) as item_count  from " +  this.getDbSchemaName() + joinTableName +  
 				 " where " + " patient_num in (select patient_num from "
 				+ TEMP_DX_TABLE
-				+ " )  and "+ conceptType.getFacttablecolumn() + " IN (select "
-				+ conceptType.getFacttablecolumn() + " from "
+				
+				//OMOP WAS...
+				//+ " )  and "+ conceptType.getFacttablecolumn() + " IN (select "
+				//+ conceptType.getFacttablecolumn() + " from "
+				+ " )  and "+ factTableColumn + " IN (select "
+				+ factTableColumn + " from "
 				+ getDbSchemaName() + conceptType.getTablename() + "  "
 				+  " where " + conceptType.getColumnname()
 				+ " " + conceptType.getOperator() + " "

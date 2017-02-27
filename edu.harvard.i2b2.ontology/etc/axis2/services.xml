@@ -49,7 +49,9 @@
     <operation name="loadMetadata">
         <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
     </operation>
-
+    <operation name="getDerivedFactColumns">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
 
     <parameter name="ServiceClass">edu.harvard.i2b2.ontology.ws.OntologyService</parameter>
 </service>

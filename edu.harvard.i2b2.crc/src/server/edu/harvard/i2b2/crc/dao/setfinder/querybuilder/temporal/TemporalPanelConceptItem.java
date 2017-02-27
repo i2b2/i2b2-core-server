@@ -10,6 +10,7 @@
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ItemType;
 
 public class TemporalPanelConceptItem extends TemporalPanelItem {
@@ -19,7 +20,12 @@ public class TemporalPanelConceptItem extends TemporalPanelItem {
 		super(parent, item);
 	}
 
-
+	public TemporalPanelConceptItem(TemporalPanel parent, ItemType item, ConceptType concept)
+			throws I2B2Exception {
+		super(parent, item, concept);
+	}
+	
+	
 	@Override
 	protected String buildSqlHintClause() {
 		if (parent.getServerType().equalsIgnoreCase("ORACLE")&&
@@ -40,15 +46,25 @@ public class TemporalPanelConceptItem extends TemporalPanelItem {
 
 	@Override
 	protected String getJoinTable() {
-		String joinTableName = "observation_fact";
-		
+		//OMOP WAS..
+		//String joinTableName = "observation_fact";
+
+		String joinFact = this.factTable;
+		if ((joinFact==null)||(joinFact.trim().isEmpty())){
+			joinFact = "observation_fact";
+		}
+		String joinTableName = joinFact;		
 		if (tableName.equalsIgnoreCase("patient_dimension")) {
 			joinTableName = "patient_dimension";
 			if (parent.hasPanelOccurrenceConstraint()) {
-				joinTableName = "observation_fact";
+				//OMOP WAS..
+				//joinTableName = "observation_fact";
+				joinTableName = joinFact;
 			} 
 			else if (returnInstanceNum()) {
-				joinTableName = "observation_fact";
+				//OMOP WAS..
+				//joinTableName = "observation_fact";
+				joinTableName = joinFact;
 			}
 			else if (returnEncounterNum()) {
 				joinTableName = "visit_dimension";
@@ -61,7 +77,9 @@ public class TemporalPanelConceptItem extends TemporalPanelItem {
 			joinTableName = "visit_dimension";
 			if (returnInstanceNum()
 					||parent.hasPanelOccurrenceConstraint()) {
-				joinTableName = "observation_fact";
+				//OMOP WAS..
+				//joinTableName = "observation_fact";
+				joinTableName = joinFact;
 			}
 		}
 
