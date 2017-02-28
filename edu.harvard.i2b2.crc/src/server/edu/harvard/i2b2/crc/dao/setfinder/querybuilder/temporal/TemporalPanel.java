@@ -191,14 +191,15 @@ public class TemporalPanel implements Comparable<Object> {
 
 						 }
 					 }
-					Integer conceptTotal = panelItem.getConceptTotal();
-					if (conceptTotal != null) {
-						estimatedPanelSize += conceptTotal;
-					} else
-						missingItemTotals++;
-					panelItemList.add(panelItem);
-
 				}
+				Integer conceptTotal = panelItem.getConceptTotal();
+				if (conceptTotal != null) {
+					estimatedPanelSize += conceptTotal;
+				} else
+					missingItemTotals++;
+				panelItemList.add(panelItem);
+
+				
 			}
 			catch (ConceptNotFoundException ce){
 				log.debug("Concept not found error: " + ce.getMessage());
