@@ -142,7 +142,7 @@ public class QueryProcessorUtil {
 
 	public static final String PAGING_ITERATION = "edu.harvard.i2b2.crc.pdo.paging.iteration";
 	
-	public static final	String DERIVED_FACT_TABLE = "queryprocessor.derivedfacttable";
+	public static final	String MULTI_FACT_TABLE = "queryprocessor.multifacttable";
 
 	/** class instance field* */
 	private static QueryProcessorUtil thisInstance = null;
@@ -439,8 +439,8 @@ public class QueryProcessorUtil {
 	public boolean getDerivedFactTable()  {
 		String setting = "false";
 		try {
-			setting = (getPropertyValue(DERIVED_FACT_TABLE));
-			//		log.info("DERIVED FACT TABLE PARAMETER = " + setting);
+			setting = (getPropertyValue(MULTI_FACT_TABLE));
+			
 		} catch (I2B2Exception e) {
 			log.error(e.getMessage());
 			return false;
