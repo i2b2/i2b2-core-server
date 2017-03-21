@@ -134,6 +134,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 				}
 			}
 		
+			assertNull(patientSetId);
 		
 		
 		 filename = testFileDir + "/pdo_onemodifier.xml";

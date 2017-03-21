@@ -2429,8 +2429,6 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			{
 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
 					assertEquals(results.getSetSize(), 65);
-				else
-					assertTrue(false);
 			}
 		} catch (Exception e) { 
 			e.printStackTrace();
