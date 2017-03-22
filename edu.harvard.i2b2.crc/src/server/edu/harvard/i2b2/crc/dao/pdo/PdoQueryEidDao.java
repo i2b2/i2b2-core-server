@@ -116,9 +116,13 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
-						+ getDbSchemaName()
-						+ "encounter_mapping em WHERE em.encounter_num IN (select distinct char_param1 FROM "
-						+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE
+						+ getDbSchemaName();
+				if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					finalSql += "encounter_mapping em WHERE em.encounter_num IN (select distinct CAST (char_param1 AS INTEGER) FROM ";
+				} else {
+					finalSql += "encounter_mapping em WHERE em.encounter_num IN (select distinct char_param1 FROM ";
+				}
+				finalSql += SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE
 						+ ") order by em_encounter_num";
 				log.debug("Size of the encounter list "
 						+ encounterNumList.size());
@@ -532,9 +536,13 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 					+ selectClause
 					+ " FROM "
 					+ getDbSchemaName()
-					+ "encounter_mapping em "
-					+ " where encounter_num in (select distinct char_param1 from "
-					+ tempTable + ") order by encounter_num";
+					+ "encounter_mapping em ";
+			if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+				finalSql += " where encounter_num in (select distinct CAST (char_param1 AS INTEGER) from ";
+			} else {
+				finalSql += " where encounter_num in (select distinct char_param1 from ";
+			}
+			finalSql += tempTable + ") order by encounter_num";
 			log.debug("Executing SQL [" + finalSql + "]");
 			System.out.println("Final Sql " + finalSql);
 

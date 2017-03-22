@@ -114,9 +114,13 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
-						+ getDbSchemaName()
-						+ "patient_mapping pm WHERE pm.patient_num IN (select distinct char_param1 FROM "
-						+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE
+						+ getDbSchemaName();
+				if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					finalSql += "patient_mapping pm WHERE pm.patient_num IN (select distinct CAST (char_param1 AS INTEGER) FROM ";
+				} else {
+					finalSql += "patient_mapping pm WHERE pm.patient_num IN (select distinct char_param1 FROM ";
+				}
+				finalSql += SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE
 						+ ") order by pm_patient_num";
 				log.debug("Executing [" + finalSql + "]");
 
@@ -136,9 +140,13 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
-						+ getDbSchemaName()
-						+ "patient_mapping pm WHERE pm.patient_num IN (select distinct char_param1 FROM "
-						+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1)
+						+ getDbSchemaName();
+				if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					finalSql += "patient_mapping pm WHERE pm.patient_num IN (select distinct CAST( char_param1 AS INTEGER) FROM ";
+				} else {
+					finalSql += "patient_mapping pm WHERE pm.patient_num IN (select distinct char_param1 FROM ";
+				}
+				finalSql += SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1)
 						+ ") order by pm_patient_num";
 				log.debug("Executing [" + finalSql + "]");
 

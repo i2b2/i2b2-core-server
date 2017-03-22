@@ -178,8 +178,12 @@ public class PatientListTypeHandler extends CRCDAO implements
 
 			// set sql string
 			sqlString = "select pset.patient_num from "
-					+ this.getDbSchemaName()
-					+ "qt_patient_set_collection pset where pset.result_instance_id =  ?  ";
+					+ this.getDbSchemaName();
+			if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+				sqlString += "qt_patient_set_collection pset where pset.result_instance_id = CAST ( ? AS INTEGER) ";
+			} else {
+				sqlString += "qt_patient_set_collection pset where pset.result_instance_id = ? ";
+			}
 
 			if (minIndex <= maxIndex) {
 				sqlString += (" and pset.set_index between " + minIndex

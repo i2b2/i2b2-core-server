@@ -118,9 +118,13 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
-						+ getDbSchemaName()
-						+ "visit_dimension visit WHERE visit.encounter_num IN (select distinct char_param1 FROM "
-						+ tempTableName + ") order by encounter_num";
+						+ getDbSchemaName();
+				if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					finalSql += "visit_dimension visit WHERE visit.encounter_num IN (select distinct CAST (char_param1 AS INTEGER) FROM ";
+				} else {
+					finalSql += "visit_dimension visit WHERE visit.encounter_num IN (select distinct char_param1 FROM ";
+				}
+				finalSql += tempTableName + ") order by encounter_num";
 				log.debug("Executing [" + finalSql + "]");
 
 				query = conn.prepareStatement(finalSql);
@@ -420,9 +424,13 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 			String finalSql = "SELECT "
 					+ selectClause
 					+ " FROM "
-					+ getDbSchemaName()
-					+ "visit_dimension visit where encounter_num in (select distinct char_param1 from "
-					+ factTempTable + ") order by encounter_num";
+					+ getDbSchemaName();
+			if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+				finalSql += "visit_dimension visit where encounter_num in (select distinct CAST (char_param1 AS INTEGER) from ";
+			} else {
+				finalSql += "visit_dimension visit where encounter_num in (select distinct char_param1 from ";
+			}
+			finalSql += factTempTable + ") order by encounter_num";
 			log.debug("Executing SQL [" + finalSql + "]");
 			System.out.println("Final Sql " + finalSql);
 
