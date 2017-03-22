@@ -189,6 +189,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	public void pdo_minvalue() throws Exception {
 		String filename = testFileDir + "/pdo_minvalue.xml";
 		try { 
+			assertNotNull(patientSetId);
 			String requestString = getQueryString(filename);
 			 requestString = requestString.replace("{patientSetId}", patientSetId);
 			OMElement requestElement = convertStringToOMElement(requestString); 
@@ -233,6 +234,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	public void pdo_maxvalue() throws Exception {
 		String filename = testFileDir + "/pdo_maxvalue.xml";
 		try { 
+			assertNotNull(patientSetId);
+
 			String requestString = getQueryString(filename);
 			 requestString = requestString.replace("{patientSetId}", patientSetId);
 			OMElement requestElement = convertStringToOMElement(requestString); 
@@ -276,6 +279,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	public void pdo_firstvalue_modtfalse() throws Exception {
 		String filename = testFileDir + "/pdo_firstvalue_modtfalse.xml";
 		try { 
+			assertNotNull(patientSetId);
+
 			String requestString = getQueryString(filename);
 			 requestString = requestString.replace("{patientSetId}", patientSetId);
 
