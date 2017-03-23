@@ -71,10 +71,10 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	private  static String testFileDir = null;
 	//:TODO accept server url as runtime parameter 
 	private static String setfinderTargetEPR = 
-			"http://127.0.0.1:9090/i2b2/services/QueryToolService/request";			
+			"http://i2b2ciredhatpostgres9.dipr.partners.org:9090/i2b2/services/QueryToolService/request";			
 
 	private static String pdoTargetEPR = 
-			"http://127.0.0.1:9090/i2b2/services/QueryToolService/pdorequest";			
+			"http://i2b2ciredhatpostgres9.dipr.partners.org:9090/i2b2/services/QueryToolService/pdorequest";			
 	
 	private static String patientSetId = null;
 	
@@ -110,8 +110,9 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	@Test
 	public void pdo_onemodifier() throws Exception {
 		
-		String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
+		
 		try { 
+			String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
 			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
@@ -161,6 +162,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			boolean found = false;
 			for (PatientType results : patientDataResponseType.getPatientData().getPatientSet().getPatient() )
 			{
+				if (found)
+					break;
 				if (results.getPatientId().getValue().equals("1000000003"))
 				{
 					
@@ -171,6 +174,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 							
 							assertEquals("Checking patient 1000000003 Language of germae", params.getValue(), "german");
 							found = true;
+							break;
 						}
 					}
 					
@@ -188,19 +192,45 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	
 	@Test
 	public void pdo_minvalue() throws Exception {
-		String filename = testFileDir + "/pdo_minvalue.xml";
 		try { 
-			assertNotNull(patientSetId);
+			String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
 			String requestString = getQueryString(filename);
-			 requestString = requestString.replace("{patientSetId}", patientSetId);
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
 
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
+			{
+				if (results.getQueryResultType().getName().equals("PATIENTSET"))
+				{
+					assertEquals(results.getSetSize(), 65);
+					patientSetId = results.getResultInstanceId();
+				}
+			}
+		
+			assertNotNull(patientSetId);
+			 filename = testFileDir + "/pdo_minvalue.xml";
+
+		
+			System.out.println("My patientsetID: " + patientSetId);
+			 requestString = getQueryString(filename);
+			 requestString = requestString.replace("{patientSetId}", patientSetId);
+			 requestElement = convertStringToOMElement(requestString); 
+			 responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			 responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			 r = (ResponseMessageType)responseJaxb.getValue();
+			 helper = new  JAXBUnWrapHelper();
 
 
 			
@@ -218,7 +248,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 						results.getConceptCd().getValue().equals("LOINC:2086-7"))
 				{
 					found = true;
-					assertEquals("Checking patient 1000000016", results.getNvalNum().getValue().toPlainString(), "44");
+					assertEquals("Checking patient 1000000016", results.getNvalNum().getValue().toPlainString(), "44.00000");
 					count++;
 				}
 			}
@@ -233,20 +263,46 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 	@Test
 	public void pdo_maxvalue() throws Exception {
-		String filename = testFileDir + "/pdo_maxvalue.xml";
-		try { 
-			assertNotNull(patientSetId);
+		
+		try {
 
+			String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
 			String requestString = getQueryString(filename);
-			 requestString = requestString.replace("{patientSetId}", patientSetId);
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
 
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
+			{
+				if (results.getQueryResultType().getName().equals("PATIENTSET"))
+				{
+					assertEquals(results.getSetSize(), 65);
+					patientSetId = results.getResultInstanceId();
+				}
+			}
+		
+			
+			 filename = testFileDir + "/pdo_maxvalue.xml";
+			assertNotNull(patientSetId);
+
+			 requestString = getQueryString(filename);
+			 requestString = requestString.replace("{patientSetId}", patientSetId);
+			 requestElement = convertStringToOMElement(requestString); 
+			 responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			 responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			 r = (ResponseMessageType)responseJaxb.getValue();
+			 helper = new  JAXBUnWrapHelper();
 
 
 			
@@ -263,7 +319,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 						results.getConceptCd().getValue().equals("LOINC:2086-7"))
 				{
 					found = true;
-					assertEquals("Checking patient 100000003", results.getNvalNum().getValue().toPlainString(), "46");
+					assertEquals("Checking patient 100000003", results.getNvalNum().getValue().toPlainString(), "46.00000");
 				}
 			}
 			assertTrue(found);
@@ -278,21 +334,46 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	
 	@Test
 	public void pdo_firstvalue_modtfalse() throws Exception {
-		String filename = testFileDir + "/pdo_firstvalue_modtfalse.xml";
-		try { 
-			assertNotNull(patientSetId);
+		try {
 
+			String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
 			String requestString = getQueryString(filename);
-			 requestString = requestString.replace("{patientSetId}", patientSetId);
-
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
 
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
+			{
+				if (results.getQueryResultType().getName().equals("PATIENTSET"))
+				{
+					assertEquals(results.getSetSize(), 65);
+					patientSetId = results.getResultInstanceId();
+				}
+			}
+		
+			assertNotNull(patientSetId);
+			
+			 filename = testFileDir + "/pdo_firstvalue_modtfalse.xml";
+
+			 requestString = getQueryString(filename);
+			 requestString = requestString.replace("{patientSetId}", patientSetId);
+
+			 requestElement = convertStringToOMElement(requestString); 
+			 responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			 responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			 r = (ResponseMessageType)responseJaxb.getValue();
+			 helper = new  JAXBUnWrapHelper();
 
 
 			
@@ -324,19 +405,44 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 	@Test
 	public void pdo_lastvalue_modtfalse() throws Exception {
-		String filename = testFileDir + "/pdo_lastvalue_modfalse.xml";
-		try { 
+		try {
+			String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
 			String requestString = getQueryString(filename);
-			 requestString = requestString.replace("{patientSetId}", patientSetId);
-
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
 
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
+			{
+				if (results.getQueryResultType().getName().equals("PATIENTSET"))
+				{
+					assertEquals(results.getSetSize(), 65);
+					patientSetId = results.getResultInstanceId();
+				}
+			}
+		
+			assertNotNull(patientSetId);
+			
+			 filename = testFileDir + "/pdo_lastvalue_modfalse.xml";
+			 requestString = getQueryString(filename);
+			 requestString = requestString.replace("{patientSetId}", patientSetId);
+
+			 requestElement = convertStringToOMElement(requestString); 
+			 responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			 responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			 r = (ResponseMessageType)responseJaxb.getValue();
+			 helper = new  JAXBUnWrapHelper();
 
 
 			
