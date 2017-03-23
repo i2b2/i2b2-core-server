@@ -136,6 +136,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 		
 			assertNotNull(patientSetId);
 		
+			System.out.println("My patientsetID: " + patientSetId);
 		
 		 filename = testFileDir + "/pdo_onemodifier.xml";
 			 requestString = getQueryString(filename);
