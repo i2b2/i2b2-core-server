@@ -109,11 +109,9 @@ public class QueryManagerBeanUtil {
 
 		ExecRunnable exec = new ExecRunnable();
 
-
-
-
 		exec.execute(generatedSql, queryInstanceId, patientSetId, xmlRequest,
-				domainId, projectId, ownerId);
+				domainId, projectId, ownerId, waitTime);
+
 
 		Thread t = new Thread(exec);
 
@@ -127,7 +125,10 @@ public class QueryManagerBeanUtil {
 				//} else {
 				//	t.wait();
 				//}
-
+				
+				// the exec is running for time  = request timeout (waitTime)
+				// wait a little longer (+10 seconds) to give exec chance to finish before deciding about queue
+			//	long waitTimePlus = waitTime + 10 ;
 				long startTime = System.currentTimeMillis(); 
 				long deltaTime = -1; 
 				while((exec.isJobCompleteFlag() == false)&& (deltaTime < waitTime)){ 
@@ -154,7 +155,6 @@ public class QueryManagerBeanUtil {
     						.getSetFinderDAOFactory();
     				//DataSourceLookup dsLookup = sfDAOFactory.getDataSourceLookup();
     	
-    				// check if the status is cancelled
 					IQueryInstanceDao queryInstanceDao = sfDAOFactory
 							.getQueryInstanceDAO();
     				QtQueryInstance queryInstance = queryInstanceDao
@@ -165,7 +165,7 @@ public class QueryManagerBeanUtil {
 					//		.currentTimeMillis()));
 					queryInstanceDao.update(queryInstance, false);
 					
-					log.debug("Set to MEDIUM Queue");
+					log.debug("QMgrBean: Set interactive query to MEDIUM Queue; status = running");
 							Map returnMap = new HashMap();
 							returnMap.put(QUERY_STATUS_PARAM, "RUNNING");
 							int id =  Integer.parseInt(queryInstanceId);
@@ -181,7 +181,8 @@ public class QueryManagerBeanUtil {
 				throw new I2B2Exception("Thread error while running CRC job " 
 						, e);
 			} finally {
-				t.interrupt();
+				
+			//	t.interrupt();
 				//exec = null;
 				t = null;
 			}

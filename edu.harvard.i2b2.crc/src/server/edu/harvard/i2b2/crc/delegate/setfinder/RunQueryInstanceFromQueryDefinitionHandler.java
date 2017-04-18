@@ -138,6 +138,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 			} 
 			
 			else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("5")) {
+				//why is '5' (incomplete) == error ?
 				
 				QueryStatusTypeType newStatusType = new QueryStatusTypeType();
 				newStatusType.setName("ERROR");

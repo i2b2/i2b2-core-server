@@ -88,7 +88,7 @@ IQueryResultInstanceDao {
 		resultInstance.setQtQueryInstance(queryInstance);
 
 		QtQueryStatusType queryStatusType = new QtQueryStatusType();
-		queryStatusType.setStatusTypeId(StatusEnum.QUEUED.ordinal());
+		queryStatusType.setStatusTypeId(StatusEnum.QUEUED.ordinal());  // 1
 		resultInstance.setQtQueryStatusType(queryStatusType);
 
 		Date startDate = new Date(System.currentTimeMillis());
