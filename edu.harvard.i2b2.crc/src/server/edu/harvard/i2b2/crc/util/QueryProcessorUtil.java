@@ -145,7 +145,7 @@ public class QueryProcessorUtil {
 	public static final	String MULTI_FACT_TABLE = "queryprocessor.multifacttable";
 
 	/** class instance field* */
-	private static QueryProcessorUtil thisInstance = null;
+	private static volatile QueryProcessorUtil thisInstance = null;
 
 	/** service locator field* */
 	private static ServiceLocator serviceLocator = null;
@@ -161,21 +161,16 @@ public class QueryProcessorUtil {
 	/** single instance of spring bean factory* */
 	private BeanFactory beanFactory = null;
 
-	private ProcessQueue pqMedium = new ProcessQueue( QueryManagerBeanUtil.MEDIUM_QUEUE);
-	private ProcessQueue pqLarge = new ProcessQueue( QueryManagerBeanUtil.LARGE_QUEUE);
+	private static volatile ProcessQueue pqMedium = null;
+	private static volatile ProcessQueue pqLarge = null;
+		
+	private static final Object lock = new Object();
+	
 	/**
 	 * Private constructor to make the class singleton
 	 */
 	private QueryProcessorUtil() {
 
-		log.debug("Starting queue");
-		//Start queues
-		
-		Thread m1 = new Thread(pqMedium);
-		m1.start();
-
-		Thread m2 = new Thread(pqLarge);
-		m2.start();
 
 	}
 
@@ -194,17 +189,34 @@ public class QueryProcessorUtil {
 	 * @return QueryProcessorUtil
 	 */
 	public static QueryProcessorUtil getInstance() {
-		if (thisInstance == null) {
-			thisInstance = new QueryProcessorUtil();
-			serviceLocator = ServiceLocator.getInstance();
+		
+		QueryProcessorUtil i = thisInstance;
+		if (i == null) {
+			synchronized (lock){
+				i = thisInstance;
+				if (i==null){
+					i = new QueryProcessorUtil();
+					thisInstance = i;
+					serviceLocator = ServiceLocator.getInstance();
 
+					pqMedium = new ProcessQueue(QueryManagerBeanUtil.MEDIUM_QUEUE);
+					pqLarge = new ProcessQueue( QueryManagerBeanUtil.LARGE_QUEUE);
+
+
+					Thread m1 = new Thread(pqMedium);
+					m1.start();
+					log.info("started MEDIUM");
+
+					Thread m2 = new Thread(pqLarge);
+					m2.start();
+					log.info("started LARGE");
+
+				}
+			}
 
 		}
 
-		// start cron job
-		// startCronJob();
-
-		return thisInstance;
+		return i;
 	}
 
 	private static void startCronJob() {
@@ -440,7 +452,7 @@ public class QueryProcessorUtil {
 		String setting = "false";
 		try {
 			setting = (getPropertyValue(MULTI_FACT_TABLE));
-			
+
 		} catch (I2B2Exception e) {
 			log.error(e.getMessage());
 			return false;
