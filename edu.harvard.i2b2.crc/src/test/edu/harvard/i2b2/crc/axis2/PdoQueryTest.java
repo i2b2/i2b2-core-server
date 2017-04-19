@@ -76,7 +76,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	private static String pdoTargetEPR = 
 			"http://i2b2ciredhatpostgres9.dipr.partners.org:9090/i2b2/services/QueryToolService/pdorequest";			
 	
-	private static String patientSetId = null;
+	//private static String patientSetId = null;
 	
 
 	@BeforeClass
@@ -117,6 +117,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			OMElement requestElement = convertStringToOMElement(requestString); 
 			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
 
+			String patientSetId = null;
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
@@ -198,6 +199,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			OMElement requestElement = convertStringToOMElement(requestString); 
 			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
 
+			String patientSetId = null;
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
@@ -271,6 +273,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			OMElement requestElement = convertStringToOMElement(requestString); 
 			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
 
+			String patientSetId = null;
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
@@ -341,6 +344,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			OMElement requestElement = convertStringToOMElement(requestString); 
 			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
 
+			String patientSetId = null;
+			
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
@@ -410,7 +415,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
 			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
-
+			String patientSetId = null;
+			
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
