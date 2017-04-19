@@ -185,6 +185,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			assertTrue(found);
 
 		} catch (Exception e2) { 
+			System.out.println("Error in onemodifier:" + e2.getMessage());
 			e2.printStackTrace();
 			assertTrue(false);
 		}
@@ -257,6 +258,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			assertEquals("Checking patient 1000000016 had 2 records", count, 2); 
 			assertTrue(found);
 		} catch (Exception e) { 
+			System.out.println("Error in minvalue:" + e.getMessage());
+
 			e.printStackTrace();
 			assertTrue(false);
 		}
@@ -328,6 +331,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			assertTrue(found);
 
 		} catch (Exception e) { 
+			System.out.println("Error in maxvalue:" + e.getMessage());
+
 			e.printStackTrace();
 			assertTrue(false);
 		}
@@ -402,6 +407,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			assertTrue(found);
 
 		} catch (Exception e) { 
+			System.out.println("Error in modtfalse:" + e.getMessage());
+
 			e.printStackTrace();
 			assertTrue(false);
 		}
@@ -473,6 +480,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			assertTrue(found);
 
 		} catch (Exception e) { 
+			System.out.println("Error in lastmodtfalse:" + e.getMessage());
+
 			e.printStackTrace();
 			assertTrue(false);
 		}
