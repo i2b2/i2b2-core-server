@@ -76,6 +76,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		List<String> roles = (List<String>) param.get("Roles");
 		String tempTableName = "";
 		PreparedStatement stmt = null;
+		ResultSet resultSet = null;
 		boolean errorFlag = false, timeoutFlag = false;
 		String itemKey = "";
 
@@ -121,7 +122,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			ResultType resultType = new ResultType();
 			resultType.setName(resultTypeName);
 			stmt = sfConn.prepareStatement(itemCountSql);
-
+			
 			CancelStatementRunner csr = new CancelStatementRunner(stmt,
 					transactionTimeout);
 			Thread csrThread = new Thread(csr);
@@ -180,7 +181,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				
 				//
 				subLogTimingUtil.setStartTime();
-				ResultSet resultSet = stmt.executeQuery();
+				resultSet = stmt.executeQuery();
 				if (csr.getSqlFinishedFlag()) {
 					timeoutFlag = true;
 					throw new CRCTimeOutException("The query was canceled.");
@@ -211,6 +212,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			}
 			csr.setSqlFinishedFlag();
 			csrThread.interrupt();
+			resultSet.close();
 			stmt.close();
 
 			edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();

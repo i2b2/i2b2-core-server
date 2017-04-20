@@ -363,8 +363,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 				log.debug("Calculated Patient set size :[" + recordCount
 						+ "] for query instance= " + queryInstanceId);
 			}
-			countStmt.close();
 			resultSet.close();
+			countStmt.close();
 
 			// tm.begin();
 			// call the result generator with the db connection/temp table

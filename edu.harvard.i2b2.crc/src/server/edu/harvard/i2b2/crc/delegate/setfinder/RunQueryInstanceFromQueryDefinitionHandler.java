@@ -161,7 +161,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 			 masterInstanceResponse.setStatus(this.buildCRCStausType(
 			 RequestHandlerDelegate.DONE_TYPE, "DONE"));
 			}
-			//If Batchmode is equal to PROCESSING than set to finished
+			//If Batchmode is equal to PROCESSING then set to finished
 			if (masterInstanceResponse.getQueryInstance().getBatchMode().equals(QueryManagerBeanUtil.PROCESSING))
 			{
 				masterInstanceResponse.setStatus(this.buildCRCStausType(

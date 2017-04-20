@@ -272,6 +272,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 					callStmt.execute();
 					this.getSQLServerProcedureError(dataSourceLookup.getServerType(),
 							callStmt, 3);
+					callStmt.close();
 				} catch (SQLException sqlEx) {
 					sqlEx.printStackTrace();
 					throw new I2B2DAOException(

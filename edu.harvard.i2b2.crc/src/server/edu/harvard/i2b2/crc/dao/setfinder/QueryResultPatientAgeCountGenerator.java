@@ -96,6 +96,7 @@ public class QueryResultPatientAgeCountGenerator extends CRCDAO implements
 				mdataType.setType("int");
 				resultType.getData().add(mdataType);
 			}
+			resultSet.close();
 			stmt.close();
 			edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 			BodyType bodyType = new BodyType();

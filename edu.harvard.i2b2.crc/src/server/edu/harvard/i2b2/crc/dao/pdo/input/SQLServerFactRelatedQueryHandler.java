@@ -1222,16 +1222,18 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 		Statement deleteStmt = null;
 		try {
 			deleteStmt = conn.createStatement();
-			conn
-					.createStatement()
-					.executeUpdate(
+			//conn
+				//	.createStatement()
+			deleteStmt.executeUpdate(
 							"drop table "
 									+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE);
+			
 		} catch (SQLException sqle) {
 			;
 		} finally {
 			try {
-				deleteStmt.close();
+				if(deleteStmt != null)
+					deleteStmt.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
