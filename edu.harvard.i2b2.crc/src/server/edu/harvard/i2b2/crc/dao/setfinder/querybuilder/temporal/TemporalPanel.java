@@ -12,6 +12,7 @@ package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
  
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -786,6 +787,13 @@ public class TemporalPanel implements Comparable<Object> {
 		String itemSql = unionItemSql(itemSqlList);
 		String itemStatement = "";
 		StringBuilder tableStatement = new StringBuilder(itemSql);
+		
+		List<String> factTables = null;
+		if (this.parent.getQueryOptions()!=null&&this.parent.getQueryOptions().useDerivedFactTable()) 
+		 {
+			factTables = buildFactTableList(itemSqlList);
+		 }
+		
 
 		boolean useTempTables = false;
 		if (parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER)
@@ -812,8 +820,27 @@ public class TemporalPanel implements Comparable<Object> {
 				innerSelectClause = buildInnerSelectClause("f");
 				innerGroupByClause = buildInnerGroupByClause("f");
 				tableStatement = new StringBuilder();
-				tableStatement.append("select " + innerSelectClause + " "
+				if(factTables == null){
+					tableStatement.append("select " + innerSelectClause + " "
 						+ "from " + schema + "observation_fact f, ");
+				}
+				else{
+					if(factTables.size() == 1) {
+						tableStatement.append("select " + innerSelectClause + " "
+								+ "from " + schema + factTables.get(0) +" f, ");
+					}
+					else {
+						Iterator i = factTables.iterator();
+						while (i.hasNext()){
+							tableStatement.append("select " + innerSelectClause + " "
+									+ "from " + schema + i.next() +" f, ");
+							if(i.hasNext()){
+								tableStatement.append(" union all ");
+							}
+						}
+					}
+				}
+				
 				if (useTempTables) {
 					tableStatement.append("#i" + suffix + " ");
 				} else if (parent.getQueryOptions().getQueryConstraintLogic() == QueryConstraintStrategy.DERIVED_TABLES) {
@@ -853,8 +880,27 @@ public class TemporalPanel implements Comparable<Object> {
 				innerSelectClause = buildInnerSelectClause("f");
 				innerGroupByClause = buildInnerGroupByClause("f");
 				tableStatement = new StringBuilder();
-				tableStatement.append("select " + innerSelectClause + " "
+				if(factTables == null){
+					tableStatement.append("select " + innerSelectClause + " "
 						+ "from " + schema + "observation_fact f, ");
+				}
+				else{
+					if(factTables.size() == 1) {
+						tableStatement.append("select " + innerSelectClause + " "
+								+ "from " + schema + factTables.get(0) +" f, ");
+					}
+					else {
+						Iterator i = factTables.iterator();
+						while (i.hasNext()){
+							tableStatement.append("select " + innerSelectClause + " "
+									+ "from " + schema + i.next() +" f, ");
+							if(i.hasNext()){
+								tableStatement.append(" union all ");
+							}
+						}
+					}
+				}
+
 				if (useTempTables) {
 					tableStatement.append("#i" + suffix + " ");
 				} else if (parent.getQueryOptions().getQueryConstraintLogic() == QueryConstraintStrategy.DERIVED_TABLES) {
@@ -1613,6 +1659,19 @@ public class TemporalPanel implements Comparable<Object> {
 		String instanceTable = "observation_fact f ";
 		String visitTable = "visit_dimension v ";
 
+		List<String> factTables = null;
+		List<TemporalPanelItemSql> itemSqlList = null;
+		try {
+			itemSqlList = getItemSql();
+		} catch (I2B2DAOException e) {
+			return null;
+		}
+		if (this.parent.getQueryOptions()!=null&&this.parent.getQueryOptions().useDerivedFactTable()) 
+		 {
+			factTables = buildFactTableList(itemSqlList);
+		 }
+		
+		
 		String invertTableName = patientTable;
 
 		if (getPanelTiming().equalsIgnoreCase(
@@ -1631,6 +1690,28 @@ public class TemporalPanel implements Comparable<Object> {
 		String invertSql = "select " + selectClause + ", 0 panel_count"
 				+ " from " + parent.getDatabaseSchema() + invertTableName
 				+ whereClause + groupByClause;
+		
+
+		if(factTables.size() == 1) {
+
+			invertSql = "select " + selectClause + ", 0 panel_count"
+					+ " from " + parent.getDatabaseSchema() +  factTables.get(0) + " f "
+					+ whereClause + groupByClause;
+		}
+		else {
+			invertSql = "";
+			Iterator i = factTables.iterator();
+			while (i.hasNext()){
+
+				invertSql += "select " + selectClause + ", 0 panel_count"
+						+ " from " + parent.getDatabaseSchema() +  i.next() + " f "
+						+ whereClause + groupByClause;
+				if(i.hasNext()){
+					invertSql += "\n union all \n";
+				}
+			}
+		}
+
 
 		return invertSql;
 
@@ -1693,7 +1774,9 @@ public class TemporalPanel implements Comparable<Object> {
 		}
 
 		StringBuilder exceptClause = new StringBuilder();
+
 		exceptClause.append(buildInvertMainTableSql() + "\n");
+
 		exceptClause.append(" " + minusOperator + "\n");
 		String invertInsertSql = buildInvertInsertSelectSql(withAlias);
 		exceptClause.append("select " + invertInsertSql + " from " + withAlias
@@ -2207,6 +2290,17 @@ public class TemporalPanel implements Comparable<Object> {
 	 */
 	protected TemporalQueryOptions getQueryOptions() {
 		return parent.getQueryOptions();
+	}
+	
+	private List<String> buildFactTableList(List<TemporalPanelItemSql> itemSqlList) {
+		List <String> factTableList = new ArrayList<String>();
+
+		for (TemporalPanelItemSql itemSqlItem : itemSqlList) {
+			String itemSql = itemSqlItem.itemSql;
+			factTableList.add(itemSqlItem.factTable);
+		}
+		return factTableList;
+		
 	}
 
 }
