@@ -224,10 +224,12 @@ public class ExecRunnable implements Runnable{
 					}
 
 				} catch (Exception e) {
-
-					if(e.getMessage().contains("Interrupted")){
-						log.info("Received interrupt");
-						return;
+					if(e.getMessage() != null){
+						log.error(e.getMessage());
+						if(e.getMessage().contains("Interrupted")){
+							log.info("Received interrupt");
+							return;
+						}
 					}
 					setJobException(e);
 					setJobErrorFlag(true);
