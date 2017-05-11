@@ -454,7 +454,7 @@ public class QueryProcessorUtil {
 			setting = (getPropertyValue(MULTI_FACT_TABLE));
 
 		} catch (I2B2Exception e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			return false;
 		}
 		if (setting == null){
