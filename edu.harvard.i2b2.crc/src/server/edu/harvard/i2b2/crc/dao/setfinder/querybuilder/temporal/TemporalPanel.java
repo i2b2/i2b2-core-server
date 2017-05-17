@@ -1691,23 +1691,24 @@ public class TemporalPanel implements Comparable<Object> {
 				+ " from " + parent.getDatabaseSchema() + invertTableName
 				+ whereClause + groupByClause;
 		
+		if(factTables != null){
+			if((factTables.size() == 1)) {
 
-		if(factTables.size() == 1) {
-
-			invertSql = "select " + selectClause + ", 0 panel_count"
-					+ " from " + parent.getDatabaseSchema() +  factTables.get(0) + " f "
-					+ whereClause + groupByClause;
-		}
-		else {
-			invertSql = "";
-			Iterator i = factTables.iterator();
-			while (i.hasNext()){
-
-				invertSql += "select " + selectClause + ", 0 panel_count"
-						+ " from " + parent.getDatabaseSchema() +  i.next() + " f "
+				invertSql = "select " + selectClause + ", 0 panel_count"
+						+ " from " + parent.getDatabaseSchema() +  factTables.get(0) + " f "
 						+ whereClause + groupByClause;
-				if(i.hasNext()){
-					invertSql += "\n union all \n";
+			}
+			else {
+				invertSql = "";
+				Iterator i = factTables.iterator();
+				while (i.hasNext()){
+
+					invertSql += "select " + selectClause + ", 0 panel_count"
+							+ " from " + parent.getDatabaseSchema() +  i.next() + " f "
+							+ whereClause + groupByClause;
+					if(i.hasNext()){
+						invertSql += "\n union all \n";
+					}
 				}
 			}
 		}
