@@ -71,10 +71,10 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	private  static String testFileDir = null;
 	//:TODO accept server url as runtime parameter 
 	private static String setfinderTargetEPR = 
-			"http://i2b2ciredhatpostgres9.dipr.partners.org:9090/i2b2/services/QueryToolService/request";			
+			"http://127.0.0.1:9090/i2b2/services/QueryToolService/request";			
 
 	private static String pdoTargetEPR = 
-			"http://i2b2ciredhatpostgres9.dipr.partners.org:9090/i2b2/services/QueryToolService/pdorequest";			
+			"http://127.0.0.1:9090/i2b2/services/QueryToolService/pdorequest";			
 	
 	//private static String patientSetId = null;
 	
