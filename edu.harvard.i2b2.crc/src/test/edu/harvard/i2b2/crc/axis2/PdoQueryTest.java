@@ -126,7 +126,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Did not get masterInstanceResult", masterInstanceResult);
 			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
 			{
 				if (results.getQueryResultType().getName().equals("PATIENTSET"))
@@ -136,7 +136,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 				}
 			}
 		
-			assertNotNull(patientSetId);
+			assertNotNull("Did not get Patientsetid", patientSetId);
 		
 			System.out.println("My patientsetID: " + patientSetId);
 		
@@ -209,7 +209,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Did not get masterInstanceResult", masterInstanceResult);
 			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
 			{
 				if (results.getQueryResultType().getName().equals("PATIENTSET"))
@@ -219,7 +219,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 				}
 			}
 		
-			assertNotNull(patientSetId);
+			assertNotNull("Did not get Patientsetid", patientSetId);
 			 filename = testFileDir + "/pdo_minvalue.xml";
 
 		
@@ -285,7 +285,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Did not get masterInstanceResult", masterInstanceResult);
 			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
 			{
 				if (results.getQueryResultType().getName().equals("PATIENTSET"))
@@ -297,7 +297,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 		
 			
 			 filename = testFileDir + "/pdo_maxvalue.xml";
-			assertNotNull(patientSetId);
+				assertNotNull("Did not get Patientsetid", patientSetId);
 
 			 requestString = getQueryString(filename);
 			 requestString = requestString.replace("{patientSetId}", patientSetId);
@@ -359,7 +359,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Did not get masterInstanceResult", masterInstanceResult);
 			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
 			{
 				if (results.getQueryResultType().getName().equals("PATIENTSET"))
@@ -369,7 +369,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 				}
 			}
 		
-			assertNotNull(patientSetId);
+			assertNotNull("Did not get Patientsetid", patientSetId);
 			
 			 filename = testFileDir + "/pdo_firstvalue_modtfalse.xml";
 
@@ -404,7 +404,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 				if (found)
 					break;
 			}
-			assertTrue(found);
+			assertTrue("Did not find patient 1000000003", found);
 
 		} catch (Exception e) { 
 			System.out.println("Error in modtfalse:" + e.getMessage());
@@ -432,7 +432,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Did not get masterInstanceResult", masterInstanceResult);
 			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
 			{
 				if (results.getQueryResultType().getName().equals("PATIENTSET"))
@@ -442,7 +442,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 				}
 			}
 		
-			assertNotNull(patientSetId);
+			assertNotNull("Did not get Patientsetid", patientSetId);
 			
 			 filename = testFileDir + "/pdo_lastvalue_modfalse.xml";
 			 requestString = getQueryString(filename);
