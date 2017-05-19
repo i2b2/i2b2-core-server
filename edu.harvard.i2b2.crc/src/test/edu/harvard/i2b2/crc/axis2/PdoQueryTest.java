@@ -471,7 +471,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 				if (results.getPatientId().getValue().equals("1000000003"))
 				{
 					found = true;
-					assertEquals("Checking patient 1000000003", results.getStartDate().toString(), "2007-05-23T00:00:00.000-04:00");
+					assertEquals("Checking patient 1000000003", results.getStartDate().toString(), "2005-12-09T00:00:00.000-05:00");
 				}
 				if (found)
 					break;
