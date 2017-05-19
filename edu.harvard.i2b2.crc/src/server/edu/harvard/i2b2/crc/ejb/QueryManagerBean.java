@@ -321,6 +321,13 @@ public class QueryManagerBean{ // implements SessionBean {
 			masterInstanceResultType.getQueryResultInstance().addAll(
 					responseType1.getQueryResultInstance());
 
+			//refresh the queryInstance to reflect the updates above
+			QueryInstanceType queryInstanceType2 = PSMFactory
+					.buildQueryInstanceType(queryInstance);
+			// set query instance
+			masterInstanceResultType.setQueryInstance(queryInstanceType2);
+			
+			
 		} catch (I2B2DAOException ex) {
 			log.debug("Got an error in QueryManagerBean, thropwing: " + ex.getMessage());
 			ex.printStackTrace();
