@@ -36,8 +36,6 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
 
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationSet;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationType;
-import edu.harvard.i2b2.crc.datavo.pdo.ParamType;
-import edu.harvard.i2b2.crc.datavo.pdo.PatientType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.FactOutputOptionType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.FactPrimaryKeyType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.FilterListType;
@@ -66,18 +64,17 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryResultInstanceType;
  */
 public class PdoQueryTest extends CRCAxisAbstract {
 
-
+	
 	private static QueryResultInstanceType queryResultInstance = null;
 	private  static String testFileDir = null;
 	//:TODO accept server url as runtime parameter 
 	private static String setfinderTargetEPR = 
-			"http://127.0.0.1:9090/i2b2/services/QueryToolService/request";			
+			"http://127.0.0.1:9090/i2b2/rest/QueryToolService/request";			
 
 	private static String pdoTargetEPR = 
 			"http://127.0.0.1:9090/i2b2/services/QueryToolService/pdorequest";			
-
-	//private static String patientSetId = null;
-
+	
+	
 
 	@BeforeClass
 	public static void setUp() throws Exception {
@@ -109,160 +106,82 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 	@Test
 	public void pdo_onemodifier() throws Exception {
-
-
+		String filename = testFileDir + "/pdo_onemodifier.xml";
 		try { 
-			String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
+			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
 
-			String patientSetId = null;
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 
-			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
-			assertNotNull("Did not get masterInstanceResult", masterInstanceResult);
-			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
-			{
-				if (results.getQueryResultType().getName().equals("PATIENTSET"))
-				{
-					assertEquals(results.getSetSize(), 65);
-					patientSetId = results.getResultInstanceId();
-				}
-			}
-
-			assertNotNull("Did not get Patientsetid", patientSetId);
-
-			System.out.println("My patientsetID: " + patientSetId);
-
-			filename = testFileDir + "/pdo_onemodifier.xml";
-			requestString = getQueryString(filename);
-			requestString = requestString.replace("{patientSetId}", patientSetId);
-			requestElement = convertStringToOMElement(requestString); 
-			responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
-
-			//read test file and store query instance ;
-			//unmarshall this response string 
-			responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
-			r = (ResponseMessageType)responseJaxb.getValue();
-			helper = new  JAXBUnWrapHelper();
-
-
-
+			
 			PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
 			//StatusType.Condition condition = patientDataResponseType.getStatus().getCondition().get(0);
 			//assertEquals(condition.getType(),"DONE","checking crc message status 'DONE'");
 			assertTrue("checking patient set size > 0 ",patientDataResponseType.getPatientData().getPatientSet().getPatient().size()>0);
-			//System.out.println(patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().get(0).getPatientId().getSource());
+			System.out.println(patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().get(0).getPatientId().getSource());
 
 			boolean found = false;
-			for (PatientType results : patientDataResponseType.getPatientData().getPatientSet().getPatient() )
+			for (ObservationType results : patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation() )
 			{
-				if (found)
-					break;
 				if (results.getPatientId().getValue().equals("1000000003"))
 				{
-
-					for (ParamType params : results.getParam() )
-					{
-
-						if (params.getColumn().equals("language_cd")){
-
-							assertEquals("Checking patient 1000000003 Language of germae", params.getValue(), "german");
-							found = true;
-							break;
-						}
-					}
-
-
+					found = true;
+					assertEquals("Checking patient 1000000003", results.getStartDate().toString(), "2007-05-23T00:00:00.000-04:00");
 				}
 			}
 			assertTrue(found);
 
-		} catch (Exception e2) { 
-			System.out.println("Error in onemodifier:" + e2.getMessage());
-			e2.printStackTrace();
+		} catch (Exception e) { 
+			e.printStackTrace();
 			assertTrue(false);
 		}
 	}
 
-
+	
 	@Test
 	public void pdo_minvalue() throws Exception {
+		String filename = testFileDir + "/pdo_minvalue.xml";
 		try { 
-			String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
+			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
 
-			String patientSetId = null;
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 
-			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
-			assertNotNull("Did not get masterInstanceResult", masterInstanceResult);
-			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
-			{
-				if (results.getQueryResultType().getName().equals("PATIENTSET"))
-				{
-					assertEquals(results.getSetSize(), 65);
-					patientSetId = results.getResultInstanceId();
-				}
-			}
-
-			assertNotNull("Did not get Patientsetid", patientSetId);
-			filename = testFileDir + "/pdo_minvalue.xml";
-
-
-			System.out.println("My patientsetID: " + patientSetId);
-			requestString = getQueryString(filename);
-			requestString = requestString.replace("{patientSetId}", patientSetId);
-			requestElement = convertStringToOMElement(requestString); 
-			responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
-
-			//read test file and store query instance ;
-			//unmarshall this response string 
-			responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
-			r = (ResponseMessageType)responseJaxb.getValue();
-			helper = new  JAXBUnWrapHelper();
-
-
-
+			
 			PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
 			//StatusType.Condition condition = patientDataResponseType.getStatus().getCondition().get(0);
 			//assertEquals(condition.getType(),"DONE","checking crc message status 'DONE'");
 			assertTrue("checking patient set size > 0 ",patientDataResponseType.getPatientData().getPatientSet().getPatient().size()>0);
-			//System.out.println(patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().get(0).getPatientId().getSource());
+			System.out.println(patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().get(0).getPatientId().getSource());
 
+			
 			boolean found = false;
 			int count = 0;
 			for (ObservationType results : patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation() )
 			{
-				if (results.getPatientId().getValue().equals("1000000016") && results.getEventId().getValue().equals("473653") &&
+				if (results.getPatientId().getValue().equals("1000000026") && results.getEventId().getValue().equals("475614") &&
 						results.getConceptCd().getValue().equals("LOINC:2086-7"))
 				{
 					found = true;
-					if (results.getNvalNum().getValue().toPlainString().equals("44"))				
-						assertEquals("Checking patient 100000003", results.getNvalNum().getValue().toPlainString(), "44");
-					else
-						assertEquals("Checking patient 1000000016", results.getNvalNum().getValue().toPlainString(), "44.00000");
+					assertEquals("Checking patient 1000000026", results.getNvalNum().getValue().toPlainString(), "36");
 					count++;
 				}
 			}
-			assertEquals("Checking patient 1000000016 had 2 records", count, 2); 
+			assertEquals("Checking patient 1000000026 had 2 records", count, 2); 
 			assertTrue(found);
 		} catch (Exception e) { 
-			System.out.println("Error in minvalue:" + e.getMessage());
-
 			e.printStackTrace();
 			assertTrue(false);
 		}
@@ -271,91 +190,50 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 	@Test
 	public void pdo_maxvalue() throws Exception {
-
-		try {
-
-			String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
+		String filename = testFileDir + "/pdo_maxvalue.xml";
+		try { 
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
+			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
 
-			String patientSetId = null;
 			//read test file and store query instance ;
 			//unmarshall this response string 
 			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 
-			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
-			assertNotNull("Did not get masterInstanceResult", masterInstanceResult);
-			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
-			{
-				if (results.getQueryResultType().getName().equals("PATIENTSET"))
-				{
-					assertEquals(results.getSetSize(), 65);
-					patientSetId = results.getResultInstanceId();
-				}
-			}
-
-
-			filename = testFileDir + "/pdo_maxvalue.xml";
-			assertNotNull("Did not get Patientsetid", patientSetId);
-
-			requestString = getQueryString(filename);
-			requestString = requestString.replace("{patientSetId}", patientSetId);
-			requestElement = convertStringToOMElement(requestString); 
-			responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
-
-			//read test file and store query instance ;
-			//unmarshall this response string 
-			responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
-			r = (ResponseMessageType)responseJaxb.getValue();
-			helper = new  JAXBUnWrapHelper();
-
-
-
+			
 			PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
 			//StatusType.Condition condition = patientDataResponseType.getStatus().getCondition().get(0);
 			//assertEquals(condition.getType(),"DONE","checking crc message status 'DONE'");
 			assertTrue("checking patient set size > 0 ",patientDataResponseType.getPatientData().getPatientSet().getPatient().size()>0);
+			System.out.println(patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().get(0).getPatientId().getSource());
 
 			boolean found = false;
 			for (ObservationType results : patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation() )
 			{
-
-				if (results.getPatientId().getValue().equals("1000000003") && results.getEventId().getValue().equals("474080") &&
-						results.getConceptCd().getValue().equals("LOINC:2086-7"))
+				if (results.getPatientId().getValue().equals("1000000001"))
 				{
 					found = true;
-					if (results.getNvalNum().getValue().toPlainString().equals("46"))
-						assertEquals("Checking patient 100000003", results.getNvalNum().getValue().toPlainString(), "46");
-					else
-						assertEquals("Checking patient 100000003", results.getNvalNum().getValue().toPlainString(), "46.00000");
+					assertEquals("Checking patient 1000000001", results.getNvalNum().getValue().toPlainString(), "160");
 				}
 			}
 			assertTrue(found);
 
 		} catch (Exception e) { 
-			System.out.println("Error in maxvalue:" + e.getMessage());
-
 			e.printStackTrace();
 			assertTrue(false);
 		}
 	}
-
-
-
+	
 	@Test
-	public void pdo_firstvalue_modtfalse() throws Exception {
-		try {
-
-			String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
+	public void pdo_firstvalue() throws Exception {
+		String filename = testFileDir + "/pdo_firstvalue.xml";
+		try { 
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
-
-			String patientSetId = null;
+			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
 
 			//read test file and store query instance ;
 			//unmarshall this response string 
@@ -363,36 +241,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 
-			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
-			assertNotNull("Did not get masterInstanceResult", masterInstanceResult);
-			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
-			{
-				if (results.getQueryResultType().getName().equals("PATIENTSET"))
-				{
-					assertEquals(results.getSetSize(), 65);
-					patientSetId = results.getResultInstanceId();
-				}
-			}
-
-			assertNotNull("Did not get Patientsetid", patientSetId);
-
-			filename = testFileDir + "/pdo_firstvalue_modtfalse.xml";
-
-			requestString = getQueryString(filename);
-			requestString = requestString.replace("{patientSetId}", patientSetId);
-
-			requestElement = convertStringToOMElement(requestString); 
-			responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
-
-			//read test file and store query instance ;
-			//unmarshall this response string 
-			responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
-			r = (ResponseMessageType)responseJaxb.getValue();
-			helper = new  JAXBUnWrapHelper();
-
-
-
+			
 			PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
 			//StatusType.Condition condition = patientDataResponseType.getStatus().getCondition().get(0);
 			//assertEquals(condition.getType(),"DONE","checking crc message status 'DONE'");
@@ -407,28 +257,23 @@ public class PdoQueryTest extends CRCAxisAbstract {
 					found = true;
 					assertEquals("Checking patient 1000000003", results.getStartDate().toString(), "1997-11-26T00:00:00.000-05:00");
 				}
-				if (found)
-					break;
 			}
-			assertTrue("Did not find patient 1000000003", found);
+			assertTrue(found);
 
 		} catch (Exception e) { 
-			System.out.println("Error in modtfalse:" + e.getMessage());
-
 			e.printStackTrace();
 			assertTrue(false);
 		}
 	}
-
+	
 
 	@Test
-	public void pdo_lastvalue_modtfalse() throws Exception {
-		try {
-			String filename = testFileDir + "/MQP1I1_[65]_2320ms.xml";
+	public void pdo_lastvalue() throws Exception {
+		String filename = testFileDir + "/pdo_lastvalue.xml";
+		try { 
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
-			String patientSetId = null;
+			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
 
 			//read test file and store query instance ;
 			//unmarshall this response string 
@@ -436,35 +281,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 
-			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
-			assertNotNull("Did not get masterInstanceResult", masterInstanceResult);
-			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
-			{
-				if (results.getQueryResultType().getName().equals("PATIENTSET"))
-				{
-					assertEquals(results.getSetSize(), 65);
-					patientSetId = results.getResultInstanceId();
-				}
-			}
-
-			assertNotNull("Did not get Patientsetid", patientSetId);
-
-			filename = testFileDir + "/pdo_lastvalue_modfalse.xml";
-			requestString = getQueryString(filename);
-			requestString = requestString.replace("{patientSetId}", patientSetId);
-
-			requestElement = convertStringToOMElement(requestString); 
-			responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
-
-			//read test file and store query instance ;
-			//unmarshall this response string 
-			responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
-			r = (ResponseMessageType)responseJaxb.getValue();
-			helper = new  JAXBUnWrapHelper();
-
-
-
+			
 			PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
 			//StatusType.Condition condition = patientDataResponseType.getStatus().getCondition().get(0);
 			//assertEquals(condition.getType(),"DONE","checking crc message status 'DONE'");
@@ -474,25 +292,357 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			boolean found = false;
 			for (ObservationType results : patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation() )
 			{
-				if (results.getPatientId().getValue().equals("1000000003") && results.getConceptCd().getValue().equals("LOINC:2090-9"))
+				if (results.getPatientId().getValue().equals("1000000003"))
 				{
 					found = true;
-					assertEquals("Checking patient 1000000003", results.getStartDate().toString(), "2005-12-09T00:00:00.000-05:00");
+					assertEquals("Checking patient 1000000003", results.getStartDate().toString(), "2007-05-23T00:00:00.000-04:00");
 				}
-				if (found)
-					break;
-
 			}
 			assertTrue(found);
 
 		} catch (Exception e) { 
-			System.out.println("Error in lastmodtfalse:" + e.getMessage());
-
 			e.printStackTrace();
 			assertTrue(false);
 		}
 	}
+	
 
+	/*
+	
+	@BeforeClass public  static void runQueryInstanceFromQueryDefinition() throws Exception  {
+		testFileDir = System.getProperty("testfiledir");
+		System.out.println("test file dir " + testFileDir);
+		if (!(testFileDir != null && testFileDir.trim().length()>0)) {
+			throw new Exception("please provide test file directory info -Dtestfiledir");
+		}
+		//read test file and store query master;
+		String filename = testFileDir +"/setfinder_query.xml";
+		try { 
+		String requestString = getQueryString(filename);
+		System.out.println("test file dir " + testFileDir);
+		OMElement requestElement = convertStringToOMElement(requestString); 
+		OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
+		
+		//read test file and store query instance ;
+		//unmarshall this response string 
+		JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+		JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+		MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
+		queryResultInstance = masterInstanceResult.getQueryResultInstance().get(0);
+		assertNotNull(queryResultInstance);
+		System.out.println(queryResultInstance.getResultInstanceId());
+		} catch (Exception e) { 
+			e.printStackTrace();
+			throw e;
+		}
+		//queryResultInstance = new  QueryResultInstanceType();
+		//queryResultInstance.setResultInstanceId("4801");
+		
+		
+	}
+	
+	@Test public void testPatienSetId() throws Exception {
+		FilterListType filterType = getFilterListType();
+		OutputOptionListType ouputType = getOutputOptionListType(); 
+		InputOptionListType inputType = getInputOptionType();
 
+		
+		PdoQryHeaderType requestHeaderType = new PdoQryHeaderType();
+		requestHeaderType.setRequestType(PdoRequestTypeType.GET_PDO_FROM_INPUT_LIST);
+		
+		GetPDOFromInputListRequestType pdoRequestType = new GetPDOFromInputListRequestType();
+		pdoRequestType.setFilterList(filterType);
+		pdoRequestType.setInputList(inputType);
+		pdoRequestType.setOutputOption(ouputType);
+		
+		RequestMessageType requestMessageType = buildRequestMessage(requestHeaderType,pdoRequestType);
+		StringWriter strWriter = new StringWriter();
+		edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
+		CRCJAXBUtil.getJAXBUtil().marshaller(of.createRequest(requestMessageType), strWriter);
+		
+		OMElement requestElement = convertStringToOMElement(strWriter.toString()); 
+		OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+		System.out.println(responseElement.toString());
+		
+		JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+		assertEquals("checking i2b2 message status 'DONE'","DONE",r.getResponseHeader().getResultStatus().getStatus().getType());
+		JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+		PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
+		//StatusType.Condition condition = patientDataResponseType.getStatus().getCondition().get(0);
+		//assertEquals(condition.getType(),"DONE","checking crc message status 'DONE'");
+		assertTrue("checking patient set size > 0 ",patientDataResponseType.getPatientData().getPatientSet().getPatient().size()>0);
+		System.out.println(patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().get(0).getPatientId().getSource());
+	}
+	
+	@Test public void testWholePatient() throws Exception  {
+		FilterListType filterType = getFilterListType();
+		OutputOptionListType ouputType = getOutputOptionListType(); 
+		InputOptionListType inputType = getInputOptionType();
+		
+		inputType.getPatientList().setEntirePatientSet(true);
+		inputType.getPatientList().setPatientSetCollId(null);
+		
+		PdoQryHeaderType requestHeaderType = new PdoQryHeaderType();
+		requestHeaderType.setRequestType(PdoRequestTypeType.GET_PDO_FROM_INPUT_LIST);
+		
+		GetPDOFromInputListRequestType pdoRequestType = new GetPDOFromInputListRequestType();
+		pdoRequestType.setFilterList(filterType);
+		pdoRequestType.setInputList(inputType);
+		pdoRequestType.setOutputOption(ouputType);
+		
+		RequestMessageType requestMessageType = buildRequestMessage(requestHeaderType,pdoRequestType);
+		StringWriter strWriter = new StringWriter();
+		edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
+		CRCJAXBUtil.getJAXBUtil().marshaller(of.createRequest(requestMessageType), strWriter);
+		
+		OMElement requestElement = convertStringToOMElement(strWriter.toString()); 
+		OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+		
+		JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+		assertEquals("checking i2b2 message status 'DONE'","DONE",r.getResponseHeader().getResultStatus().getStatus().getType());
+		JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+		PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
+		assertTrue("checking patient set size > 0 ",patientDataResponseType.getPatientData().getPatientSet().getPatient().size()>0);
+	}
+	
+	@Test public void testConceptFilter() throws Exception {
+		FilterListType filterType = getFilterListType();
+		OutputOptionListType ouputType = getOutputOptionListType();
+		
+		InputOptionListType inputType = getInputOptionType();
 
+		
+		PdoQryHeaderType requestHeaderType = new PdoQryHeaderType();
+		requestHeaderType.setRequestType(PdoRequestTypeType.GET_PDO_FROM_INPUT_LIST);
+		
+		GetPDOFromInputListRequestType pdoRequestType = new GetPDOFromInputListRequestType();
+		pdoRequestType.setFilterList(filterType);
+		pdoRequestType.setInputList(inputType);
+		pdoRequestType.setOutputOption(ouputType);
+		
+		RequestMessageType requestMessageType = buildRequestMessage(requestHeaderType,pdoRequestType);
+		StringWriter strWriter = new StringWriter();
+		edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
+		CRCJAXBUtil.getJAXBUtil().marshaller(of.createRequest(requestMessageType), strWriter);
+		
+		OMElement requestElement = convertStringToOMElement(strWriter.toString()); 
+		OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+		
+		JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+		assertEquals("checking i2b2 message status 'DONE'","DONE",r.getResponseHeader().getResultStatus().getStatus().getType());
+		JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+		PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
+		assertTrue("checking concept set size > 0",patientDataResponseType.getPatientData().getConceptSet().getConcept().size()>0);
+		assertTrue("checking observatiob set size > 0",patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().size()>0);
+		
+	}
+	
+	@Ignore
+	@Test public void testProviderFilter() throws Exception  {
+		FilterListType filterType = getFilterListType();
+		OutputOptionListType ouputType = getOutputOptionListType(); 
+		InputOptionListType inputType = getInputOptionType();
+
+		
+		PdoQryHeaderType requestHeaderType = new PdoQryHeaderType();
+		requestHeaderType.setRequestType(PdoRequestTypeType.GET_PDO_FROM_INPUT_LIST);
+		
+		GetPDOFromInputListRequestType pdoRequestType = new GetPDOFromInputListRequestType();
+		pdoRequestType.setFilterList(filterType);
+		pdoRequestType.setInputList(inputType);
+		pdoRequestType.setOutputOption(ouputType);
+		
+		RequestMessageType requestMessageType = buildRequestMessage(requestHeaderType,pdoRequestType);
+		StringWriter strWriter = new StringWriter();
+		edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
+		CRCJAXBUtil.getJAXBUtil().marshaller(of.createRequest(requestMessageType), strWriter);
+		
+		OMElement requestElement = convertStringToOMElement(strWriter.toString()); 
+		OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+		
+		JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+		assertEquals("checking i2b2 message status 'DONE'","DONE",r.getResponseHeader().getResultStatus().getStatus().getType());
+		JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+		PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
+		assertTrue("checking observer set size > 0",patientDataResponseType.getPatientData().getObserverSet().getObserver().size()>0);
+		assertTrue("checking observation set size > 0",patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().size()>0);
+	}
+	
+	@Test public void testNameAsAttributesOutput() throws Exception { 
+		FilterListType filterType = getFilterListType();
+		OutputOptionListType ouputType = getOutputOptionListType();
+		
+		InputOptionListType inputType = getInputOptionType();
+
+		
+		PdoQryHeaderType requestHeaderType = new PdoQryHeaderType();
+		requestHeaderType.setRequestType(PdoRequestTypeType.GET_PDO_FROM_INPUT_LIST);
+		
+		GetPDOFromInputListRequestType pdoRequestType = new GetPDOFromInputListRequestType();
+		pdoRequestType.setFilterList(filterType);
+		pdoRequestType.setInputList(inputType);
+		pdoRequestType.setOutputOption(ouputType);
+		
+		RequestMessageType requestMessageType = buildRequestMessage(requestHeaderType,pdoRequestType);
+		StringWriter strWriter = new StringWriter();
+		edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
+		CRCJAXBUtil.getJAXBUtil().marshaller(of.createRequest(requestMessageType), strWriter);
+		
+		OMElement requestElement = convertStringToOMElement(strWriter.toString()); 
+		OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+		
+		JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+		assertEquals("checking i2b2 message status 'DONE'","DONE",r.getResponseHeader().getResultStatus().getStatus().getType());
+		JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+		PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
+		assertTrue("checking observation set size > 0",patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().size()>0);
+		
+	}
+	
+	@Test public void testFactRelatedOutput() throws Exception {
+		FilterListType filterType = getFilterListType();
+		OutputOptionListType ouputType = getOutputOptionListType(); 
+		InputOptionListType inputType = getInputOptionType();
+
+		
+		PdoQryHeaderType requestHeaderType = new PdoQryHeaderType();
+		requestHeaderType.setRequestType(PdoRequestTypeType.GET_PDO_FROM_INPUT_LIST);
+		
+		GetPDOFromInputListRequestType pdoRequestType = new GetPDOFromInputListRequestType();
+		pdoRequestType.setFilterList(filterType);
+		pdoRequestType.setInputList(inputType);
+		pdoRequestType.setOutputOption(ouputType);
+		
+		RequestMessageType requestMessageType = buildRequestMessage(requestHeaderType,pdoRequestType);
+		StringWriter strWriter = new StringWriter();
+		edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
+		CRCJAXBUtil.getJAXBUtil().marshaller(of.createRequest(requestMessageType), strWriter);
+		
+		OMElement requestElement = convertStringToOMElement(strWriter.toString()); 
+		OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+		
+		JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+		assertEquals("checking i2b2 message status 'DONE'","DONE",r.getResponseHeader().getResultStatus().getStatus().getType());
+		JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+		PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
+		assertTrue("checking observation set size > 0",patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().size()>0);
+	}
+    @Ignore
+	@Test public void testFactPrimaryKey() throws Exception {
+		FilterListType filterType = getFilterListType();
+		OutputOptionListType ouputType = getOutputOptionListType(); 
+		InputOptionListType inputType = getInputOptionType();
+
+		
+		PdoQryHeaderType requestHeaderType = new PdoQryHeaderType();
+		requestHeaderType.setRequestType(PdoRequestTypeType.GET_OBSERVATIONFACT_BY_PRIMARY_KEY);
+		
+
+		GetObservationFactByPrimaryKeyRequestType observationReqType = new GetObservationFactByPrimaryKeyRequestType();
+		FactPrimaryKeyType factPrimaryKey = new FactPrimaryKeyType();
+        
+		factPrimaryKey.setConceptCd("ICD9:410.9");
+		factPrimaryKey.setEventId("1000000011");
+		factPrimaryKey.setModifierCd("@");
+		factPrimaryKey.setObserverId("@");
+		factPrimaryKey.setPatientId("1000000011");
+		//1999-09-24T00:00:00.000-04:00
+		GregorianCalendar gc = new GregorianCalendar(1999, 9, 24, 0,0, 0);
+		DatatypeFactory df = DatatypeFactory.newInstance(); 
+		XMLGregorianCalendar cal =  df.newXMLGregorianCalendar(gc);
+		factPrimaryKey.setStartDate(cal);
+		observationReqType.setFactPrimaryKey(factPrimaryKey);
+		RequestMessageType requestMessageType = buildRequestMessage(requestHeaderType,observationReqType);
+		StringWriter strWriter = new StringWriter();
+		edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
+		CRCJAXBUtil.getJAXBUtil().marshaller(of.createRequest(requestMessageType), strWriter);
+		
+		OMElement requestElement = convertStringToOMElement(strWriter.toString()); 
+		OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
+		
+		JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+		assertEquals("checking i2b2 message status 'DONE'","DONE",r.getResponseHeader().getResultStatus().getStatus().getType());
+		JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+		PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
+		assertTrue("checking observation set size > 0",patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().size()>0);
+	}
+	
+	
+	public static junit.framework.Test suite() { 
+		return new JUnit4TestAdapter(PdoQueryTest.class);
+	}
+
+	
+	
+		
+	
+	
+	private InputOptionListType getInputOptionType() {
+		InputOptionListType inputOptionListType = new InputOptionListType();
+		
+		PatientListType patientListType = new PatientListType();
+		patientListType.setMax(new Integer(15));
+		patientListType.setMin(new Integer(0));
+		patientListType.setPatientSetCollId(queryResultInstance.getResultInstanceId());
+		inputOptionListType.setPatientList(patientListType);
+		return inputOptionListType;
+	}
+	
+	private OutputOptionListType getOutputOptionListType() {
+		OutputOptionListType outputOptionListType = new OutputOptionListType();
+		//outputOptionListType.setNames(OutputOptionNameType.ASATTRIBUTES);
+		OutputOptionType outputOptionType = new OutputOptionType(); 
+		outputOptionType.setOnlykeys(false);
+		outputOptionType.setSelect(OutputOptionSelectType.USING_INPUT_LIST);
+		outputOptionListType.setPatientSet(outputOptionType);
+		FactOutputOptionType  factOutputOptionType = new FactOutputOptionType();
+		factOutputOptionType.setOnlykeys(false);
+		outputOptionListType.setObservationSet(factOutputOptionType);
+		outputOptionListType.setConceptSetUsingFilterList(outputOptionType);
+		return outputOptionListType;
+	}
+	
+	private FilterListType getFilterListType() {
+		FilterListType filterListType = new FilterListType();
+		PanelType panelType = new PanelType();
+		panelType.setName("panel1");
+		ItemType itemType = new ItemType();
+		itemType.setDimDimcode("\\i2b2\\Diagnoses");
+		itemType.setDimTablename("concept_dimension");
+	//	itemType.setFacttablecolumn("concept_cd");
+//		itemType.setDimColumnname("concept_path");
+		panelType.getItem().add(itemType);
+		itemType.setItemKey("\\i2b2\\Diagnoses");
+		panelType.getItem().add(itemType);
+		filterListType.getPanel().add(panelType);
+		
+		
+		return filterListType;
+	}
+	
+	public static RequestMessageType buildRequestMessage(PdoQryHeaderType requestHeaderType, RequestType requestType) {
+		//create body type
+		BodyType bodyType = new BodyType();
+		ObjectFactory of = new ObjectFactory();
+		bodyType.getAny().add(of.createPdoheader(requestHeaderType));
+		bodyType.getAny().add(of.createRequest(requestType));
+		RequestMessageType requestMessageType = new RequestMessageType();
+		requestMessageType.setMessageHeader(generateMessageHeader());
+		requestMessageType.setMessageBody(bodyType);
+		requestMessageType.setRequestHeader(generateRequestHeader());
+		return requestMessageType;
+	}
+	
+	*/
+
+	
+	
 }

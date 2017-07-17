@@ -16,34 +16,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 
 import javax.sql.DataSource;
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.axis2.AxisFault;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.exception.StackTraceUtil;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.pdo.output.ObservationFactFactRelated;
-import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ConceptNotFoundException;
-import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.OntologyException;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
-import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
-import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationSet;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationType;
 import edu.harvard.i2b2.crc.datavo.pdo.PatientDataType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.FactPrimaryKeyType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.OutputOptionType;
-import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
-import edu.harvard.i2b2.crc.util.PMServiceAccountUtil;
-import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
  * DAO class for observation fact $Id: ObservationFactDao.java,v 1.13 2008/07/21
@@ -84,10 +71,8 @@ public class ObservationFactDao extends CRCDAO implements IObservationFactDao {
 		ObservationFactFactRelated factRelated = new ObservationFactFactRelated(
 				factOutputOption);
 
-		String defaultTableName =  getDbSchemaName() + "observation_fact";
-		
 		String sql = " SELECT " + factRelated.getSelectClause() + " \n "
-				+ " FROM " + defaultTableName + " obs \n"
+				+ " FROM " + getDbSchemaName() + "observation_fact obs \n"
 				+ " WHERE obs.encounter_num = ? AND \n "
 				+ " obs.patient_num  = ? AND \n" + " obs.concept_cd = ?  \n";
 
@@ -124,45 +109,7 @@ public class ObservationFactDao extends CRCDAO implements IObservationFactDao {
 			sql += " AND obs.instance_num = ? ";
 		}
 
-//		log.info("Pre Sql from ObservationFactDAO[" + sql + "]");
-		
-		
-		int numDerivedTables = 1;
-		boolean derivedFactTable = QueryProcessorUtil.getInstance().getDerivedFactTable();
-		String finalSql = sql;
-		if(derivedFactTable == true){
-			// call ONT to get concept info 
-			DerivedFactColumnsType columns = getFactColumnsFromOntologyCellByCode(factPrimaryKey.getConceptCd());
-			
-			if(columns != null){
-				numDerivedTables = columns.getDerivedFactTableColumn().size();
-//				log.info("found " +numDerivedTables + " derived tables");
-				// parse through solumns and build up replace string.
-
-				Iterator<String> it = columns.getDerivedFactTableColumn().iterator();
-				String column = it.next();
-//				log.info(column);
-				if(column.contains(".")) {
-					int lastIndex = column.lastIndexOf(".");
-					String tableName = this.getDbSchemaName() + (column.substring(0, lastIndex));
-					log.info(tableName);
-					finalSql = finalSql.replace(defaultTableName, tableName);
-				}
-				while(it.hasNext()){
-					column = it.next();
-					if(column.contains(".")) {
-						int lastIndex = column.lastIndexOf(".");
-						String table = this.getDbSchemaName() + (column.substring(0, lastIndex));
-						if(table != null)
-							finalSql += "\n union all \n";
-							finalSql  += sql.replace(defaultTableName, table);
-					}
-				
-				}
-			}
-		}
-			
-//		log.info("Generated Sql from ObservationFactDAO[" + finalSql + "]");
+		log.debug("Generated Sql from ObservationFactDAO[" + sql + "]");
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -173,42 +120,8 @@ public class ObservationFactDao extends CRCDAO implements IObservationFactDao {
 			conn = getDataSource().getConnection();
 
 			// create prepared statement
-			stmt = conn.prepareStatement(finalSql);
-			int index = 1;
-			for (int i=0; i<= numDerivedTables -1; i++){
-				stmt.setInt(i+index, Integer.parseInt(factPrimaryKey.getEventId()));
-			//	log.info(i+index + " " + factPrimaryKey.getEventId());
-				index++;
-				stmt.setInt(i+index , Integer.parseInt(factPrimaryKey.getPatientId()));
-			//	log.info(i+index +" " + factPrimaryKey.getPatientId());
-				index++;
-				stmt.setString(i+index, factPrimaryKey.getConceptCd());
-		//		log.info(i+index + " "  + factPrimaryKey.getConceptCd());
-				index++;
-				// if provider id is not null add it to sql parameter
-				if (factPrimaryKey.getObserverId() != null) {
-					stmt.setString(i+index, factPrimaryKey.getObserverId());
-				//	log.info(i+index + " " + factPrimaryKey.getObserverId());
-					index++;
-				}
-				// if modifier cd is not null add it to sql parameter
-				if (factPrimaryKey.getModifierCd() != null) {
-					stmt.setString(i+index, factPrimaryKey.getModifierCd());
-		//			log.info(i + index +" " + factPrimaryKey.getModifierCd());
-					index++;
-				}
-				if (factPrimaryKey.getInstanceNum() != null) {
-					int instanceNum = Integer.parseInt(factPrimaryKey
-							.getInstanceNum());
-					stmt.setInt(i+index, instanceNum);
-		//			log.info(i + index + " " + factPrimaryKey.getInstanceNum());
-					index++;
-				}
-
-			} 
-
-			// original (pre-OMOP) code
-			/*			stmt.setInt(1, Integer.parseInt(factPrimaryKey.getEventId())); 
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, Integer.parseInt(factPrimaryKey.getEventId()));
 			stmt.setInt(2, Integer.parseInt(factPrimaryKey.getPatientId()));
 			stmt.setString(3, factPrimaryKey.getConceptCd());
 
@@ -233,8 +146,6 @@ public class ObservationFactDao extends CRCDAO implements IObservationFactDao {
 				i++;
 				stmt.setInt(i, instanceNum);
 			}
-			 */
-
 			ResultSet resultSet = stmt.executeQuery();
 			ObservationSet obsFactSet = new ObservationSet();
 
@@ -264,50 +175,5 @@ public class ObservationFactDao extends CRCDAO implements IObservationFactDao {
 
 		return patientDataType;
 	}
-	
-
-	
-	protected DerivedFactColumnsType getFactColumnsFromOntologyCellByCode(String conceptCd)
-			throws ConceptNotFoundException, OntologyException {
-		DerivedFactColumnsType factColumns = new DerivedFactColumnsType();
-		try {
-			
-			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-			String ontologyUrl = qpUtil
-					.getCRCPropertyValue(QueryProcessorUtil.ONTOLOGYCELL_ROOT_WS_URL_PROPERTIES);
-
-			SecurityType securityType = PMServiceAccountUtil
-					.getServiceSecurityType(dataSourceLookup.getDomainId());
-			
-			factColumns = CallOntologyUtil.callGetFactColumnsByConceptCd(conceptCd,
-					securityType, dataSourceLookup.getProjectPath(),
-					ontologyUrl +"/getCodeInfo");
-		} catch (JAXBUtilException e) {
-
-			log.error("Error while fetching metadata [" + conceptCd
-					+ "] from ontology ", e);
-			throw new OntologyException("Error while fetching metadata ["
-					+ conceptCd + "] from ontology "
-					+ StackTraceUtil.getStackTrace(e));
-		} catch (I2B2Exception e) {
-			log.error("Error while fetching metadata from ontology ", e);
-			throw new OntologyException("Error while fetching metadata ["
-					+ conceptCd + "] from ontology "
-					+ StackTraceUtil.getStackTrace(e));
-		} catch (AxisFault e) {
-			log.error("Error while fetching metadata from ontology ", e);
-			throw new OntologyException("Error while fetching metadata ["
-					+ conceptCd + "] from ontology "
-					+ StackTraceUtil.getStackTrace(e));
-		} catch (XMLStreamException e) {
-			log.error("Error while fetching metadata from ontology ", e);
-			throw new OntologyException("Error while fetching metadata ["
-					+ conceptCd + "] from ontology "
-					+ StackTraceUtil.getStackTrace(e));
-		}
-
-		return factColumns;
-	}
-	
 
 }

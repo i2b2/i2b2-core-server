@@ -246,24 +246,19 @@ public class QueryInfoBean { //implements SessionBean {
 	public MasterResponseType deleteQueryMaster(
 			DataSourceLookup dataSourceLookup, String userId, String masterId)
 			throws I2B2Exception {
-		if (masterId==null){
-			log.debug("Null master id sent to deleteQueryMaster method");
-			return null;
-		}
-		else {
-			SetFinderDAOFactory sfDaoFactory = this.getSetFinderDaoFactory(
-					dataSourceLookup.getDomainId(), dataSourceLookup
-					.getProjectPath(), dataSourceLookup.getOwnerId());
-			IQueryMasterDao queryMasterDao = sfDaoFactory.getQueryMasterDAO();
 
-			queryMasterDao.deleteQuery(masterId);
+		SetFinderDAOFactory sfDaoFactory = this.getSetFinderDaoFactory(
+				dataSourceLookup.getDomainId(), dataSourceLookup
+						.getProjectPath(), dataSourceLookup.getOwnerId());
+		IQueryMasterDao queryMasterDao = sfDaoFactory.getQueryMasterDAO();
 
-			MasterResponseType masterResponseType = new MasterResponseType();
-			QueryMasterType queryMasterType = new QueryMasterType();
-			queryMasterType.setQueryMasterId(masterId);
-			masterResponseType.getQueryMaster().add(queryMasterType);
-			return masterResponseType;
-		}
+		queryMasterDao.deleteQuery(masterId);
+
+		MasterResponseType masterResponseType = new MasterResponseType();
+		QueryMasterType queryMasterType = new QueryMasterType();
+		queryMasterType.setQueryMasterId(masterId);
+		masterResponseType.getQueryMaster().add(queryMasterType);
+		return masterResponseType;
 	}
 
 	/**

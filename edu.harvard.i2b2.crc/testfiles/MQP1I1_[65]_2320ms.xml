@@ -78,7 +78,6 @@
 			</query_definition>
 			<result_output_list>
 				<result_output priority_index="1" name="PATIENT_COUNT_XML"/>
-				<result_output priority_index="2" name="PATIENTSET"/>
 			</result_output_list>
 		</ns4:request>
 	</message_body>

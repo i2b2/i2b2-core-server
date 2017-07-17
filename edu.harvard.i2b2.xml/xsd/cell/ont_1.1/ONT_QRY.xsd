@@ -38,8 +38,6 @@
 	<xs:element name="get_dblookup" type="ont:get_dblookupType"/><!-- swc20160517 added --> 
 	<xs:element name="set_dblookup" type="ont:set_dblookupType"/><!-- swc20160516 added --> 
 	<xs:element name="delete_dblookup" type="ont:delete_dblookupType"/><!-- swc20160518 added --> 
- 	<xs:element name="get_derived_fact_columns" type="ont:get_termInfoType"/>
- 
  
     <xs:complexType name="delete_dblookupType"><!-- swc20160518 added --><!-- swc20160606 updated -->
         <xs:attribute name="project_path" type="xs:string" use="required" />

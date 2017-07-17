@@ -170,13 +170,15 @@ public class PdoQueryBean { //implements SessionBean {
 						.getSecurity();
 				SecurityType securityType = PMServiceAccountUtil
 						.getServiceSecurityType(tempSecurityType.getDomain());
+				
 				// if regular concepts
 				for (PanelType panel : filterList.getPanel()) {
 					for (ItemType item : panel.getItem()) {
 						//ConceptType conceptType = ontologyUtil.callOntology(item.getItemKey());
 						ConceptType conceptType = CallOntologyUtil.callOntology(item.getItemKey(), securityType, projectId,  QueryProcessorUtil.getInstance().getOntologyUrl());
 						
-						log.debug("fetching the metadata information from ontology ["
+						log
+								.debug("fetching the metadata information from ontology ["
 										+ item.getItemKey() + "]");
 						if (conceptType != null) {
 							item.setDimDimcode(conceptType.getDimcode());
@@ -353,7 +355,6 @@ public class PdoQueryBean { //implements SessionBean {
 				pdoQueryHandler.setDimensionMetaDataParamList(patientMetaDataList, visitMetaDataList);
 				pdoQueryHandler.processPDORequest();
 				patientDataType = pdoQueryHandler.getPlainPdo();
-
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

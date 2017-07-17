@@ -276,17 +276,16 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 		try {
 			deleteStmt = conn.createStatement();
 
-			//conn
-			//		.createStatement()
-			deleteStmt.executeUpdate(
+			conn
+					.createStatement()
+					.executeUpdate(
 							"drop table "
 									+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE);
 		} catch (SQLException sqle) {
 			;
 		} finally {
 			try {
-				if(deleteStmt != null)
-					deleteStmt.close();
+				deleteStmt.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -300,17 +299,16 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 		Statement deleteStmt = null;
 		try {
 			deleteStmt = conn.createStatement();
-		//	conn
-		//			.createStatement()
-			deleteStmt.executeUpdate(
+			conn
+					.createStatement()
+					.executeUpdate(
 							"drop table "
 									+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE);
 		} catch (SQLException sqle) {
 			;
 		} finally {
 			try {
-				if(deleteStmt != null)
-					deleteStmt.close();
+				deleteStmt.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

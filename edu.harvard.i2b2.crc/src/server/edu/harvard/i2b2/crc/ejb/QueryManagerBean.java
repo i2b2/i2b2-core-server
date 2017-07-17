@@ -235,19 +235,18 @@ public class QueryManagerBean{ // implements SessionBean {
 				responseType1.setStatus(stype);
 			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("3"))
 			{
-				//	QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
-				//	status.setStatusTypeId("3");
-				//	status.setDescription("FINISHED");
-				//	status.setName("FINISHED");
-				//	queryInstanceType.setQueryStatusType(status);
-
+				QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
+				status.setStatusTypeId("3");
+				status.setDescription("FINISHED");
+				status.setName("FINISHED");
+				queryInstanceType.setQueryStatusType(status);
 				QtQueryStatusType status1 = queryInstance.getQtQueryStatusType();
 				status1.setStatusTypeId(3);
 				status1.setName("DONE");
 				status1.setDescription("DONE");
 				queryInstance.setQtQueryStatusType(status1);
 				//masterInstanceResultType.setQueryInstance(queryInstanceType);
-
+					
 				queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
 				//queryInstance.setQueryInstanceId("3");
 
@@ -257,22 +256,22 @@ public class QueryManagerBean{ // implements SessionBean {
 			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("4"))
 			{
 
-				//			QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
-				//			status.setStatusTypeId("4");
-				//			status.setDescription("ERROR");
-				//			status.setName("ERROR");
-				//			queryInstanceType.setQueryStatusType(status);
-				//			QtQueryStatusType status1 = queryInstance.getQtQueryStatusType();
-				//			status1.setStatusTypeId(4);
-				//			status1.setName("ERROR");
-				//			status1.setDescription("ERROR");
-				//			queryInstance.setQtQueryStatusType(status1);
-
+	//			QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
+	//			status.setStatusTypeId("4");
+	//			status.setDescription("ERROR");
+	//			status.setName("ERROR");
+	//			queryInstanceType.setQueryStatusType(status);
+	//			QtQueryStatusType status1 = queryInstance.getQtQueryStatusType();
+	//			status1.setStatusTypeId(4);
+	//			status1.setName("ERROR");
+	//			status1.setDescription("ERROR");
+	//			queryInstance.setQtQueryStatusType(status1);
+				
 				queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
 				queryInstance.setEndDate(new Date(System
 						.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
-				//SKIP this one and goto MEDIUM Queue
+//SKIP this one and goto MEDIUM Queue
 				/* */
 
 			} else if (queryInstance.getBatchMode().equals("PROCESSING"))
@@ -284,50 +283,37 @@ public class QueryManagerBean{ // implements SessionBean {
 				status.setName("TIMEDOUT");
 				queryInstanceType.setQueryStatusType(status);
 
-				QtQueryStatusType status1 = queryInstance.getQtQueryStatusType();
-				status1.setStatusTypeId(10);
-				status1.setName("TIMEDOUT");
-				status1.setDescription("TIMEDOUT");
-
-				queryInstance.setQtQueryStatusType(status1);
-
 				queryInstance.setBatchMode("MEDIUM_QUEUE");
 				queryInstanceDao.update(queryInstance, false);
 
 				responseType1.getQueryResultInstance().get(0).setQueryStatusType(status);
+			
+		} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("5"))
+		{
 
-			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("5"))
-			{
+			queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
 
-				// why does 5 (incomplete) become error?	
-				queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
-
-				//	QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
-				//	status.setStatusTypeId("4");
-				//	status.setDescription("ERROR");
-				//	status.setName("ERROR");
-				//	queryInstanceType.setQueryStatusType(status);
-
-				QtQueryStatusType status1 = queryInstance.getQtQueryStatusType();
-				status1.setStatusTypeId(4);
-				status1.setName("ERROR");
-				status1.setDescription("ERROR");
-				queryInstance.setQtQueryStatusType(status1);
-				queryInstance.setEndDate(new Date(System
-						.currentTimeMillis()));
-				queryInstanceDao.update(queryInstance, false);
-			}
+			
+						QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
+						status.setStatusTypeId("4");
+						status.setDescription("ERROR");
+						status.setName("ERROR");
+						queryInstanceType.setQueryStatusType(status);
+						QtQueryStatusType status1 = queryInstance.getQtQueryStatusType();
+						status1.setStatusTypeId(4);
+						status1.setName("ERROR");
+						status1.setDescription("ERROR");
+						queryInstance.setQtQueryStatusType(status1);
+			queryInstance.setEndDate(new Date(System
+					.currentTimeMillis()));
+			queryInstanceDao.update(queryInstance, false);
+		}
 			// set result instance
 			masterInstanceResultType.getQueryResultInstance().addAll(
 					responseType1.getQueryResultInstance());
-
-			//refresh the queryInstance to reflect the updates above
-			QueryInstanceType queryInstanceType2 = PSMFactory
-					.buildQueryInstanceType(queryInstance);
-			// set query instance
-			masterInstanceResultType.setQueryInstance(queryInstanceType2);
 			
 			
+//			transaction.commit();
 		} catch (I2B2DAOException ex) {
 			log.debug("Got an error in QueryManagerBean, thropwing: " + ex.getMessage());
 			ex.printStackTrace();
@@ -366,14 +352,14 @@ public class QueryManagerBean{ // implements SessionBean {
 
 		QueryManagerBeanUtil qmBeanUtil = new QueryManagerBeanUtil();
 
-		// process interactive query
-	//	log.debug("process query in queue");
+		// process query in queue
+		log.debug("process query in queue");
 		Map returnValues = qmBeanUtil.testSend(domainId, projectId, ownerId,
 				generatedSql, sessionId, queryInstanceId, patientSetId,
 				xmlRequest, timeout);
 
-	//	log.debug("My returnValue map is:" + returnValues);
-	//	log.debug("My mapssize is: " + returnValues.size());
+		log.debug("My returnValue map is:" + returnValues);
+		log.debug("My mapssize is: " + returnValues.size());
 		// build response message, if query completed before given timeout
 		String status = (String) returnValues
 				.get(QueryManagerBeanUtil.QUERY_STATUS_PARAM);

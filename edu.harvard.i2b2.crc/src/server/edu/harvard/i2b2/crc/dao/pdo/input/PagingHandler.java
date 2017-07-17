@@ -3,34 +3,21 @@ package edu.harvard.i2b2.crc.dao.pdo.input;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.axis2.AxisFault;
-
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.exception.StackTraceUtil;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.pdo.IPageDao;
-import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ConceptNotFoundException;
-import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.OntologyException;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
-import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
-import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.ontology.XmlValueType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.FactOutputOptionType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.FilterListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.InputOptionListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.OutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PanelType;
-import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
-import edu.harvard.i2b2.crc.util.PMServiceAccountUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
@@ -56,6 +43,7 @@ public class PagingHandler extends CRCDAO {
 	PageMethod pageMethod = null;
 	Map projectParamMap = null;
 	Map<String,XmlValueType> modifierMetadataXmlMap = null; 
+	
 	
 
 	public static final String TOTAL_OBSERVATION = "TOTAL_OBSERVATION";
@@ -83,6 +71,8 @@ public class PagingHandler extends CRCDAO {
 	}
 	
 	
+	
+
 	public long getTotal(int maxInputList) throws SQLException, I2B2Exception {
 
 		IInputOptionListHandler inputOptionListHandler = PDOFactory
@@ -137,57 +127,6 @@ public class PagingHandler extends CRCDAO {
 			if (totalSql.trim().length() == 0) { 
 				continue;
 			}
-			if((singlePanel != null)&&(singlePanel.getItem().get(0).getFacttablecolumn()!=null)){
-				boolean derivedFactTable = QueryProcessorUtil.getInstance().getDerivedFactTable();
-				
-				String defaultTableName = dataSourceLookup.getFullSchema() + ".observation_FACT" ;
-				if(derivedFactTable == true){
-					if(singlePanel.getItem().get(0).getFacttablecolumn().contains(".")){
-
-						String baseItemFactColumn = singlePanel.getItem().get(0).getFacttablecolumn();
-						int lastIndex = baseItemFactColumn.lastIndexOf(".");
-						String factTable = dataSourceLookup.getFullSchema() + "."+(baseItemFactColumn.substring(0, lastIndex));
-
-						DerivedFactColumnsType columns = getFactColumnsFromOntologyCell(singlePanel.getItem().get(0).getItemKey());
-						if(columns != null){
-							if(columns.getDerivedFactTableColumn().size() > 1) {
-								// parse through solumns and build up replace string.
-
-								Iterator<String> it = columns.getDerivedFactTableColumn().iterator();
-								String column = it.next();
-								
-								lastIndex = column.lastIndexOf(".");
-								String table = dataSourceLookup.getFullSchema() + "."+ (column.substring(0, lastIndex));
-
-								
-								factTable = "( select * from " + table;
-								while(it.hasNext()){
-									column = it.next();
-									
-									lastIndex = column.lastIndexOf(".");
-									table = dataSourceLookup.getFullSchema() + "."+ (column.substring(0, lastIndex));
-
-									factTable += "\n UNION ALL \n"
-											+ " select * from " +  table;
-								}
-								factTable += " )";
-
-							}
-						}
-						log.debug("Parse columns " + factTable);
-						totalSql=totalSql.replaceAll(defaultTableName, factTable)	;
-						
-						
-						
-					}
-				}
-				
-		
-				
-				
-				
-			}
-			
 			panelSqlList.add("SELECT "
 					+ countClause
 					+ " from ( "
@@ -423,56 +362,4 @@ public class PagingHandler extends CRCDAO {
 
 	}
 
-	
-	protected DerivedFactColumnsType getFactColumnsFromOntologyCell(String itemKey)
-			throws ConceptNotFoundException, OntologyException {
-		DerivedFactColumnsType factColumns = new DerivedFactColumnsType();
-		try {
-			
-			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-			String ontologyUrl = qpUtil
-					.getCRCPropertyValue(QueryProcessorUtil.ONTOLOGYCELL_ROOT_WS_URL_PROPERTIES);
-
-
-			SecurityType securityType = PMServiceAccountUtil
-					.getServiceSecurityType(dataSourceLookup.getDomainId());
-			
-			
-			factColumns = CallOntologyUtil.callGetFactColumns(itemKey,
-					securityType, dataSourceLookup.getProjectPath(),
-					ontologyUrl +"/getDerivedFactColumns");
-		} catch (JAXBUtilException e) {
-
-			log.error("Error while fetching metadata [" + itemKey
-					+ "] from ontology ", e);
-			throw new OntologyException("Error while fetching metadata ["
-					+ itemKey + "] from ontology "
-					+ StackTraceUtil.getStackTrace(e));
-		} catch (I2B2Exception e) {
-			log.error("Error while fetching metadata from ontology ", e);
-			throw new OntologyException("Error while fetching metadata ["
-					+ itemKey + "] from ontology "
-					+ StackTraceUtil.getStackTrace(e));
-		} catch (AxisFault e) {
-			log.error("Error while fetching metadata from ontology ", e);
-			throw new OntologyException("Error while fetching metadata ["
-					+ itemKey + "] from ontology "
-					+ StackTraceUtil.getStackTrace(e));
-		} catch (XMLStreamException e) {
-			log.error("Error while fetching metadata from ontology ", e);
-			throw new OntologyException("Error while fetching metadata ["
-					+ itemKey + "] from ontology "
-					+ StackTraceUtil.getStackTrace(e));
-		}
-
-//		if (factColumns.isEmpty()) {
-//			throw new ConceptNotFoundException("[" + itemKey + "] ");
-
-//		} 
-
-		return factColumns;
-	}
-
-
-	
 }

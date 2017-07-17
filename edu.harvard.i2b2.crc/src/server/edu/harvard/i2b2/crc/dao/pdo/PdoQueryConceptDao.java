@@ -116,7 +116,7 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 					;
 				}
 
-				uploadTempTable(tempStmt, tempTableName, conceptCdList, serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL));
+				uploadTempTable(tempStmt, tempTableName, conceptCdList);
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
@@ -247,10 +247,8 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 	}
 
 	private void uploadTempTable(Statement tempStmt, String tempTable,
-			List<String> patientNumList, boolean isPostgresql) throws SQLException {
-		String createTempInputListTable = "create "
-				 + (isPostgresql ? " temp ": "" )
-				+ " table " + tempTable
+			List<String> patientNumList) throws SQLException {
+		String createTempInputListTable = "create table " + tempTable
 				+ " ( char_param1 varchar(100) )";
 		tempStmt.executeUpdate(createTempInputListTable);
 		log.debug("created temp table" + tempTable);
@@ -305,12 +303,8 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 				} catch (SQLException sqlex) {
 					;
 				}
-				String createTempInputListTable = "create " 
-						 + (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ? " temp ": "" )
-						+ " table "
-						+ tempTable
+				String createTempInputListTable = "create table " + tempTable
 						+ " ( set_index int, char_param1 varchar(500) )";
-				
 				tempStmt.executeUpdate(createTempInputListTable);
 				log.debug("created temp table" + tempTable);
 			}

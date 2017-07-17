@@ -69,8 +69,6 @@ public class DeleteQueryMasterHandler extends RequestHandler {
  //           QueryInfoLocal queryInfoLocal = queryInfoLocalHome.create();
             String userId = masterDeleteRequestType.getUserId();
             String masterId = masterDeleteRequestType.getQueryMasterId();
-            if (masterId==null)
-            	throw new I2B2Exception("Null master id sent to DeleteQueryMasterHandler");
             QueryInfoBean query = new QueryInfoBean();
             masterResponseType = query.deleteQueryMaster(getDataSourceLookup(),userId,masterId);
 

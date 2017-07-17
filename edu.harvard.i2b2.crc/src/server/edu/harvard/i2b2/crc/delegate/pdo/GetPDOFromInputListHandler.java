@@ -86,7 +86,7 @@ public class GetPDOFromInputListHandler extends RequestHandler {
 			bodyType.getAny()
 					.add(objectFactory.createResponse(pdoResponseType));
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			log.error("", e);
 			throw new I2B2Exception("", e);
 		}
 		return bodyType;

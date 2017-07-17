@@ -132,11 +132,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		Connection manualConnection = null;
 		String singleSql = null;
 		int recordCount = 0, obfuscatedRecordCount = 0;
-	// WAS hard coded ... now passed int
-	//	transactionTimeout = 7200;
-		//TRANSACTION
-	//	log.info("Helper EXEC QUERY:TRANSACTION TIMEOUT IS " + transactionTimeout);
-		
+
+		transactionTimeout = 7200;
 		/** Global temp table to store intermediate setfinder results* */
 		String TEMP_TABLE = "#GLOBAL_TEMP_TABLE";
 
@@ -164,10 +161,16 @@ public class QueryExecutorHelperDao extends CRCDAO {
 
 		try {
 
+			// manualConnection =
+			// QueryProcessorUtil.getInstance().getManualConnection();
 			manualConnection = ServiceLocator.getInstance()
 					.getAppServerDataSource(dsLookup.getDataSource())
 					.getConnection();
-
+			// manualConnection =
+			// QueryProcessorUtil.getInstance().getSpringDataSource(dsLookup.
+			// getDataSource()).getConnection();
+			// manualConnection =
+			// QueryProcessorUtil.getInstance().getConnection();
 			stmt = manualConnection.createStatement();
 			int count = 0;
 
@@ -281,10 +284,15 @@ public class QueryExecutorHelperDao extends CRCDAO {
 				sqls = new String[] {generatedSql};
 			}
 
-		
-			log.info("Transaction timeout in sec " + transactionTimeout);
-			
-			
+			// UserTransaction could not be used here because it needs a
+			// XA datasource.
+			try {
+				log.debug("Transaction timeout in sec " + transactionTimeout);
+				//			ut.setTransactionTimeout(transactionTimeout);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+
 			long startTime = System.currentTimeMillis();
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			LogTimingUtil outerLogTimingUtil = new LogTimingUtil();
@@ -294,7 +302,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			while (count < sqls.length) {
 				singleSql = sqls[count++];
 				if (singleSql != null && singleSql.trim().length() > 10) {
-					log.info("Executing setfinder query sql [" + singleSql + "]"
+					log.debug("Executing setfinder query sql [" + singleSql + "]"
 							+ " for query instance= " + queryInstanceId);
 					logTimingUtil.setStartTime();
 					if (this.queryWithoutTempTableFlag == false) { 
@@ -304,14 +312,12 @@ public class QueryExecutorHelperDao extends CRCDAO {
 						// table statistics speed up the query
 						if (this.dataSourceLookup.getServerType().equalsIgnoreCase(
 								DAOFactoryHelper.SQLSERVER)) {
-							
 							log.debug("UPDATE STATISTICS " 
 									+ getDbSchemaName()
 									+ "#global_temp_table ");
-							
 							stmt.executeUpdate("UPDATE STATISTICS "
 									+ getDbSchemaName() 
-								+ "#global_temp_table ");
+									+ "#global_temp_table ");
 						}
 					} else { 
 						resultSet = stmt.executeQuery(singleSql);
@@ -363,8 +369,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 				log.debug("Calculated Patient set size :[" + recordCount
 						+ "] for query instance= " + queryInstanceId);
 			}
-			resultSet.close();
 			countStmt.close();
+			resultSet.close();
 
 			// tm.begin();
 			// call the result generator with the db connection/temp table
@@ -425,57 +431,46 @@ public class QueryExecutorHelperDao extends CRCDAO {
 					+ queryInstanceId + " ]");
 
 		} catch (CRCTimeOutException timeoutEx) {
-			//TRANSACTION timeout  ... do nothing
-//			timeOutErrorFlag = true;
+			timeOutErrorFlag = true;
 			throw timeoutEx;
 		} catch (SQLServerException sqlServerEx) {
+
 			if (sqlServerEx.getMessage().indexOf("The query was canceled.") > -1) {
-				log.info("Query timed out");
-				//TRANSACTION	timeout
-				//			timeOutErrorFlag = true;
-							throw new CRCTimeOutException(sqlServerEx.getMessage(),
-									sqlServerEx);
+				timeOutErrorFlag = true;
+				throw new CRCTimeOutException(sqlServerEx.getMessage(),
+						sqlServerEx);
 			}
 			if (sqlServerEx.getMessage().indexOf("timed out") > -1) {
-				log.info("Query timed out");
-	//TRANSACTION	timeout .. 
-	//			timeOutErrorFlag = true;
+				timeOutErrorFlag = true;
 				throw new CRCTimeOutException(sqlServerEx.getMessage(),
 						sqlServerEx);
 			} else {
 				errorFlag = true;
 				exception = sqlServerEx;
-				log.error("Sqlserver error while executing sql " + singleSql, sqlServerEx);
+				log.error("Sqlserver error while executing sql", sqlServerEx);
 				throw new I2B2DAOException(
 						"Sqlserver error while executing sql", sqlServerEx);
 			}
 
 		} catch (SQLException sqlEx) {
 			if (sqlEx.toString().indexOf("ORA-01013") > -1) {
-				log.info("Query timed out");
-				//TRANSACTION	timeout 
-			//	timeOutErrorFlag = true;
+				timeOutErrorFlag = true;
 				throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
 			} else 		if (sqlEx.getMessage().indexOf("The query was canceled.") > -1) {
-				log.info("Query timed out");
-				//timeOutErrorFlag = true;
+				timeOutErrorFlag = true;
 				throw new CRCTimeOutException(sqlEx.getMessage(),
 						sqlEx);
 			}
 			else if (sqlEx.getMessage().indexOf("timed out") > -1) {
-				log.info("Query timed out");
-			//TRANSACTION	timeout .
-			
-			//	timeOutErrorFlag = true;
+				timeOutErrorFlag = true;
 				throw new CRCTimeOutException(sqlEx.getMessage(),
 						sqlEx);
 			} 
-			else{
-				errorFlag = true;
-				exception = sqlEx;
-				log.error("Error while executing sql" + singleSql + sqlEx);
-				throw new I2B2DAOException("Error while executing sql", sqlEx);
-			}
+			errorFlag = true;
+			exception = sqlEx;
+			log.error("Error while executing sql", sqlEx);
+			throw new I2B2DAOException("Error while executing sql", sqlEx);
+
 		} catch (LockedoutException crcDaoEx) {
 			// I2B2DAOException
 			errorFlag = true;

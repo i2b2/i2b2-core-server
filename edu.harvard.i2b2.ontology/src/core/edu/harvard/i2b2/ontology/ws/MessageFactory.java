@@ -41,7 +41,6 @@ import edu.harvard.i2b2.ontology.datavo.i2b2message.ResultStatusType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptsType;
 import edu.harvard.i2b2.ontology.datavo.vdo.DblookupsType;
-import edu.harvard.i2b2.ontology.datavo.vdo.DerivedFactColumnsType;
 import edu.harvard.i2b2.ontology.datavo.vdo.DirtyValueType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ModifiersType;
 import edu.harvard.i2b2.ontology.datavo.vdo.OntologyProcessStatusListType;
@@ -100,22 +99,6 @@ public class MessageFactory {
 		return bodyType;
 	}
 
-	/**
-	 * Function to build columns body type
-	 * 
-	 * @param vocabData
-	 *            DerivedFactTableColumns set to be returned to requester
-	 * @return BodyType object
-	 */
-	public static BodyType createBodyType(DerivedFactColumnsType vocabData) {
-
-		edu.harvard.i2b2.ontology.datavo.vdo.ObjectFactory of = new edu.harvard.i2b2.ontology.datavo.vdo.ObjectFactory();
-		BodyType bodyType = new BodyType();
-		bodyType.getAny().add(of.createDerivedFactTableColumns(vocabData));
-
-		return bodyType;
-	}
-	
 	/**
 	 * Function to build Dirty state body type
 	 * 
@@ -304,31 +287,6 @@ public class MessageFactory {
 		return respMessageType;
 	}
 
-	/**
-	 * Function to build Response message type and return it as an XML string
-	 * 
-	 * @param columns
-	 *            The set of Ontology facttablecolumns that match request
-	 * 
-	 * @return A String data type containing the ResponseMessage in XML format
-	 * @throws Exception
-	 */
-	public static ResponseMessageType createBuildResponse(
-			MessageHeaderType messageHeaderType, DerivedFactColumnsType columns) {
-		ResponseMessageType respMessageType = null;
-
-		ResponseHeaderType respHeader = createResponseHeader("DONE",
-				"Ontology processing completed");
-
-		BodyType bodyType = createBodyType(columns);
-
-		respMessageType = createResponseMessageType(messageHeaderType,
-				respHeader, bodyType);
-
-		return respMessageType;
-	}
-	
-	
 	/**
 	 * Function to build Response message type and return it as an XML string
 	 * 

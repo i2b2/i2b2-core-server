@@ -27,7 +27,6 @@ import edu.harvard.i2b2.ontology.delegate.GetCategoriesHandler;
 import edu.harvard.i2b2.ontology.delegate.GetChildrenHandler;
 import edu.harvard.i2b2.ontology.delegate.GetCodeInfoHandler;
 import edu.harvard.i2b2.ontology.delegate.GetDblookupHandler;
-import edu.harvard.i2b2.ontology.delegate.GetDerivedFactColumnsHandler;
 import edu.harvard.i2b2.ontology.delegate.GetDirtyStateHandler;
 import edu.harvard.i2b2.ontology.delegate.GetModifierChildrenHandler;
 import edu.harvard.i2b2.ontology.delegate.GetModifierCodeInfoHandler;
@@ -316,7 +315,7 @@ public class OntologyService {
 	 * data object will have all the results returned by the query.
 	 * 
 	 * 
-	 * @param getTermInfo
+	 * @param getChildren
 	 * @return OMElement in i2b2message format
 	 * @throws Exception
 	 */
@@ -358,61 +357,6 @@ public class OntologyService {
 		return execute(new GetTermInfoHandler(termInfoDataMsg), waitTime);
 	}
 
-	/**
-	 * This function is main webservice interface to get vocab data for a query.
-	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
-	 * 
-	 * It excepts incoming request in i2b2 message format, which wraps an
-	 * Ontology query inside a vocab query request object. The response is also
-	 * will be in i2b2 message format, which will wrap vocab data object. Vocab
-	 * data object will have all the results returned by the query.
-	 * 
-	 * 
-	 * @param getDerivedFactColumns
-	 * @return OMElement in i2b2message format
-	 * @throws Exception
-	 */
-	public OMElement getDerivedFactColumns(OMElement getDerivedFactColumnsElement)
-			throws I2B2Exception {
-
-		OMElement returnElement = null;
-		String ontologyDataResponse = null;
-		String unknownErrorMessage = "Error message delivered from the remote server \n"
-				+ "You may wish to retry your last action";
-
-		if (getDerivedFactColumnsElement == null) {
-			log.error("Incoming Ontology request is null");
-			ResponseMessageType responseMsgType = MessageFactory
-					.doBuildErrorResponse(null, unknownErrorMessage);
-			ontologyDataResponse = MessageFactory
-					.convertToXMLString(responseMsgType);
-			return MessageFactory
-					.createResponseOMElementFromString(ontologyDataResponse);
-
-		}
-
-		String requestElementString = getDerivedFactColumnsElement.toString();
-		log.debug("ONT derivedFactCol request " + requestElementString);
-		GetTermInfoDataMessage dataMsg = new GetTermInfoDataMessage(
-				requestElementString);
-
-		long waitTime = 0;
-		if (dataMsg.getRequestMessageType() != null) {
-			if (dataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = dataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
-		}
-
-		// do Ontology query processing inside thread, so that
-		// service could sends back message with timeout error.
-
-		// ExecutorRunnable er = new ExecutorRunnable();
-		return execute(new GetDerivedFactColumnsHandler(dataMsg), waitTime);
-	}
-
-	
-	
 	private OMElement execute(RequestHandler handler, long waitTime)
 			throws I2B2Exception {
 		// do Ontology query processing inside thread, so that

@@ -54,8 +54,8 @@
 		<ns3:request xsi:type="ns3:GetPDOFromInputList_requestType" 
 		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<input_list>
-	<patient_list max="100" min="1">
-		<patient_set_coll_id>{patientSetId}</patient_set_coll_id>
+	<patient_list max="10" min="1">
+		<patient_set_coll_id>30</patient_set_coll_id>
 	</patient_list>
 </input_list>
 <filter_list>

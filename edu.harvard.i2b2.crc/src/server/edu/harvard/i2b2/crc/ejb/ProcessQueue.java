@@ -43,122 +43,74 @@ public class ProcessQueue implements Runnable{
 
 	public ProcessQueue(String lQueue) {
 
-//		isActive = true;
+		isActive = true;
 		queue = lQueue;
+		//setDaemon(true) ;   
 
 	}
 
 	private boolean jobCompleteFlag = false;
 
-//	public boolean isActive() {
-//		return isActive;
-//	}
+	public boolean isActive() {
+		return isActive;
+	}
 
 	private  String queue;
-//	private boolean isActive = false;
+	private boolean isActive = false;
 	//	private boolean isRunning = false;
 	public boolean isJobCompleteFlag() {
 		return jobCompleteFlag;
 	}
-	
-	private void initialize(){
-	
-	// initialize queue
-	// If queued queries from a previous jboss session are in running state reset to queue state.
-		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-		DataSourceLookupDAO dsLookupDao = null;
-		List<DataSourceLookup> dataSourceLookupList = null;
-		try {
-			dsLookupDao = DataSourceLookupDAOFactory.getDataSourceLookupDAO();
-			 dataSourceLookupList = dsLookupDao
-					.getDbLookupByHive("%");
-		} catch (I2B2DAOException e1) {
-			// TODO Auto-generated catch block
-			log.error("Data source lookup failed: " + e1.getMessage());
-		}
-
-		
-		Connection conn = null;
-		PreparedStatement preparedStmt = null;
-		for (DataSourceLookup dslookup: dataSourceLookupList)
-		{		
-			try {
-				DataSource ds = qpUtil.getDataSource( dslookup.getDataSource());
-				 conn = ds.getConnection();
-
-				 String initializeSql = 
-						 "update " + dslookup.getFullSchema() + ".qt_query_instance " +
-								 " set batch_mode = '" + queue + "'" +
-								 " where batch_mode = '" + queue + "_RUNNING' and end_date is null";
-				 log.info("QUEUE START UP: " + initializeSql);
-				 
-				 preparedStmt = conn.prepareStatement(initializeSql);
-				 preparedStmt.executeQuery();
-					
-			} catch (I2B2Exception e) {
-				;
-			} catch (SQLException e) {
-				;
-			} finally {
-				try {
-					if(preparedStmt != null)
-						preparedStmt.close();
-				} catch (SQLException e1) {
-				}
-				preparedStmt = null;
-				
-				try {
-					if(conn != null)
-						conn.close();
-				} catch (SQLException e1) {
-				}
-				conn = null;
-			}
-		}
-}
 
 	public void run() {
-		initialize();
+		  log.info(queue + " Going into  while look in ProcessQueue");
+
 		
-		while(!Thread.interrupted())
-			try {
-				runQueues();
-			}
-		catch(Exception e) {
-			log.error("Failed in " + queue );
-			e.printStackTrace();
-		}
+		  while(!Thread.interrupted())
+		      try {
+		    	  runQueues();
+		      }
+		      catch(Exception e) {
+		    	  log.error("Failed in " + queue );
+		          e.printStackTrace();
+		      }
+		  log.info(queue + " Out of while look in ProcessQueue");
 	}
 
 	public void runQueues() {
 
-	//	log.debug("In ProcessQueue");
+		log.debug("In ProcessQueue");
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 
-		int	transactionTimeout = this
+		int				 transactionTimeout = this
 				.readTimeoutPropertyValue(queue);
 
 
 		int count = 0;
 		try {
 
-	//		log.debug("My DBserver is: " + qpUtil.getCRCDBLookupServerType());
-	//		log.debug("My source is: " + qpUtil.getCRCDBLookupDataSource());
-	//		log.debug("My schemaName is: " + qpUtil.getCRCDBLookupSchemaName());
+			log.debug("My DBserver is: " + qpUtil.getCRCDBLookupServerType());
+			log.debug("My source is: " + qpUtil.getCRCDBLookupDataSource());
+			log.debug("My schemaName is: " + qpUtil.getCRCDBLookupSchemaName());
 
 
 			DataSourceLookupDAO dsLookupDao =  DataSourceLookupDAOFactory.getDataSourceLookupDAO();
-	//		log.debug("My dslookupis " + dsLookupDao);
-	//		log.debug("My dslookupis ds conn info is " + dsLookupDao.getDataSource().getConnection().toString());
+			log.debug("My dslookupis " + dsLookupDao);
+			log.debug("My dslookupis ds conn info is " + dsLookupDao.getDataSource().getConnection().toString());
 			List<DataSourceLookup> dataSourceLookupList = dsLookupDao
 					.getDbLookupByHive("%");
 
-	//		log.debug("I found this number of datasources: " +dataSourceLookupList.size() );
+			log.debug("I found this number of datasources: " +dataSourceLookupList.size() );
 
 
 			while (true)
 			{
+				//get list of available process to run
 
+
+				//				log.debug("Running is " + isRunning);
+
+				//				if (!isRunning) {
 				String finalSql = "";
 				String message = "";
 				int queryInstanceId = 0;
@@ -169,7 +121,9 @@ public class ProcessQueue implements Runnable{
 				String pmXml = "";
 				Connection conn = null;
 				PreparedStatement preparedStmt = null;
-				ResultSet resultSet = null;
+				//getDataSourceLookupDAO();
+
+				//conn = qpUtil.getConnection();
 
 				for (DataSourceLookup dslookup: dataSourceLookupList)
 				{
@@ -191,15 +145,19 @@ public class ProcessQueue implements Runnable{
 										" and qi.end_date is null ";
 						if (dslookup.equals("SQLSERVER"))
 							finalSql +=	" and  start_date < dateadd(minute, -3, getdate()) ";
+						//else
+						//	finalSql += " and "
 
 						finalSql += " order by qi.start_date ";
-						
-						log.debug("Execut SQL [" + finalSql + "] for " + dslookup.getDataSource());
+
+
+
+						log.debug("Execut SQL [" + finalSql + "]");
 						preparedStmt = conn.prepareStatement(finalSql);
 
 						//conn = dataSource.getConnection();
 						queryInstanceId = 0;
-						resultSet = preparedStmt.executeQuery();
+						ResultSet resultSet = preparedStmt.executeQuery();
 						if (resultSet.next()) {
 							queryInstanceId = resultSet.getInt("query_instance_id");
 							ownerId = resultSet.getString("user_id");
@@ -207,49 +165,32 @@ public class ProcessQueue implements Runnable{
 							projectId = resultSet.getString("group_id");
 							xmlRequest = resultSet.getString("i2b2_request_xml");
 							pmXml = resultSet.getString("pm_xml");
-				//			log.info("ProcessQueue found instance: " + queryInstanceId + " for " + dslookup.getDataSource());
 						}
-						
 
-						try {
-							if(resultSet != null)
-								resultSet.close();
-						} catch (SQLException e1) {
-						}
-						resultSet = null;
-						
-						try {
-							if(preparedStmt != null)
-								preparedStmt.close();
-						} catch (SQLException e1) {
-						}
-						preparedStmt = null;
-						
-						try {
-							if(conn != null)
-								conn.close();
-						} catch (SQLException e1) {
-						}
+						conn.close();
 						conn = null;
-	
 
-						if (queryInstanceId != 0 && readTimeoutPropertyValue(queue) > 1) { 
+						if (queryInstanceId != 0 && readTimeoutPropertyValue(queue) > 1) { // && (!isRunning)) {
+							//						isRunning = true;
+							//						log.debug("Running is " + isRunning);
+							log.info("Working on in " + queryInstanceId + " in " + queue);
+
 
 							log.debug("in ProcessQueue my pmXml is"+ pmXml);
 							ExecRunnable exec = new ExecRunnable(sqlString, Integer.toString(queryInstanceId), null,
-									xmlRequest, dslookup.getDomainId(), projectId, ownerId, pmXml, transactionTimeout);
-							log.info("STARTING " + queue + " FOR " + queryInstanceId + " " + sqlString + " " + transactionTimeout);
-							
+									xmlRequest, dslookup.getDomainId(), projectId, ownerId, pmXml);
+
 							Thread t = new Thread(exec);
 
 
 							synchronized (t) {
 								t.start();
 
-								// add 10 sec to waitTime to allow query to finish/time
-								int waitTime = (readTimeoutPropertyValue(queue) + 10 )* 1000;
-							//	int waitTime = (readTimeoutPropertyValue(queue))* 1000;
+								int waitTime = readTimeoutPropertyValue(queue) * 1000;
+
 								log.info("Waittime for " + queue+ " is  " + waitTime);
+
+
 
 								try {
 
@@ -258,32 +199,41 @@ public class ProcessQueue implements Runnable{
 									while((exec.isJobCompleteFlag() == false)&& (exec.isJobErrorFlag() == false) && (deltaTime < waitTime)){ 
 
 										if (t.isAlive() == false)
-											log.debug("PQ32 - Job Exception: " + exec.getJobException().getMessage());
+											log.debug("32 - Job Exception: " + exec.getJobException().getMessage());
 										if (t.isInterrupted() == true)
-											log.debug("PQ42 - Job Exception: " + exec.getJobException().getMessage());
+											log.debug("42 - Job Exception: " + exec.getJobException().getMessage());
 										
 										if (exec.isJobErrorFlag() == true)
-											log.debug("PQ12 - Job Exception: " + exec.getJobException().getMessage());
+											log.debug("12 - Job Exception: " + exec.getJobException().getMessage());
 
 										if (exec.getJobException() != null)
-											log.debug("PQ22 - Job Exception: " + exec.getJobException().getMessage());
+											log.debug("22 - Job Exception: " + exec.getJobException().getMessage());
 										if (waitTime > 0) { 
-									//		log.info("In ExecRunnable Thread QueryId: " +  queryInstanceId + "  Waiting: " + (waitTime - deltaTime));
+											//log.info("In ExecRunnable Thread QueryId: " +  queryInstanceId + "  Waiting: " + (waitTime - deltaTime));
+											//t.wait(waitTime - deltaTime); 
 											deltaTime = System.currentTimeMillis() - startTime; 
-										} 
+										} //else { 
+										//t.wait(); 
+										//} 
 									} 
-									log.debug("Timeout or finish of Thread of queryid " + queryInstanceId  + " in" + queue);
+									log.info("Finished Thread of queryid " + queryInstanceId  + " in" + queue);
 
-									log.debug("Start queue waiting: " + startTime);
-									log.debug("End queue waiting: " +  System.currentTimeMillis() );
-									log.debug("Delta queue time: " + deltaTime);
+									log.debug("Start waiting: " + startTime);
+									log.debug("End waiting: " +  System.currentTimeMillis() );
+									log.debug("Delta time: " + deltaTime);
 
 
 									if (exec.isJobCompleteFlag() == false) {
 										String timeOuterror = "Result waittime millisecond <result_waittime_ms> :" +
 												waitTime +
-												" elapsed, setting to next queue after " + queue;
-										log.info(timeOuterror);
+												" elapsed, setting to next queue";
+										log.debug(timeOuterror);
+
+										//DataSourceLookup dsLookup = sfDAOFactory.getDataSourceLookup();
+
+
+
+										log.debug("Set to Next Queue after " + queue);
 
 										setToNextQueue( dslookup,  projectId,  ownerId, queryInstanceId);
 
@@ -291,28 +241,33 @@ public class ProcessQueue implements Runnable{
 									} 
 								}
 								catch (Exception e) {
-									
-									log.error("Error in thread ProcessQueue: " + queue + " " + e.getMessage());
+									//				isRunning = false;
+									log.debug("Error in thread ProcessQueue: " + e.getMessage());
 									if (e.getMessage().startsWith("javax.naming.NameNotFoundException"))
 										break;
 
+									log.error("Error in thread ProcessQueue: " + e.getMessage());
 									setToNextQueue( dslookup,  projectId,  ownerId, queryInstanceId);
 
-									//e.printStackTrace();
+									e.printStackTrace();
 
 								} finally {
-								//	log.debug("Process Queue (runQueus-106-" + queue );
-								log.debug("process queue finally queue : " + queue + " queryInstanceId = " + queryInstanceId);
+									log.debug("Process Queue (runQueus-106-" + queue );
+
 									if (t != null) {
-										
-								//		log.info("Process Queue (runQueus-108-" + queue );
+										//exec.terminate();
+										//t.join();
+										log.debug("Process Queue (runQueus-108-" + queue );
 
-									//	t.interrupt();
-										t = null;
-								//		log.info("Thread successfully stopped.");
+										t.interrupt();
+										log.debug("Thread successfully stopped.");
 									}
-								//	log.info("Process Queue (runQueus-107-" + queue );
+									log.debug("Process Queue (runQueus-107-" + queue );
 
+									//t.interrupt();
+									//exec = null;
+									//t = null;
+									//								isRunning = false;
 									queryInstanceId = 0;
 								}
 
@@ -324,43 +279,29 @@ public class ProcessQueue implements Runnable{
 						}
 						Thread.sleep(10000);
 					} catch (Exception e) {
-					//	log.debug("Process Queue (runQueus-105-" + queue );
+						log.debug("Process Queue (runQueus-105-" + queue );
 
 						try {
+							//							isRunning = false;
 							if (conn != null)
 								conn.close();
 						} catch (SQLException e1) {
-							;
+							// TODO Auto-generated catch block
+							//							isRunning = false;
+							e1.printStackTrace();
 						}
 
-						
+							// TODO Auto-generated catch block
 					} finally {
-						
-					//	log.debug("Process Queue (runQueus-104-" + queue );
-						
-						try {
-							if(resultSet != null)
-								resultSet.close();
-						} catch (SQLException e1) {
-						}
-						resultSet = null;
-						
-						try {
-							if(preparedStmt != null)
-								preparedStmt.close();
-						} catch (SQLException e1) {
-						}
-						preparedStmt = null;
-						
-						try {
-							if(conn != null)
-								conn.close();
-						} catch (SQLException e1) {
-						}
-						conn = null;
+						//						isRunning = false;
+						log.debug("Process Queue (runQueus-104-" + queue );
+
+						if (conn != null)
+							conn.close();
 	
 					}
-				//	log.info(queue + " - Current count: " + count);
+
+					log.debug(queue + " - Current count: " + count);
 					count++;
 
 				}
@@ -368,9 +309,8 @@ public class ProcessQueue implements Runnable{
 
 
 		} catch (Exception e) {
-		
 			//e.printStackTrace();
-			log.debug("Process Queue (runQueus-103-" + queue  + " error: " + e.getMessage());
+			log.info("Process Queue (runQueus-103-" + queue  + " error: " + e.getMessage());
 
 			//	isRunning = false;
 			//throw new I2B2DAOException(
@@ -381,7 +321,6 @@ public class ProcessQueue implements Runnable{
 
 	private void setToNextQueue(DataSourceLookup dslookup, String projectId, String ownerId, int queryInstanceId) throws I2B2DAOException
 	{
-	//	log.info("In set to next queue");
 		
 		DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
 				dslookup.getDomainId(), projectId, ownerId);
@@ -403,11 +342,10 @@ public class ProcessQueue implements Runnable{
 		else if (queue.equals(QueryManagerBeanUtil.MEDIUM_QUEUE))
 		{
 			queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE);
-			log.debug("MEDIUM QUEUE timedout ... setting to LARGE_QUEUE");
 		}
 		else if (queue.equals(QueryManagerBeanUtil.LARGE_QUEUE))
 		{
-			log.debug("LARGE QUEUE timedout ... setting to NEVER_FINISHED");
+			
 			sfDAOFactory.getQueryResultTypeDao();
 			queryInstance.setBatchMode("NEVER_FINISHED");
 			QtQueryStatusType queryStatusType = queryInstance.getQtQueryStatusType();

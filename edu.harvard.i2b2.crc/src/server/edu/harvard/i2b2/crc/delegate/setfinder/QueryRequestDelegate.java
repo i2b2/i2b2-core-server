@@ -320,7 +320,6 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 					PsmRequestTypeType.CRC_QRY_DELETE_QUERY_MASTER)) {
 				DeleteQueryMasterHandler handler = new DeleteQueryMasterHandler(
 						requestXml);
-				log.info("DELETE QUERY MASTER: " + requestXml);
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_RENAME_QUERY_MASTER)) {

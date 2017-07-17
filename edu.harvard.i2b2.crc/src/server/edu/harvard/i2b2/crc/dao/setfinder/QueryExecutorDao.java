@@ -80,7 +80,7 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 		this.originalDataSourceLookup = originalDataSourceLookup;
 	}
 
-	//
+	
 	public void setQueryWithoutTempTableFlag(boolean queryWithoutTempTableFlag) { 
 		this.queryWithoutTempTableFlag = queryWithoutTempTableFlag;
 	}
@@ -104,9 +104,11 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 			String sqlString, String queryInstanceId, String patientSetId,
 			ResultOutputOptionListType resultOutputList, boolean allowLargeTextValueConstrainFlag, String pmXml)
 			throws I2B2Exception, JAXBUtilException {
-
+		// StringTokenizer st = new StringTokenizer(sqlString,"<*>");
 		String singleSql = null;
 		int recordCount = 0;
+		// int patientSetId = 0;
+
 
 		boolean errorFlag = false, timeOutErrorFlag = false;
 		Statement stmt = null;
@@ -148,12 +150,13 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 				projectParamMap.put(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION, unitConversionFlag.trim());
 			}
 			
+//			tm.begin();
 
 			// change status of result instance to running
 			IQueryResultInstanceDao psResultDao = sfDAOFactory
 					.getPatientSetResultDAO();
 			psResultDao.updatePatientSet(patientSetId, 2, 0);
-
+//			tm.commit();
 
 			// check if the sql is stored, else generate and store
 			IQueryMasterDao queryMasterDao = sfDAOFactory.getQueryMasterDAO();
@@ -248,7 +251,7 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 							fullSqlGenerated = true;
 						}
 					}
-					
+					//if 
 					if (buildSqlWithOR)  { 
 						generatedSql = "select patient_num from " + this.getDbSchemaName()  +"observation_fact f where " + generatedSql;
 					}
@@ -265,14 +268,29 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 					log.debug("Setfinder skip temp table missing item message " +  missingItemMessage);
 					log.debug("Setfinder skip temp table process timing message " + processTimingMessage);
 				}
-
+				
+				//System.out.println(generatedSql);
+				
+				
+				// if (generatedSql == null) {
+				// throw new I2B2Exception(
+				// "Database error unable to generate sql from query definition")
+				// ;
+				// } else if (generatedSql.trim().length() < 1) {
+				// throw new I2B2Exception(
+				// "Database error unable to generate sql from query definition")
+				// ;
+				// }
+//				tm.begin();
 				queryMasterDao.updateQueryAfterRun(masterId, generatedSql, queryType);
+//				tm.commit();
+				
 				
 				if (missingItemMessage != null
 						&& missingItemMessage.trim().length() > 1) {
 					log.debug("Setfinder query missing item message not null" + missingItemMessage);
 					missingItemFlag = true;
-
+//					tm.begin();
 					queryInstance.setEndDate(new Date(System
 							.currentTimeMillis()));
 					// queryInstance.setMessage(missingItemMessage);
@@ -281,15 +299,15 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 					// update the error status to result instance
 					setQueryResultInstanceStatus(sfDAOFactory, queryInstanceId,
 							4, missingItemMessage);
-					throw new I2B2DAOException("Concept missing");
-
+					// queryInstaneDao.update(queryInstance, true);
+//					tm.commit();
 				}
 				
 				if (processTimingMessage != null && processTimingMessage.trim().length()>0) {
-
+//					tm.begin();
 					setQueryInstanceProcessTimingXml(sfDAOFactory,
 							queryInstanceId,   processTimingMessage);
-
+//					tm.commit();
 				}
 
 			}
@@ -334,15 +352,12 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 				if (resultSet != null) {
 					resultSet.close();
 				}
-				resultSet = null;
 				if (stmt != null) {
 					stmt.close();
 				}
-				stmt = null;
 				if (manualConnection != null) {
 					manualConnection.close();
 				}
-				manualConnection = null;
 
 			} catch (SQLException sqle) {
 				log.error("Error closing statement/resultset ", sqle);

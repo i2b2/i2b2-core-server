@@ -425,15 +425,12 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		Statement deleteStmt = null;
 		try {
 			deleteStmt = conn.createStatement();
-			//conn.createStatement().executeUpdate("drop table " + tempTableName);
-			deleteStmt.executeUpdate("drop table " + tempTableName);
-
+			conn.createStatement().executeUpdate("drop table " + tempTableName);
 		} catch (SQLException sqle) {
 			;
 		} finally {
 			try {
-				if(deleteStmt != null)
-					deleteStmt.close();
+				deleteStmt.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
