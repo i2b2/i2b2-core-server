@@ -12,7 +12,8 @@
      <xs:element name="modifiers" type="ont:modifiersType"/>    
      <xs:element name="add_modifier" type="ont:modifierType"/>  
     <xs:element name="dblookups" type="ont:dblookupsType"/><!-- swc20160515 added -->      
-    
+     <xs:element name="derivedFactTableColumns" type="ont:derivedFactColumnsType"/>
+         
     <xs:complexType name="dblookupsType"><!-- swc20160515 added -->
         <xs:sequence>
             <xs:element name="dblookup" type="ont:dblookupType" maxOccurs="unbounded"/>
@@ -146,6 +147,10 @@
         </xs:sequence>
     </xs:complexType>
     
-    
+    <xs:complexType name="derivedFactColumnsType">
+        <xs:sequence>
+            <xs:element name="derivedFactTableColumn" type="xs:string" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
     
 </xs:schema>
