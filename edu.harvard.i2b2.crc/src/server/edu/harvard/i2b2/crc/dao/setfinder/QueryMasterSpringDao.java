@@ -271,7 +271,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		}
 		if ((findChildType.getCategory().toLowerCase().equals("pdo")) ||
 				(findChildType.getCategory().toLowerCase().equals("@"))) {
-			sql += "  qm.query_master_id,qm.name,qm.user_id,qm.group_id,qm.create_date,qm.delete_date,null as request_xml,qm.delete_flag,null as generated_sql, null as i2b2_request_xml, qm.master_type_cd, null as plugin_id  from "
+			sql += " distinct  qm.query_master_id,qm.name,qm.user_id,qm.group_id,qm.create_date,qm.delete_date,null as request_xml,qm.delete_flag,null as generated_sql, null as i2b2_request_xml, qm.master_type_cd, null as plugin_id  from "
 					+ getDbSchemaName()
 					+ "qt_query_master qm, "
 					+ getDbSchemaName()
@@ -487,7 +487,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				+ getDbSchemaName()
 				+ "qt_query_master set name = ? where query_master_id = ? and delete_flag = ?";
 		int updatedRow = jdbcTemplate.update(sql, new Object[] { queryNewName,
-				masterId, DELETE_NO_FLAG });
+				Integer.parseInt(masterId), DELETE_NO_FLAG });
 		if (updatedRow < 1) {
 			throw new I2B2DAOException("Query with master id " + masterId
 					+ " not found");
@@ -505,44 +505,50 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	 */
 	@SuppressWarnings("unchecked")
 	public void deleteQuery(String masterId) throws I2B2DAOException {
-		log.debug("Delete query for master id=" + masterId);
-		String resultInstanceSql = "update " + getDbSchemaName()
-				+ "qt_query_result_instance set "
-				+ " delete_flag=? where query_instance_id in (select "
-				+ "query_instance_id from " + getDbSchemaName()
-				+ "qt_query_instance where query_master_id=?) ";
-		if (dataSourceLookup.getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.SQLSERVER)) {
-			resultInstanceSql = " update " + getDbSchemaName()
-					+ "qt_query_result_instance set  delete_flag=? " + " from "
+		if (masterId==null){
+			log.info("Null master id sent to deleteQuery method");
+		}
+		else{
+			log.info("Delete query for master id=" + masterId);
+			String resultInstanceSql = "update " + getDbSchemaName()
+			+ "qt_query_result_instance set "
+			+ " delete_flag=? where query_instance_id in (select "
+			+ "query_instance_id from " + getDbSchemaName()
+			+ "qt_query_instance where query_master_id=?) ";
+			if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SQLSERVER)) {
+				resultInstanceSql = " update " + getDbSchemaName()
+				+ "qt_query_result_instance set  delete_flag=? " + " from "
+				+ getDbSchemaName()
+				+ "qt_query_result_instance qri inner join "
+				+ getDbSchemaName() + "qt_query_instance qi "
+				+ " on  qri.query_instance_id = qi.query_instance_id "
+				+ " where qi.query_master_id = ?";
+			}
+			String queryInstanceSql = "update "
 					+ getDbSchemaName()
-					+ "qt_query_result_instance qri inner join "
-					+ getDbSchemaName() + "qt_query_instance qi "
-					+ " on  qri.query_instance_id = qi.query_instance_id "
-					+ " where qi.query_master_id = ?";
-		}
-		String queryInstanceSql = "update "
-				+ getDbSchemaName()
-				+ "qt_query_instance set delete_flag = ? where query_master_id = ?  and delete_flag = ?";
-		String queryMasterSql = "update "
-				+ getDbSchemaName()
-				+ "qt_query_master set delete_flag =?,delete_date=? where query_master_id = ? and delete_flag = ?";
-		Date deleteDate = new Date(System.currentTimeMillis());
-		int queryMasterCount = jdbcTemplate.update(queryMasterSql,
-				new Object[] { DELETE_YES_FLAG, deleteDate, masterId,
-				DELETE_NO_FLAG });
-		if (queryMasterCount < 1) {
-			throw new I2B2DAOException("Query not found with masterid =["
-					+ masterId + "]");
-		}
+					+ "qt_query_instance set delete_flag = ? where query_master_id = ?  and delete_flag = ?";
+			String queryMasterSql = "update "
+					+ getDbSchemaName()
+					+ "qt_query_master set delete_flag =?,delete_date=? where query_master_id = ? and delete_flag = ?";
+			Date deleteDate = new Date(System.currentTimeMillis());
+			int queryMasterCount = jdbcTemplate.update(queryMasterSql,
+					new Object[] { DELETE_YES_FLAG, deleteDate, Integer.parseInt(masterId),
+							DELETE_NO_FLAG });
+			if (queryMasterCount < 1 && !dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.POSTGRESQL)) {
+				throw new I2B2DAOException("Query not found with masterid =["
+						+ masterId + "]");
+			}
 
-		int queryInstanceCount = jdbcTemplate.update(queryInstanceSql,
-				new Object[] { DELETE_YES_FLAG, masterId, DELETE_NO_FLAG });
-		log.debug("Total no. of query instance deleted" + queryInstanceCount);
-		int queryResultInstanceCount = jdbcTemplate.update(resultInstanceSql,
-				new Object[] { DELETE_YES_FLAG, masterId });
-		log.debug("Total no. of query result deleted "
-				+ queryResultInstanceCount);
+			int queryInstanceCount = jdbcTemplate.update(queryInstanceSql,
+					new Object[] { DELETE_YES_FLAG, Integer.parseInt(masterId), DELETE_NO_FLAG });
+			log.debug("Total no. of query instance deleted" + queryInstanceCount);
+			int queryResultInstanceCount = jdbcTemplate.update(resultInstanceSql,
+					new Object[] { DELETE_YES_FLAG, Integer.parseInt(masterId) });
+			log.debug("Total no. of query result deleted "
+					+ queryResultInstanceCount);
+		}
 	}
 
 	private static class SaveQueryMaster extends SqlUpdate {

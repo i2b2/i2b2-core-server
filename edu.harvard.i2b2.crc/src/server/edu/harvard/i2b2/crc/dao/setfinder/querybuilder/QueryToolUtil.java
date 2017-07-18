@@ -327,6 +327,7 @@ public class QueryToolUtil extends CRCDAO {
 				}
 
 				rs.close();
+				st1.close();
 			} else if (theTableName.equals(PROVIDER_TABLE)) {
 				sql = "select sum(n.patient_count) n "
 						+ "from rpdrconceptlookup n " + "where table_name = '"
@@ -344,6 +345,7 @@ public class QueryToolUtil extends CRCDAO {
 				}
 
 				rs.close();
+				st1.close();
 			} else if (theTableName.equals(ENCOUNTER_TABLE)) {
 				sql = "select sum(n.patient_count) n "
 						+ "from rpdrconceptlookup n " + "where table_name = '"
@@ -359,6 +361,7 @@ public class QueryToolUtil extends CRCDAO {
 				}
 
 				rs.close();
+				st1.close();
 			} else if (theTableName.equals(PATIENT_TABLE)) {
 				if (theColumnName.equals("age_in_years_num")) {
 					sql = "select sum(n.patient_count) n "
@@ -384,6 +387,7 @@ public class QueryToolUtil extends CRCDAO {
 				}
 
 				rs.close();
+				st1.close();
 			} else {
 				EstSize = 1;
 			}

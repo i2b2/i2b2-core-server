@@ -23,11 +23,14 @@ public class PdoTempTableUtil {
 		try {
 			deleteStmt = conn.createStatement();
 			conn.createStatement().executeUpdate("drop table " + tableName);
+			deleteStmt.executeUpdate("drop table " + tableName);
+
 		} catch (SQLException sqle) {
 			;
 		} finally {
 			try {
-				deleteStmt.close();
+				if(deleteStmt != null)
+					deleteStmt.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -48,6 +51,7 @@ public class PdoTempTableUtil {
 			;
 		} finally {
 			try {
+				if(clearTempStmt != null)
 				clearTempStmt.close();
 			} catch (SQLException e) {
 				

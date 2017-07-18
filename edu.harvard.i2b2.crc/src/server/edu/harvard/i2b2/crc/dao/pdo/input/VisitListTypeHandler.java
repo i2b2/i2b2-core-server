@@ -325,19 +325,24 @@ public class VisitListTypeHandler extends CRCDAO implements
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SQLSERVER) || dataSourceLookup.getServerType().equalsIgnoreCase(
 							DAOFactoryHelper.POSTGRESQL)) {
-				conn.createStatement().executeUpdate(
+			//	conn.createStatement().executeUpdate(
+			//			"drop table " + getTempTableName());
+				deleteStmt.executeUpdate(
 						"drop table " + getTempTableName());
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.ORACLE)) {
-				System.out.println("delete table " + getTempTableName());
-				conn.createStatement().executeUpdate(
+			///	System.out.println("delete table " + getTempTableName());
+			//	conn.createStatement().executeUpdate(
+			//			"delete  " + getTempTableName());
+				deleteStmt.executeUpdate(
 						"delete  " + getTempTableName());
 			}
 		} catch (SQLException sqle) {
 			throw sqle;
 		} finally {
 			try {
-				deleteStmt.close();
+				if(deleteStmt != null)
+					deleteStmt.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

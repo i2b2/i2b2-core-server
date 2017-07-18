@@ -12,7 +12,9 @@ public class TempTableDao {
 		Statement deleteStmt = null;
 		try {
 			deleteStmt = conn.createStatement();
-			conn.createStatement().executeUpdate("drop table " + tempTableName);
+			//conn.createStatement().executeUpdate("drop table " + tempTableName);
+			deleteStmt.executeUpdate("drop table " + tempTableName);
+			
 		} catch (SQLException sqle) {
 			throw sqle;
 		} finally {

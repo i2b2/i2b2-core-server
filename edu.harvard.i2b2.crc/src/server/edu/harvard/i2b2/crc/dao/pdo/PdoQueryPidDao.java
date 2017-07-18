@@ -458,11 +458,13 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 		Statement deleteStmt = null;
 		try {
 			deleteStmt = conn.createStatement();
-			conn.createStatement().executeUpdate("drop table " + tempTableName);
+			//conn.createStatement().executeUpdate("drop table " + tempTableName);
+			deleteStmt.executeUpdate("drop table " + tempTableName);
 		} catch (SQLException sqle) {
 			;
 		} finally {
 			try {
+				if (deleteStmt != null)
 				deleteStmt.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

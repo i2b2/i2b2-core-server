@@ -80,10 +80,10 @@ public class ExecutorRunnable implements Runnable {
     public void run() {
         try {
         	if (null != dbluHdlr) {
-        		log.info("about to run DbLookupReqHandler");
+        		log.debug("about to run DbLookupReqHandler");
                 outputString = dbluHdlr.execute().toString();
         	} else if (null != reqHandler) {
-        		log.info("about to run RequestHandler");
+        		log.debug("about to run RequestHandler");
                 outputString = reqHandler.execute().toString();
         	}
             setJobCompleteFlag(true);

@@ -252,6 +252,7 @@
 				<batchtest fork="yes" todir="${reports.dir}">
 					<fileset dir="${src}/test">
 						<include name="**/SetfinderQueryTest.java" /> 
+						<include name="**/PdoQueryTest.java" />
 						<exclude name="**/AllTests.java" />
 					</fileset>
 				</batchtest>

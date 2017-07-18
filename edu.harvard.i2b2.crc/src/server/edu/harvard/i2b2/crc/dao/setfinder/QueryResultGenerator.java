@@ -76,6 +76,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		List<String> roles = (List<String>) param.get("Roles");
 		String tempTableName = "";
 		PreparedStatement stmt = null;
+		ResultSet resultSet = null;
 		boolean errorFlag = false, timeoutFlag = false;
 		String itemKey = "";
 
@@ -121,7 +122,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			ResultType resultType = new ResultType();
 			resultType.setName(resultTypeName);
 			stmt = sfConn.prepareStatement(itemCountSql);
-
+			
 			CancelStatementRunner csr = new CancelStatementRunner(stmt,
 					transactionTimeout);
 			Thread csrThread = new Thread(csr);
@@ -129,7 +130,25 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
 			for (ConceptType conceptType : conceptsType.getConcept()) {
 
-				String joinTableName = "observation_fact";
+				// OMOP WAS...	
+				// String joinTableName = "observation_fact";
+				String factColumnName = conceptType.getFacttablecolumn();
+				String factTableColumn = factColumnName;
+				String factTable = "observation_fact";
+				if( QueryProcessorUtil.getInstance().getDerivedFactTable() == true) {
+
+
+					if (factColumnName!=null&&factColumnName.contains(".")){
+						int lastIndex = factColumnName.lastIndexOf(".");
+						factTable= factColumnName.substring(0, lastIndex);
+						if ((lastIndex+1)<factColumnName.length()){
+							factTableColumn = factColumnName.substring(lastIndex+1);
+						}
+					}
+
+				}
+				String joinTableName = factTable;
+				
 				if (conceptType.getTablename().equalsIgnoreCase(
 						"patient_dimension")) { 
 					joinTableName = "patient_dimension";
@@ -145,8 +164,12 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				 itemCountSql = " select count(distinct PATIENT_NUM) as item_count  from " +  this.getDbSchemaName() + joinTableName +  
 				 " where " + " patient_num in (select patient_num from "
 				+ TEMP_DX_TABLE
-				+ " )  and "+ conceptType.getFacttablecolumn() + " IN (select "
-				+ conceptType.getFacttablecolumn() + " from "
+				
+				//OMOP WAS...
+				//+ " )  and "+ conceptType.getFacttablecolumn() + " IN (select "
+				//+ conceptType.getFacttablecolumn() + " from "
+				+ " )  and "+ factTableColumn + " IN (select "
+				+ factTableColumn + " from "
 				+ getDbSchemaName() + conceptType.getTablename() + "  "
 				+  " where " + conceptType.getColumnname()
 				+ " " + conceptType.getOperator() + " "
@@ -158,7 +181,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				
 				//
 				subLogTimingUtil.setStartTime();
-				ResultSet resultSet = stmt.executeQuery();
+				resultSet = stmt.executeQuery();
 				if (csr.getSqlFinishedFlag()) {
 					timeoutFlag = true;
 					throw new CRCTimeOutException("The query was canceled.");
@@ -189,6 +212,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			}
 			csr.setSqlFinishedFlag();
 			csrThread.interrupt();
+			resultSet.close();
 			stmt.close();
 
 			edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();

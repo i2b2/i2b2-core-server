@@ -76,7 +76,7 @@
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/jdbc/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/quartz/quartz-all-1.6.5.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/junit/junit-4.4.jar"/>
-	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/commons/commons-exec-1.0.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/jdom/jdom.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/commons/commons-exec-1.3.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

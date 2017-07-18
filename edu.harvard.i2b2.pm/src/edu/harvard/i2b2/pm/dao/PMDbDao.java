@@ -1011,16 +1011,27 @@ public class PMDbDao extends JdbcDaoSupport {
 
 	public int setSession(String userId, String sessionId, int timeout)
 	{
-		String addSql = "insert into pm_user_session " + 
-				"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?,?,?)";
+		
+		String addSql = "";
+
+		if (database.equalsIgnoreCase("oracle"))
+			 addSql = "insert into pm_user_session " + 
+					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?, systimestamp, systimestamp+numtodsinterval(" + (timeout * 1000) + ",'SECOND'))";
+		else if (database.equalsIgnoreCase("Microsoft sql server"))
+			 addSql = "insert into pm_user_session " + 
+					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?, getdate(), DATEADD(ms," + timeout + ",getdate()))";
+		else if (database.equalsIgnoreCase("postgresql"))
+			 addSql = "insert into pm_user_session " + 
+					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?,now(),  now() + interval '" + timeout + " millisecond')";
+
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.MILLISECOND, timeout);
 		int numRowsAdded = jt.update(addSql, 
 				userId,
 				sessionId,
-				userId,
-				Calendar.getInstance().getTime(),
-				now.getTime());	
+				userId);
+				//Calendar.getInstance().getTime(),
+				//now.getTime());	
 
 		return numRowsAdded;
 	}

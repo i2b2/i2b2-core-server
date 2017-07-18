@@ -25,6 +25,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.StatusType;
 import edu.harvard.i2b2.crc.delegate.RequestHandler;
 import edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate;
 import edu.harvard.i2b2.crc.ejb.QueryManagerBean;
+import edu.harvard.i2b2.crc.ejb.QueryManagerBeanUtil;
 import edu.harvard.i2b2.crc.ejb.role.PriviledgeLocal;
 import edu.harvard.i2b2.crc.util.CacheUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
@@ -134,20 +135,65 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 				status.getCondition().add(condition);
 				masterInstanceResponse.setStatus(status);
 				errorFlag = true;
-		//	} 
-		//	else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("5")) {
-		//						masterInstanceResponse.setStatus(this.buildCRCStausType(
-		//								 "ERROR", "ERROR"));
-		//					} else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("3")) {
-		//						masterInstanceResponse.setStatus(this.buildCRCStausType(
-		//								 "DONE", "DONE"));
+			} 
+			
+			else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("5")) {
+				//why is '5' (incomplete) == error ?
+				
+				QueryStatusTypeType newStatusType = new QueryStatusTypeType();
+				newStatusType.setName("ERROR");
+				newStatusType.setDescription("ERROR");
+				newStatusType.setStatusTypeId("4");
+				masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
+
+								masterInstanceResponse.setStatus(this.buildCRCStausType(
+										 "ERROR", "ERROR"));
+			/*
+			} else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("3")) {
+						masterInstanceResponse.setStatus(this.buildCRCStausType(
+								 "DONE", "DONE"));
 									
 			} else if (statusType.getStatusTypeId() != null && !statusType.getStatusTypeId().trim().equals("6")) {
 				masterInstanceResponse.setStatus(this.buildCRCStausType(
 						 "RUNNING", "RUNNING"));
+			 */
 			} else {
 			 masterInstanceResponse.setStatus(this.buildCRCStausType(
 			 RequestHandlerDelegate.DONE_TYPE, "DONE"));
+			}
+			//If Batchmode is equal to PROCESSING then set to finished
+			if (masterInstanceResponse.getQueryInstance().getBatchMode().equals(QueryManagerBeanUtil.PROCESSING))
+			{
+				masterInstanceResponse.setStatus(this.buildCRCStausType(
+						 RequestHandlerDelegate.DONE_TYPE, "DONE"));
+				
+				if (masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("QUEUED")
+						|| masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("TIMEDOUT"))
+				{
+					
+					masterInstanceResponse.getStatus().getCondition().get(0).setType("RUNNING");
+					masterInstanceResponse.getStatus().getCondition().get(0).setValue("RUNNING");
+
+					
+					masterInstanceResponse.getQueryInstance().setBatchMode("MEDIUM_QUEUE");
+					QueryStatusTypeType newStatusType = new QueryStatusTypeType();
+					newStatusType.setName("MEDIUM_QUEUE");
+					newStatusType.setDescription("MEDIUM_QUEUE");
+					newStatusType.setStatusTypeId("7");
+					masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
+				} else 	if (masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("ERROR"))
+				{
+					masterInstanceResponse.getStatus().getCondition().get(0).setType("ERROR");
+					masterInstanceResponse.getStatus().getCondition().get(0).setValue("ERROR");
+					masterInstanceResponse.getQueryInstance().setBatchMode("ERROR");
+					QueryStatusTypeType newStatusType = new QueryStatusTypeType();
+					newStatusType.setName("ERROR");
+					newStatusType.setDescription("ERROR");
+					newStatusType.setStatusTypeId("4");
+					masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
+				} else {
+					masterInstanceResponse.getQueryInstance().setBatchMode(masterInstanceResponse.getQueryInstance().getQueryStatusType().getName());
+				}
 			}
 			 response = this.buildResponseMessage(requestXml, bodyType);
 		} catch (Exception ee) {

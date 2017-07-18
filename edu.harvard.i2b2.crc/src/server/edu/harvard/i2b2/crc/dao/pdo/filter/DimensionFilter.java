@@ -14,6 +14,7 @@ import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.pdo.query.ItemType;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 import edu.harvard.i2b2.crc.util.SqlClauseUtil;
 
 /**
@@ -28,6 +29,7 @@ public class DimensionFilter {
 	private String factTableColumn = null;
 	private String schemaName = null;
 	private DataSourceLookup dataSourceLookup = null;
+	private boolean derivedFactTable = QueryProcessorUtil.getInstance().getDerivedFactTable();
 	
 	/**
 	 * Parameter constructor
@@ -94,15 +96,31 @@ public class DimensionFilter {
 				}
 			}
 
-			conceptFromString += ("SELECT " + item.getFacttablecolumn()
+			String facttablecolumn = item.getFacttablecolumn();
+			if(derivedFactTable == true){
+				if(item.getFacttablecolumn().contains(".")){
+
+					int lastIndex = facttablecolumn.lastIndexOf(".");
+
+					facttablecolumn = (facttablecolumn.substring(lastIndex+1));
+				}
+			}
+			//OMOP:  WAS item.getFacttablecolumn();
+			/*	conceptFromString += ("SELECT " + item.getFacttablecolumn()
+			 					+ " FROM " + this.schemaName + item.getDimTablename()
+			 					+ " WHERE " + item.getDimColumnname() + " " + dimOperator
+			 					+ " " + dimCode + "\n");
+			 */
+
+			conceptFromString += ("SELECT " + facttablecolumn
 					+ " FROM " + this.schemaName + item.getDimTablename()
 					+ " WHERE " + item.getDimColumnname() + " " + dimOperator
 					+ " " + dimCode + "\n");
-
 			// check if it is exactly one concept, then add group by clause,
 			// other wise union will take care of
 			// removing duplicate concept_cd
-			conceptFromString += " group by " + item.getFacttablecolumn();
+			//OMOP WAS item.getFacttablecolumn();
+			conceptFromString += " group by " + facttablecolumn;
 			conceptFromString += "    ) dimension \n";
 		}
 

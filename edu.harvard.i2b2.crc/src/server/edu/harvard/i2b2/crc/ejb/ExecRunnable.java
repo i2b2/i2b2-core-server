@@ -44,7 +44,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 public class ExecRunnable implements Runnable{
 	private static Log log = LogFactory.getLog(ExecRunnable.class);
-
+//
 
 	String sqlString = "";
 	String queryInstanceId = "";
@@ -54,7 +54,8 @@ public class ExecRunnable implements Runnable{
 	String dsLookupProjectId ="";
 	String dsLookupOwnerId = "";
 	String pmXml = null;
-
+	int transactionTimeout;
+	
 	Map returnMap = new HashMap();
 
 	public ExecRunnable() {
@@ -64,7 +65,7 @@ public class ExecRunnable implements Runnable{
 
 	private String callingMDBName = QueryManagerBeanUtil.RUNNING, sessionId = "";
 	// default timeout three minutes
-	int transactionTimeout = 0;
+//	int transactionTimeout = 0;
 
 //	private volatile boolean running = true;
 
@@ -107,7 +108,7 @@ public class ExecRunnable implements Runnable{
 
 	@Override
 	public void run() {
-//		while (running) {
+
 			try {
 				QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 				boolean allowLargeTextValueConstrainFlag = true;
@@ -124,13 +125,6 @@ public class ExecRunnable implements Runnable{
 
 					DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
 							dsLookupDomainId, dsLookupProjectId, dsLookupOwnerId);
-
-					/*
-					 * DataSourceLookupHelper dataSourceHelper = new
-					 * DataSourceLookupHelper(); DataSourceLookup dsLookup =
-					 * dataSourceHelper.matchDataSource( dsLookupDomainId,
-					 * dsLookupProjectId, dsLookupOwnerId);
-					 */
 
 					IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
 
@@ -179,56 +173,67 @@ public class ExecRunnable implements Runnable{
 						// set the query instance batch mode to queue name
 						if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.MEDIUM_QUEUE))
 							queryInstance.setBatchMode(QueryManagerBeanUtil.MEDIUM_QUEUE_RUNNING);
-						else 				if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.LARGE_QUEUE))
+						else if (queryInstance.getBatchMode().equals(QueryManagerBeanUtil.LARGE_QUEUE))
 							queryInstance.setBatchMode(QueryManagerBeanUtil.LARGE_QUEUE_RUNNING);
 						else
 							queryInstance.setBatchMode(this.callingMDBName);
-						//queryInstance.setBatchMode(this.callingMDBName);
-						//queryInstance.setEndDate(new Date(System
-						//		.currentTimeMillis()));
+
 						queryInstanceDao.update(queryInstance, false);
 
-						log.debug("ExecRunnable my pmXml is" + pmXml);
-						// process the query request
 						patientSetId = processQueryRequest(
 								transactionTimeout, dsLookup, sfDAOFactory,
 								xmlRequest, sqlString, sessionId,
 								queryInstanceId, patientSetId,allowLargeTextValueConstrainFlag, pmXml);
-						log
-						.debug("QueryExecutorMDB completed processing query instance ["
-								+ queryInstanceId + "]");
-						// finally send reply to queue
-						//		sendReply(sessionId, patientSetId, "", replyToQueue);
+		
 					}
-
-
-
 
 					//  outputString = reqHandler.execute();
 					setJobCompleteFlag(true);
-					log.debug("Finished Running Query, my queryResultId is : " + queryResultInstanceId);
+					log.info("Exec Finished Running Query");
 
 					queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
+					
+					// status and end time were missing -- added during transactionTimeout fix
+					QtQueryStatusType queryStatusType = queryInstance.getQtQueryStatusType();
+					queryStatusType.setStatusTypeId(3);
+					queryStatusType.setName("DONE");
+					queryStatusType.setDescription("DONE");
+					queryInstance.setQtQueryStatusType(queryStatusType);
+					
+					queryInstance.setEndDate(new Date(System
+							.currentTimeMillis()));
+					
 					queryInstanceDao.update(queryInstance, false);
+					
 					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "DONE");
 					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
 				}
 				catch (CRCTimeOutException daoEx) {
+					log.info("Caught query time out");
 					// catch this error and ignore. send general reply message.
 					setJobCompleteFlag(false);
-					setJobException(daoEx);
-					setJobErrorFlag(true);
+			// following commented out during transaction timeout fix		
+			//		setJobException(daoEx);
+			//		setJobErrorFlag(true);
 					
-
-					log.error(daoEx.getMessage(), daoEx);
-					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
-					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
-					Thread.sleep(10000);
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						return;
+					}
 
 				} catch (Exception e) {
+					if(e.getMessage() != null){
+						log.error(e.getMessage());
+						if(e.getMessage().contains("Interrupted")){
+							log.info("Received interrupt");
+							return;
+						}
+					}
 					setJobException(e);
 					setJobErrorFlag(true);
-
+					
 					if (queryInstance != null)
 					{
 						queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
@@ -239,27 +244,27 @@ public class ExecRunnable implements Runnable{
 								.currentTimeMillis()));
 						try {
 							queryInstanceDao.update(queryInstance, false);
-						} catch (Exception e2) {}
+						} catch (Exception e2) {
+							log.error("Problem updating query instance to ERROR " + e.getMessage());
+						}
 					}
 					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "ERROR");
 					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);
-					//setJobCompleteFlag(true);
+					setJobCompleteFlag(true);
 
 					log.error("Job Exception: " + getJobException().getMessage());
-					//e.printStackTrace();
-					//throw(e);
-					Thread.sleep(10000);
-					log.error("Got an excpetion in ExecRunnable (RUN): " + e.getMessage());
-
+					
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e1) {
+						;
+					}
+	
 				}
 			} catch (Exception e) {
 				log.error("Exception", e);
 				
-				//running = false;
 			}
-	//	}
-	//	log.debug("Out of while loop");
-		//notify();
 
 	}
 
@@ -274,7 +279,7 @@ public class ExecRunnable implements Runnable{
 
 	public ExecRunnable(String sqlString, String queryInstanceId, String patientSetId ,
 			String xmlRequest, String dsLookupDomainId, String dsLookupProjectId ,
-			String dsLookupOwnerId, String pmXml ) throws Exception {
+			String dsLookupOwnerId, String pmXml, int transactionTimeout) throws Exception {
 
 		this.sqlString = sqlString;
 		this.queryInstanceId =  queryInstanceId;
@@ -285,12 +290,14 @@ public class ExecRunnable implements Runnable{
 		this.dsLookupOwnerId =  dsLookupOwnerId;
 		this.pmXml = pmXml;
 
+		this.transactionTimeout = transactionTimeout;
+
 
 	}
 
 	public void execute(String sqlString, String queryInstanceId, String patientSetId ,
 			String xmlRequest, String dsLookupDomainId, String dsLookupProjectId ,
-			String dsLookupOwnerId ) throws Exception {
+			String dsLookupOwnerId, long waitTimeMs ) throws Exception {
 
 		this.sqlString = sqlString;
 		this.queryInstanceId =  queryInstanceId;
@@ -300,6 +307,7 @@ public class ExecRunnable implements Runnable{
 		this.dsLookupProjectId = dsLookupProjectId;
 		this.dsLookupOwnerId =  dsLookupOwnerId;
 
+		this.transactionTimeout = (int) (waitTimeMs/1000);
 	}
 
 	private String processQueryRequest(
@@ -308,10 +316,6 @@ public class ExecRunnable implements Runnable{
 			String sqlString, String sessionId, String queryInstanceId,
 			String patientSetId, boolean allowLargeTextValueConstrainFlag, String pmXml) throws I2B2DAOException, I2B2Exception, JAXBUtilException {
 
-		// QueryRequestDao queryRequestDao = new QueryRequestDao();
-		// returnedPatientSetId =
-		// queryRequestDao.getPatientCount(queryRequestXml,
-		// queryInstanceId,patientSetId);
 		QueryDefinitionRequestType qdRequestType = getQueryDefinitionRequestType(xmlRequest);
 		ResultOutputOptionListType resultOutputList = qdRequestType
 				.getResultOutputList();
