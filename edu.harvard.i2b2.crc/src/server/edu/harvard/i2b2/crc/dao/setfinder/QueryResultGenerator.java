@@ -84,7 +84,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		try {
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			logTimingUtil.setStartTime();
-			itemKey = getItemKeyFromResultType(sfDAOFactory, resultTypeName);
+			itemKey = getItemKeyFromResultType(sfDAOFactory, resultTypeName, roles);
 
 			log.debug("Result type's " + resultTypeName + " item key value "
 					+ itemKey);
@@ -291,7 +291,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 						}
 						IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
 						List<QtQueryResultType> resultTypeList = resultTypeDao
-						.getQueryResultTypeByName(resultTypeName);
+						.getQueryResultTypeByName(resultTypeName, roles);
 
 						// add "(Obfuscated)" in the description
 						//description = resultTypeList.get(0)
@@ -330,13 +330,15 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 	}
 
 	private String getItemKeyFromResultType(SetFinderDAOFactory sfDAOFactory,
-			String resultTypeKey) {
+			String resultTypeKey, List<String> roles) throws I2B2Exception {
 		//
 		IQueryBreakdownTypeDao queryBreakdownTypeDao = sfDAOFactory
 				.getQueryBreakdownTypeDao();
 		QtQueryBreakdownType queryBreakdownType = queryBreakdownTypeDao
 				.getBreakdownTypeByName(resultTypeKey);
 		String itemKey = queryBreakdownType.getValue();
+		if (queryBreakdownType.getUserRoleCd() != null && !roles.contains(queryBreakdownType.getUserRoleCd()))
+				throw new I2B2Exception("User does not have permission to run this breakdown.");
 		return itemKey;
 	}
 

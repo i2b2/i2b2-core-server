@@ -11,12 +11,16 @@ package edu.harvard.i2b2.crc.dao.setfinder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
@@ -34,16 +38,17 @@ public class QueryResultTypeSpringDao extends CRCDAO implements
 		IQueryResultTypeDao {
 
 	JdbcTemplate jdbcTemplate = null;
+	NamedParameterJdbcTemplate namedParameterJdbcTemplate = null;
 
 	QtResultTypeRowMapper queryResultTypeMapper = new QtResultTypeRowMapper();
 
 	private DataSourceLookup dataSourceLookup = null;
-
 	public QueryResultTypeSpringDao(DataSource dataSource,
 			DataSourceLookup dataSourceLookup) {
 		setDataSource(dataSource);
 		setDbSchemaName(dataSourceLookup.getFullSchema());
 		jdbcTemplate = new JdbcTemplate(dataSource);
+		namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.dataSourceLookup = dataSourceLookup;
 
 	}
@@ -72,21 +77,24 @@ public class QueryResultTypeSpringDao extends CRCDAO implements
 	 * @return List<QtQueryMaster>
 	 */
 	@SuppressWarnings("unchecked")
-	public List<QtQueryResultType> getQueryResultTypeByName(String resultName) {
+	public List<QtQueryResultType> getQueryResultTypeByName(String resultName,List<String> roles) {
 
 		String sql = "select * from " + getDbSchemaName()
-				+ "qt_query_result_type where name = ?";
-		List<QtQueryResultType> queryResultType = jdbcTemplate.query(sql,
-				new Object[] { resultName.toUpperCase() },
+				+ "qt_query_result_type where name = '" + resultName + "' and (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCD)";
+		Map myRoles = Collections.singletonMap("roleCd", roles);
+		List<QtQueryResultType> queryResultType = namedParameterJdbcTemplate.query(sql,
+				myRoles,
 				queryResultTypeMapper);
 		return queryResultType;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<QtQueryResultType> getAllQueryResultType() {
+	public List<QtQueryResultType> getAllQueryResultType(List<String> roles) {
 		String sql = "select * from " + getDbSchemaName()
-				+ "qt_query_result_type order by result_type_id";
-		List<QtQueryResultType> queryResultTypeList = jdbcTemplate.query(sql,
+				+ "qt_query_result_type where user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd) order by result_type_id";
+		Map myRoles = Collections.singletonMap("roleCd", roles);
+		List<QtQueryResultType> queryResultTypeList = namedParameterJdbcTemplate.query(sql,
+				  myRoles ,
 				queryResultTypeMapper);
 		return queryResultTypeList;
 	}
@@ -100,6 +108,7 @@ public class QueryResultTypeSpringDao extends CRCDAO implements
 			queryResultType.setDisplayType(rs.getString("DISPLAY_TYPE_ID"));
 			queryResultType.setVisualAttributeType(rs
 					.getString("VISUAL_ATTRIBUTE_TYPE_ID"));
+			queryResultType.setUserRoleCd(rs.getString("USER_ROLE_CD"));
 			return queryResultType;
 		}
 	}

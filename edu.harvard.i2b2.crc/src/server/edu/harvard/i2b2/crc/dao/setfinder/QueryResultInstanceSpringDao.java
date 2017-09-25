@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +50,8 @@ IQueryResultInstanceDao {
 	SavePatientSetResult savePatientSetResult = null;
 	PatientSetResultRowMapper patientSetMapper = null;
 	DataSourceLookup dataSourceLookup = null;
+	List<String> roles = null;
+
 
 	public QueryResultInstanceSpringDao(DataSource dataSource,
 			DataSourceLookup dataSourceLookup) {
@@ -59,6 +62,12 @@ IQueryResultInstanceDao {
 
 		patientSetMapper = new PatientSetResultRowMapper();
 	}
+	
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
+
 
 	/**
 	 * Function to create result instance for given query instance id. The
@@ -76,7 +85,7 @@ IQueryResultInstanceDao {
 		QueryResultTypeSpringDao resultTypeDao = new QueryResultTypeSpringDao(
 				dataSource, dataSourceLookup);
 		List<QtQueryResultType> resultType = resultTypeDao
-				.getQueryResultTypeByName(resultName);
+				.getQueryResultTypeByName(resultName, roles);
 		if (resultType.size() < 1) {
 			throw new I2B2DAOException(" Result type  [" + resultName
 					+ "] not found");

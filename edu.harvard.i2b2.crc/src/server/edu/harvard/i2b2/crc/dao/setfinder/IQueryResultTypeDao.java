@@ -1,5 +1,6 @@
 package edu.harvard.i2b2.crc.dao.setfinder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
@@ -22,13 +23,13 @@ public interface IQueryResultTypeDao {
 	 * @return List<QtQueryMaster>
 	 */
 	@SuppressWarnings("unchecked")
-	public List<QtQueryResultType> getQueryResultTypeByName(String resultName);
+	public List<QtQueryResultType> getQueryResultTypeByName(String resultName, List<String> roles);
 
 	/**
 	 * Get all result type
 	 * 
 	 * @return List<QtQueryResultType>
 	 */
-	public List<QtQueryResultType> getAllQueryResultType();
+	public List<QtQueryResultType> getAllQueryResultType(List<String> roles);
 
 }

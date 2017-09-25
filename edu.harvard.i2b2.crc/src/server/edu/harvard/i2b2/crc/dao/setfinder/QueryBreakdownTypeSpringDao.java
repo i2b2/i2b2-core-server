@@ -56,8 +56,9 @@ public class QueryBreakdownTypeSpringDao extends CRCDAO implements
 	@SuppressWarnings("unchecked")
 	public QtQueryBreakdownType getBreakdownTypeByName(String name) {
 
-		String sql = "select * from " + getDbSchemaName()
-				+ "qt_breakdown_path where name = ?";
+		String sql = "select a.*, b.user_role_cd from " + getDbSchemaName()
+				+ "qt_breakdown_path a, " + getDbSchemaName()
+				+ "qt_query_result_type b where a.name = ? and a.name = b.name";
 		QtQueryBreakdownType queryStatusType = (QtQueryBreakdownType) jdbcTemplate
 				.queryForObject(sql, new Object[] { name },
 						queryBreakdownTypeMapper);
@@ -72,6 +73,7 @@ public class QueryBreakdownTypeSpringDao extends CRCDAO implements
 			queryBreakdownType.setName(rs.getString("NAME"));
 			queryBreakdownType.setValue(rs.getString("VALUE"));
 			queryBreakdownType.setUserId(rs.getString("USER_ID"));
+			queryBreakdownType.setUserRoleCd(rs.getString("USER_ROLE_CD"));
 
 			return queryBreakdownType;
 		}

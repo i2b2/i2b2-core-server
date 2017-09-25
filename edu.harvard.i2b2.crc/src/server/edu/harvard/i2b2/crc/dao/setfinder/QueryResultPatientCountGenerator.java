@@ -110,7 +110,7 @@ public class QueryResultPatientCountGenerator extends CRCDAO implements
 				IQueryResultTypeDao resultTypeDao = sfDAOFactory
 						.getQueryResultTypeDao();
 				List<QtQueryResultType> resultTypeList = resultTypeDao
-						.getQueryResultTypeByName(resultTypeName);
+						.getQueryResultTypeByName(resultTypeName, roles);
 
 				String queryName = sfDAOFactory
 						.getQueryMasterDAO()

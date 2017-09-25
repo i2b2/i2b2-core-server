@@ -9,6 +9,8 @@
  */
 package edu.harvard.i2b2.crc.delegate.setfinder;
 
+import java.util.List;
+
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -40,13 +42,15 @@ public class GetAllQueryResultTypeHandler extends RequestHandler {
 	ResultTypeRequestType resultTypeRequestType = null;
     PsmQryHeaderType headerType = null;
     String requestXml = null;
-
+    List<String> roles = null;
+    
     /**
     * Constuctor which accepts i2b2 request message xml
     * @param requestXml
+     * @param roles 
     * @throws I2B2Exception
     */
-    public GetAllQueryResultTypeHandler(String requestXml)
+    public GetAllQueryResultTypeHandler(String requestXml, List<String> roles)
         throws I2B2Exception {
         this.requestXml = requestXml;
 
@@ -56,6 +60,7 @@ public class GetAllQueryResultTypeHandler extends RequestHandler {
             resultTypeRequestType = (ResultTypeRequestType) this.getRequestType(requestXml,
                     edu.harvard.i2b2.crc.datavo.setfinder.query.ResultTypeRequestType.class);
             this.setDataSourceLookup(requestXml);
+            this.roles = roles;
         } catch (JAXBUtilException jaxbUtilEx) {
             throw new I2B2Exception("Error ", jaxbUtilEx);
         }
@@ -80,7 +85,7 @@ public class GetAllQueryResultTypeHandler extends RequestHandler {
    //         QueryInfoLocal queryInfoLocal = queryInfoLocalHome.create();
    
         	 QueryInfoBean query = new QueryInfoBean();
-           resultTypeResponseType = query.getAllResultType(dataSourceLookup);
+           resultTypeResponseType = query.getAllResultType(dataSourceLookup, roles);
             
            
             resultTypeResponseType.setStatus(this.buildCRCStausType(RequestHandlerDelegate.DONE_TYPE, "DONE"));

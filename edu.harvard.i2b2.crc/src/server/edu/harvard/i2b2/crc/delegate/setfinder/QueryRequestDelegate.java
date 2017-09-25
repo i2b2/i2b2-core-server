@@ -343,7 +343,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_GET_RESULT_TYPE)) {
 				GetAllQueryResultTypeHandler handler = new GetAllQueryResultTypeHandler(
-						requestXml);
+						requestXml, projectType.getRole());
 				responseBodyType = handler.execute();
 			} else if (headerType
 					.getRequestType()

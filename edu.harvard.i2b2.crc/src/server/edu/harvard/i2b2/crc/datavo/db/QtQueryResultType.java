@@ -17,6 +17,7 @@ public class QtQueryResultType implements java.io.Serializable {
 	private String description;
 	private String displayType;
 	private String visualAttributeType;
+	private String userRoleCd;
 
 	private Set<QtQueryResultInstance> qtQueryResultInstances = new HashSet<QtQueryResultInstance>(
 			0);
@@ -34,12 +35,21 @@ public class QtQueryResultType implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public QtQueryResultType(int resultTypeId, String name, String description,
+	public QtQueryResultType(int resultTypeId, String name, String description, String userRoleCd,
 			Set<QtQueryResultInstance> qtQueryResultInstances) {
 		this.resultTypeId = resultTypeId;
 		this.name = name;
 		this.description = description;
+		this.userRoleCd = userRoleCd;
 		this.qtQueryResultInstances = qtQueryResultInstances;
+	}
+
+	public String getUserRoleCd() {
+		return userRoleCd;
+	}
+
+	public void setUserRoleCd(String userRoleCd) {
+		this.userRoleCd = userRoleCd;
 	}
 
 	// Property accessors

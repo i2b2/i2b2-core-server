@@ -276,7 +276,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 						}
 						IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
 						List<QtQueryResultType> resultTypeList = resultTypeDao
-								.getQueryResultTypeByName(resultTypeName);
+								.getQueryResultTypeByName(resultTypeName, roles);
 
 						// add "(Obfuscated)" in the description
 						//description = resultTypeList.get(0)

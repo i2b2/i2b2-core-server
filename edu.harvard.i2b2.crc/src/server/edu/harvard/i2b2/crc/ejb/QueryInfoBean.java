@@ -401,14 +401,15 @@ public class QueryInfoBean { //implements SessionBean {
 	 * 
 	 */
 	public ResultTypeResponseType getAllResultType(
-			DataSourceLookup dataSourceLookup) throws I2B2Exception {
+			DataSourceLookup dataSourceLookup, List<String> roles) throws I2B2Exception {
 		SetFinderDAOFactory sfDaoFactory = this.getSetFinderDaoFactory(
 				dataSourceLookup.getDomainId(), dataSourceLookup
 						.getProjectPath(), dataSourceLookup.getOwnerId());
 		IQueryResultTypeDao resultTypeDao = sfDaoFactory
 				.getQueryResultTypeDao();
 		List<QtQueryResultType> queryResultTypeList = resultTypeDao
-				.getAllQueryResultType();
+				.getAllQueryResultType(roles);
+		
 		ResultTypeResponseType resultTypeResponseType = new ResultTypeResponseType();
 		List<QueryResultTypeType> returnQueryResultType = new ArrayList<QueryResultTypeType>();
 		for (QtQueryResultType queryResultType : queryResultTypeList) {
