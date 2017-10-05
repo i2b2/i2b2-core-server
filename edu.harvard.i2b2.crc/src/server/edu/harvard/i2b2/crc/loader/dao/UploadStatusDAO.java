@@ -83,10 +83,29 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 		return uploadStatus;
 	}
 
-	public void dropTempTable(String tempTable) {
+	public void dropTempTable(String tempTable){
 		final String sql = "{call " + getDbSchemaName()
 				+ "REMOVE_TEMP_TABLE(?)}";
-		jdbcTemplate.update(sql, new Object[] { tempTable });
+		Connection conn = null;
+		try {
+			conn = this.getDataSource().getConnection();
+			CallableStatement callStmt = conn.prepareCall(sql);
+			callStmt.setString(1, tempTable);
+			callStmt.execute();
+		} catch (SQLException sqlEx) {
+			sqlEx.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqlEx) {
+					sqlEx.printStackTrace();
+					log.error("Error while closing connection", sqlEx);
+				}
+			}
+		}
 	}
 
 	/**
@@ -522,8 +541,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 						+ " log_file_name, " + " message, "
 						+ " transform_name) "
 						+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					LoaderDAOFactoryHelper.ORACLE)) {
+			} else {
 				sql = "INSERT INTO " + schemaName + "upload_status ("
 						+ " upload_id," + " upload_label, " + " user_id, "
 						+ " source_cd, " + " no_of_record, "
@@ -535,9 +553,8 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 			}
 			this.setSql(sql);
 			this.setDataSource(dataSource);
-
-			if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					LoaderDAOFactoryHelper.ORACLE)) {
+			if (!dataSourceLookup.getServerType().equalsIgnoreCase(
+					LoaderDAOFactoryHelper.SQLSERVER)){
 				declareParameter(new SqlParameter(Types.INTEGER));
 			}
 			declareParameter(new SqlParameter(Types.VARCHAR));
@@ -578,6 +595,24 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 						uploadStatus.getTransformName() };
 				update(objs);
 
+			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+                                        LoaderDAOFactoryHelper.POSTGRESQL)) {
+                                uploadId = getJdbcTemplate().queryForInt("select nextval ('i2b2demodata.upload_status_upload_id_seq')");
+                                uploadStatus.setUploadId(uploadId);
+                                objs = new Object[] { uploadStatus.getUploadId(),
+                                                uploadStatus.getUploadLabel(),
+                                                uploadStatus.getUserId(), uploadStatus.getSourceCd(),
+                                                uploadStatus.getNoOfRecord(),
+                                                uploadStatus.getDeletedRecord(),
+                                                uploadStatus.getLoadedRecord(),
+                                                uploadStatus.getLoadDate(), uploadStatus.getEndDate(),
+                                                uploadStatus.getLoadStatus(),
+                                                uploadStatus.getInputFileName(),
+                                                uploadStatus.getLogFileName(),
+                                                uploadStatus.getMessage(),
+                                                uploadStatus.getTransformName() };
+                                update(objs);
+			
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					LoaderDAOFactoryHelper.SQLSERVER)) {
 				objs = new Object[] { uploadStatus.getUploadLabel(),
