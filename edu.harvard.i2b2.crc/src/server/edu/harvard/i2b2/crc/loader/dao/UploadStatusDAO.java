@@ -83,10 +83,29 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 		return uploadStatus;
 	}
 
-	public void dropTempTable(String tempTable) {
+	public void dropTempTable(String tempTable){
 		final String sql = "{call " + getDbSchemaName()
 				+ "REMOVE_TEMP_TABLE(?)}";
-		jdbcTemplate.update(sql, new Object[] { tempTable });
+		Connection conn = null;
+		try {
+			conn = this.getDataSource().getConnection();
+			CallableStatement callStmt = conn.prepareCall(sql);
+			callStmt.setString(1, tempTable);
+			callStmt.execute();
+		} catch (SQLException sqlEx) {
+			sqlEx.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqlEx) {
+					sqlEx.printStackTrace();
+					log.error("Error while closing connection", sqlEx);
+				}
+			}
+		}
 	}
 
 	/**
