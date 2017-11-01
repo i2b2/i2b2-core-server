@@ -38,7 +38,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
  * Class to handle persistance operation of Query instance i.e. each run of
  * query is called query instance $Id: QueryInstanceSpringDao.java,v 1.4
  * 2008/04/08 19:38:24 rk903 Exp $
- * 
+ *  
  * @author rkuttan
  * @see QtQueryInstance
  */

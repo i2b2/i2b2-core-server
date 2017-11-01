@@ -16,7 +16,7 @@
 		<facility_name>PHS</facility_name>
 		</receiving_facility>
 			<security>
-				<domain>i2b2demo</domain>
+			<domain>i2b2demo</domain>
 				<username>demo</username>
 				<password>demouser</password>
 			</security>

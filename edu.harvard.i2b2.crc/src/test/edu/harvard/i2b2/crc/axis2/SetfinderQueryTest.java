@@ -88,7 +88,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 		reqHeaderType.setResultWaittimeMs(90000);
 		return reqHeaderType;
 	}
-
+  
 	
 	@Test
 	public void breakdownNoninvert7panel1itemInvert8panel1item() throws Exception {

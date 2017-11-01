@@ -210,8 +210,6 @@ insert into i2b2demodata2.dbo.#dx (  patient_num   ) select * from ( select dist
 <result_output priority_index="11" name="patient_vitalstatus_count_xml"/>
 <result_output priority_index="12" name="patient_race_count_xml"/>
 </result_output_list>
-			
 		</ns4:request>
-		
 	</message_body>
 </ns6:request>
