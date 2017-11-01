@@ -107,7 +107,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 
 	@Test
-	public void pdo_onemodifier() throws Exception {
+	public void GetPDOFromInputList_requestType_labs() throws Exception {
 
 
 		try { 
@@ -124,7 +124,8 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 
-			
+			PatientDataResponseType patientDataResponseType = (PatientDataResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),PatientDataResponseType.class);
+
 			assertTrue("checking patient set size > 0 ",patientDataResponseType.getPatientData().getPatientSet().getPatient().size()>0);
 			//System.out.println(patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().get(0).getPatientId().getSource());
 
