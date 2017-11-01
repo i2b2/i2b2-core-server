@@ -35,6 +35,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestHeaderType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.CrcXmlResultResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterInstanceResultResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType;
@@ -42,6 +43,8 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryInstanceType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryMasterType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryResultInstanceType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.RequestType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultResponseType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.XmlResultType;
 
 /**
  * Class to test different setfinder request's 
@@ -85,10 +88,124 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 		reqHeaderType.setResultWaittimeMs(90000);
 		return reqHeaderType;
 	}
+  
+	
+	@Test
+	public void breakdownNoninvert7panel1itemInvert8panel1item() throws Exception {
+		String filename = testFileDir + "/breakdown_noninvert_7panel_1item_invert_8panel_1item_[1]_12200ms.xml";
+		try { 
+			DataInputStream   dataStream = new DataInputStream(new FileInputStream(
+					filename));
+			OMElement requestElement = convertStringToOMElement(dataStream); 
+			OMElement responseElement = getServiceClient(setfinderUrl).sendReceive(requestElement);
 
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 
+			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
+			assertNotNull(masterInstanceResult);
+			String queryMasterId = masterInstanceResult.getQueryMaster().getQueryMasterId();
 
+			// First Query In Query
+			String requestString = getQueryString(testFileDir + "/CRC_QRY_getQueryInstanceList_fromQueryMasterId.xml");
+			requestString = requestString.replace("masterid:32958", queryMasterId);
+
+			requestElement = convertStringToOMElement(requestString); 
+			responseElement = getServiceClient(setfinderUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			r = (ResponseMessageType)responseJaxb.getValue();
+			helper = new  JAXBUnWrapHelper();
+
+			masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			 QueryInstanceType results = masterInstanceResult.getQueryInstance();
+			String instanceId =  results.getQueryInstanceId();
+
+			 
+			 
+
+			// Get result Instance ID
+			requestString = getQueryString(testFileDir + "/CRC_QRY_getQueryResultInstanceList_fromQueryInstanceId.xml");
+			requestString = requestString.replace("instanceid:32978", instanceId);
+
+			requestElement = convertStringToOMElement(requestString); 
+			responseElement = getServiceClient(setfinderUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			r = (ResponseMessageType)responseJaxb.getValue();
+			helper = new  JAXBUnWrapHelper();
+
+			ResultResponseType resultResponse = (ResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),ResultResponseType.class);
+
+			assertNotNull(resultResponse);
+			String resultInstanceId = null;
+			for (QueryResultInstanceType results2 :resultResponse.getQueryResultInstance() )
+			{
+				resultInstanceId = results2.getResultInstanceId();
+			}
+			
+			assertNotNull(resultInstanceId);
+
+			// Get result XML
+			requestString = getQueryString(testFileDir + "/CRC_QRY_getResultDocument_fromResultInstanceId.xml");
+			requestString = requestString.replace("instaneid:67572", resultInstanceId);
+
+			requestElement = convertStringToOMElement(requestString); 
+			responseElement = getServiceClient(setfinderUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			r = (ResponseMessageType)responseJaxb.getValue();
+			helper = new  JAXBUnWrapHelper();
+
+			CrcXmlResultResponseType xmlResponse = (CrcXmlResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),CrcXmlResultResponseType.class);
+
+			assertNotNull(xmlResponse);
+			XmlResultType results3 = xmlResponse.getCrcXmlResult();
+			
+
+			if (results3.getXmlValue().getContent().get(0).toString().contains("xml"))
+				assert (true);
+			else
+				assert(false);
+
+			// Check invalid id
+			requestString = getQueryString(testFileDir + "/CRC_QRY_getResultDocument_fromResultInstanceId.xml");
+			requestString = requestString.replace("instaneid:67572", "67572");
+
+			requestElement = convertStringToOMElement(requestString); 
+			responseElement = getServiceClient(setfinderUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			r = (ResponseMessageType)responseJaxb.getValue();
+			helper = new  JAXBUnWrapHelper();
+
+			
+			// xmlResponse = (CrcXmlResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),CrcXmlResultResponseType.class);
+
+			assertEquals(r.getResponseHeader().getResultStatus().getStatus().getType(), "ERROR");
+
+				 
+			
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
 	@Test
 	public void QueryInQueryCKMB_OR() throws Exception {
 		String filename = testFileDir + "/4Q_CK-MB_OR_CPKGT120_[38].xml";
