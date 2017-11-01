@@ -112,7 +112,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
 
-				uploadTempTable(tempStmt, encounterNumList);
+				uploadTempTable(tempStmt, encounterNumList, dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL));
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
@@ -391,9 +391,11 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		return eidSet;
 	}
 
-	private void uploadTempTable(Statement tempStmt, List<String> patientNumList)
+	private void uploadTempTable(Statement tempStmt, List<String> patientNumList,  boolean isPostgresql) 
 			throws SQLException {
-		String createTempInputListTable = "create table "
+		String createTempInputListTable =  "create "
+				 + (isPostgresql ? " temp ": "" ) 
+				 + " table " 
 				+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE
 				+ " ( char_param1 varchar(100) )";
 		tempStmt.executeUpdate(createTempInputListTable);
@@ -496,6 +498,9 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
+				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+						tempTable = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
+				else
 				tempTable = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 				try {
 					tempStmt.executeUpdate("drop table " + tempTable);

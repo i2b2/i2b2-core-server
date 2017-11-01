@@ -110,7 +110,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
 
-				uploadTempTable(tempStmt, patientNumList);
+				uploadTempTable(tempStmt, patientNumList, dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL));
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
@@ -132,7 +132,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
 
-				uploadTempTable(tempStmt, patientNumList);
+				uploadTempTable(tempStmt, patientNumList,dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL));
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
@@ -410,14 +410,16 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 		return pidSet;
 	}
 
-	private void uploadTempTable(Statement tempStmt, List<String> patientNumList)
+	private void uploadTempTable(Statement tempStmt, List<String> patientNumList,  boolean isPostgresql) 
 			throws SQLException {
 		String temp_pdo = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 		if (dataSourceLookup.getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.POSTGRESQL))
 			temp_pdo = temp_pdo.substring(1);
 
-		String createTempInputListTable = "create table "
+		String createTempInputListTable =  "create "
+				 + (isPostgresql ? " temp ": "" ) 
+				 + " table " 
 				+ temp_pdo
 				+ " ( char_param1 varchar(100) )";
 	

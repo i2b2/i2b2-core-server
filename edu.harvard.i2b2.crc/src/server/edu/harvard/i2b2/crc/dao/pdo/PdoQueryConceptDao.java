@@ -109,7 +109,10 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
-				tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
+				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
+				else
+					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 				try {
 					tempStmt.executeUpdate("drop table " + tempTableName);
 				} catch (SQLException sqlex) {
@@ -299,7 +302,10 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
-				tempTable = SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
+				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+					tempTable = SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE.substring(1);
+				else
+					tempTable = SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 				try {
 					tempStmt.executeUpdate("drop table " + tempTable);
 				} catch (SQLException sqlex) {

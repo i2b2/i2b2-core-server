@@ -104,8 +104,10 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				tempTableName = this.getDbSchemaName()
-						+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
+				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
+				else
+					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 				java.sql.Statement tempStmt = conn.createStatement();
 
 				try {
@@ -114,7 +116,7 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 					;
 				}
 
-				uploadTempTable(tempStmt, tempTableName, encounterNumList);
+				uploadTempTable(tempStmt, tempTableName, encounterNumList, dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL));
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
@@ -327,8 +329,10 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 	}
 
 	private void uploadTempTable(Statement tempStmt, String tempTableName,
-			List<String> patientNumList) throws SQLException {
-		String createTempInputListTable = "create table " + tempTableName
+			List<String> patientNumList,  boolean isPostgresql)  throws SQLException {
+		String createTempInputListTable =  "create "
+				 + (isPostgresql ? " temp ": "" ) 
+				 + " table " + tempTableName
 				+ " ( char_param1 varchar(100) )";
 		tempStmt.executeUpdate(createTempInputListTable);
 		log.debug("created temp table" + tempTableName);
@@ -380,8 +384,10 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
-				factTempTable = getDbSchemaName()
-						+ SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
+				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+					factTempTable = SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE.substring(1);
+				else
+					factTempTable = SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 				try {
 					tempStmt.executeUpdate("drop table " + factTempTable);
 				} catch (SQLException sqlex) {

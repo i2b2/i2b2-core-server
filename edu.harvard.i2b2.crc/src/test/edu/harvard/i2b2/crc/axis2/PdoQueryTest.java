@@ -106,6 +106,60 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	}
 
 
+	@Test
+	public void pdo_onemodifier() throws Exception {
+
+
+		try { 
+
+			String filename = testFileDir + "/GetPDOFromInputList_requestType_labs.xml";
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
+			String patientSetId = null;
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			
+			assertTrue("checking patient set size > 0 ",patientDataResponseType.getPatientData().getPatientSet().getPatient().size()>0);
+			//System.out.println(patientDataResponseType.getPatientData().getObservationSet().get(0).getObservation().get(0).getPatientId().getSource());
+
+			boolean found = false;
+			for (PatientType results : patientDataResponseType.getPatientData().getPatientSet().getPatient() )
+			{
+				if (found)
+					break;
+				if (results.getPatientId().getValue().equals("1000000001"))
+				{
+
+					for (ParamType params : results.getParam() )
+					{
+
+						if (params.getColumn().equals("language_cd")){
+
+							assertEquals("Checking patient 1000000001 Language of english", params.getValue(), "english");
+							found = true;
+							break;
+						}
+					}
+
+
+				}
+			}
+			assertTrue(found);
+		} catch (Exception e2) { 
+			System.out.println("Error in onemodifier:" + e2.getMessage());
+			e2.printStackTrace();
+			assertTrue(false);
+		}
+	}
+
+
+
 
 	@Test
 	public void pdo_onemodifier() throws Exception {

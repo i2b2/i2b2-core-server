@@ -123,7 +123,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.POSTGRESQL))
-				tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
+				tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
 			else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SQLSERVER))
 				tempTableName =  this.getDbSchemaName() + SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
@@ -381,7 +381,10 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 			List<String> patientNumList, String dbServer) throws SQLException {
 		if ( !dbServer.equalsIgnoreCase(
 				DAOFactoryHelper.ORACLE)) {
-			String createTempInputListTable = "create table " + tempTableName
+			String createTempInputListTable = "create " 
+					 + (dbServer.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ? " temp ": "" )
+					+ " table "
+					+ tempTableName
 					+ " ( char_param1 varchar(100) )";
 			tempStmt.executeUpdate(createTempInputListTable);
 			log.debug("created temp table" + tempTableName);
@@ -436,13 +439,17 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 				java.sql.Statement tempStmt = conn.createStatement();
 				if (dataSourceLookup.getServerType().equalsIgnoreCase(
 						DAOFactoryHelper.POSTGRESQL))
+					factTempTable =  SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE.substring(1);
+				else
 					factTempTable =  SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 				try {
 					tempStmt.executeUpdate("drop table " + factTempTable);
 				} catch (SQLException sqlex) {
 					;
 				}
-				String createTempInputListTable = "create table "
+				String createTempInputListTable = "create " 
+						 + (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ? " temp ": "" )
+						+ " table "
 						+ factTempTable
 						+ " ( set_index int, char_param1 varchar(500) )";
 				tempStmt.executeUpdate(createTempInputListTable);
