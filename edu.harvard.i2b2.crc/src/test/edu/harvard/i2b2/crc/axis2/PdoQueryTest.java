@@ -115,7 +115,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			String filename = testFileDir + "/GetPDOFromInputList_requestType_labs.xml";
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(setfinderTargetEPR).sendReceive(requestElement);
+			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
 			String patientSetId = null;
 
 			//read test file and store query instance ;

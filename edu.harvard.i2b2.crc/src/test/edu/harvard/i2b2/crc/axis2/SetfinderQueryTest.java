@@ -4530,8 +4530,8 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
 					if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
 					{
-						assertTrue("age is to high", 4 >= results.getSetSize());
-						  assertTrue("age is to low",  2  <= results.getSetSize());
+						assertTrue("age is to high", 3 >= results.getSetSize());
+						  assertTrue("age is to low",  1  <= results.getSetSize());
 					}
 					else
 					{
@@ -4565,7 +4565,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
 			{
 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
-					assertEquals(results.getSetSize(), 17);
+					assertEquals(results.getSetSize(), 18);
 				else
 					assertTrue(false);
 			}
@@ -4595,8 +4595,8 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			{
 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
 				{
-					assertTrue("age is to high", 4 >= results.getSetSize());
-					  assertTrue("age is to low",  2  <= results.getSetSize());
+					assertTrue("age is to high", 3 >= results.getSetSize());
+					  assertTrue("age is to low",  1  <= results.getSetSize());
 				}
 				else
 				{
@@ -4630,8 +4630,8 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			{
 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
 				{
-					assertTrue("age is to high", 4 >= results.getSetSize());
-					  assertTrue("age is to low",  2  <= results.getSetSize());
+					assertTrue("age is to high", 3 >= results.getSetSize());
+					  assertTrue("age is to low",  1  <= results.getSetSize());
 				}
 				else
 				{
@@ -4663,7 +4663,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
 			{
 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
-					assertEquals(results.getSetSize(), 1);
+					assertEquals(results.getSetSize(), 0);
 				else
 					assertTrue(false);
 			}
@@ -4692,7 +4692,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
 			{
 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
-					assertEquals(results.getSetSize(), 4);
+					assertEquals(results.getSetSize(), 5);
 				else
 					assertTrue(false);
 			}
