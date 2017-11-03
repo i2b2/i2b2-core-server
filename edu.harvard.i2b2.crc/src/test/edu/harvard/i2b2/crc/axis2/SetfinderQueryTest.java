@@ -38,6 +38,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.CrcXmlResultResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterInstanceResultResponseType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryInstanceType;
@@ -518,7 +519,37 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 		}
 	}
 
+	@Test
+	public void getNameInfoContains() throws Exception {
+		String filename = testFileDir + "/getNameInfo_contains.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(setfinderUrl).sendReceive(requestElement);
 
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			MasterResponseType masterInstanceResult = (MasterResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryMasterType results :masterInstanceResult.getQueryMaster() )
+			{
+				if (results.getName().contains("Hyperte"))
+					assertTrue(true);
+				else
+					assertTrue(false);
+			}
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	
 	@Test
 	public void ExcludeOccurancesMultiplePanelsSame() throws Exception {
 		String filename = testFileDir + "/setfinder_exclude_and_occurances_same_[63]_1432ms.xml";
