@@ -541,6 +541,186 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 				else
 					assertTrue(false);
 			}
+			
+			//Check with Previous Query
+			 requestString = getQueryString(filename);
+			 requestString = requestString.replace("category=\"@\"", "category=\"top\"");
+			 requestElement = convertStringToOMElement(requestString); 
+			 responseElement = getServiceClient(nameInfoUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			 responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			 r = (ResponseMessageType)responseJaxb.getValue();
+			 helper = new  JAXBUnWrapHelper();
+
+			 masterInstanceResult = (MasterResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryMasterType results :masterInstanceResult.getQueryMaster() )
+			{
+				if (results.getName().contains("Hyperte"))
+					assertTrue(true);
+				else
+					assertTrue(false);
+			}
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+
+	
+	@Test
+	public void getNameInfoEndwith() throws Exception {
+		String filename = testFileDir + "/getNameInfo_endwith.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(nameInfoUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			MasterResponseType masterInstanceResult = (MasterResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryMasterType results :masterInstanceResult.getQueryMaster() )
+			{
+				if (results.getName().endsWith("10:24:10"))
+					assertTrue(true);
+				else
+					assertTrue(false);
+			}
+			//Check with Previous Query
+			 requestString = getQueryString(filename);
+			 requestString = requestString.replace("category=\"@\"", "category=\"top\"");
+			 requestElement = convertStringToOMElement(requestString); 
+			 responseElement = getServiceClient(nameInfoUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			 responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			 r = (ResponseMessageType)responseJaxb.getValue();
+			 helper = new  JAXBUnWrapHelper();
+
+			 masterInstanceResult = (MasterResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryMasterType results :masterInstanceResult.getQueryMaster() )
+			{
+				if (results.getName().endsWith("10:24:10"))
+					assertTrue(true);
+				else
+					assertTrue(false);
+			}
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+
+	@Test
+	public void getNameInfoStartWith() throws Exception {
+		String filename = testFileDir + "/getNameInfo_startwith.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(nameInfoUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			MasterResponseType masterInstanceResult = (MasterResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryMasterType results :masterInstanceResult.getQueryMaster() )
+			{
+				if (results.getName().startsWith("(PrevQu-Female"))
+					assertTrue(true);
+				else
+					assertTrue(false);
+			}
+			//Check with Previous Query
+			 requestString = getQueryString(filename);
+			 requestString = requestString.replace("category=\"@\"", "category=\"top\"");
+			 requestElement = convertStringToOMElement(requestString); 
+			 responseElement = getServiceClient(nameInfoUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			 responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			 r = (ResponseMessageType)responseJaxb.getValue();
+			 helper = new  JAXBUnWrapHelper();
+
+			 masterInstanceResult = (MasterResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryMasterType results :masterInstanceResult.getQueryMaster() )
+			{
+				if (results.getName().startsWith("(PrevQu-Female"))
+					assertTrue(true);
+				else
+					assertTrue(false);
+			}
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void getNameInfoExact() throws Exception {
+		String filename = testFileDir + "/getNameInfo_exact.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(nameInfoUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			MasterResponseType masterInstanceResult = (MasterResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryMasterType results :masterInstanceResult.getQueryMaster() )
+			{
+				if (results.getName().endsWith("(PrevQu-Female@10:24:10"))
+					assertTrue(true);
+				else
+					assertTrue(false);
+			}
+			//Check with Previous Query
+			 requestString = getQueryString(filename);
+			 requestString = requestString.replace("category=\"@\"", "category=\"top\"");
+			 requestElement = convertStringToOMElement(requestString); 
+			 responseElement = getServiceClient(nameInfoUrl).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			 responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			 r = (ResponseMessageType)responseJaxb.getValue();
+			 helper = new  JAXBUnWrapHelper();
+
+			 masterInstanceResult = (MasterResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterResponseType.class);
+
+			assertNotNull(masterInstanceResult);
+			for (QueryMasterType results :masterInstanceResult.getQueryMaster() )
+			{
+				if (results.getName().endsWith("(PrevQu-Female@10:24:10"))
+					assertTrue(true);
+				else
+					assertTrue(false);
+			}
 		} catch (Exception e) { 
 			e.printStackTrace();
 			assertTrue(false);
