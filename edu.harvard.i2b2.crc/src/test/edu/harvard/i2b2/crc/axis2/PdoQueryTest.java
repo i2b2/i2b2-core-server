@@ -116,7 +116,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
 			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);
-			String patientSetId = null;
+			String patientSetId = null; 
 
 			//read test file and store query instance ;
 			//unmarshall this response string 

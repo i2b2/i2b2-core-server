@@ -4531,7 +4531,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 					if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
 					{
 						assertTrue("age is to high", 3 >= results.getSetSize());
-						  assertTrue("age is to low",  1  <= results.getSetSize());
+						  assertTrue("age is to low",  0  <= results.getSetSize());
 					}
 					else
 					{
@@ -4596,7 +4596,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
 				{
 					assertTrue("age is to high", 3 >= results.getSetSize());
-					  assertTrue("age is to low",  1  <= results.getSetSize());
+					  assertTrue("age is to low",  0  <= results.getSetSize());
 				}
 				else
 				{
@@ -4631,7 +4631,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
 				{
 					assertTrue("age is to high", 3 >= results.getSetSize());
-					  assertTrue("age is to low",  1  <= results.getSetSize());
+					  assertTrue("age is to low",  0  <= results.getSetSize());
 				}
 				else
 				{
