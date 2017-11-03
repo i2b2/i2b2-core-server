@@ -59,10 +59,8 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 	private static MasterInstanceResultResponseType masterInstanceResult = null;
 	private static String testFileDir = null;
 
-	private static  String setfinderUrl = 
-			//System.getProperty("testhost") 
-			"http://i2b2ciredhatpostgres9.dipr.partners.org:9090/i2b2/services"
-			+ "/QueryToolService/request";	
+	private static  String setfinderUrl = "http://127.0.0.1:9090/i2b2/services/QueryToolService/request";	
+	private static  String nameInfoUrl = "http://127.0.0.1:9090/i2b2/services/QueryToolService/getNameInfo";	
 
 
 	@BeforeClass
@@ -525,7 +523,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 		try { 
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(setfinderUrl).sendReceive(requestElement);
+			OMElement responseElement = getServiceClient(nameInfoUrl).sendReceive(requestElement);
 
 			//read test file and store query instance ;
 			//unmarshall this response string 
