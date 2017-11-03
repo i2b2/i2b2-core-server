@@ -112,7 +112,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 
 		try { 
 
-			String filename = testFileDir + "/GetPDOFromInputList_requestType_labs.xml";
+			String filename = testFileDir + "/GetPDOFromInputList_requestType_Labs.xml";
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
 			OMElement responseElement = getServiceClient(pdoTargetEPR).sendReceive(requestElement);

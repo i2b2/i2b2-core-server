@@ -36,6 +36,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.RequestHeaderType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.CrcXmlResultResponseType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterInstanceResultResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType;
@@ -59,7 +60,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 
 	private static  String setfinderUrl = 
 			//System.getProperty("testhost") 
-			"http://localhost:9090/i2b2/services"
+			"http://i2b2ciredhatpostgres9.dipr.partners.org:9090/i2b2/services"
 			+ "/QueryToolService/request";	
 
 
@@ -112,7 +113,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 
 			// First Query In Query
 			String requestString = getQueryString(testFileDir + "/CRC_QRY_getQueryInstanceList_fromQueryMasterId.xml");
-			requestString = requestString.replace("masterid:32958", queryMasterId);
+			requestString = requestString.replace("masterid:32958",  queryMasterId);
 
 			requestElement = convertStringToOMElement(requestString); 
 			responseElement = getServiceClient(setfinderUrl).sendReceive(requestElement);
@@ -123,10 +124,10 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 
-			masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
+			InstanceResponseType instanceResults = (InstanceResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),InstanceResponseType.class);
 
-			assertNotNull(masterInstanceResult);
-			 QueryInstanceType results = masterInstanceResult.getQueryInstance();
+			assertNotNull(instanceResults);
+			 QueryInstanceType results = instanceResults.getQueryInstance().get(0);
 			String instanceId =  results.getQueryInstanceId();
 
 			 
@@ -194,9 +195,9 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			helper = new  JAXBUnWrapHelper();
 
 			
-			// xmlResponse = (CrcXmlResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),CrcXmlResultResponseType.class);
+			 xmlResponse = (CrcXmlResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),CrcXmlResultResponseType.class);
 
-			assertEquals(r.getResponseHeader().getResultStatus().getStatus().getType(), "ERROR");
+			assertEquals(xmlResponse.getStatus().getCondition().get(0).getType(), "ERROR");
 
 				 
 			
@@ -2516,7 +2517,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			assertNotNull(masterInstanceResult);
 			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
 			{
-				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
+				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML") || results.getQueryResultType().getName().equals("PATIENTSET"))
 					assertEquals(results.getSetSize(), 65);
 				else
 					assertTrue(false);
@@ -3660,7 +3661,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
 			assertNotNull(masterInstanceResult);			
-			assertEquals(masterInstanceResult.getQueryInstance().getQueryStatusType().getName(), "INCOMPLETE");
+			assertEquals(masterInstanceResult.getQueryInstance().getQueryStatusType().getName(), "ERROR");
 
 		} catch (Exception e) { 
 			e.printStackTrace();
