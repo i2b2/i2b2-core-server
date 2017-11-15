@@ -1690,7 +1690,7 @@ public class TemporalPanel implements Comparable<Object> {
 		String invertSql = "select " + selectClause + ", 0 panel_count"
 				+ " from " + parent.getDatabaseSchema() + invertTableName
 				+ whereClause + groupByClause;
-		
+	/*	
 		if(factTables != null){
 			if((factTables.size() == 1)) {
 
@@ -1712,7 +1712,7 @@ public class TemporalPanel implements Comparable<Object> {
 				}
 			}
 		}
-
+*/
 
 		return invertSql;
 
