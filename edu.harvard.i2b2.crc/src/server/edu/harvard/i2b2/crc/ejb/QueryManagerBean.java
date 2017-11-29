@@ -406,6 +406,35 @@ public class QueryManagerBean{ // implements SessionBean {
 		edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory();
 
 		queryMaster.setUserId(userId);
+		
+		//If time not set than set to 12:00
+		for (PanelType panel: queryDefType.getPanel())
+		{
+			if (panel.getPanelDateFrom().getValue() != null) {
+				ConstrainDateTimeType time = panel.getPanelDateFrom().getTime();
+				if(time == null)
+				{
+					XMLGregorianCalendar fixTime = panel.getPanelDateFrom().getValue();
+					fixTime.setSecond(0);
+					fixTime.setHour(12);
+					fixTime.setMinute(0);
+					fixTime.setMillisecond(0);
+				}
+			}
+			if (panel.getPanelDateTo().getValue() != null) {
+				ConstrainDateTimeType time = panel.getPanelDateTo().getTime();
+				if(time == null)
+				{
+					XMLGregorianCalendar fixTime2 = panel.getPanelDateTo().getValue();
+					fixTime2.setSecond(0);
+					fixTime2.setHour(12);
+					fixTime2.setMinute(0);
+					fixTime2.setMillisecond(0);
+
+				}
+			}
+		}
+		
 		StringWriter queryDefWriter = new StringWriter();
 		CRCJAXBUtil.getQueryDefJAXBUtil().marshaller(
 				of.createQueryDefinition(queryDefType), queryDefWriter);
