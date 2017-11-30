@@ -412,6 +412,7 @@ public class QueryManagerBean{ // implements SessionBean {
 		queryMaster.setUserId(userId);
 		
 		//If time not set than set to 12:00
+		/*
 		for (PanelType panel: queryDefType.getPanel())
 		{
 			if (panel.getPanelDateFrom().getValue() != null) {
@@ -438,6 +439,7 @@ public class QueryManagerBean{ // implements SessionBean {
 				}
 			}
 		}
+		*/
 		
 		StringWriter queryDefWriter = new StringWriter();
 		CRCJAXBUtil.getQueryDefJAXBUtil().marshaller(
