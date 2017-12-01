@@ -289,7 +289,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 			assertTrue(false);
 		}
 	}
-
+/*
 	@Test
 	public void validatesiteid() throws Exception {
 		String filename = testFileDir + "/validate_site.xml";
@@ -354,7 +354,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	
-/*
+
 	@Test
 	public void ValidteThanGetAudit() throws Exception {
 		String filename = testFileDir + "/get_audit.xml";
