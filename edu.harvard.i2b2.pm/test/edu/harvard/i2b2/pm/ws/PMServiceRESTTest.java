@@ -268,6 +268,48 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
+	public void setInvalidPassword() throws Exception {
+		String filename = testFileDir + "/pm_setpassword_bad.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			JAXBElement responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+			String err = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("ERROR", err);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	@Test
+	public void setValidPassword() throws Exception {
+		String filename = testFileDir + "/pm_setpassword_good.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			JAXBElement responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+			String masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
+			assertNotNull(masterInstanceResult);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	@Test
 	public void validUser() throws Exception {
 		String filename = testFileDir + "/pm_valid_user.xml";
 		try { 

@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -869,6 +870,58 @@ public class PMDbDao extends JdbcDaoSupport {
 
 			if (numRowsAdded ==0)
 				throw new I2B2DAOException("User not updated, does it exist?");
+			
+			String sql = null;
+			sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD'";
+
+			int expiredPassword = -1;
+			
+			try {
+				List<DBInfoType> queryResult  = jt.query(sql, getParam());
+				Iterator it = queryResult.iterator();
+				while (it.hasNext())
+				{
+					ParamType user = (ParamType)it.next();
+					expiredPassword = Integer.parseInt(user.getValue());
+					
+					int id = -1;
+					 sql = "select * from pm_user_params where PARAM_NAME_CD = 'DATE_PASSWORD_SET' and user_id = ?";
+					
+							List<DBInfoType> queryResults  = jt.query(sql, getParam(), caller);
+							Iterator it2 = queryResult.iterator();
+							while (it2.hasNext())
+							{
+
+								ParamType user2 = (ParamType)it.next();
+								id = user2.getId();
+							}
+					
+					
+					UserType uType = new UserType();
+					uType.setUserName(caller);
+					ParamType param = new ParamType();
+					param.setDatatype("T");
+					param.setName("PM_EXPIRED_PASSWORD");
+					//Date datePasswordSet = Date.parse(user.getValue());
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					Calendar expire  = Calendar.getInstance();
+					expire.setTime(sdf.parse(user.getValue()));
+					param.setValue(expire.toString());
+
+					if (id != -1)
+						param.setId(id);
+					
+					uType.getParam().add(param);
+					
+					setParam( uType, null, null,  caller);
+
+				}
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+				
+			}
+		
 
 		} catch (DataAccessException e) {
 			log.error("Dao deleteuser failed");
@@ -927,6 +980,64 @@ public class PMDbDao extends JdbcDaoSupport {
 		log.debug("Searching for " + userId + " with session id of " + sessionID);
 		queryResult = jt.query(sql, getSession(), userId, sessionID);
 		return queryResult;	
+	}
+
+	public boolean verifyExpiredPassword(String userId)
+	{
+		String sql = null;
+		sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD'";
+
+		int expiredPassword = -1;
+		
+		try {
+			List<DBInfoType> queryResult  = jt.query(sql, getParam());
+			Iterator it = queryResult.iterator();
+			while (it.hasNext())
+			{
+				ParamType user = (ParamType)it.next();
+				expiredPassword = Integer.parseInt(user.getValue());
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			
+		}
+		
+		// Either dont want to use expired password or not set
+		if (expiredPassword < 0)
+			return false;
+		
+		 sql = "select * from pm_user_params where PARAM_NAME_CD = 'DATE_PASSWORD_SET' and user_id = ?";
+		
+		try {
+			List<DBInfoType> queryResult  = jt.query(sql, getParam(), userId);
+			Iterator it = queryResult.iterator();
+			while (it.hasNext())
+			{
+			      Date currentDate = new Date();
+			      Calendar now = Calendar.getInstance();
+			      now.setTime(currentDate);
+			      //c.add(Calendar.DATE, expiredPassword);
+			      
+				ParamType user = (ParamType)it.next();
+				//Date datePasswordSet = Date.parse(user.getValue());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Calendar expire  = Calendar.getInstance();
+				expire.setTime(sdf.parse(user.getValue()));
+				if (expire.before(now))
+					return true;
+				else
+					return false;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			
+		}
+		
+		// If we have gotten here than the variable PM_EXPIRED_PASSWORD is set to greater than -1 and the user does not have a expired entry, so considered expired
+		return true;
+		
 	}
 
 	public boolean verifyNotLockedOut(String userId)
@@ -1011,16 +1122,27 @@ public class PMDbDao extends JdbcDaoSupport {
 
 	public int setSession(String userId, String sessionId, int timeout)
 	{
-		String addSql = "insert into pm_user_session " + 
-				"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?,?,?)";
+		
+		String addSql = "";
+
+		if (database.equalsIgnoreCase("oracle"))
+			 addSql = "insert into pm_user_session " + 
+					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?, systimestamp, systimestamp+numtodsinterval(" + (timeout * 1000) + ",'SECOND'))";
+		else if (database.equalsIgnoreCase("Microsoft sql server"))
+			 addSql = "insert into pm_user_session " + 
+					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?, getdate(), DATEADD(ms," + timeout + ",getdate()))";
+		else if (database.equalsIgnoreCase("postgresql"))
+			 addSql = "insert into pm_user_session " + 
+					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?,now(),  now() + interval '" + timeout + " millisecond')";
+
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.MILLISECOND, timeout);
 		int numRowsAdded = jt.update(addSql, 
 				userId,
 				sessionId,
-				userId,
-				Calendar.getInstance().getTime(),
-				now.getTime());	
+				userId);
+				//Calendar.getInstance().getTime(),
+				//now.getTime());	
 
 		return numRowsAdded;
 	}
