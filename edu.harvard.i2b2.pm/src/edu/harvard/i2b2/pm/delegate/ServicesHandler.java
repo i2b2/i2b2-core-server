@@ -83,6 +83,9 @@ public class ServicesHandler extends RequestHandler {
 
 		if (pmDb.verifyNotLockedOut(username))
 			throw new Exception ("To many invalid attempts, user locked out");
+		if (pmDb.verifyExpiredPassword(username))
+			throw new Exception ("Password Expired.");
+
 
 		//if (method.equalsIgnoreCase("NTLM"))
 		if ((param.get("authentication_method") != null) && (!param.get("authentication_method").equals("")))
@@ -173,6 +176,12 @@ public class ServicesHandler extends RequestHandler {
 					throw new Exception ("Current password is incorrect");
 
 				}
+				else if (!PMUtil.getInstance().passwordValidation(user.getPassword().getValue()) ) {
+					saveLoginAttempt(pmDb, username, "ENFORCEMENTPASSWORD");
+					throw new Exception("Password Enforcement Policy failed.");
+					
+				}
+
 			}
 			if (user == null)
 			{
@@ -363,7 +372,9 @@ public class ServicesHandler extends RequestHandler {
 					UserType user = validateSuppliedPassword( rmt.getUsername(), rmt.getPassword().getValue(), params);
 					uType.setFullName(user.getFullName());
 					uType.setIsAdmin(user.isIsAdmin());
-					saveLoginAttempt(pmDb, rmt.getUsername(), "SUCCESS");
+					//Dont log AGG_SERVICE_ACOUNT
+					if (!rmt.getUsername().equals("AGG_SERVICE_ACCOUNT"))
+						saveLoginAttempt(pmDb, rmt.getUsername(), "SUCCESS");
 
 				} catch (Exception e)
 				{
@@ -429,6 +440,12 @@ public class ServicesHandler extends RequestHandler {
 				String value = null;
 				String name = null;
 				name  = ((JAXBElement) obj).getName().getLocalPart();
+				
+				// If admin than log entry
+				if (uType.isIsAdmin())
+					saveLoginAttempt(pmDb, rmt.getUsername(), name);
+
+				
 				log.debug("Element name is: " + name );
 				if (name.equals("set_user"))
 					return runSetUser(pmDb, project, rmt.getUsername(), (UserType) ((JAXBElement) obj).getValue() );
