@@ -176,12 +176,6 @@ public class ServicesHandler extends RequestHandler {
 					throw new Exception ("Current password is incorrect");
 
 				}
-				else if (!PMUtil.getInstance().passwordValidation(user.getPassword().getValue()) ) {
-					saveLoginAttempt(pmDb, username, "ENFORCEMENTPASSWORD");
-					throw new Exception("Password Enforcement Policy failed.");
-					
-				}
-
 			}
 			if (user == null)
 			{
