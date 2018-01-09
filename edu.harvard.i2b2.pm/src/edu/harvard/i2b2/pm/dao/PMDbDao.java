@@ -885,7 +885,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					expiredPassword = Integer.parseInt(user.getValue());
 					
 					int id = -1;
-					 sql = "select * from pm_user_params where PARAM_NAME_CD = 'DATE_PASSWORD_SET' and user_id = ?";
+					 sql = "select * from pm_user_params where PARAM_NAME_CD = 'PM_EXPIRED_PASSWORD' and user_id = ?";
 					
 							List<DBInfoType> queryResults  = jt.query(sql, getParam(), caller);
 							if (queryResults.size() > 0) {
