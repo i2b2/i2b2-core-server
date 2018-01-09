@@ -77,13 +77,13 @@ public class ServicesHandler extends RequestHandler {
 	}
 
 
-	private UserType validateSuppliedPassword (String username, String password, Hashtable param) throws Exception
+	private UserType validateSuppliedPassword (String username, String password, Hashtable param, boolean skipValidation) throws Exception
 	{
 		PMDbDao pmDb = new PMDbDao();
 
 		if (pmDb.verifyNotLockedOut(username))
 			throw new Exception ("To many invalid attempts, user locked out");
-		if (pmDb.verifyExpiredPassword(username))
+		if (pmDb.verifyExpiredPassword(username) && (skipValidation == false))
 			throw new Exception ("Password Expired.");
 
 
@@ -316,6 +316,9 @@ public class ServicesHandler extends RequestHandler {
 
 			String password = rmt.getPassword().getValue();
 
+			BodyType bodyType = getServicesMsg.getRequestType();
+			Object obj = bodyType.getAny().get(0);
+
 
 			//If password begins with "SessionKey:" its a session key and decrypt it and validate it
 			if (password.startsWith("SessionKey:"))
@@ -362,8 +365,18 @@ public class ServicesHandler extends RequestHandler {
 				//get the user from the service
 				try {
 					log.debug("Validating user: " + rmt.getUsername());
+					
+					boolean skipValidation = false;
+					if (obj instanceof JAXBElement) {
+						String value = null;
+						String name = null;
+						name  = ((JAXBElement) obj).getName().getLocalPart();
+						if (name.equalsIgnoreCase("set_password"))
+							skipValidation = true;
+					}
+					
 
-					UserType user = validateSuppliedPassword( rmt.getUsername(), rmt.getPassword().getValue(), params);
+					UserType user = validateSuppliedPassword( rmt.getUsername(), rmt.getPassword().getValue(), params, skipValidation);
 					uType.setFullName(user.getFullName());
 					uType.setIsAdmin(user.isIsAdmin());
 					//Dont log AGG_SERVICE_ACOUNT
@@ -427,8 +440,6 @@ public class ServicesHandler extends RequestHandler {
 
 
 			log.debug("Working on Rest of services: 1");
-			BodyType bodyType = getServicesMsg.getRequestType();
-			Object obj = bodyType.getAny().get(0);
 			log.debug("Working on Rest of services: " + obj);
 			if (obj instanceof JAXBElement) {
 				String value = null;
@@ -1129,7 +1140,8 @@ public class ServicesHandler extends RequestHandler {
 		ResponseMessageType responseMessageType = null;
 
 		try {
-			int result = pmDb.setPassword(PMUtil.getInstance().getHashedPassword(password), caller);
+			String hash = PMUtil.getInstance().getHashedPassword(password);
+			int result = pmDb.setPassword(hash, caller);
 
 			ResultStatusType results = new ResultStatusType();
 			StatusType status  = new StatusType();

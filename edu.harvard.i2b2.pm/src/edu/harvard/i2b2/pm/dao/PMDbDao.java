@@ -888,6 +888,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					 sql = "select * from pm_user_params where PARAM_NAME_CD = 'DATE_PASSWORD_SET' and user_id = ?";
 					
 							List<DBInfoType> queryResults  = jt.query(sql, getParam(), caller);
+							if (queryResults.size() > 0) {
 							Iterator it2 = queryResult.iterator();
 							while (it2.hasNext())
 							{
@@ -895,7 +896,7 @@ public class PMDbDao extends JdbcDaoSupport {
 								ParamType user2 = (ParamType)it.next();
 								id = user2.getId();
 							}
-					
+							}
 					
 					UserType uType = new UserType();
 					uType.setUserName(caller);
@@ -905,8 +906,9 @@ public class PMDbDao extends JdbcDaoSupport {
 					//Date datePasswordSet = Date.parse(user.getValue());
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					Calendar expire  = Calendar.getInstance();
-					expire.setTime(sdf.parse(user.getValue()));
-					param.setValue(expire.toString());
+					//expire.setTime(sdf.parse(user.getValue()));
+					expire.add(Calendar.DATE, Integer.parseInt(user.getValue())); 
+					param.setValue(sdf.format(expire.getTime()));
 
 					if (id != -1)
 						param.setId(id);
@@ -1007,7 +1009,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		if (expiredPassword < 0)
 			return false;
 		
-		 sql = "select * from pm_user_params where PARAM_NAME_CD = 'DATE_PASSWORD_SET' and user_id = ?";
+		 sql = "select * from pm_user_params where PARAM_NAME_CD = 'PM_EXPIRED_PASSWORD' and user_id = ?";
 		
 		try {
 			List<DBInfoType> queryResult  = jt.query(sql, getParam(), userId);

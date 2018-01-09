@@ -1064,7 +1064,26 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		}
 	}
 
-
+	@Test
+	public void GlobalParamsUnSetExpiredPassword() throws Exception {
+		String filename = testFileDir + "/pm_unset_global_expired_password.xml";
+		//ParamType ctype = null;
+		int id = -1;
+		String masterInstanceResult = null;
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+			JAXBElement responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
+			assertNotNull(masterInstanceResult);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			throw e;
+		}
+	}
 
 }
 
