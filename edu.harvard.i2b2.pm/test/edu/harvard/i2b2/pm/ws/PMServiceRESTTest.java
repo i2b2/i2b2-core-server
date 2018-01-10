@@ -1000,6 +1000,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		assertEquals(ctype.getValue(),"my test");
 		assertEquals(ctype.getDatatype(),"T");
 	}	
+	/*
 
 	@Test
 	public void GlobalParamsSetExpiredPassword() throws Exception {
@@ -1084,6 +1085,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			throw e;
 		}
 	}
+	*/
 
 }
 
