@@ -35,7 +35,7 @@ import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
  * @see QtQueryMaster
  */
 public class QueryResultTypeSpringDao extends CRCDAO implements
-		IQueryResultTypeDao {
+IQueryResultTypeDao {
 
 	JdbcTemplate jdbcTemplate = null;
 	NamedParameterJdbcTemplate namedParameterJdbcTemplate = null;
@@ -63,7 +63,7 @@ public class QueryResultTypeSpringDao extends CRCDAO implements
 	public QtQueryResultType getQueryResultTypeById(int resultTypeId) {
 
 		String sql = "select * from " + getDbSchemaName()
-				+ "qt_query_result_type where result_type_id = ?";
+		+ "qt_query_result_type where result_type_id = ?";
 		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
 				.queryForObject(sql, new Object[] { resultTypeId },
 						queryResultTypeMapper);
@@ -79,23 +79,45 @@ public class QueryResultTypeSpringDao extends CRCDAO implements
 	@SuppressWarnings("unchecked")
 	public List<QtQueryResultType> getQueryResultTypeByName(String resultName,List<String> roles) {
 
-		String sql = "select * from " + getDbSchemaName()
-				+ "qt_query_result_type where name = '" + resultName + "' and (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCD)";
-		Map myRoles = Collections.singletonMap("roleCd", roles);
-		List<QtQueryResultType> queryResultType = namedParameterJdbcTemplate.query(sql,
-				myRoles,
-				queryResultTypeMapper);
+		List<QtQueryResultType> queryResultType = null;
+
+		if (roles != null)
+		{
+			String sql = "select * from " + getDbSchemaName()
+			+ "qt_query_result_type where name = '" + resultName + "' and (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCD)";
+			Map myRoles = Collections.singletonMap("roleCd", roles);
+			queryResultType = namedParameterJdbcTemplate.query(sql,
+					myRoles,
+					queryResultTypeMapper);
+		} else
+		{
+			String sql = "select * from " + getDbSchemaName()
+			+ "qt_query_result_type where name = ?";
+			queryResultType = jdbcTemplate.query(sql,
+					new Object[] { resultName.toUpperCase() },
+					queryResultTypeMapper);
+		}
 		return queryResultType;
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<QtQueryResultType> getAllQueryResultType(List<String> roles) {
-		String sql = "select * from " + getDbSchemaName()
-				+ "qt_query_result_type where user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd) order by result_type_id";
-		Map myRoles = Collections.singletonMap("roleCd", roles);
-		List<QtQueryResultType> queryResultTypeList = namedParameterJdbcTemplate.query(sql,
-				  myRoles ,
-				queryResultTypeMapper);
+
+		List<QtQueryResultType> queryResultTypeList = null;
+		if (roles != null)
+		{
+			String sql = "select * from " + getDbSchemaName()
+			+ "qt_query_result_type where user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd) order by result_type_id";
+			Map myRoles = Collections.singletonMap("roleCd", roles);
+			queryResultTypeList = namedParameterJdbcTemplate.query(sql,
+					myRoles ,
+					queryResultTypeMapper);
+		} else {
+			String sql = "select * from " + getDbSchemaName()
+			+ "qt_query_result_type order by result_type_id";
+			queryResultTypeList = jdbcTemplate.query(sql,
+					queryResultTypeMapper);
+		}
 		return queryResultTypeList;
 	}
 
