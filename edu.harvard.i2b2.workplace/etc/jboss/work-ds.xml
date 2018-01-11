@@ -21,7 +21,7 @@
 		pool-name="WorkplaceDemoDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:oracle:thin:@localhost:1521:XE</connection-url>
 		<driver-class>oracle.jdbc.OracleDriver</driver-class>
-		<driver>ojdbc6.jar</driver>
+		<driver>ojdbc8.jar</driver>
 		<security>
 			<user-name>i2b2workdata</user-name>
 			<password>demouser</password>
@@ -43,7 +43,7 @@
 		pool-name="WorkplaceDemoDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:postgresql://localhost:5432/i2b2</connection-url>
 		<driver-class>org.postgresql.Driver</driver-class>
-		<driver>postgresql-9.2-1002.jdbc4.jar</driver>
+		<driver>postgresql-42.1.4.jar</driver>
 		<security>
 			<user-name>i2b2workdata</user-name>
 			<password>demouser</password>
@@ -63,7 +63,7 @@
 		pool-name="WorkplaceDemoDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc: sqlserver://localhost:1433</connection-url>
 		<driver-class>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver-class>
-		<driver>sqljdbc4.jar</driver>
+		<driver>mssql-jdbc-6.2.2.jre8.jar</driver>
 		<security>
 			<user-name>i2b2workdata</user-name>
 			<password>demouser</password>
