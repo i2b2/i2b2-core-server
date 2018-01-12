@@ -84,7 +84,7 @@ IQueryResultTypeDao {
 		if (roles != null)
 		{
 			String sql = "select * from " + getDbSchemaName()
-			+ "qt_query_result_type where name = '" + resultName + "' and (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCD)";
+			+ "qt_query_result_type where name = '" + resultName + "' and (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd))";
 			Map myRoles = Collections.singletonMap("roleCd", roles);
 			queryResultType = namedParameterJdbcTemplate.query(sql,
 					myRoles,
