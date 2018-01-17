@@ -80,7 +80,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Create CRC User", masterInstanceResult);
 
 			//Add Role 1
 			filename = testFileDir + "/pm_set_role1_for_crc.xml";
@@ -91,7 +91,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Set Role 1 for CRC", masterInstanceResult);
 
 			//Add Role 1
 			filename = testFileDir + "/pm_set_role2_for_crc.xml";
@@ -102,7 +102,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Set Role 2 for CRC", masterInstanceResult);
 
 			//Add Role 1
 			filename = testFileDir + "/pm_set_role1_for_work.xml";
@@ -124,7 +124,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Set Role 2 for Work", masterInstanceResult);
 			//Add Role 1
 			filename = testFileDir + "/pm_set_role3_for_work.xml";
 			requestString = getQueryString(filename);
@@ -134,7 +134,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Set Role 3 for Work", masterInstanceResult);
 			
 			//Add Role 1
 			filename = testFileDir + "/pm_set_role1_for_im.xml";
@@ -145,7 +145,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Set Role 1 for IM", masterInstanceResult);
 			//Add Role 1
 			filename = testFileDir + "/pm_set_role2_for_im.xml";
 			requestString = getQueryString(filename);
@@ -155,7 +155,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);		
+			assertNotNull("Set Role 2 for IM", masterInstanceResult);		
 		} catch (Exception e) { 
 			e.printStackTrace();
 			assertTrue(false);
@@ -452,7 +452,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Create Cell", masterInstanceResult);
 
 			//Check to see if really added
 			filename = testFileDir + "/pm_create_cell_with_valid_user_check.xml";
@@ -463,12 +463,12 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			ctype = (CellDataType)helper.getObjectByClass(r.getMessageBody().getAny(),CellDataType.class);
-			assertNotNull(ctype);
-			assertEquals(ctype.getId(),"Bamboo");
-			assertEquals(ctype.getProjectPath(),"/Bamboo");
-			assertEquals(ctype.getUrl(),"http://127.0.0.1/bamboo");
-			assertEquals(ctype.getName(),"Bamboo test");
-			assertEquals(ctype.getMethod(),"REST");
+			assertNotNull("Check Exists", ctype);
+			assertEquals("Check Exists", ctype.getId(),"Bamboo");
+			assertEquals("Check Exists", ctype.getProjectPath(),"/Bamboo");
+			assertEquals("Check Exists", ctype.getUrl(),"http://127.0.0.1/bamboo");
+			assertEquals("Check Exists", ctype.getName(),"Bamboo test");
+			assertEquals("Check Exists", ctype.getMethod(),"REST");
 
 			//Update the cell
 			filename = testFileDir + "/pm_update_cell_with_valid_user.xml";
@@ -479,7 +479,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Update Cell", masterInstanceResult);
 
 			//Check to see if really added
 			filename = testFileDir + "/pm_create_cell_with_valid_user_check.xml";
@@ -490,12 +490,12 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();			
 			ctype = (CellDataType)helper.getObjectByClass(r.getMessageBody().getAny(),CellDataType.class);
-			assertNotNull(ctype);
-			assertEquals(ctype.getId(),"Bamboo");
-			assertEquals(ctype.getProjectPath(),"/Bamboo");
-			assertEquals(ctype.getUrl(),"http://127.0.0.1/bamboo2");
-			assertEquals(ctype.getName(),"Bamboo test2");
-			assertEquals(ctype.getMethod(),"REST2");
+			assertNotNull("Check Exists 2", ctype);
+			assertEquals("Check Exists 2", ctype.getId(),"Bamboo");
+			assertEquals("Check Exists 2", ctype.getProjectPath(),"/Bamboo");
+			assertEquals("Check Exists 2", ctype.getUrl(),"http://127.0.0.1/bamboo2");
+			assertEquals("Check Exists 2", ctype.getName(),"Bamboo test2");
+			assertEquals("Check Exists 2", ctype.getMethod(),"REST2");
 
 			//Delete cell
 			filename = testFileDir + "/pm_delete_cell_with_valid_user.xml";
@@ -506,7 +506,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Delete Cell", masterInstanceResult);
 
 			//Check to see if really deleted
 			filename = testFileDir + "/pm_create_cell_with_valid_user_check.xml";
@@ -528,7 +528,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Create Cell 3", masterInstanceResult);
 
 			//Check to see if really reenabled
 			filename = testFileDir + "/pm_create_cell_with_valid_user_check.xml";
@@ -539,12 +539,12 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();			
 			ctype = (CellDataType)helper.getObjectByClass(r.getMessageBody().getAny(),CellDataType.class);
-			assertNotNull(ctype);
-			assertEquals(ctype.getId(),"Bamboo");
-			assertEquals(ctype.getProjectPath(),"/Bamboo");
-			assertEquals(ctype.getUrl(),"http://127.0.0.1/bamboo");
-			assertEquals(ctype.getName(),"Bamboo test");
-			assertEquals(ctype.getMethod(),"REST");
+			assertNotNull("Check Exists 3", ctype);
+			assertEquals("Check Exists 3", ctype.getId(),"Bamboo");
+			assertEquals("Check Exists 3", ctype.getProjectPath(),"/Bamboo");
+			assertEquals("Check Exists 3", ctype.getUrl(),"http://127.0.0.1/bamboo");
+			assertEquals("Check Exists 3", ctype.getName(),"Bamboo test");
+			assertEquals("Check Exists 3", ctype.getMethod(),"REST");
 		} catch (Exception e) { 
 			e.printStackTrace();
 			assertTrue(false);
@@ -588,7 +588,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Create Project", masterInstanceResult);
 
 			//Check to see if really added
 			filename = testFileDir + "/pm_create_project_with_valid_user_check.xml";
@@ -599,13 +599,13 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			ctype = (ProjectType)helper.getObjectByClass(r.getMessageBody().getAny(),ProjectType.class);
-			assertNotNull(ctype);
-			assertEquals(ctype.getId(),"BAMBOO");
-			assertEquals(ctype.getName(),"Bamboo Test");
-			assertEquals(ctype.getKey(), "ca2");
-			assertEquals(ctype.getWiki(),"http://127.0.0.1/wiki");
-			assertEquals(ctype.getDescription(),"This is a message");
-			assertEquals(ctype.getPath(),"/bamboo");
+			assertNotNull("Check exists", ctype);
+			assertEquals("Check exists", ctype.getId(),"BAMBOO");
+			assertEquals("Check exists", ctype.getName(),"Bamboo Test");
+			assertEquals("Check exists", ctype.getKey(), "ca2");
+			assertEquals("Check exists", ctype.getWiki(),"http://127.0.0.1/wiki");
+			assertEquals("Check exists", ctype.getDescription(),"This is a message");
+			assertEquals("Check exists", ctype.getPath(),"/bamboo");
 
 			//Update the project
 			filename = testFileDir + "/pm_update_project_with_valid_user.xml";
@@ -616,7 +616,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Update Project", masterInstanceResult);
 
 			//Check to see if really added
 			filename = testFileDir + "/pm_create_project_with_valid_user_check.xml";
@@ -627,13 +627,13 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();			
 			ctype = (ProjectType)helper.getObjectByClass(r.getMessageBody().getAny(),ProjectType.class);
-			assertNotNull(ctype);
-			assertEquals(ctype.getId(),"BAMBOO");
-			assertEquals(ctype.getName(),"Bamboo Test2");
-			assertEquals(ctype.getKey(), "e82");
-			assertEquals(ctype.getWiki(),"http://127.0.0.1/wiki2");
-			assertEquals(ctype.getDescription(),"This is a message2");
-			assertEquals(ctype.getPath(),"/bamboo");
+			assertNotNull("Check exists 2", ctype);
+			assertEquals("Check exists 2",ctype.getId(),"BAMBOO");
+			assertEquals("Check exists 2",ctype.getName(),"Bamboo Test2");
+			assertEquals("Check exists 2",ctype.getKey(), "e82");
+			assertEquals("Check exists 2",ctype.getWiki(),"http://127.0.0.1/wiki2");
+			assertEquals("Check exists 2",ctype.getDescription(),"This is a message2");
+			assertEquals("Check exists 2",ctype.getPath(),"/bamboo");
 
 			//Delete project
 			filename = testFileDir + "/pm_delete_project_with_valid_user.xml";
@@ -644,7 +644,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Delete Porject", masterInstanceResult);
 
 			//Check to see if really deleted
 			filename = testFileDir + "/pm_create_project_with_valid_user_check.xml";
@@ -666,7 +666,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Create Project 2",masterInstanceResult);
 
 			//Check to see if really reenabled
 			filename = testFileDir + "/pm_create_project_with_valid_user_check.xml";
@@ -677,13 +677,13 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			r = (ResponseMessageType)responseJaxb.getValue();
 			helper = new  JAXBUnWrapHelper();			
 			ctype = (ProjectType)helper.getObjectByClass(r.getMessageBody().getAny(),ProjectType.class);
-			assertNotNull(ctype);
-			assertEquals(ctype.getId(),"BAMBOO");
-			assertEquals(ctype.getName(),"Bamboo Test");
-			assertEquals(ctype.getWiki(),"http://127.0.0.1/wiki");
-			assertEquals(ctype.getDescription(),"This is a message");
-			assertEquals(ctype.getPath(),"/bamboo");
-			assertEquals(ctype.getKey(), "ca2");
+			assertNotNull("Check exists 3",ctype);
+			assertEquals("Check exists 2",ctype.getId(),"BAMBOO");
+			assertEquals("Check exists 2",ctype.getName(),"Bamboo Test");
+			assertEquals("Check exists 2",ctype.getWiki(),"http://127.0.0.1/wiki");
+			assertEquals("Check exists 2",ctype.getDescription(),"This is a message");
+			assertEquals("Check exists 2",ctype.getPath(),"/bamboo");
+			assertEquals("Check exists 2",ctype.getKey(), "ca2");
 		} catch (Exception e) { 
 			e.printStackTrace();
 			assertTrue(false);
@@ -918,11 +918,11 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			}
 		} catch (Exception e) { 
 		}
-		assertNotNull(masterInstanceResult);
-		assertNotNull(ctype);
-		assertEquals(ctype.getName(),"Bamboo_Param");
-		assertEquals(ctype.getValue(),"my test");
-		assertEquals(ctype.getDatatype(),"T");
+		assertNotNull("Null MasterID", masterInstanceResult);
+		assertNotNull("Null ctype", ctype);
+		assertEquals("not equal name", ctype.getName(),"Bamboo_Param");
+		assertEquals("not equal value", ctype.getValue(),"my test");
+		assertEquals("not equal type", ctype.getDatatype(),"T");
 	}	
 
 
