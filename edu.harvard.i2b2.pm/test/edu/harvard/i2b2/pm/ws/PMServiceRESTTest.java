@@ -1000,7 +1000,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		assertEquals(ctype.getValue(),"my test");
 		assertEquals(ctype.getDatatype(),"T");
 	}	
-	/*
+	
 
 	@Test
 	public void GlobalParamsSetExpiredPassword() throws Exception {
@@ -1067,25 +1067,53 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 	@Test
 	public void GlobalParamsUnSetExpiredPassword() throws Exception {
-		String filename = testFileDir + "/pm_unset_global_expired_password.xml";
-		//ParamType ctype = null;
-		int id = -1;
-		String masterInstanceResult = null;
-		try { 
-			String requestString = getQueryString(filename);
-			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
-			JAXBElement responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
-			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
-			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
-			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
-		} catch (Exception e) { 
-			e.printStackTrace();
-			throw e;
+		
+		String filename = testFileDir + "/pm_create_global_param_with_valid_user_check.xml";
+		requestString = getQueryString(filename);
+		requestElement = convertStringToOMElement(requestString); 
+		responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+		responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		r = (ResponseMessageType)responseJaxb.getValue();
+		helper = new  JAXBUnWrapHelper();
+		ParamsType allParams = (ParamsType)helper.getObjectByClass(r.getMessageBody().getAny(),ParamsType.class);
+
+		for (ParamType param : allParams.getParam())
+		{
+			if (param.getName().equals("PM_EXPIRED_PASSWORD"))
+			{
+				assertNotNull(param);
+				assertEquals(param.getDatatype(),"N");
+				id = param.getId();
+				break;
+			}
 		}
+
+		//Delete Param
+		filename = testFileDir + "/pm_delete_global_param_with_valid_user.xml";
+		requestString = getQueryString(filename);
+		requestString = requestString.replace("{{{id}}}", Integer.toString(id));
+		requestElement = convertStringToOMElement(requestString); 
+		responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+		responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		r = (ResponseMessageType)responseJaxb.getValue();
+		helper = new  JAXBUnWrapHelper();
+		masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
+		assertNotNull(masterInstanceResult);
+
+		//Check to see if really deleted
+		filename = testFileDir + "/pm_recreate_global_param_with_valid_user_check.xml";
+		requestString = getQueryString(filename);
+		requestString = requestString.replace("{{{id}}}", Integer.toString(id));			
+		requestElement = convertStringToOMElement(requestString); 
+		responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+		responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		r = (ResponseMessageType)responseJaxb.getValue();
+		String err = r.getResponseHeader().getResultStatus().getStatus().getType();
+		assertEquals("ERROR", err);			
+
+		
 	}
-	*/
+	
 
 }
 
