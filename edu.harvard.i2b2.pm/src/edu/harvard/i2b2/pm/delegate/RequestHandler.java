@@ -9,17 +9,12 @@
  */
 package edu.harvard.i2b2.pm.delegate;
 
-import java.util.Iterator;
-
-import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.pm.datavo.i2b2message.MessageHeaderType;
-import edu.harvard.i2b2.pm.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.pm.ejb.DBInfoType;
-import edu.harvard.i2b2.pm.util.PMUtil;
 
 public abstract class RequestHandler {
     protected final Log log = LogFactory.getLog(getClass());

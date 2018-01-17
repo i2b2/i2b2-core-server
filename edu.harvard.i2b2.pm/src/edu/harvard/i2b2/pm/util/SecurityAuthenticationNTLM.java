@@ -1,12 +1,6 @@
 package edu.harvard.i2b2.pm.util;
 
-import java.net.UnknownHostException;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-
-import edu.harvard.i2b2.pm.ejb.DBInfoType;
-import edu.harvard.i2b2.pm.services.HiveParamData;
 
 import jcifs.UniAddress;
 import jcifs.smb.NtlmPasswordAuthentication;

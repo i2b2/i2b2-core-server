@@ -9,13 +9,9 @@
  */
 package edu.harvard.i2b2.pm.dao;
 
-import java.io.IOException;
-import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,22 +28,25 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.DOMOutputter;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
-import edu.harvard.i2b2.common.util.xml.XMLUtil;
+import edu.harvard.i2b2.pm.datavo.pm.ApprovalType;
+import edu.harvard.i2b2.pm.datavo.pm.CellDataType;
+import edu.harvard.i2b2.pm.datavo.pm.ConfigureType;
+import edu.harvard.i2b2.pm.datavo.pm.GlobalDataType;
+import edu.harvard.i2b2.pm.datavo.pm.ParamType;
+import edu.harvard.i2b2.pm.datavo.pm.ParamsType;
+import edu.harvard.i2b2.pm.datavo.pm.PasswordType;
+import edu.harvard.i2b2.pm.datavo.pm.ProjectRequestType;
+import edu.harvard.i2b2.pm.datavo.pm.ProjectType;
+import edu.harvard.i2b2.pm.datavo.pm.RoleType;
+import edu.harvard.i2b2.pm.datavo.pm.UserType;
 import edu.harvard.i2b2.pm.ejb.DBInfoType;
 //import edu.harvard.i2b2.pm.services.EnvironmentData;
 //import edu.harvard.i2b2.pm.services.HiveParamData;
@@ -63,20 +62,6 @@ import edu.harvard.i2b2.pm.services.UserParamData;
 //import edu.harvard.i2b2.pm.services.RoleData;
 //import edu.harvard.i2b2.pm.services.VariableData;
 import edu.harvard.i2b2.pm.util.PMUtil;
-import edu.harvard.i2b2.pm.datavo.i2b2message.MessageHeaderType;
-import edu.harvard.i2b2.pm.datavo.pm.ApprovalType;
-import edu.harvard.i2b2.pm.datavo.pm.BlobType;
-import edu.harvard.i2b2.pm.datavo.pm.ConfigureType;
-import edu.harvard.i2b2.pm.datavo.pm.ParamType;
-import edu.harvard.i2b2.pm.datavo.pm.ParamsType;
-import edu.harvard.i2b2.pm.datavo.pm.PasswordType;
-import edu.harvard.i2b2.pm.datavo.pm.CellDataType;
-import edu.harvard.i2b2.pm.datavo.pm.GlobalDataType;
-import edu.harvard.i2b2.pm.datavo.pm.ProjectRequestType;
-import edu.harvard.i2b2.pm.datavo.pm.ProjectType;
-import edu.harvard.i2b2.pm.datavo.pm.RoleType;
-import edu.harvard.i2b2.pm.datavo.pm.RolesType;
-import edu.harvard.i2b2.pm.datavo.pm.UserType;
 
 
 

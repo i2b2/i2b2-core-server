@@ -1,15 +1,15 @@
 package edu.harvard.i2b2.pm.upgrade;
 
-import java.util.*;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 
 public class UpdateCells {

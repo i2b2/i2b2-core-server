@@ -14,7 +14,6 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Hashtable;
 
 
 public class UpgradeFrom13 {

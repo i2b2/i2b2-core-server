@@ -1069,14 +1069,14 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	public void GlobalParamsUnSetExpiredPassword() throws Exception {
 		
 		String filename = testFileDir + "/pm_create_global_param_with_valid_user_check.xml";
-		requestString = getQueryString(filename);
-		requestElement = convertStringToOMElement(requestString); 
-		responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
-		responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
-		r = (ResponseMessageType)responseJaxb.getValue();
-		helper = new  JAXBUnWrapHelper();
+		String requestString = getQueryString(filename);
+		OMElement requestElement = convertStringToOMElement(requestString); 
+		OMElement responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+		JAXBElement responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+		JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 		ParamsType allParams = (ParamsType)helper.getObjectByClass(r.getMessageBody().getAny(),ParamsType.class);
-
+		int id = -1;
 		for (ParamType param : allParams.getParam())
 		{
 			if (param.getName().equals("PM_EXPIRED_PASSWORD"))
@@ -1097,7 +1097,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 		r = (ResponseMessageType)responseJaxb.getValue();
 		helper = new  JAXBUnWrapHelper();
-		masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
+		String masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
 		assertNotNull(masterInstanceResult);
 
 		//Check to see if really deleted

@@ -11,6 +11,20 @@
 
 package edu.harvard.i2b2.pm.ws;
 
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.util.Date;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
@@ -46,23 +60,6 @@ import edu.harvard.i2b2.pm.datavo.pm.UserType;
 import edu.harvard.i2b2.pm.datavo.pm.UsersType;
 import edu.harvard.i2b2.pm.util.JAXBConstant;
 //import edu.harvard.i2b2.pm.datavo.pm.ResponseType;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.StringReader;
-import java.io.StringWriter;
-
-import java.math.BigDecimal;
-
-import java.util.Date;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 
 /**

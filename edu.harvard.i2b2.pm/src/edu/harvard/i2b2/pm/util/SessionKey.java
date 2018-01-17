@@ -1,7 +1,10 @@
 package edu.harvard.i2b2.pm.util;
+import java.text.DateFormat;
 import java.util.Date;
-import java.text.*;
-import javax.crypto.*;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 
 public class SessionKey {

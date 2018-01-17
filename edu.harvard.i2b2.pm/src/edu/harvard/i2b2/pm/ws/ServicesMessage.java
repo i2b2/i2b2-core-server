@@ -10,19 +10,16 @@
 
 package edu.harvard.i2b2.pm.ws;
 
-import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
-import edu.harvard.i2b2.pm.datavo.i2b2message.BodyType;
-import edu.harvard.i2b2.pm.datavo.i2b2message.RequestMessageType;
-import edu.harvard.i2b2.pm.datavo.pm.GetUserConfigurationType;
-import edu.harvard.i2b2.pm.util.JAXBConstant;
+import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.xml.bind.JAXBElement;
+import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
+import edu.harvard.i2b2.pm.datavo.i2b2message.BodyType;
+import edu.harvard.i2b2.pm.datavo.i2b2message.RequestMessageType;
 
 
 /**

@@ -8,14 +8,14 @@
 
 package edu.harvard.i2b2.pm.util;
 
-import java.net.UnknownHostException;
+import java.util.Hashtable;
 
-import edu.harvard.i2b2.pm.ejb.DBInfoType;
-import edu.harvard.i2b2.pm.services.HiveParamData;
-
-import javax.naming.*;
-import javax.naming.directory.*;
-import java.util.*;
+import javax.naming.AuthenticationException;
+import javax.naming.AuthenticationNotSupportedException;
+import javax.naming.Context;
+import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
 
 /*
  * LDAP authentication for i2b2 v1.6

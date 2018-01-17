@@ -9,8 +9,6 @@
  */
 package edu.harvard.i2b2.pm.delegate;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -21,17 +19,9 @@ import javax.xml.bind.JAXBElement;
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
-import edu.harvard.i2b2.pm.services.HiveParamData;
-import edu.harvard.i2b2.pm.services.SessionData;
-import edu.harvard.i2b2.pm.services.UserParamData;
-import edu.harvard.i2b2.pm.util.*;
-//import edu.harvard.i2b2.pm.util.SessionKey;
-import edu.harvard.i2b2.pm.ws.MessageFactory;
-import edu.harvard.i2b2.pm.ws.ServicesMessage;
 import edu.harvard.i2b2.pm.dao.PMDbDao;
-import edu.harvard.i2b2.pm.datavo.i2b2message.MessageHeaderType;
-import edu.harvard.i2b2.pm.datavo.pm.PasswordType;
 import edu.harvard.i2b2.pm.datavo.i2b2message.BodyType;
+import edu.harvard.i2b2.pm.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.pm.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.pm.datavo.i2b2message.ResultStatusType;
 import edu.harvard.i2b2.pm.datavo.i2b2message.SecurityType;
@@ -44,9 +34,9 @@ import edu.harvard.i2b2.pm.datavo.pm.ConfigureType;
 import edu.harvard.i2b2.pm.datavo.pm.ConfiguresType;
 import edu.harvard.i2b2.pm.datavo.pm.GetUserConfigurationType;
 import edu.harvard.i2b2.pm.datavo.pm.GlobalDataType;
-import edu.harvard.i2b2.pm.datavo.pm.GlobalDatasType;
 import edu.harvard.i2b2.pm.datavo.pm.ParamType;
 import edu.harvard.i2b2.pm.datavo.pm.ParamsType;
+import edu.harvard.i2b2.pm.datavo.pm.PasswordType;
 import edu.harvard.i2b2.pm.datavo.pm.ProjectRequestType;
 import edu.harvard.i2b2.pm.datavo.pm.ProjectRequestsType;
 import edu.harvard.i2b2.pm.datavo.pm.ProjectType;
@@ -55,7 +45,14 @@ import edu.harvard.i2b2.pm.datavo.pm.RoleType;
 import edu.harvard.i2b2.pm.datavo.pm.RolesType;
 import edu.harvard.i2b2.pm.datavo.pm.UserType;
 import edu.harvard.i2b2.pm.datavo.pm.UsersType;
-import edu.harvard.i2b2.pm.ejb.DBInfoType;
+import edu.harvard.i2b2.pm.services.HiveParamData;
+import edu.harvard.i2b2.pm.services.SessionData;
+import edu.harvard.i2b2.pm.services.UserParamData;
+import edu.harvard.i2b2.pm.util.PMUtil;
+import edu.harvard.i2b2.pm.util.SecurityAuthentication;
+//import edu.harvard.i2b2.pm.util.SessionKey;
+import edu.harvard.i2b2.pm.ws.MessageFactory;
+import edu.harvard.i2b2.pm.ws.ServicesMessage;
 
 
 public class ServicesHandler extends RequestHandler {

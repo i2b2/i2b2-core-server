@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Properties;
