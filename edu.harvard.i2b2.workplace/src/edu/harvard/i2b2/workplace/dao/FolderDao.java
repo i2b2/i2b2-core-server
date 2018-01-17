@@ -558,8 +558,7 @@ public class FolderDao extends JdbcDaoSupport {
 		
 			try {
 				// setting max number of rows to be returned
-				if(returnType.getMax() !=null && returnType.getMax()>0){
-					if(dbInfo!=null){
+				if(returnType.getMax() !=null && returnType.getMax()>0 && dbInfo!=null){
 						int fetchSize = returnType.getMax() +1 ;
 						
 						// if server is oracle then use rownum to return max number of rows
@@ -576,7 +575,6 @@ public class FolderDao extends JdbcDaoSupport {
 						//	maxString = " limit " + fetchSize; 
 
 					}
-				}
 			}
 			catch( Exception e){
 				log.error(e);
@@ -1446,11 +1444,9 @@ public class FolderDao extends JdbcDaoSupport {
 				sharedStr = resultToSplit.substring(indexofShared+10, indexofUser);
 				contentUserId = resultToSplit.substring(indexofUser+9);
 				
-				if(!sharedStr.equalsIgnoreCase("Y")){
-					if(!contentUserId.equalsIgnoreCase(userId)){
+				if ((!sharedStr.equalsIgnoreCase("Y")) && (!contentUserId.equalsIgnoreCase(userId))){
 						log.debug( "User does not have privileges to set protected access for this content");
 						return -11111;
-					}
 				} // if (sharedStr==null || !sharedStr.equalsIgnoreCase("Y"))
 			} // if managerRole == false
 		} //if(resultString!=null && !resultString.isEmpty())			
@@ -1512,11 +1508,9 @@ public class FolderDao extends JdbcDaoSupport {
 				sharedStr = resultToSplit.substring(10, resultToSplit.indexOf("\\user_id="));
 				contentUserId = resultToSplit.substring(resultToSplit.indexOf("\\user_id=")+9, resultToSplit.lastIndexOf("\\"));	
 				
-				if(sharedStr!=null && !sharedStr.equalsIgnoreCase("Y")){
-					if(!contentUserId.equalsIgnoreCase(userId)){
+				if ((sharedStr!=null && !sharedStr.equalsIgnoreCase("Y")) && (!contentUserId.equalsIgnoreCase(userId))){
 						log.debug( "User does not have privileges to set protected access for this content");
 						return -11111;
-					}
 				} // if (sharedStr==null || !sharedStr.equalsIgnoreCase("Y"))
 			} // if managerRole == false		
 		}

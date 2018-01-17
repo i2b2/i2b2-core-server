@@ -90,11 +90,9 @@ public class OntologyService {
 		GetChildrenDataMessage childrenDataMsg = new GetChildrenDataMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (childrenDataMsg.getRequestMessageType() != null) {
-			if (childrenDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = childrenDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((childrenDataMsg.getRequestMessageType() != null) && (childrenDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = childrenDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -141,11 +139,9 @@ public class OntologyService {
 		GetCategoriesDataMessage categoriesDataMsg = new GetCategoriesDataMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (categoriesDataMsg.getRequestMessageType() != null) {
-			if (categoriesDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = categoriesDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((categoriesDataMsg.getRequestMessageType() != null) && (categoriesDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = categoriesDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -191,11 +187,9 @@ public class OntologyService {
 				requestElementString);
 
 		long waitTime = 0;
-		if (schemesDataMsg.getRequestMessageType() != null) {
-			if (schemesDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = schemesDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((schemesDataMsg.getRequestMessageType() != null) && (schemesDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = schemesDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -241,11 +235,9 @@ public class OntologyService {
 				requestElementString);
 
 		long waitTime = 0;
-		if (codeInfoDataMsg.getRequestMessageType() != null) {
-			if (codeInfoDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = codeInfoDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((codeInfoDataMsg.getRequestMessageType() != null) && (codeInfoDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = codeInfoDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -292,11 +284,9 @@ public class OntologyService {
 				requestElementString);
 
 		long waitTime = 0;
-		if (nameInfoDataMsg.getRequestMessageType() != null) {
-			if (nameInfoDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = nameInfoDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((nameInfoDataMsg.getRequestMessageType() != null) && (nameInfoDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = nameInfoDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -344,11 +334,9 @@ public class OntologyService {
 				requestElementString);
 
 		long waitTime = 0;
-		if (termInfoDataMsg.getRequestMessageType() != null) {
-			if (termInfoDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = termInfoDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((termInfoDataMsg.getRequestMessageType() != null) && (termInfoDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = termInfoDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -397,11 +385,9 @@ public class OntologyService {
 				requestElementString);
 
 		long waitTime = 0;
-		if (dataMsg.getRequestMessageType() != null) {
-			if (dataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = dataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((dataMsg.getRequestMessageType() != null) && (dataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = dataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -411,8 +397,8 @@ public class OntologyService {
 		return execute(new GetDerivedFactColumnsHandler(dataMsg), waitTime);
 	}
 
-	
-	
+
+
 	private OMElement execute(RequestHandler handler, long waitTime)
 			throws I2B2Exception {
 		// do Ontology query processing inside thread, so that
@@ -528,11 +514,9 @@ public class OntologyService {
 		AddChildDataMessage childDataMsg = new AddChildDataMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (childDataMsg.getRequestMessageType() != null) {
-			if (childDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = childDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((childDataMsg.getRequestMessageType() != null) && (childDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = childDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -541,7 +525,7 @@ public class OntologyService {
 		return execute(new AddChildHandler(childDataMsg), waitTime);
 
 	}
-	
+
 	public OMElement modifyChild(OMElement modifyChildElement) throws I2B2Exception {
 
 		OMElement returnElement = null;
@@ -563,11 +547,9 @@ public class OntologyService {
 		ModifyChildDataMessage childDataMsg = new ModifyChildDataMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (childDataMsg.getRequestMessageType() != null) {
-			if (childDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = childDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((childDataMsg.getRequestMessageType() != null) && (childDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = childDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -601,11 +583,9 @@ public class OntologyService {
 		// deleteDataMsg.setRequestMessageType(requestElementString);
 
 		long waitTime = 0;
-		if (deleteDataMsg.getRequestMessageType() != null) {
-			if (deleteDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = deleteDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((deleteDataMsg.getRequestMessageType() != null) && (deleteDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = deleteDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Workplace query processing inside thread, so that
@@ -636,11 +616,9 @@ public class OntologyService {
 		CRCUpdateConceptMessage childDataMsg = new CRCUpdateConceptMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (childDataMsg.getRequestMessageType() != null) {
-			if (childDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = childDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((childDataMsg.getRequestMessageType() != null) && (childDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = childDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -649,41 +627,39 @@ public class OntologyService {
 		return execute(new CRCConceptUpdateHandler(childDataMsg), waitTime);
 
 	}
-	
+
 	public OMElement updateConceptTotalNum(OMElement updateConceptTotalNumElement)
-	throws I2B2Exception {
+			throws I2B2Exception {
 
-			OMElement returnElement = null;
-			String ontologyDataResponse = null;
-			String unknownErrorMessage = "Error message delivered from the remote server \n"
-					+ "You may wish to retry your last action";
-			
-			if (updateConceptTotalNumElement == null) {
-				log.error("Incoming Ontology request is null");
-				ResponseMessageType responseMsgType = MessageFactory
-						.doBuildErrorResponse(null, unknownErrorMessage);
-				ontologyDataResponse = MessageFactory
-						.convertToXMLString(responseMsgType);
-				return MessageFactory
-						.createResponseOMElementFromString(ontologyDataResponse);
-			}
-			String requestElementString = updateConceptTotalNumElement.toString();
-			UpdateTotalNumMessage childDataMsg = new UpdateTotalNumMessage(
-					requestElementString);
-			long waitTime = 0;
-			if (childDataMsg.getRequestMessageType() != null) {
-				if (childDataMsg.getRequestMessageType().getRequestHeader() != null) {
-					waitTime = childDataMsg.getRequestMessageType()
-							.getRequestHeader().getResultWaittimeMs();
-				}
-			}
-			
-			// do Ontology query processing inside thread, so that
-			// service could sends back message with timeout error.
-			// ExecutorRunnable er = new ExecutorRunnable();
-			return execute(new UpdateTotalNumHandler(childDataMsg), waitTime);
+		OMElement returnElement = null;
+		String ontologyDataResponse = null;
+		String unknownErrorMessage = "Error message delivered from the remote server \n"
+				+ "You may wish to retry your last action";
 
-}
+		if (updateConceptTotalNumElement == null) {
+			log.error("Incoming Ontology request is null");
+			ResponseMessageType responseMsgType = MessageFactory
+					.doBuildErrorResponse(null, unknownErrorMessage);
+			ontologyDataResponse = MessageFactory
+					.convertToXMLString(responseMsgType);
+			return MessageFactory
+					.createResponseOMElementFromString(ontologyDataResponse);
+		}
+		String requestElementString = updateConceptTotalNumElement.toString();
+		UpdateTotalNumMessage childDataMsg = new UpdateTotalNumMessage(
+				requestElementString);
+		long waitTime = 0;
+		if ((childDataMsg.getRequestMessageType() != null) && (childDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = childDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
+		}
+
+		// do Ontology query processing inside thread, so that
+		// service could sends back message with timeout error.
+		// ExecutorRunnable er = new ExecutorRunnable();
+		return execute(new UpdateTotalNumHandler(childDataMsg), waitTime);
+
+	}
 
 	public OMElement getProcessStatus(OMElement getOntProcessStatus)
 			throws I2B2Exception {
@@ -706,11 +682,9 @@ public class OntologyService {
 		GetOntProcessStatusMessage childDataMsg = new GetOntProcessStatusMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (childDataMsg.getRequestMessageType() != null) {
-			if (childDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = childDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((childDataMsg.getRequestMessageType() != null) && (childDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = childDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -719,7 +693,7 @@ public class OntologyService {
 		return execute(new GetOntProcessStatusHandler(childDataMsg), waitTime);
 
 	}
-	
+
 	/**
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -757,11 +731,9 @@ public class OntologyService {
 				requestElementString);
 
 		long waitTime = 0;
-		if (dirtyStateDataMsg.getRequestMessageType() != null) {
-			if (dirtyStateDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = dirtyStateDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((dirtyStateDataMsg.getRequestMessageType() != null) && (dirtyStateDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = dirtyStateDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -769,7 +741,7 @@ public class OntologyService {
 		// ExecutorRunnable er = new ExecutorRunnable();
 		return execute(new GetDirtyStateHandler(dirtyStateDataMsg), waitTime);
 	}
-	
+
 	/**
 	 * This function is main webservice interface to get modifier data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -805,11 +777,9 @@ public class OntologyService {
 		GetModifiersDataMessage modifiersDataMsg = new GetModifiersDataMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (modifiersDataMsg.getRequestMessageType() != null) {
-			if (modifiersDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = modifiersDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((modifiersDataMsg.getRequestMessageType() != null) && (modifiersDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = modifiersDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -853,11 +823,9 @@ public class OntologyService {
 		GetModifierInfoDataMessage modifierInfoDataMsg = new GetModifierInfoDataMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (modifierInfoDataMsg.getRequestMessageType() != null) {
-			if (modifierInfoDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = modifierInfoDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((modifierInfoDataMsg.getRequestMessageType() != null) && (modifierInfoDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = modifierInfoDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -866,7 +834,7 @@ public class OntologyService {
 		return execute(new GetModifierInfoHandler(modifierInfoDataMsg), waitTime);
 
 	}
-	
+
 	/**
 	 * This function is main webservice interface to get modifier data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -902,11 +870,9 @@ public class OntologyService {
 		GetModifierChildrenDataMessage modifierChildrenDataMsg = new GetModifierChildrenDataMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (modifierChildrenDataMsg.getRequestMessageType() != null) {
-			if (modifierChildrenDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = modifierChildrenDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((modifierChildrenDataMsg.getRequestMessageType() != null) && (modifierChildrenDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = modifierChildrenDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -915,7 +881,7 @@ public class OntologyService {
 		return execute(new GetModifierChildrenHandler(modifierChildrenDataMsg), waitTime);
 
 	}
-	
+
 	public OMElement addModifier(OMElement addChildElement) throws I2B2Exception {
 
 		OMElement returnElement = null;
@@ -936,11 +902,9 @@ public class OntologyService {
 		AddChildDataMessage childDataMsg = new AddChildDataMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (childDataMsg.getRequestMessageType() != null) {
-			if (childDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = childDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((childDataMsg.getRequestMessageType() != null) && (childDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = childDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -949,7 +913,7 @@ public class OntologyService {
 		return execute(new AddModifierHandler(childDataMsg), waitTime);
 
 	}
-	
+
 	public OMElement excludeModifier(OMElement addChildElement) throws I2B2Exception {
 
 		OMElement returnElement = null;
@@ -970,11 +934,9 @@ public class OntologyService {
 		AddChildDataMessage childDataMsg = new AddChildDataMessage(
 				requestElementString);
 		long waitTime = 0;
-		if (childDataMsg.getRequestMessageType() != null) {
-			if (childDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = childDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((childDataMsg.getRequestMessageType() != null) && (childDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = childDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -983,7 +945,7 @@ public class OntologyService {
 		return execute(new ExcludeModifierHandler(childDataMsg), waitTime);
 
 	}
-	
+
 	/**
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -1021,11 +983,9 @@ public class OntologyService {
 				requestElementString);
 
 		long waitTime = 0;
-		if (nameInfoDataMsg.getRequestMessageType() != null) {
-			if (nameInfoDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = nameInfoDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((nameInfoDataMsg.getRequestMessageType() != null) && (nameInfoDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = nameInfoDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -1034,7 +994,7 @@ public class OntologyService {
 		// ExecutorRunnable er = new ExecutorRunnable();
 		return execute(new GetModifierNameInfoHandler(nameInfoDataMsg), waitTime);
 	}
-	
+
 	/**
 	 * This function is main webservice interface to get vocab data for a query.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -1072,11 +1032,9 @@ public class OntologyService {
 				requestElementString);
 
 		long waitTime = 0;
-		if (codeInfoDataMsg.getRequestMessageType() != null) {
-			if (codeInfoDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = codeInfoDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((codeInfoDataMsg.getRequestMessageType() != null) && (codeInfoDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = codeInfoDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -1085,9 +1043,9 @@ public class OntologyService {
 		// ExecutorRunnable er = new ExecutorRunnable();
 		return execute(new GetModifierCodeInfoHandler(codeInfoDataMsg), waitTime);
 	}
-	
-	
-		
+
+
+
 	public OMElement loadMetadata(OMElement loadElement) throws I2B2Exception {
 
 		OMElement returnElement = null;
@@ -1105,17 +1063,15 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 		String requestElementString = loadElement.toString();
-		
+
 		LoadDataMessage loadDataMsg = new LoadDataMessage(
 				requestElementString);
-		
+
 		log.info(loadDataMsg.getMetadataLoad().getTableName());
 		long waitTime = 0;
-		if (loadDataMsg.getRequestMessageType() != null) {
-			if (loadDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = loadDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((loadDataMsg.getRequestMessageType() != null) && (loadDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = loadDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
@@ -1133,8 +1089,8 @@ public class OntologyService {
 			return execute(new LoadMetadataHandler(loadDataMsg), waitTime);
 
 	}
-	
-	
+
+
 	public OMElement checkForTableExistence(OMElement loadElement) throws I2B2Exception {
 
 		OMElement returnElement = null;
@@ -1152,28 +1108,26 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 		String requestElementString = loadElement.toString();
-		
+
 		LoadDataMessage loadDataMsg = new LoadDataMessage(
 				requestElementString);
-		
+
 		log.info(loadDataMsg.getMetadataLoad().getTableName());
 		long waitTime = 0;
-		if (loadDataMsg.getRequestMessageType() != null) {
-			if (loadDataMsg.getRequestMessageType().getRequestHeader() != null) {
-				waitTime = loadDataMsg.getRequestMessageType()
-						.getRequestHeader().getResultWaittimeMs();
-			}
+		if ((loadDataMsg.getRequestMessageType() != null) && (loadDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = loadDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
 		}
 
 		// do Ontology query processing inside thread, so that
 		// service could sends back message with timeout error.
 		// ExecutorRunnable er = new ExecutorRunnable();
-		
+
 
 		return execute(new CheckMetadataTableHandler(loadDataMsg), waitTime);
 
 	}
-	
+
 	/** swc20160515
 	 * This function is main webservice interface to get the I2B2HIVE.ONT_DB_LOOKUP data.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -1198,15 +1152,13 @@ public class OntologyService {
 		String requestElementString = getAllDblookupsElement.toString();
 		GetAllDblookupsDataMessage dblookupsDataMsg = new GetAllDblookupsDataMessage(requestElementString);
 		long waitTime = 0;
-		if (null != dblookupsDataMsg.getRequestMessageType()) {
-			if (null != dblookupsDataMsg.getRequestMessageType().getRequestHeader()) {
-				waitTime = dblookupsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
-			}
+		if ((null != dblookupsDataMsg.getRequestMessageType()) && (null != dblookupsDataMsg.getRequestMessageType().getRequestHeader())) {
+			waitTime = dblookupsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
 		}
 		// do processing inside thread, so that service could send back message with timeout error.
 		return execute(new GetAllDblookupsHandler(dblookupsDataMsg), waitTime);
 	}
-	
+
 	/** swc20160517
 	 * This function is main webservice interface to get specific I2B2HIVE.ONT_DB_LOOKUP data.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -1231,15 +1183,13 @@ public class OntologyService {
 		String requestElementString = getDblookupElement.toString();
 		GetDblookupDataMessage dblookupDataMsg = new GetDblookupDataMessage(requestElementString);
 		long waitTime = 0;
-		if (null != dblookupDataMsg.getRequestMessageType()) {
-			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
-				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
-			}
+		if ((null != dblookupDataMsg.getRequestMessageType()) && (null != dblookupDataMsg.getRequestMessageType().getRequestHeader())) {
+			waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
 		}
 		// do processing inside thread, so that service could send back message with timeout error.
 		return execute(new GetDblookupHandler(dblookupDataMsg), waitTime);
 	}
-	
+
 	/** swc20160516
 	 * This function is main webservice interface to add a new entry to the I2B2HIVE.ONT_DB_LOOKUP data.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -1252,7 +1202,7 @@ public class OntologyService {
 	 * @throws Exception
 	 */
 	public OMElement setDblookup(OMElement setDblookupElement) throws I2B2Exception {
-//		OMElement returnElement = null;
+		//		OMElement returnElement = null;
 		String ontologyDataResponse = null;
 		String unknownErrMsg = null;
 		if (null == setDblookupElement) {
@@ -1265,15 +1215,13 @@ public class OntologyService {
 		String requestElementString = setDblookupElement.toString();
 		SetDblookupDataMessage dblookupDataMsg = new SetDblookupDataMessage(requestElementString);
 		long waitTime = 0;
-		if (null != dblookupDataMsg.getRequestMessageType()) {
-			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
-				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
-			}
+		if ((null != dblookupDataMsg.getRequestMessageType()) && (null != dblookupDataMsg.getRequestMessageType().getRequestHeader())) {
+			waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
 		}
 		// do processing inside thread, so that service could send back message with timeout error.
 		return execute(new SetDblookupHandler(dblookupDataMsg), waitTime);
 	}
-	
+
 	/** swc20160518
 	 * This function is main webservice interface to delete specific I2B2HIVE.ONT_DB_LOOKUP data.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -1298,13 +1246,11 @@ public class OntologyService {
 		String requestElementString = deleteDblookupElement.toString();
 		DeleteDblookupDataMessage dblookupDataMsg = new DeleteDblookupDataMessage(requestElementString);
 		long waitTime = 0;
-		if (null != dblookupDataMsg.getRequestMessageType()) {
-			if (null != dblookupDataMsg.getRequestMessageType().getRequestHeader()) {
-				waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
-			}
+		if ((null != dblookupDataMsg.getRequestMessageType()) && (null != dblookupDataMsg.getRequestMessageType().getRequestHeader())) {
+			waitTime = dblookupDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
 		}
 		// do processing inside thread, so that service could send back message with timeout error.
 		return execute(new DeleteDblookupHandler(dblookupDataMsg), waitTime);
 	}
-	
+
 }

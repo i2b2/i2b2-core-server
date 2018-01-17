@@ -168,13 +168,11 @@ public class MessageFactory {
         MessageControlIdType mcIdType = new MessageControlIdType();
         mcIdType.setInstanceNum(1);
 
-        if (reqMsgHeader != null) {
-            if (reqMsgHeader.getMessageControlId() != null) {
+        if ((reqMsgHeader != null) && (reqMsgHeader.getMessageControlId() != null)) {
                 mcIdType.setMessageNum(reqMsgHeader.getMessageControlId()
                                                         .getMessageNum());
                 mcIdType.setSessionId(reqMsgHeader.getMessageControlId()
                                                        .getSessionId());
-            }
         }
 
         messageHeader.setMessageControlId(mcIdType);

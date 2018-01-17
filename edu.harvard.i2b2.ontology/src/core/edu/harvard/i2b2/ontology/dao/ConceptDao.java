@@ -470,10 +470,9 @@ public class ConceptDao extends JdbcDaoSupport {
 		}
 
 
-		if(Float.parseFloat(				
-				childrenMsg.getMessageHeaderType().getSendingApplication().getApplicationVersion()) > 1.5)
-		{	
-			if(queryResult.size() > 0){
+		if ((Float.parseFloat(				
+				childrenMsg.getMessageHeaderType().getSendingApplication().getApplicationVersion()) > 1.5) &&
+					(queryResult.size() > 0)) {
 				Iterator<ConceptType>  it2 = queryResult.iterator();
 				while (it2.hasNext()){
 					ConceptType concept = it2.next();
@@ -523,8 +522,6 @@ public class ConceptDao extends JdbcDaoSupport {
 						}
 					}
 				}
-			}
-
 		}
 		//		log.debug("Find Children By Parent " + sql);
 		log.debug("get_children result size = " + queryResult.size());

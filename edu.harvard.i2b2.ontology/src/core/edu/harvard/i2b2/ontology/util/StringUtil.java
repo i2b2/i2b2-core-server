@@ -55,10 +55,8 @@ public class StringUtil {
 		}
     	
 		// add trailing backslash if ont.terminal.delimiter property set to true.
-		if(addDelimiter) {
-			if (fullPath.lastIndexOf('\\') != fullPath.length()-1) {
+		if ((addDelimiter) && (fullPath.lastIndexOf('\\') != fullPath.length()-1)) {
 				fullPath = fullPath + "\\";
-			}
 		}
     	return fullPath;
     	
