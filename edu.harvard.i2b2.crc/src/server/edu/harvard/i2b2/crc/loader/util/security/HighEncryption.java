@@ -14,7 +14,6 @@ import java.sql.*;
 import org.apache.commons.logging.LogFactory; 
 import org.apache.commons.logging.Log;
 
-import sun.misc.BASE64Decoder;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 
 

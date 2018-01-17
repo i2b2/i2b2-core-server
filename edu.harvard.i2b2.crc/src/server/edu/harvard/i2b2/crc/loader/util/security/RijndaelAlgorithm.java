@@ -99,7 +99,7 @@ public class RijndaelAlgorithm {
 	/// Encrypt a string
 	public String encrypt( String source ) throws Exception
 	{
-		return new String(new sun.misc.BASE64Encoder().encodeBuffer(encrypt(source.getBytes("UTF-8"))));
+		return new String(edu.harvard.i2b2.crc.util.Base64.getMimeEncoder().encode(source.getBytes("UTF-8")));
 	}
 
 	/* OLD
@@ -126,11 +126,8 @@ public class RijndaelAlgorithm {
 
 	public String decrypt( String source )  throws Exception
 	{
-		return new String(decrypt(
-				 new sun.misc.BASE64Decoder().decodeBuffer(source)), "UTF-8");
-		//return new String(
-		//		decrypt((edu.harvard.i2b2.util.Base64.decode(source)).getBytes("UTF-8"))
-		//		, "UTF-8");
+		return new String(decrypt(edu.harvard.i2b2.crc.util.Base64.getMimeDecoder().decode(source.getBytes("UTF-8"))));
+
 	}
 	
 	//private Key getKey()
