@@ -53,7 +53,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void SleepForBamboo() throws Exception {
+	public void AAASleepForBamboo() throws Exception {
 		String filename = testFileDir + "/pm_create_user_for_crc.xml";
 		ConfigureType ctype = null;
 		String masterInstanceResult = null;
@@ -1005,7 +1005,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}	
 	
 	@Test
-	public void GlobalParamsSetExpiredPassword() throws Exception {
+	public void Z1_GlobalParamsSetExpiredPassword() throws Exception {
 		String filename = testFileDir + "/pm_set_global_expired_password.xml";
 		//ParamType ctype = null;
 		int id = -1;
@@ -1026,7 +1026,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 	
 	@Test
-	public void setInvalidPassword() throws Exception {
+	public void Z2_setInvalidPassword() throws Exception {
 		String filename = testFileDir + "/pm_setpassword_bad.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -1047,7 +1047,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void setValidPassword() throws Exception {
+	public void Z3_setValidPassword() throws Exception {
 		String filename = testFileDir + "/pm_setpassword_good.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -1068,7 +1068,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void GlobalParamsUnSetExpiredPassword() throws Exception {
+	public void Z4_GlobalParamsUnSetExpiredPassword() throws Exception {
 		
 		String filename = testFileDir + "/pm_create_global_param_with_valid_user_check.xml";
 		String requestString = getQueryString(filename);
