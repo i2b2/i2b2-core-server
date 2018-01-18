@@ -1001,7 +1001,6 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		assertEquals(ctype.getDatatype(),"T");
 	}	
 	
-	/* disabled new security work
 	@Test
 	public void GlobalParamsSetExpiredPassword() throws Exception {
 		String filename = testFileDir + "/pm_set_global_expired_password.xml";
@@ -1113,7 +1112,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 		
 	}
-	*/
+	
 	
 
 }
