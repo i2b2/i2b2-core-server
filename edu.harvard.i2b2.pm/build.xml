@@ -152,8 +152,8 @@
 			<!--<test name="AllTests" todir="${report.dir}"/>-->
 			<batchtest fork="yes" todir="${reports.dir}">
 				<fileset dir="test">
-					<include name="**/PMServiceRESTTest.java" />
 					<include name="**/PMServiceRESTSecurityTest.java" />
+					<include name="**/PMServiceRESTTest.java" />
 				</fileset>
 			</batchtest>
 			<classpath>
