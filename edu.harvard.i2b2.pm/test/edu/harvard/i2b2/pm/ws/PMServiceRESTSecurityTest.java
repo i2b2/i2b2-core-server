@@ -56,7 +56,7 @@ public class PMServiceRESTSecurityTest extends PMAxisAbstract{
 		String masterInstanceResult = null;
 		try { 
 
-			 Thread.sleep(60000);
+			 Thread.sleep(100000);
 
 			assertTrue(true);
 
