@@ -25,9 +25,6 @@ import edu.harvard.i2b2.pm.datavo.pm.ParamsType;
 import edu.harvard.i2b2.pm.datavo.pm.ProjectType;
 import edu.harvard.i2b2.pm.util.PMJAXBUtil;
 
-import org.junit.FixMethodOrder;
-
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PMServiceRESTTest extends PMAxisAbstract{
 	private static String testFileDir = "";
 
