@@ -866,6 +866,9 @@ public class PMDbDao extends JdbcDaoSupport {
 				Iterator it = queryResult.iterator();
 				while (it.hasNext())
 				{
+					 if (!PMUtil.getInstance().passwordValidation(password))
+						 throw new Exception("Password strench enforcement failed.");
+					
 					ParamType user = (ParamType)it.next();
 					expiredPassword = Integer.parseInt(user.getValue());
 					
