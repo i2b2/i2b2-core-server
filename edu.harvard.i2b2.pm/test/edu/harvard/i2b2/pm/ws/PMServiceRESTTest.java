@@ -1126,7 +1126,18 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		String err = r.getResponseHeader().getResultStatus().getStatus().getType();
 		assertEquals("ERROR", err);			
 
+		 filename = testFileDir + "/pm_setpassword_good_i2b2.xml";
+		 requestString = getQueryString(filename);
+		 requestElement = convertStringToOMElement(requestString); 
+		 responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
 
+		//read test file and store query instance ;
+		//unmarshall this response string 
+		 responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		 r = (ResponseMessageType)responseJaxb.getValue();
+		 helper = new  JAXBUnWrapHelper();
+		 masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
+		assertNotNull(masterInstanceResult);
 	}
 
 
