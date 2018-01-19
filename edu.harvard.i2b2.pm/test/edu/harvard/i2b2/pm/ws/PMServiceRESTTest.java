@@ -56,7 +56,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		String masterInstanceResult = null;
 		try { 
 
-			 Thread.sleep(60000);
+			Thread.sleep(60000);
 
 			assertTrue(true);
 
@@ -65,8 +65,8 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			assertTrue(false);
 		}
 	}
-	
-	
+
+
 	@Test
 	public void CreateUserRoleforCRC() throws Exception {
 		String filename = testFileDir + "/pm_create_user_for_crc.xml";
@@ -114,7 +114,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
 			assertNotNull(masterInstanceResult);
-			
+
 			//Add Role 1
 			filename = testFileDir + "/pm_set_role2_for_work.xml";
 			requestString = getQueryString(filename);
@@ -135,7 +135,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
 			assertNotNull("Set Role 3 for Work", masterInstanceResult);
-			
+
 			//Add Role 1
 			filename = testFileDir + "/pm_set_role1_for_im.xml";
 			requestString = getQueryString(filename);
@@ -161,7 +161,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			assertTrue(false);
 		}
 	}
-	
+
 	@Test
 	public void validSessionUnvalidUsernoXML() throws Exception {
 		try { 
@@ -416,7 +416,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 
-	
+
 	@Test
 	public void createUserWithInValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_user_with_invalid_user.xml";
@@ -1000,7 +1000,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		assertEquals(ctype.getValue(),"my test");
 		assertEquals(ctype.getDatatype(),"T");
 	}	
-	
+
 	@Test
 	public void Z1_GlobalParamsSetExpiredPassword() throws Exception {
 		String filename = testFileDir + "/pm_set_global_expired_password.xml";
@@ -1021,7 +1021,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			throw e;
 		}
 	}
-	
+
 	@Test
 	public void Z2_setInvalidPassword() throws Exception {
 		String filename = testFileDir + "/pm_setpassword_bad.xml";
@@ -1066,14 +1066,27 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 	@Test
 	public void Z4_GlobalParamsUnSetExpiredPassword() throws Exception {
-		
-		String filename = testFileDir + "/pm_create_global_param_with_valid_user_check.xml";
+		String filename = testFileDir + "/pm_setpassword_good_secure.xml";
 		String requestString = getQueryString(filename);
 		OMElement requestElement = convertStringToOMElement(requestString); 
 		OMElement responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+
+		//read test file and store query instance ;
+		//unmarshall this response string 
 		JAXBElement responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 		ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 		JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+		String masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
+		assertNotNull(masterInstanceResult);
+
+
+		filename = testFileDir + "/pm_create_global_param_with_valid_user_check_secure.xml";
+		requestString = getQueryString(filename);
+		requestElement = convertStringToOMElement(requestString); 
+		responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+		responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		r = (ResponseMessageType)responseJaxb.getValue();
+		helper = new  JAXBUnWrapHelper();
 		ParamsType allParams = (ParamsType)helper.getObjectByClass(r.getMessageBody().getAny(),ParamsType.class);
 		int id = -1;
 		for (ParamType param : allParams.getParam())
@@ -1088,7 +1101,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		}
 
 		//Delete Param
-		filename = testFileDir + "/pm_delete_global_param_with_valid_user.xml";
+		filename = testFileDir + "/pm_delete_global_param_with_valid_user_secure.xml";
 		requestString = getQueryString(filename);
 		requestString = requestString.replace("{{{id}}}", Integer.toString(id));
 		requestElement = convertStringToOMElement(requestString); 
@@ -1100,7 +1113,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		assertNotNull(masterInstanceResult);
 
 		//Check to see if really deleted
-		filename = testFileDir + "/pm_recreate_global_param_with_valid_user_check.xml";
+		filename = testFileDir + "/pm_recreate_global_param_with_valid_user_check_secure.xml";
 		requestString = getQueryString(filename);
 		requestString = requestString.replace("{{{id}}}", Integer.toString(id));			
 		requestElement = convertStringToOMElement(requestString); 
@@ -1110,10 +1123,10 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		String err = r.getResponseHeader().getResultStatus().getStatus().getType();
 		assertEquals("ERROR", err);			
 
-		
+
 	}
-	
-	
+
+
 
 }
 
