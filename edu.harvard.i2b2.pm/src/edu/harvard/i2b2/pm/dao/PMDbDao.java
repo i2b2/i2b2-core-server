@@ -871,7 +871,7 @@ public class PMDbDao extends JdbcDaoSupport {
 							while (it2.hasNext())
 							{
 
-								ParamType user2 = (ParamType)it.next();
+								ParamType user2 = (ParamType)it2.next();
 								id = user2.getId();
 							}
 							}
@@ -898,7 +898,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				}
 			} catch (Exception e)
 			{
-				e.printStackTrace();
+				throw new I2B2DAOException(e.getMessage(), e);
 				
 			}
 		
