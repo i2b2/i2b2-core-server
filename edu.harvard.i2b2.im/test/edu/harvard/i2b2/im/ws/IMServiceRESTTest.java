@@ -29,7 +29,10 @@ import edu.harvard.i2b2.im.datavo.wdo.AuditsType;
 import edu.harvard.i2b2.im.datavo.wdo.IsKeySetType;
 import edu.harvard.i2b2.im.datavo.wdo.SetKeyType;
 import edu.harvard.i2b2.im.util.IMJAXBUtil;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class IMServiceRESTTest extends IMAxisAbstract{
 	private static String testFileDir = "";
 
@@ -66,7 +69,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 
 	@Test
-	public void SetKeyValidUser() throws Exception {
+	public void A10_SetKeyValidUser() throws Exception {
 		String filename = testFileDir + "/set_key_valid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -84,7 +87,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	
 
 	@Test
-	public void pdo_minvalue() throws Exception {
+	public void A20_pdo_minvalue() throws Exception {
 		String filename = testFileDir + "/get_pdo.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -114,7 +117,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 
 
 	@Test
-	public void SetKeyValidMD5() throws Exception {
+	public void A30_SetKeyValidMD5() throws Exception {
 		String filename = testFileDir + "/set_key_valid_md5.xml";
 		String masterInstanceResult = null;
 		try { 
@@ -134,7 +137,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 
 
 	@Test
-	public void SetKeyInValidMD5() throws Exception {
+	public void A40_SetKeyInValidMD5() throws Exception {
 		String filename = testFileDir + "/set_key_invalid_md5.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -153,7 +156,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 
 	
 	@Test
-	public void SetKeyInValidUser() throws Exception {
+	public void A50_SetKeyInValidUser() throws Exception {
 		String filename = testFileDir + "/set_key_invalid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -171,7 +174,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 
 	@Test
-	public void IsSetKeyInValidUser() throws Exception {
+	public void A60_IsSetKeyInValidUser() throws Exception {
 		String filename = testFileDir + "/iskey_set_invalid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -190,7 +193,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 
 
 	@Test
-	public void IsKeySetValidUser() throws Exception {
+	public void A70_IsKeySetValidUser() throws Exception {
 		String filename = testFileDir + "/iskey_set_valid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -213,7 +216,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 
 	@Test
-	public void IsKeySetNonProject() throws Exception {
+	public void A80_IsKeySetNonProject() throws Exception {
 		String filename = testFileDir + "/iskey_set_non_project.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -235,7 +238,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	
 
 	@Test
-	public void UnSetKeyValidUser() throws Exception {
+	public void A90_UnSetKeyValidUser() throws Exception {
 		String filename = testFileDir + "/unset_key_valid_user.xml";
 		String masterInstanceResult = null;
 		try { 
@@ -272,7 +275,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 
 
 	@Test
-	public void ReSetKeyValidUser() throws Exception {
+	public void A100_ReSetKeyValidUser() throws Exception {
 		String filename = testFileDir + "/set_key_valid_user.xml";
 		String masterInstanceResult = null;
 		try { 
@@ -423,7 +426,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 
 	
 	@Test
-	public void GetAllDBlookups_admin() throws Exception { //swc20160721
+	public void A110_GetAllDBlookups_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/getAllDBlookups_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -440,7 +443,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	@Test
-	public void GetAllDBlookups_non_admin() throws Exception { //swc20160721
+	public void A120_GetAllDBlookups_non_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/getAllDBlookups_non_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -457,7 +460,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	@Test
-	public void SetDBlookup_admin() throws Exception { //swc20160721
+	public void A130_SetDBlookup_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/setDBlookup_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -475,7 +478,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	@Test
-	public void SetDBlookup_non_admin() throws Exception { //swc20160721
+	public void A140_SetDBlookup_non_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/setDBlookup_non_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -492,7 +495,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	@Test
-	public void GetDBlookup_admin() throws Exception { //swc20160721
+	public void A150_GetDBlookup_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/getDBlookup_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -509,7 +512,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	@Test
-	public void GetDBlookup_schema_admin() throws Exception { //swc20160721
+	public void A160_GetDBlookup_schema_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/getDBlookup_schema_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -526,7 +529,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	@Test
-	public void GetDBlookup_non_admin() throws Exception { //swc20160721
+	public void A170_GetDBlookup_non_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/getDBlookup_non_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -543,7 +546,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	@Test
-	public void DeleteDBlookup_admin() throws Exception { //swc20160721
+	public void A180_DeleteDBlookup_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/deleteDBlookup_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -560,7 +563,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	@Test
-	public void DeleteDBlookup_non_admin() throws Exception { //swc20160721
+	public void A190_DeleteDBlookup_non_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/deleteDBlookup_non_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -577,7 +580,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	@Test
-	public void DeleteDBlookup_nonexist_admin() throws Exception { //swc20160721
+	public void A200_DeleteDBlookup_nonexist_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/deleteDBlookup_nonexist_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -595,7 +598,7 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 	}
 	
 	@Test
-	public void DeleteDBlookup_missingAttrib_admin() throws Exception { //swc20160721
+	public void A210_DeleteDBlookup_missingAttrib_admin() throws Exception { //swc20160721
 		String filename = testFileDir + "/deleteDBlookup_missing_attrib_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);

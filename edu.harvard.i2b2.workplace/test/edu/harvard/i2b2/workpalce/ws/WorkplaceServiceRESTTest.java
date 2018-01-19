@@ -23,7 +23,10 @@ import edu.harvard.i2b2.workplace.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.workplace.datavo.wdo.FolderType;
 import edu.harvard.i2b2.workplace.datavo.wdo.FoldersType;
 import edu.harvard.i2b2.workplace.util.WorkplaceJAXBUtil;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	private static String testFileDir = "";
 
@@ -67,7 +70,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 
 	@Test
-	public void GetFoldersByProject() throws Exception {
+	public void A10_GetFoldersByProject() throws Exception {
 		String filename = testFileDir + "/folders_by_project.xml";
 		String masterInstanceResult = null;
 		try { 
@@ -110,7 +113,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 
 	@Test
-	public void GetFoldersByUserId() throws Exception {
+	public void A20_GetFoldersByUserId() throws Exception {
 		String filename = testFileDir + "/folders_by_userid.xml";
 		String masterInstanceResult = null;
 		try { 
@@ -145,7 +148,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 
 	@Test
-	public void AddChildOntologyFolder() throws Exception {
+	public void A30_AddChildOntologyFolder() throws Exception {
 
 		String filename1 = testFileDir + "/add_child_ontology_folder.xml";
 		String filename2 = testFileDir + "/add_child_ontology_folder_2.xml";
@@ -170,7 +173,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 
 	@Test
-	public void AddChildOntologyConcept() throws Exception {
+	public void A40_AddChildOntologyConcept() throws Exception {
 
 		ArrayList <String> files = new ArrayList <String>();
 		files.add(testFileDir + "/add_child_ontology_concept.xml");
@@ -214,7 +217,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	*/
 	@Test
-	public void FindWithCategoryMissing() throws Exception {
+	public void A50_FindWithCategoryMissing() throws Exception {
 		String filename1 = testFileDir + "/find_category_validation_1.xml"; // category="" in request xml
 		String filename2 = testFileDir + "/find_category_validation_2.xml"; // category element missing from request xml
 		String errorstring = "select a valid category";
@@ -228,7 +231,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 
 	@Test
-	public void FindWithMatchStrMissing() throws Exception {
+	public void A60_FindWithMatchStrMissing() throws Exception {
 		String filename1 = testFileDir + "/find_match_str_validation_1.xml"; // match_str = "" in request xml
 		String filename2 = testFileDir + "/find_match_str_validation_2.xml"; // match_str element missing from request xml
 		String errString1 = "Please enter a valid search string" ;
@@ -243,7 +246,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 
 	@Test
-	public void FindWithMaxValidation() throws Exception {
+	public void A70_FindWithMaxValidation() throws Exception {
 		String filename1 = testFileDir + "/find_max_validation_1.xml"; // max="-1" in request xml
 		String filename2 = testFileDir + "/find_max_validation_2.xml"; // max = "0" in request xml
 		String errorstring = "Please enter a valid 'max' value.";
@@ -258,7 +261,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 
 
 	@Test
-	public void FindWithStartegyMissing() throws Exception {
+	public void A80_FindWithStartegyMissing() throws Exception {
 		String filename1 = testFileDir + "/find_strategy_validation_1.xml"; // strategy="" in request xml
 		String filename2 = testFileDir + "/find_strategy_validation_2.xml"; // no element strategy provided in request xml
 		String errorstring = "Strategy is missing.";
@@ -278,7 +281,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 
 
 	@Test
-	public void setProtectedAccDemographics() throws Exception{
+	public void A90_setProtectedAccDemographics() throws Exception{
 		String filename1 = testFileDir + "/setProtectedAcc_demo_1.xml";
 		String filename2 = testFileDir + "/setProtectedAcc_demo_2.xml";
 		String conceptName = "11 years old demo";
@@ -314,7 +317,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	
 
 	@Test
-	public void setProtectedAccIndexValidation() throws Exception{
+	public void A100_setProtectedAccIndexValidation() throws Exception{
 		String filename1 = testFileDir + "/setProtectedAcc_indexValidation_1.xml";
 		String filename2 = testFileDir + "/setProtectedAcc_indexValidation_2.xml";
 		String errStr = "folder index is missing";
@@ -335,7 +338,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 
 
 	@Test
-	public void setProtectedAccValidation() throws Exception{
+	public void A110_setProtectedAccValidation() throws Exception{
 		String filename1 = testFileDir + "/setProtectedAcc_validation_1.xml";
 		String filename2 = testFileDir + "/setProtectedAcc_validation_2.xml";
 		String filename3 = testFileDir + "/setProtectedAcc_validation_3.xml";
@@ -761,7 +764,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	
 
 	@Test
-	public void GetAllDBlookups_admin() throws Exception { //swc20160722
+	public void A120_GetAllDBlookups_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/getAllDBlookups_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -778,7 +781,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	
 	@Test
-	public void GetAllDBlookups_non_admin() throws Exception { //swc20160722
+	public void A130_GetAllDBlookups_non_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/getAllDBlookups_non_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -795,7 +798,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	
 	@Test
-	public void SetDBlookup_admin() throws Exception { //swc20160722
+	public void A140_SetDBlookup_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/setDBlookup_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -813,7 +816,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	
 	@Test
-	public void SetDBlookup_non_admin() throws Exception { //swc20160722
+	public void A150_SetDBlookup_non_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/setDBlookup_non_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -830,7 +833,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	
 	@Test
-	public void GetDBlookup_admin() throws Exception { //swc20160722
+	public void A160_GetDBlookup_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/getDBlookup_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -847,7 +850,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	
 	@Test
-	public void GetDBlookup_schema_admin() throws Exception { //swc20160722
+	public void A170_GetDBlookup_schema_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/getDBlookup_schema_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -864,7 +867,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	
 	@Test
-	public void GetDBlookup_non_admin() throws Exception { //swc20160722
+	public void A180_GetDBlookup_non_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/getDBlookup_non_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -881,7 +884,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	
 	@Test
-	public void DeleteDBlookup_admin() throws Exception { //swc20160722
+	public void A190_DeleteDBlookup_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/deleteDBlookup_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -898,7 +901,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	
 	@Test
-	public void DeleteDBlookup_non_admin() throws Exception { //swc20160722
+	public void A200_DeleteDBlookup_non_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/deleteDBlookup_non_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -915,7 +918,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	
 	@Test
-	public void DeleteDBlookup_nonexist_admin() throws Exception { //swc20160722
+	public void A210_DeleteDBlookup_nonexist_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/deleteDBlookup_nonexist_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -933,7 +936,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	}
 	
 	@Test
-	public void DeleteDBlookup_missingAttrib_admin() throws Exception { //swc20160722
+	public void A220_DeleteDBlookup_missingAttrib_admin() throws Exception { //swc20160722
 		String filename = testFileDir + "/deleteDBlookup_missing_attrib_admin.xml";
 		try { 
 			String requestString = getQueryString(filename);
