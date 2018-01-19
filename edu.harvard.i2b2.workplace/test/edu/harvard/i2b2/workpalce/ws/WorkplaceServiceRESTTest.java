@@ -808,7 +808,7 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
 			assertEquals("DONE", msg);			
-			DeleteDBlookup_admin(); //clean it up (in case this gets run after the DeleteDBlookup_admin()
+			A190_DeleteDBlookup_admin(); //clean it up (in case this gets run after the DeleteDBlookup_admin()
 		} catch (Exception e) { 
 			e.printStackTrace();
 			assertTrue(false);
