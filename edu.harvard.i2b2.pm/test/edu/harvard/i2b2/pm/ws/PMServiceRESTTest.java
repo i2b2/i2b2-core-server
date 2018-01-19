@@ -1109,7 +1109,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 		r = (ResponseMessageType)responseJaxb.getValue();
 		helper = new  JAXBUnWrapHelper();
-		String masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
+		masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
 		assertNotNull(masterInstanceResult);
 
 		//Check to see if really deleted
