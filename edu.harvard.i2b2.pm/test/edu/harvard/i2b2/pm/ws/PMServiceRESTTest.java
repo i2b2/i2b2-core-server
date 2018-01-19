@@ -53,7 +53,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void AAASleepForBamboo() throws Exception {
+	public void A10_SleepForBamboo() throws Exception {
 		String filename = testFileDir + "/pm_create_user_for_crc.xml";
 		ConfigureType ctype = null;
 		String masterInstanceResult = null;
@@ -71,7 +71,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 
 	@Test
-	public void CreateUserRoleforCRC() throws Exception {
+	public void A20_CreateUserRoleforCRC() throws Exception {
 		String filename = testFileDir + "/pm_create_user_for_crc.xml";
 		ConfigureType ctype = null;
 		String masterInstanceResult = null;
@@ -166,7 +166,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void validSessionUnvalidUsernoXML() throws Exception {
+	public void A30_validSessionUnvalidUsernoXML() throws Exception {
 		try { 
 
 			GetUserConfigurationType userConfig = new GetUserConfigurationType();
@@ -216,7 +216,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		}
 	}	
 	@Test
-	public void validUsernoXML() throws Exception {
+	public void A40_validUsernoXML() throws Exception {
 		try { 
 
 			GetUserConfigurationType userConfig = new GetUserConfigurationType();
@@ -250,7 +250,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}	
 
 	@Test
-	public void wrongPassword() throws Exception {
+	public void A50_wrongPassword() throws Exception {
 		String filename = testFileDir + "/pm_wrongpassword.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -271,7 +271,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void validUser() throws Exception {
+	public void A60_validUser() throws Exception {
 		String filename = testFileDir + "/pm_valid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -291,7 +291,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		}
 	}
 	@Test
-	public void invalidUser() throws Exception {
+	public void A70_invalidUser() throws Exception {
 		String filename = testFileDir + "/pm_invalid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -312,7 +312,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		}
 	}
 	@Test
-	public void CRUDUserWithValidUser() throws Exception {
+	public void A80_CRUDUserWithValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_user_with_valid_user.xml";
 		ConfigureType ctype = null;
 		String masterInstanceResult = null;
@@ -421,7 +421,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 
 	@Test
-	public void createUserWithInValidUser() throws Exception {
+	public void A90_createUserWithInValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_user_with_invalid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -443,7 +443,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void CRUDCellWithValidUser() throws Exception {
+	public void A100_CRUDCellWithValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_cell_with_valid_user.xml";
 		CellDataType ctype = null;
 		String masterInstanceResult = null;
@@ -556,7 +556,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 
 	@Test
-	public void createCellWithInValidUser() throws Exception {
+	public void A110_createCellWithInValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_cell_with_invalid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -579,7 +579,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 
 	@Test
-	public void CRUDProjectWithValidUser() throws Exception {
+	public void A120_CRUDProjectWithValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_project_with_valid_user.xml";
 		ProjectType ctype = null;
 		String masterInstanceResult = null;
@@ -695,7 +695,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 
 	@Test
-	public void createProjectWithInValidUser() throws Exception {
+	public void A130_createProjectWithInValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_project_with_invalid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -718,7 +718,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 
 	@Test
-	public void CRUDGlobalParamWithValidUser() throws Exception {
+	public void A140_CRUDGlobalParamWithValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_global_param_with_valid_user.xml";
 		//ParamType ctype = null;
 		int id = -1;
@@ -857,7 +857,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 
 	@Test
-	public void createGlobalParamWithInValidUser() throws Exception {
+	public void A150_createGlobalParamWithInValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_global_param_with_invalid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -880,7 +880,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 
 	@Test
-	public void createCelllParamWithValidUser() throws Exception {
+	public void A160_createCelllParamWithValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_cell_param_with_valid_user.xml";
 		ParamType ctype = null;
 		String masterInstanceResult = null;
@@ -930,7 +930,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 
 	@Test
-	public void createCellParamWithInValidUser() throws Exception {
+	public void A170_createCellParamWithInValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_cell_param_with_invalid_user.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -952,7 +952,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void createProjetUserParamWithValidUser() throws Exception {
+	public void A180_createProjetUserParamWithValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_project_user_param_with_valid_user.xml";
 		ParamType ctype = null;
 		String masterInstanceResult = null;
