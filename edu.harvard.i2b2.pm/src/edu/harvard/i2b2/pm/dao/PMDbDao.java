@@ -840,22 +840,12 @@ public class PMDbDao extends JdbcDaoSupport {
 
 
 
-	public int setPassword(final String password, String caller) throws I2B2DAOException, I2B2Exception{
+	public int setPassword(String password, String caller) throws I2B2DAOException, I2B2Exception{
 		int numRowsAdded = 0;
-
+		String hash = PMUtil.getInstance().getHashedPassword(password);
 		try {
-			String addSql = "update pm_user_data " + 
-					"set password = ?, change_date = ?, changeby_char = ? where user_id = ?";
-
-			numRowsAdded = jt.update(addSql, 
-					password,
-					Calendar.getInstance().getTime(),
-					caller,
-					caller);
-
-			if (numRowsAdded ==0)
-				throw new I2B2DAOException("User not updated, does it exist?");
 			
+
 			String sql = null;
 			sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD'";
 
@@ -912,6 +902,18 @@ public class PMDbDao extends JdbcDaoSupport {
 				
 			}
 		
+			String addSql = "update pm_user_data " + 
+					"set password = ?, change_date = ?, changeby_char = ? where user_id = ?";
+
+			numRowsAdded = jt.update(addSql, 
+					hash,
+					Calendar.getInstance().getTime(),
+					caller,
+					caller);
+
+			if (numRowsAdded ==0)
+				throw new I2B2DAOException("User not updated, does it exist?");
+			
 
 		} catch (DataAccessException e) {
 			log.error("Dao deleteuser failed");

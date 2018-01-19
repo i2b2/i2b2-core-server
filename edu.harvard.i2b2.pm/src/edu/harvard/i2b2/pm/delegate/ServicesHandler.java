@@ -1137,8 +1137,8 @@ public class ServicesHandler extends RequestHandler {
 		ResponseMessageType responseMessageType = null;
 
 		try {
-			String hash = PMUtil.getInstance().getHashedPassword(password);
-			int result = pmDb.setPassword(hash, caller);
+			
+			int result = pmDb.setPassword(password, caller);
 
 			ResultStatusType results = new ResultStatusType();
 			StatusType status  = new StatusType();
