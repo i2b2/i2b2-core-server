@@ -89,6 +89,30 @@
           </key>
           <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultGenerator</value>
         </entry>
+        <entry>
+          <key>
+            <value>PATIENT_LOS_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator</value>
+        </entry>
+        <entry>
+          <key>
+            <value>PATIENT_TOP50MEDS_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator</value>
+        </entry>
+        <entry>
+          <key>
+            <value>PATIENT_TOP50DIAG_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator</value>
+        </entry>
+        <entry>
+          <key>
+            <value>PATIENT_INOUT_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator</value>
+        </entry>
       </map>
     </property>
   </bean>
