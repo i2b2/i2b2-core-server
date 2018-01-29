@@ -10,9 +10,13 @@
 			<password>demouser</password>
 		</security>
 		<validation>
+			<valid-connection-checker class-name="org.jboss.resource.adapter.jdbc.vendor.OracleValidConnectionChecker"/>
 			<validate-on-match>false</validate-on-match>
-			<background-validation>false</background-validation>
-		</validation>
+			<background-validation>true</background-validation>
+			<background-validation-millis>60000</background-validation-millis>
+			<use-fast-fail>true</use-fast-fail>
+			<check-valid-connection-sql>SELECT 1 FROM DUAL</check-valid-connection-sql>
+		</validation> 
 		<statement>
 			<share-prepared-statements>false</share-prepared-statements>
 		</statement>
@@ -27,9 +31,13 @@
 			<password>demouser</password>
 		</security>
 		<validation>
+			<valid-connection-checker class-name="org.jboss.resource.adapter.jdbc.vendor.OracleValidConnectionChecker"/>
 			<validate-on-match>false</validate-on-match>
-			<background-validation>false</background-validation>
-		</validation>
+			<background-validation>true</background-validation>
+			<background-validation-millis>60000</background-validation-millis>
+			<use-fast-fail>true</use-fast-fail>
+			<check-valid-connection-sql>SELECT 1 FROM DUAL</check-valid-connection-sql>
+		</validation> 
 		<statement>
 			<share-prepared-statements>false</share-prepared-statements>
 		</statement>
@@ -48,8 +56,12 @@
 			<password>demouser</password>
 		</security>
 		<validation>
+			<valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>		
 			<validate-on-match>false</validate-on-match>
-			<background-validation>false</background-validation>
+			<background-validation>true</background-validation>
+			<background-validation-millis>60000</background-validation-millis>
+			<use-fast-fail>true</use-fast-fail>
+    		<check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
 		</validation>
 		<statement>
 			<share-prepared-statements>false</share-prepared-statements>
@@ -68,8 +80,12 @@
 			<password>demouser</password>
 		</security>
 		<validation>
-			<valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLValidConnectionChecker"></valid-connection-checker>
-            <validate-on-match>false</validate-on-match>
+			<valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLValidConnectionChecker"/>
+			<validate-on-match>false</validate-on-match>
+			<background-validation>true</background-validation>
+			<background-validation-millis>60000</background-validation-millis>
+			<use-fast-fail>true</use-fast-fail>
+			<check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
 		</validation>
 		<statement>
 			<share-prepared-statements>false</share-prepared-statements>
