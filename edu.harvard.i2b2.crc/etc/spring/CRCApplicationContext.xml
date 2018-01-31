@@ -113,6 +113,30 @@
           </key>
           <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator</value>
         </entry>
+        <entry>
+          <key>
+            <value>ADMIN_RUNNING_QUERY_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator</value>
+        </entry>        
+        <entry>
+          <key>
+            <value>ADMIN_QUERY_TIME_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator</value>
+        </entry>        
+        <entry>
+          <key>
+            <value>ADMIN_QUERY_BY_USER_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator</value>
+        </entry>
+        <entry>
+          <key>
+            <value>ADMIN_RUN_QUERY_XML</value>
+          </key>
+          <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator</value>
+        </entry>
       </map>
     </property>
   </bean>

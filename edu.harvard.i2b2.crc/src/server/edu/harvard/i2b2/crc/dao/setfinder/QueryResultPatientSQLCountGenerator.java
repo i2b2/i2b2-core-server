@@ -131,10 +131,34 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			csrThread.start();
 
 			itemCountSql = itemCountSql.replace("{{{DX}}}", TEMP_DX_TABLE);
+			if (itemCountSql.contains("{{{DATABASE_NAME}}}"))
+				itemCountSql = itemCountSql.replaceAll("{{{DATABASE_NAME}}}", this.getDbSchemaName());
 
-			stmt = sfConn.prepareStatement(itemCountSql);
+			
+			String[] sqls = itemCountSql.split("<\\*>");
+			int count = 0;
+			while (count < sqls.length - 1)
+			{
+
+				stmt = sfConn.prepareStatement(sqls[count]);
+				stmt.setQueryTimeout(transactionTimeout);
+				log.debug("Executing count sql [" + sqls[count] + "]");
+
+				//
+				subLogTimingUtil.setStartTime();
+				ResultSet resultSet = stmt.executeQuery();
+				if (csr.getSqlFinishedFlag()) {
+					timeoutFlag = true;
+					throw new CRCTimeOutException("The query was canceled.");
+				}
+				
+				count++;
+			}
+			
+			
+			stmt = sfConn.prepareStatement(sqls[count]);
 			stmt.setQueryTimeout(transactionTimeout);
-			log.debug("Executing count sql [" + itemCountSql + "]");
+			log.debug("Executing count sql [" + sqls[count] + "]");
 
 			//
 			subLogTimingUtil.setStartTime();
