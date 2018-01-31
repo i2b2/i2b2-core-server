@@ -9,4 +9,5 @@ public interface IResultGenerator {
 	public void generateResult(Map param) throws CRCTimeOutException,
 			I2B2DAOException;
 
+	public String getResults();
 }

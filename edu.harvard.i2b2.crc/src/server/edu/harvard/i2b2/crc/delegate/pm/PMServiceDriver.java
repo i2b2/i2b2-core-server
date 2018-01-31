@@ -69,4 +69,32 @@ public class PMServiceDriver {
 		}
 		return projectType;
 	}
+
+	public boolean isAdmin(SecurityType securityType, String projectId) 
+		throws I2B2Exception, AxisFault, JAXBUtilException {
+		boolean isAdmin = false;
+		//projectType = null;
+
+		// Are we bypassing the PM cell? Look in properties file.
+		Boolean pmBypass = false;
+		String pmBypassRole = null, pmBypassProject = null, response = null;
+		try {
+			pmBypass = QueryProcessorUtil.getInstance()
+					.getProjectManagementByPassFlag();
+			pmBypassRole = QueryProcessorUtil.getInstance()
+					.getProjectManagementByPassRole();
+			pmBypassProject = QueryProcessorUtil.getInstance()
+					.getProjectManagementByPassProject();
+			log.debug("Project Management bypass flag  from property file :["
+					+ pmBypass + "] bypass role [" + pmBypassRole
+					+ "] project [" + pmBypassProject + "]");
+		} catch (I2B2Exception e1) {
+			e1.printStackTrace();
+			log
+					.info("Could not read Project Management bypass setting, trying PM without bypass option");
+		}
+
+		
+		return CallPMUtil.callIsAdmin(securityType, projectId);
+	}
 }

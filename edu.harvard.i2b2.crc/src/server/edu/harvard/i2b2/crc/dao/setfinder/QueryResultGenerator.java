@@ -42,12 +42,18 @@ import edu.harvard.i2b2.crc.util.SqlClauseUtil;
  */
 public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
+
+	public String getResults() {
+		return xmlResult;
+	}
+
+	private String xmlResult = null;
 	/**
 	 * Function accepts parameter in Map. The patient count will be obfuscated
 	 * if the user is OBFUS
 	 */
 	public void generateResult(Map param) throws CRCTimeOutException,
-			I2B2DAOException {
+	I2B2DAOException {
 
 		SetFinderConnection sfConn = (SetFinderConnection) param
 				.get("SetFinderConnection");
@@ -65,14 +71,14 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		int recordCount = (Integer) param.get("RecordCount");
 		int transactionTimeout = (Integer) param.get("TransactionTimeout");
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
-		
+
 		this
-				.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
-						.getFullSchema());
+		.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
+				.getFullSchema());
 		Map ontologyKeyMap = (Map) param.get("setFinderResultOntologyKeyMap");
 		String serverType = (String) param.get("ServerType");
-//		CallOntologyUtil ontologyUtil = (CallOntologyUtil) param
-//				.get("CallOntologyUtil");
+		//		CallOntologyUtil ontologyUtil = (CallOntologyUtil) param
+		//				.get("CallOntologyUtil");
 		List<String> roles = (List<String>) param.get("Roles");
 		String tempTableName = "";
 		PreparedStatement stmt = null;
@@ -81,7 +87,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		String itemKey = "";
 
 		int actualTotal = 0, obsfcTotal = 0;
-		
+
 		try {
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			logTimingUtil.setStartTime();
@@ -89,7 +95,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
 			log.debug("Result type's " + resultTypeName + " item key value "
 					+ itemKey);
-			
+
 			LogTimingUtil subLogTimingUtil = new LogTimingUtil();
 			subLogTimingUtil.setStartTime();
 			ConceptsType conceptsType = CallOntologyUtil.callGetChildren(itemKey, (SecurityType) param.get("securityType"), (String) param.get("projectId"),  (String) param.get("ontologyGetChildrenUrl"));
@@ -103,7 +109,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 					ptrUtil.logProcessTimingMessage(queryInstanceId, ptrUtil.buildProcessTiming(subLogTimingUtil, "BUILD - " + resultTypeName + " : Ontology Call(GetChildren) ", ""));
 				}
 			}
-			
+
 			String itemCountSql = " select count(distinct PATIENT_NUM) as item_count  from "
 					+ this.getDbSchemaName() 
 					+ "observation_fact obs_fact  "
@@ -113,16 +119,16 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 					+ " and obs_fact.concept_cd in (select concept_cd from "
 					+ this.getDbSchemaName()
 					+ "concept_dimension  where concept_path like ?)";
-			
+
 			//get break down count sigma from property file 
-			
+
 			double breakdownCountSigma = GaussianBoxMuller.getBreakdownCountSigma();
 			double obfuscatedMinimumValue = GaussianBoxMuller.getObfuscatedMinimumVal();
-			
+
 			ResultType resultType = new ResultType();
 			resultType.setName(resultTypeName);
 			stmt = sfConn.prepareStatement(itemCountSql);
-			
+
 			CancelStatementRunner csr = new CancelStatementRunner(stmt,
 					transactionTimeout);
 			Thread csrThread = new Thread(csr);
@@ -148,7 +154,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
 				}
 				String joinTableName = factTable;
-				
+
 				if (conceptType.getTablename().equalsIgnoreCase(
 						"patient_dimension")) { 
 					joinTableName = "patient_dimension";
@@ -156,29 +162,29 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 						"visit_dimension")) { 
 					joinTableName = "visit_dimension"; 
 				}
-				
+
 				String dimCode = this.getDimCodeInSqlFormat(conceptType);
-				
-				 if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) 
-						dimCode = dimCode.replaceAll("\\\\", "\\\\\\\\");
-				 itemCountSql = " select count(distinct PATIENT_NUM) as item_count  from " +  this.getDbSchemaName() + joinTableName +  
-				 " where " + " patient_num in (select patient_num from "
-				+ TEMP_DX_TABLE
-				
-				//OMOP WAS...
-				//+ " )  and "+ conceptType.getFacttablecolumn() + " IN (select "
-				//+ conceptType.getFacttablecolumn() + " from "
-				+ " )  and "+ factTableColumn + " IN (select "
-				+ factTableColumn + " from "
-				+ getDbSchemaName() + conceptType.getTablename() + "  "
-				+  " where " + conceptType.getColumnname()
-				+ " " + conceptType.getOperator() + " "
-				+ dimCode + ")";
-				 
+
+				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) 
+					dimCode = dimCode.replaceAll("\\\\", "\\\\\\\\");
+				itemCountSql = " select count(distinct PATIENT_NUM) as item_count  from " +  this.getDbSchemaName() + joinTableName +  
+						" where " + " patient_num in (select patient_num from "
+						+ TEMP_DX_TABLE
+
+						//OMOP WAS...
+						//+ " )  and "+ conceptType.getFacttablecolumn() + " IN (select "
+						//+ conceptType.getFacttablecolumn() + " from "
+						+ " )  and "+ factTableColumn + " IN (select "
+						+ factTableColumn + " from "
+						+ getDbSchemaName() + conceptType.getTablename() + "  "
+						+  " where " + conceptType.getColumnname()
+						+ " " + conceptType.getOperator() + " "
+						+ dimCode + ")";
+
 				stmt = sfConn.prepareStatement(itemCountSql);
 				stmt.setQueryTimeout(transactionTimeout);
 				log.debug("Executing count sql [" + itemCountSql + "]");
-				
+
 				//
 				subLogTimingUtil.setStartTime();
 				resultSet = stmt.executeQuery();
@@ -196,7 +202,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 					}
 				}
 				//
-				
+
 				actualTotal += demoCount;
 				if (obfscDataRoleFlag) {
 					GaussianBoxMuller gaussianBoxMuller = new GaussianBoxMuller();
@@ -230,6 +236,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			subLogTimingUtil.setEndTime();
 			//tm.begin();
 			IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+			xmlResult = strWriter.toString();
 			xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
 					.toString());
 			//
@@ -302,42 +309,42 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				// the user role is obfuscated
 				if (timeoutFlag == false) { // check if the query completed
 					try {
-					//	tm.begin();
+						//	tm.begin();
 
 						String obfusMethod = "", description = null;
 						if (obfscDataRoleFlag) {
 							obfusMethod = IQueryResultInstanceDao.OBSUBTOTAL;
 							// add () to the result type description
 							// read the description from result type
-							
+
 						} else { 
 							obfuscatedRecordCount = recordCount;
 						}
 						IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
 						List<QtQueryResultType> resultTypeList = resultTypeDao
-						.getQueryResultTypeByName(resultTypeName, roles);
+								.getQueryResultTypeByName(resultTypeName, roles);
 
 						// add "(Obfuscated)" in the description
 						//description = resultTypeList.get(0)
 						//		.getDescription()
 						//		+ " (Obfuscated) ";
 						String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-						sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
+								sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
 
-						
-						
+
+
 						resultInstanceDao.updatePatientSet(resultInstanceId,
 								QueryStatusTypeId.STATUSTYPE_ID_FINISHED, null,
 								//obsfcTotal, 
 								obfuscatedRecordCount, recordCount, obfusMethod);
 
 						description = resultTypeList.get(0)
-						.getDescription() + " for \"" + queryName +"\"";
-						
+								.getDescription() + " for \"" + queryName +"\"";
+
 						// set the result instance description
 						resultInstanceDao.updateResultInstanceDescription(
 								resultInstanceId, description);
-					//	tm.commit();
+						//	tm.commit();
 					} catch (SecurityException e) {
 						throw new I2B2DAOException(
 								"Failed to write obfuscated description "
@@ -362,12 +369,12 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				.getBreakdownTypeByName(resultTypeKey);
 		String itemKey = queryBreakdownType.getValue();
 		if (queryBreakdownType.getUserRoleCd() != null && !roles.contains(queryBreakdownType.getUserRoleCd()))
-				throw new I2B2Exception("User does not have permission to run this breakdown.");
+			throw new I2B2Exception("User does not have permission to run this breakdown.");
 		return itemKey;
 	}
 
 
-	
+
 	private String getDimCodeInSqlFormat(ConceptType conceptType)  {
 		String theData = null;
 		if (conceptType.getColumndatatype() != null

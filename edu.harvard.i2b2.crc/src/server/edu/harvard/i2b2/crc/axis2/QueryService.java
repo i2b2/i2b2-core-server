@@ -40,6 +40,7 @@ import edu.harvard.i2b2.crc.delegate.DbLookupReqHandler;
 import edu.harvard.i2b2.crc.delegate.DeleteDblookupHandler;
 import edu.harvard.i2b2.crc.delegate.GetAllDblookupsHandler;
 import edu.harvard.i2b2.crc.delegate.GetDblookupHandler;
+import edu.harvard.i2b2.crc.delegate.QTBreakdownRequestDelegate;
 import edu.harvard.i2b2.crc.delegate.SetDblookupHandler;
 import edu.harvard.i2b2.crc.axis2.DeleteDblookupDataMessage;
 import edu.harvard.i2b2.crc.axis2.GetAllDblookupsDataMessage;
@@ -74,6 +75,9 @@ public class QueryService {
 	/** get name info request constant used only inside this class **/
 	private final String GETNAMEINFO_REQUEST = "GETNAMEINFO_REQUEST";
 
+	/** get name info request constant used only inside this class **/
+	private final String QTBREAKDOWN_REQUEST = "QTBREAKDOWN_REQUEST";
+
 	/**
 	 * Webservice function to handle setfinder request
 	 * 
@@ -88,6 +92,19 @@ public class QueryService {
 		return handleRequest(SETFINDER_REQUEST, omElement);
 	}
 
+	/**
+	 * Webservice function to handle setfinder request
+	 * 
+	 * @param omElement
+	 *            request message wrapped in OMElement
+	 * @return response message in wrapped inside OMElement
+	 */
+	public OMElement breakdownrequest(OMElement omElement) {
+		Assert.notNull(omElement,
+				"Setfinder request OMElement must not be null");
+		log.debug("Inside setfinder request " + omElement);
+		return handleRequest(QTBREAKDOWN_REQUEST, omElement);
+	}
 	/**
 	 * Webservice function to handle pdo request
 	 * 
@@ -410,6 +427,8 @@ public class QueryService {
 			requestHandlerDelegate = new QueryRequestDelegate();
 		} else if (requestType.equals(GETNAMEINFO_REQUEST)) {
 			requestHandlerDelegate = new GetNameInfoRequestDelegate();			
+		} else if (requestType.equals(QTBREAKDOWN_REQUEST)) {
+			requestHandlerDelegate = new QTBreakdownRequestDelegate();			
 		}
 		OMElement returnElement = null;
 		try {

@@ -23,7 +23,7 @@ package edu.harvard.i2b2.crc.dao.setfinder;
  *           <value>edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator</value>
  *         </entry>
  * 
-*/
+ */
 
 
 import java.io.StringWriter;
@@ -68,6 +68,11 @@ import edu.harvard.i2b2.crc.util.SqlClauseUtil;
  */
 public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResultGenerator {
 
+	public String getResults() {
+		return xmlResult;
+	}
+
+	private String xmlResult = null;
 	/**
 	 * Function accepts parameter in Map. The patient count will be obfuscated
 	 * if the user is OBFUS
@@ -130,11 +135,12 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			Thread csrThread = new Thread(csr);
 			csrThread.start();
 
-			itemCountSql = itemCountSql.replace("{{{DX}}}", TEMP_DX_TABLE);
+			if (itemCountSql.contains("{{{DX}}}"))
+				itemCountSql = itemCountSql.replace("{{{DX}}}", TEMP_DX_TABLE);
 			if (itemCountSql.contains("{{{DATABASE_NAME}}}"))
 				itemCountSql = itemCountSql.replaceAll("{{{DATABASE_NAME}}}", this.getDbSchemaName());
 
-			
+
 			String[] sqls = itemCountSql.split("<\\*>");
 			int count = 0;
 			while (count < sqls.length - 1)
@@ -151,11 +157,11 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 					timeoutFlag = true;
 					throw new CRCTimeOutException("The query was canceled.");
 				}
-				
+
 				count++;
 			}
-			
-			
+
+
 			stmt = sfConn.prepareStatement(sqls[count]);
 			stmt.setQueryTimeout(transactionTimeout);
 			log.debug("Executing count sql [" + sqls[count] + "]");
@@ -215,8 +221,10 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			subLogTimingUtil.setEndTime();
 			//tm.begin();
 			IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
-			xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
-					.toString());
+			xmlResult = strWriter.toString();
+			if (resultInstanceId != null)
+				xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
+						.toString());
 			//
 			if (processTimingFlag != null) {
 				if (!processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.NONE) ) {
@@ -276,61 +284,63 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 							+ sqlEx.getMessage(), sqlEx);
 		} finally {
 
-			IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
-					.getPatientSetResultDAO();
+			if (resultInstanceId != null) {
+				IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
+						.getPatientSetResultDAO();
 
-			if (errorFlag) {
-				resultInstanceDao.updatePatientSet(resultInstanceId,
-						QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
-			} else {
-				// set the setsize and the description of the result instance if
-				// the user role is obfuscated
-				if (timeoutFlag == false) { // check if the query completed
-					try {
-						//	tm.begin();
+				if (errorFlag) {
+					resultInstanceDao.updatePatientSet(resultInstanceId,
+							QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
+				} else {
+					// set the setsize and the description of the result instance if
+					// the user role is obfuscated
+					if (timeoutFlag == false) { // check if the query completed
+						try {
+							//	tm.begin();
 
-						String obfusMethod = "", description = null;
-						if (obfscDataRoleFlag) {
-							obfusMethod = IQueryResultInstanceDao.OBSUBTOTAL;
-							// add () to the result type description
-							// read the description from result type
+							String obfusMethod = "", description = null;
+							if (obfscDataRoleFlag) {
+								obfusMethod = IQueryResultInstanceDao.OBSUBTOTAL;
+								// add () to the result type description
+								// read the description from result type
 
-						} else { 
-							obfuscatedRecordCount = recordCount;
+							} else { 
+								obfuscatedRecordCount = recordCount;
+							}
+							IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
+							List<QtQueryResultType> resultTypeList = resultTypeDao
+									.getQueryResultTypeByName(resultTypeName, roles);
+
+							// add "(Obfuscated)" in the description
+							//description = resultTypeList.get(0)
+							//		.getDescription()
+							//		+ " (Obfuscated) ";
+							String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
+									sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
+
+
+
+							resultInstanceDao.updatePatientSet(resultInstanceId,
+									QueryStatusTypeId.STATUSTYPE_ID_FINISHED, null,
+									//obsfcTotal, 
+									obfuscatedRecordCount, recordCount, obfusMethod);
+
+							description = resultTypeList.get(0)
+									.getDescription() + " for \"" + queryName +"\"";
+
+							// set the result instance description
+							resultInstanceDao.updateResultInstanceDescription(
+									resultInstanceId, description);
+							//	tm.commit();
+						} catch (SecurityException e) {
+							throw new I2B2DAOException(
+									"Failed to write obfuscated description "
+											+ e.getMessage(), e);
+						} catch (IllegalStateException e) {
+							throw new I2B2DAOException(
+									"Failed to write obfuscated description "
+											+ e.getMessage(), e);
 						}
-						IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
-						List<QtQueryResultType> resultTypeList = resultTypeDao
-								.getQueryResultTypeByName(resultTypeName, roles);
-
-						// add "(Obfuscated)" in the description
-						//description = resultTypeList.get(0)
-						//		.getDescription()
-						//		+ " (Obfuscated) ";
-						String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-								sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
-
-
-
-						resultInstanceDao.updatePatientSet(resultInstanceId,
-								QueryStatusTypeId.STATUSTYPE_ID_FINISHED, null,
-								//obsfcTotal, 
-								obfuscatedRecordCount, recordCount, obfusMethod);
-
-						description = resultTypeList.get(0)
-								.getDescription() + " for \"" + queryName +"\"";
-
-						// set the result instance description
-						resultInstanceDao.updateResultInstanceDescription(
-								resultInstanceId, description);
-						//	tm.commit();
-					} catch (SecurityException e) {
-						throw new I2B2DAOException(
-								"Failed to write obfuscated description "
-										+ e.getMessage(), e);
-					} catch (IllegalStateException e) {
-						throw new I2B2DAOException(
-								"Failed to write obfuscated description "
-										+ e.getMessage(), e);
 					}
 				}
 			}

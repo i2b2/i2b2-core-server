@@ -25,6 +25,12 @@ import edu.harvard.i2b2.crc.role.AuthrizationHelper;
 
 public class QueryResultPatientCountGenerator extends CRCDAO implements
 		IResultGenerator {
+	
+	public String getResults() {
+		return xmlResult;
+	}
+
+	private String xmlResult = null;
 
 	public void generateResult(Map param) throws I2B2DAOException {
 
@@ -82,7 +88,8 @@ public class QueryResultPatientCountGenerator extends CRCDAO implements
 			jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelope),
 					strWriter);
 
-			IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+			 IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+			 xmlResult = strWriter.toString();
 			xmlResultDao.createQueryXmlResult(resultInstanceId,
 					strWriter.toString());
 		} catch (Exception sqlEx) {

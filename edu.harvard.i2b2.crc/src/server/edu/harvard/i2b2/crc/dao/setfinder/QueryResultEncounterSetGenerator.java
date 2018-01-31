@@ -28,6 +28,13 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 public class QueryResultEncounterSetGenerator extends CRCDAO implements
 		IResultGenerator {
 
+
+	public String getResults() {
+		return xmlResult;
+	}
+
+	private String xmlResult = null;
+	
 	public void generateResult(Map param) throws I2B2DAOException {
 
 		SetFinderConnection sfConn = (SetFinderConnection) param

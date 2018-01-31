@@ -20,6 +20,12 @@ public class QueryResultPatientGenderCountGenerator extends CRCDAO implements
 
 	public static final String RESULT_NAME = "PATIENT_GENDER_COUNT_XML";
 
+	public String getResults() {
+		return xmlResult;
+	}
+
+	private String xmlResult = null;
+	
 	public void generateResult(Map param) throws I2B2DAOException {
 
 		SetFinderConnection sfConn = (SetFinderConnection) param
@@ -78,7 +84,8 @@ public class QueryResultPatientGenderCountGenerator extends CRCDAO implements
 			jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
 					strWriter);
 
-			IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+			 IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+			 xmlResult = strWriter.toString();
 			xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
 					.toString());
 
