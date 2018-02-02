@@ -149,6 +149,38 @@ public class CallPMUtil {
 		return projectType;
 	}
 
+	public static boolean getUserIsAdminFromResponse(String responseXml, SecurityType securityType,  String projectId)
+			throws JAXBUtilException, I2B2Exception {
+		JAXBElement responseJaxb = jaxbUtil.unMashallFromString(responseXml);
+
+		//CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseXml);
+		ResponseMessageType pmRespMessageType = (ResponseMessageType) responseJaxb
+				.getValue();
+		log.debug("CRC's PM call response xml" + responseXml);
+
+		ResponseHeaderType responseHeader = pmRespMessageType
+				.getResponseHeader();
+		StatusType status = responseHeader.getResultStatus().getStatus();
+		String procStatus = status.getType();
+		String procMessage = status.getValue();
+
+		if (procStatus.equals("ERROR")) {
+			log.info("PM Error reported by CRC web Service " + procMessage);
+			throw new I2B2Exception("PM Error reported by CRC web Service "
+					+ procMessage);
+		} else if (procStatus.equals("WARNING")) {
+			log.info("PM Warning reported by CRC web Service" + procMessage);
+			throw new I2B2Exception("PM Warning reported by CRC web Service"
+					+ procMessage);
+		}
+
+		JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
+		ConfigureType configureType = (ConfigureType) helper.getObjectByClass(
+				pmRespMessageType.getMessageBody().getAny(),
+				ConfigureType.class);
+		UserType userType = configureType.getUser();
+		return userType.isIsAdmin();
+	}
 	private static OMElement buildOMElement(RequestMessageType requestMessageType)
 			throws XMLStreamException, JAXBUtilException {
 		StringWriter strWriter = new StringWriter();
@@ -199,6 +231,29 @@ public class CallPMUtil {
 
 		return requestMessageType;
 
+	}
+
+	public static boolean callIsAdmin(SecurityType securityType, String projectId) throws AxisFault, I2B2Exception {
+		RequestMessageType requestMessageType = getI2B2RequestMessage(securityType, projectId);
+		OMElement requestElement = null;
+		boolean projectType = false;
+		try {
+			requestElement = buildOMElement(requestMessageType);
+			log.debug("CRC PM call's request xml " + requestElement);
+			String response = ServiceClient.sendREST(QueryProcessorUtil.getInstance()
+					.getProjectManagementCellUrl(), requestElement);
+			log.debug("Got Response");
+			projectType = getUserIsAdminFromResponse(response, securityType, projectId);
+		} catch (XMLStreamException e) {
+			e.printStackTrace();
+			throw new I2B2Exception("" + StackTraceUtil.getStackTrace(e));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new I2B2Exception("" + StackTraceUtil.getStackTrace(e));
+		} 
+
+		log.debug("Returning ProjectType");
+		return projectType;
 	}
 
 
