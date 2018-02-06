@@ -24,4 +24,9 @@ public class JAXBConstant {
         "edu.harvard.i2b2.pm.datavo.i2b2versionmessage",
         "edu.harvard.i2b2.pm.datavo.pm"
         };
+
+    public static final String[] VERSION_PACKAGE_NAME = new String[] {
+        "edu.harvard.i2b2.pm.datavo.i2b2versionmessage",
+        "edu.harvard.i2b2.pm.datavo.pm"
+        };
 }

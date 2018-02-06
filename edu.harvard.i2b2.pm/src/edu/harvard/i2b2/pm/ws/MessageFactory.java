@@ -46,6 +46,7 @@ import edu.harvard.i2b2.pm.datavo.pm.CellDataType;
 import edu.harvard.i2b2.pm.datavo.pm.CellDatasType;
 import edu.harvard.i2b2.pm.datavo.pm.ConfigureType;
 import edu.harvard.i2b2.pm.datavo.pm.ConfiguresType;
+import edu.harvard.i2b2.pm.datavo.pm.DatasourcesType;
 import edu.harvard.i2b2.pm.datavo.pm.GlobalDataType;
 import edu.harvard.i2b2.pm.datavo.pm.GlobalDatasType;
 import edu.harvard.i2b2.pm.datavo.pm.ParamType;
@@ -151,6 +152,10 @@ public class MessageFactory {
 			bodyType.getAny().add(of.createApprovals((ApprovalsType) uType));      
 		else  if (uType.getClass().getName().equals("edu.harvard.i2b2.pm.datavo.i2b2message.ResultStatusType"))
 			bodyType.getAny().add(of.createResponse(((ResultStatusType) uType).getStatus().getValue()));     
+		else  if (uType.getClass().getName().equals("edu.harvard.i2b2.pm.datavo.pm.DatasourcesType"))
+			bodyType.getAny().add(of.createDatasources((DatasourcesType) uType));    	
+		//else  if (uType.getClass().getName().equals("edu.harvard.i2b2.pm.datavo.pm.DatasourcesType"))
+	//		bodyType.getAny().add(of.createApprovals((ApprovalsType) uType));      
 
 
 		return bodyType;

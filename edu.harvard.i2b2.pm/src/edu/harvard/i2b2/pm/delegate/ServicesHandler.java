@@ -9,12 +9,48 @@
  */
 package edu.harvard.i2b2.pm.delegate;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectInstance;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
+import javax.naming.Binding;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import javax.xml.bind.JAXBElement;
+
+import org.jboss.as.connector.subsystems.datasources.WildFlyDataSource;
+import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.as.controller.client.OperationBuilder;
+import org.jboss.as.controller.client.helpers.ClientConstants;
+import org.jboss.dmr.ModelNode;
+
+//import org.jboss.as.connector.subsystems.datasources.WildFlyDataSource;
+//import org.jboss.as.controller.client.ModelControllerClient;
+//import org.jboss.as.controller.client.OperationBuilder;
+//import org.jboss.as.controller.client.helpers.ClientConstants;
+//import org.jboss.dmr.ModelNode;
+//import org.jboss.jca.adapters.jdbc.WrapperDataSource;
+//import org.jboss.jca.adapters.jdbc.jdk7.WrappedConnectionJDK7;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -32,6 +68,8 @@ import edu.harvard.i2b2.pm.datavo.pm.CellDataType;
 import edu.harvard.i2b2.pm.datavo.pm.CellDatasType;
 import edu.harvard.i2b2.pm.datavo.pm.ConfigureType;
 import edu.harvard.i2b2.pm.datavo.pm.ConfiguresType;
+import edu.harvard.i2b2.pm.datavo.pm.DatasourceType;
+import edu.harvard.i2b2.pm.datavo.pm.DatasourcesType;
 import edu.harvard.i2b2.pm.datavo.pm.GetUserConfigurationType;
 import edu.harvard.i2b2.pm.datavo.pm.GlobalDataType;
 import edu.harvard.i2b2.pm.datavo.pm.ParamType;
@@ -43,6 +81,8 @@ import edu.harvard.i2b2.pm.datavo.pm.ProjectType;
 import edu.harvard.i2b2.pm.datavo.pm.ProjectsType;
 import edu.harvard.i2b2.pm.datavo.pm.RoleType;
 import edu.harvard.i2b2.pm.datavo.pm.RolesType;
+import edu.harvard.i2b2.pm.datavo.pm.UserLoginType;
+import edu.harvard.i2b2.pm.datavo.pm.UserLoginsType;
 import edu.harvard.i2b2.pm.datavo.pm.UserType;
 import edu.harvard.i2b2.pm.datavo.pm.UsersType;
 import edu.harvard.i2b2.pm.services.HiveParamData;
@@ -299,7 +339,7 @@ public class ServicesHandler extends RequestHandler {
 			for( it=pmDb.getAllParam(userType,null,null).iterator();it.hasNext();){
 				UserParamData userdata =(UserParamData)it.next();			
 				params.put(userdata.getName(),  userdata.getValue());
-				
+
 				if (userdata.getName().equalsIgnoreCase("authentication_method"))
 					method  = userdata.getValue();
 
@@ -362,7 +402,7 @@ public class ServicesHandler extends RequestHandler {
 				//get the user from the service
 				try {
 					log.debug("Validating user: " + rmt.getUsername());
-					
+
 					boolean skipValidation = false;
 					if (obj instanceof JAXBElement) {
 						String value = null;
@@ -371,7 +411,7 @@ public class ServicesHandler extends RequestHandler {
 						if (name.equalsIgnoreCase("set_password"))
 							skipValidation = true;
 					}
-					
+
 
 					UserType user = validateSuppliedPassword( rmt.getUsername(), rmt.getPassword().getValue(), params, skipValidation);
 					uType.setFullName(user.getFullName());
@@ -442,12 +482,12 @@ public class ServicesHandler extends RequestHandler {
 				String value = null;
 				String name = null;
 				name  = ((JAXBElement) obj).getName().getLocalPart();
-				
+
 				// If admin than log entry
 				if (uType.isIsAdmin())
 					saveLoginAttempt(pmDb, rmt.getUsername(), name);
 
-				
+
 				log.debug("Element name is: " + name );
 				if (name.equals("set_user"))
 					return runSetUser(pmDb, project, rmt.getUsername(), (UserType) ((JAXBElement) obj).getValue() );
@@ -515,6 +555,12 @@ public class ServicesHandler extends RequestHandler {
 					return runDeleteProject(pmDb, rmt.getUsername(),  (ProjectType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_project"))
 					return runGetProject(pmDb, rmt.getUsername(), (ProjectType) ((JAXBElement) obj).getValue()  );
+				else if (name.equals("set_datasource"))
+					return runSetDatasource(pmDb, rmt.getUsername(), (DatasourceType)  ((JAXBElement) obj).getValue()  );
+				else if (name.equals("get_all_datasource"))
+					return runGetAllDatasource(pmDb, project, rmt.getUsername() );
+				else if (name.equals("get_user_login"))
+					return runUserLogin(pmDb, rmt.getUsername(),  (UserLoginType) ((JAXBElement) obj).getValue()  );
 
 
 				log.debug("working on value");
@@ -691,7 +737,299 @@ public class ServicesHandler extends RequestHandler {
 		return responseVdo;		
 	}
 
+	private String runUserLogin(PMDbDao pmDb, String caller, UserLoginType value) {
+		ResponseMessageType responseMessageType = null;
 
+		try {
+
+
+			List response = null;	
+			try {
+				response = pmDb.getUserLogin(value, caller);
+			} catch (I2B2DAOException e1) {
+				throw new Exception ( "Database error in getting user data for NTLM");
+			} catch (I2B2Exception e1) {
+				throw new Exception ("Database error in getting user data for NTLM");
+			}
+
+			Iterator it = response.iterator();
+			UserLoginsType users = new UserLoginsType();
+			log.debug("Records returned: " + response.size());
+			while (it.hasNext())
+			{
+				UserLoginType user = (UserLoginType)it.next();
+				users.getUserLogin().add(user);
+			}
+			//everything is good so just return the same session key and the other info
+
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());    
+			responseMessageType = MessageFactory.createBuildResponse(messageHeader,users);
+
+		}
+		catch (Exception ee)
+		{
+			log.error(ee.getMessage());
+			// throw new Exception (ee.getMessage());
+			ee.printStackTrace();
+
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());          
+			responseMessageType = MessageFactory.doBuildErrorResponse(messageHeader,
+					ee.getMessage());			
+		}
+
+		String responseVdo = "DONE";
+		try {
+			responseVdo = MessageFactory.convertToXMLString(responseMessageType);
+		} catch (I2B2Exception e) {
+			log.error(e.getMessage());
+		}
+		return responseVdo;
+	}
+
+	private String runGetAllDatasource(PMDbDao pmDb, String project, String caller) {
+		ResponseMessageType responseMessageType = null;
+
+		try {
+
+
+			List<DataSource> response = new ArrayList<DataSource>();
+
+			//List<DataSource> availableDatasources = new ArrayList<DataSource>(); 
+			try { 
+
+				// retrieve the mbean server 
+				MBeanServer server = java.lang.management.ManagementFactory.getPlatformMBeanServer(); 
+
+				// key for retrieving mbeans representing LOCAL Datasource 
+				// configuration from JMX namespace: jboss.as:subsystem=datasources (1) 
+
+				//add datasources of given type to the list
+				addDatasourcesForKeyName(response, server,  "data-source");
+
+				// key for retrieving mbeans representing XA Datasource  
+				// configuration from JMX namespace: jboss.as:subsystem=datasources (2) 
+				addDatasourcesForKeyName(response, server,  "xa-data-source"); 
+
+			} catch (Exception e) { 
+
+				throw new Exception ("Database error in getting datasources");
+			}
+
+			Iterator it = response.iterator();
+			DatasourcesType users = new DatasourcesType();
+			log.debug("Records returned: " + response.size());
+			/*
+			while (it.hasNext())
+			{
+				DataSource user = (DataSource)it.next();
+				DatasourceType datasource = new DatasourceType();
+				datasource.setConnectionUrl(user.getConnection().getMetaData().getURL());
+				datasource.setDriverName(user.getConnection().getMetaData().getDriverName());
+				datasource.setUserName(user.getConnection().getMetaData().getUserName());
+				users.getDatasource().add(datasource);
+				//users.getProjectRequest().add(user);
+			}
+			 */
+			//everything is good so just return the same session key and the other info
+			// get list of hot deployed datasources
+			Context initCtx = new InitialContext();
+			//	NamingEnumeration<NameClassPair> namedEnum = initCtx.list("java:/");
+			NamingEnumeration namedEnum = initCtx.listBindings("");
+			while (namedEnum.hasMore())
+			{
+				try {
+					//NameClassPair nameClassPair = (NameClassPair)namedEnum.nextElement();
+					Binding nameClassPair = (Binding)namedEnum.next();
+
+					if (nameClassPair.getObject() instanceof DataSource) {
+
+						DataSource user = (DataSource)nameClassPair.getObject();
+						DatasourceType datasource = new DatasourceType();
+
+
+						for(Field f : nameClassPair.getObject().getClass().getDeclaredFields()) {
+							try {
+								f.setAccessible(true);
+								if (f.getName().equals("jndiName"))
+								{
+									datasource.setJndiName(f.get(nameClassPair.getObject()).toString());
+									datasource.setPoolName(datasource.getJndiName().substring(datasource.getJndiName().lastIndexOf("/")+1));     
+									try {
+										
+										Connection conn = user.getConnection();
+										datasource.setActive(true);
+									} catch (Exception ee)
+									{
+										datasource.setActive(false);
+									}
+								}
+								if (f.getName().equals("delegate"))
+								{
+									Object obj = f.get(nameClassPair.getObject());
+									//System.out.println(f.getName());
+									
+									for(Field f2 : obj.getClass().getDeclaredFields()) {
+										f2.setAccessible(true);
+
+										if (f2.getName().equals("defaultCRI"))
+										{
+											Object obj2 = f2.get(obj);
+											for(Field f3 : obj2.getClass().getDeclaredFields()) {
+												f3.setAccessible(true);
+												if (f3.getName().equals("user"))
+													datasource.setUserName(f3.get(obj2).toString());
+						//						else  if (f3.getName().equals("password"))
+						//							datasource.setPassword(f3.get(obj2).toString());
+											}
+										}
+										if (f2.getName().equals("mcf"))
+										{
+											Object obj2 = f2.get(obj);
+											for(Field f3 : obj2.getClass().getDeclaredFields()) {
+												f3.setAccessible(true);
+												  if (f3.getName().equals("connectionURL"))
+													datasource.setConnectionUrl(f3.get(obj2).toString());
+												else  if (f3.getName().equals("driverClass"))
+													datasource.setDriverName(f3.get(obj2).toString());
+												else if (f3.getName().equals("jta"))
+													datasource.setJta(Boolean.valueOf(f3.get(obj2).toString()));
+												  System.out.println(f3.getName());
+											}
+										}
+									}
+
+								}
+
+
+								//System.out.println(f.get(nameClassPair.getObject()));
+							} catch(IllegalAccessException e) {
+								e.printStackTrace();
+							}
+						}
+						users.getDatasource().add(datasource);
+					}
+				} catch (Exception e)
+				{
+					//e.printStackTrace();
+					//throw new Exception ("Database error in getting datasources, " + e.getMessage());
+
+				}
+			}
+
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());    
+			responseMessageType = MessageFactory.createBuildResponse(messageHeader,users);
+
+		}
+		catch (Exception ee)
+		{
+			log.error(ee.getMessage());
+			// throw new Exception (ee.getMessage());
+			ee.printStackTrace();
+
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());          
+			responseMessageType = MessageFactory.doBuildErrorResponse(messageHeader,
+					ee.getMessage());			
+		}
+
+		String responseVdo = "DONE";
+		try {
+			responseVdo = MessageFactory.convertToXMLString(responseMessageType);
+		} catch (I2B2Exception e) {
+			log.error(e.getMessage());
+		}
+		return responseVdo;
+	}
+
+	private void addDatasourcesForKeyName(List availableDatasources, MBeanServer server, String dataSourceKeyName) throws MalformedObjectNameException, NamingException, AttributeNotFoundException, InstanceNotFoundException, MBeanException, ReflectionException { 
+
+		// Get the starting point of the namespace 
+		Context ctx = new InitialContext(); 
+
+		// create jmx filter name eg. (3)
+		// "jboss.as:subsystem=datasources,xa-data-source=*" 
+		final ObjectName filterName = new ObjectName("jboss.as:subsystem=datasources," + dataSourceKeyName + "=*"); 
+
+		// get the results matching given filter. (4) 
+		final Set<ObjectInstance> mBeans = server.queryMBeans(filterName, null); 
+
+		// iterate over mbeans and retrieve information about jndi-name of datasource 
+		for (final ObjectInstance mBean : mBeans) { 
+
+			// get name for mbean describing current datasource mbean   
+			ObjectName mbeanName = mBean.getObjectName(); 
+
+			// one of the attributes of mbean is 
+			// "jndiName" , we will read that attribute now:(5) 
+			String bindName = (String) server.getAttribute(mbeanName, "jndiName"); 
+
+			// having the jndi-name, we can look up the datasource instance 
+			DataSource ds = (DataSource) ctx.lookup(bindName); 
+			availableDatasources.add(ds); 
+		} 
+	}
+
+	private String runSetDatasource(PMDbDao pmDb, String username, DatasourceType value) {
+		ResponseMessageType responseMessageType = null;
+
+		try {
+
+			ModelControllerClient client = ModelControllerClient.Factory.create(InetAddress.getByName("localhost"), 9990);
+
+			ModelNode request = new ModelNode();
+			request.get(ClientConstants.OP).set(ClientConstants.ADD);
+			request.get(ClientConstants.OP_ADDR).add("subsystem","datasources");
+			request.get(ClientConstants.OP_ADDR).add("data-source",value.getDataSource());
+			request.get("jta").set(false);
+			request.get("jndi-name").set("java:/" + value.getDataSource());
+			request.get("pool-name").set(value.getPoolName());
+			request.get("use-java-context").set(true);
+			request.get("use-ccm").set(false);
+
+			request.get("connection-url").set(value.getConnectionUrl());
+			request.get("driver-name").set(value.getDriverName());
+			request.get("transaction-isolation").set("TRANSACTION_READ_COMMITTED");
+
+			request.get("min-pool-size").set(5);
+			request.get("max-pool-size").set(20);
+			request.get("pool-prefill").set(true);
+			request.get("pool-use-strict-min").set(false);
+			request.get("flush-strategy").set("FailingConnectionOnly");
+
+			request.get("user-name").set(value.getUserName());
+			request.get("password").set(value.getPassword());
+
+			request.get("prepared-statements-cache-size").set(32);
+			request.get("share-prepared-statements").set(false);
+
+			client.execute(new OperationBuilder(request).build());
+			client.close();
+
+			ResultStatusType results = new ResultStatusType();
+			StatusType status  = new StatusType();
+			status.setValue("1 records");
+			results.setStatus(status);
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());    
+			responseMessageType = MessageFactory.createBuildResponse(messageHeader,results);
+		}
+		catch (Exception ee)
+		{
+			log.error(ee.getMessage());
+			// throw new Exception (ee.getMessage());
+			ee.printStackTrace();
+
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());          
+			responseMessageType = MessageFactory.doBuildErrorResponse(messageHeader,
+					ee.getMessage());			
+		}
+
+		String responseVdo = "DONE";
+		try {
+			responseVdo = MessageFactory.convertToXMLString(responseMessageType);
+		} catch (I2B2Exception e) {
+			log.error(e.getMessage());
+		}
+		return responseVdo;
+	}
 
 	//All Param process
 	private String runDeleteParam(PMDbDao pmDb, String project, String caller,
@@ -1137,7 +1475,7 @@ public class ServicesHandler extends RequestHandler {
 		ResponseMessageType responseMessageType = null;
 
 		try {
-			
+
 			int result = pmDb.setPassword(password, caller);
 
 			ResultStatusType results = new ResultStatusType();

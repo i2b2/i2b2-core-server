@@ -11,6 +11,10 @@ package edu.harvard.i2b2.pm.util;
 
 import java.io.StringWriter;
 
+import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.as.controller.client.helpers.Operations;
+import org.jboss.dmr.ModelNode;
+
 /**
  * StringUtil class to perform string parsing tasks
  * This is singleton class.
@@ -27,6 +31,14 @@ public class StringUtil {
     
     public static StringUtil getInstance() {
         return thisInstance;
+    }
+    
+    public static String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
     
     public static String getTableCd(String fullPath) {
@@ -87,4 +99,49 @@ public class StringUtil {
 		}
 		return number;
 	}
+	
+
+    public static String appServerRunningVersion() throws Exception {  
+		StringWriter strWriter = new StringWriter();
+        try (ModelControllerClient client = ModelControllerClient.Factory.create("localhost", 9990)) {  
+            final ModelNode op = Operations.createReadResourceOperation(new ModelNode().setEmptyList());  
+            final ModelNode result = client.execute(op);  
+            if (Operations.isSuccessfulOutcome(result)) {  
+                final ModelNode model = Operations.readResult(result);  
+                final String productName;  
+                if (model.hasDefined("product-name")) {  
+                    productName = model.get("product-name").asString();  
+                } else {  
+                    productName = "WildFly";  
+                }  
+      
+      
+                String productVersion = null;  
+                if (model.hasDefined("product-version")) {  
+                    productVersion = model.get("product-version").asString();  
+                }  
+      
+      
+                String releaseCodename = null;  
+                if (model.hasDefined("release-codename")) {  
+                    releaseCodename = model.get("release-codename").asString();  
+                }  
+      
+      
+                String releaseVersion = null;  
+                if (model.hasDefined("release-version")) {  
+                    releaseVersion = model.get("release-version").asString();  
+                }  
+      
+      
+                strWriter.append((productName != null ? productName : "WildFly"));  
+                strWriter.append(" " + productVersion);  
+                //strWriter.append("\nCodename: " + releaseCodename);  
+                //strWriter.append("\nRelease Version: " +  releaseVersion);  
+            } else {  
+            	strWriter.append(result.toString());  
+            }  
+        }  
+        return strWriter.toString();
+    }  
 }

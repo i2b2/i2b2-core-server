@@ -23,6 +23,13 @@
                 <xsd:complexType >
                     <xsd:sequence>
                         <xsd:element name="get_message_version" />
+                        <xsd:element name="get_jdk_version" />
+                        <xsd:element name="get_i2b2_version" />
+                        <xsd:element name="get_os_version" />
+                        <xsd:element name="get_java_memory" />
+                        <xsd:element name="get_disk_usage" />
+                        <xsd:element name="get_app_server_version" />
+                        <xsd:element name="get_axis2_version" />
                     </xsd:sequence>
                  </xsd:complexType >
             </xsd:element> 
@@ -43,6 +50,13 @@
                 <xsd:complexType >
                  <xsd:sequence>
                     <xsd:element name="i2b2_message_version" type="xsd:string"/>
+                    <xsd:element name="i2b2_version" type="xsd:string"/>
+                    <xsd:element name="jdk_version" type="xsd:string"/>
+                    <xsd:element name="os_version" type="xsd:string"/>                    
+                    <xsd:element name="java_memory" type="xsd:string"/>                    
+                    <xsd:element name="disk_usage" type="xsd:string"/>                    
+                    <xsd:element name="app_server_version" type="xsd:string"/>                    
+                    <xsd:element name="axis2_version" type="xsd:string"/>                    
                  </xsd:sequence>
                 </xsd:complexType >            
             </xsd:element>    

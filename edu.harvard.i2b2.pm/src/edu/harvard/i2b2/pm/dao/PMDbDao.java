@@ -46,6 +46,7 @@ import edu.harvard.i2b2.pm.datavo.pm.PasswordType;
 import edu.harvard.i2b2.pm.datavo.pm.ProjectRequestType;
 import edu.harvard.i2b2.pm.datavo.pm.ProjectType;
 import edu.harvard.i2b2.pm.datavo.pm.RoleType;
+import edu.harvard.i2b2.pm.datavo.pm.UserLoginType;
 import edu.harvard.i2b2.pm.datavo.pm.UserType;
 import edu.harvard.i2b2.pm.ejb.DBInfoType;
 //import edu.harvard.i2b2.pm.services.EnvironmentData;
@@ -77,16 +78,16 @@ public class PMDbDao extends JdbcDaoSupport {
 		Connection conn = null;
 		try {
 			ds = PMUtil.getInstance().getDataSource("java:/PMBootStrapDS");
-	//		database = ds.getConnection().getMetaData().getDatabaseProductName();
+			//		database = ds.getConnection().getMetaData().getDatabaseProductName();
 			log.debug(ds.toString());
 		} catch (I2B2Exception e2) {
 			log.error("bootstrap ds failure: " + e2.getMessage());
 			throw e2;
-//		} catch (SQLException e2) {
-//			log.error("bootstrap ds failure: " + e2.getMessage());
+			//		} catch (SQLException e2) {
+			//			log.error("bootstrap ds failure: " + e2.getMessage());
 			//throw e2;
 		} 
-		
+
 		try {
 			conn  = ds.getConnection(); 
 			database = conn.getMetaData().getDatabaseProductName();
@@ -100,9 +101,9 @@ public class PMDbDao extends JdbcDaoSupport {
 		{
 			conn = null;
 		}
-		
+
 		this.jt = new SimpleJdbcTemplate(ds);
-	//	ds = null;
+		//	ds = null;
 	}
 
 
@@ -790,7 +791,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		List<DBInfoType> queryResult = null;
 		try {
 			String clob = null;
-			
+
 			if (groupdata.getRequestXml() != null)
 			{
 				clob = groupdata.getRequestXml();
@@ -807,7 +808,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					//					JDBCUtil.getClobString(clob));
 					//		rData.setRequestXml(blobType);
 				}
-				*/
+				 */
 			}
 			String addSql = "insert into pm_project_request " + 
 					"(title, request_xml, project_id, change_date, entry_date, submit_char, changeby_char, status_cd) values (?,?,?,?,?,?,?,?)";
@@ -844,38 +845,38 @@ public class PMDbDao extends JdbcDaoSupport {
 		int numRowsAdded = 0;
 		String hash = PMUtil.getInstance().getHashedPassword(password);
 		try {
-			
+
 
 			String sql = null;
 			sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD'";
 
 			int expiredPassword = -1;
-			
+
 			try {
 				List<DBInfoType> queryResult  = jt.query(sql, getParam());
 				Iterator it = queryResult.iterator();
 				while (it.hasNext())
 				{
-					 if (!PMUtil.getInstance().passwordValidation(password))
-						 throw new Exception("Password strench enforcement failed.");
-					
+					if (!PMUtil.getInstance().passwordValidation(password))
+						throw new Exception("Password strench enforcement failed.");
+
 					ParamType user = (ParamType)it.next();
 					expiredPassword = Integer.parseInt(user.getValue());
-					
-					int id = -1;
-					 sql = "select * from pm_user_params where PARAM_NAME_CD = 'PM_EXPIRED_PASSWORD' and user_id = ?";
-					
-							List<DBInfoType> queryResults  = jt.query(sql, getParam(), caller);
-							if (queryResults.size() > 0) {
-							Iterator it2 = queryResult.iterator();
-							while (it2.hasNext())
-							{
 
-								ParamType user2 = (ParamType)it2.next();
-								id = user2.getId();
-							}
-							}
-					
+					int id = -1;
+					sql = "select * from pm_user_params where PARAM_NAME_CD = 'PM_EXPIRED_PASSWORD' and user_id = ?";
+
+					List<DBInfoType> queryResults  = jt.query(sql, getParam(), caller);
+					if (queryResults.size() > 0) {
+						Iterator it2 = queryResult.iterator();
+						while (it2.hasNext())
+						{
+
+							ParamType user2 = (ParamType)it2.next();
+							id = user2.getId();
+						}
+					}
+
 					UserType uType = new UserType();
 					uType.setUserName(caller);
 					ParamType param = new ParamType();
@@ -890,18 +891,18 @@ public class PMDbDao extends JdbcDaoSupport {
 
 					if (id != -1)
 						param.setId(id);
-					
+
 					uType.getParam().add(param);
-					
+
 					setParam( uType, null, null,  caller);
 
 				}
 			} catch (Exception e)
 			{
 				throw new I2B2DAOException(e.getMessage(), e);
-				
+
 			}
-		
+
 			String addSql = "update pm_user_data " + 
 					"set password = ?, change_date = ?, changeby_char = ? where user_id = ?";
 
@@ -913,7 +914,7 @@ public class PMDbDao extends JdbcDaoSupport {
 
 			if (numRowsAdded ==0)
 				throw new I2B2DAOException("User not updated, does it exist?");
-			
+
 
 		} catch (DataAccessException e) {
 			log.error("Dao deleteuser failed");
@@ -980,7 +981,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD'";
 
 		int expiredPassword = -1;
-		
+
 		try {
 			List<DBInfoType> queryResult  = jt.query(sql, getParam());
 			Iterator it = queryResult.iterator();
@@ -992,25 +993,25 @@ public class PMDbDao extends JdbcDaoSupport {
 		} catch (Exception e)
 		{
 			e.printStackTrace();
-			
+
 		}
-		
+
 		// Either dont want to use expired password or not set
 		if (expiredPassword < 0)
 			return false;
-		
-		 sql = "select * from pm_user_params where PARAM_NAME_CD = 'PM_EXPIRED_PASSWORD' and user_id = ?";
-		
+
+		sql = "select * from pm_user_params where PARAM_NAME_CD = 'PM_EXPIRED_PASSWORD' and user_id = ?";
+
 		try {
 			List<DBInfoType> queryResult  = jt.query(sql, getParam(), userId);
 			Iterator it = queryResult.iterator();
 			while (it.hasNext())
 			{
-			      Date currentDate = new Date();
-			      Calendar now = Calendar.getInstance();
-			      now.setTime(currentDate);
-			      //c.add(Calendar.DATE, expiredPassword);
-			      
+				Date currentDate = new Date();
+				Calendar now = Calendar.getInstance();
+				now.setTime(currentDate);
+				//c.add(Calendar.DATE, expiredPassword);
+
 				ParamType user = (ParamType)it.next();
 				//Date datePasswordSet = Date.parse(user.getValue());
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -1024,24 +1025,24 @@ public class PMDbDao extends JdbcDaoSupport {
 		} catch (Exception e)
 		{
 			e.printStackTrace();
-			
+
 		}
-		
+
 		// If we have gotten here than the variable PM_EXPIRED_PASSWORD is set to greater than -1 and the user does not have a expired entry, so considered expired
 		return true;
-		
+
 	}
 
 	public boolean verifyNotLockedOut(String userId)
 	{
-		
-		
+
+
 		String sql = null;
 		//get results count max
 		sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_LOCKED_MAX_COUNT'";
 
 		int resultmax = 10;
-		
+
 		try {
 			List<DBInfoType> queryResult  = jt.query(sql, getParam());
 			Iterator it = queryResult.iterator();
@@ -1053,13 +1054,13 @@ public class PMDbDao extends JdbcDaoSupport {
 		} catch (Exception e)
 		{
 			e.printStackTrace();
-			
+
 		}
-		
+
 		sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_LOCKED_WAIT_TIME'";
 
 		int waittime = 2;
-		
+
 		try {
 			List<DBInfoType> queryResult  = jt.query(sql, getParam());
 			Iterator it = queryResult.iterator();
@@ -1071,14 +1072,14 @@ public class PMDbDao extends JdbcDaoSupport {
 		} catch (Exception e)
 		{
 			e.printStackTrace();
-			
+
 		}
 
-		
+
 		if (database.equalsIgnoreCase("oracle"))
 			sql =  "select count(*) as badlogin from pm_user_login where user_id = ? and " +
-				" attempt_cd = 'BADPASSWORD' and " +
-				"(entry_date + interval '" + waittime + "' minute)  >= CURRENT_TIMESTAMP ";
+					" attempt_cd = 'BADPASSWORD' and " +
+					"(entry_date + interval '" + waittime + "' minute)  >= CURRENT_TIMESTAMP ";
 		else if (database.equalsIgnoreCase("Microsoft sql server"))
 			sql =  "select count(*) as badlogin from pm_user_login where user_id = ? and " +
 					" attempt_cd = 'BADPASSWORD' and " +
@@ -1087,44 +1088,44 @@ public class PMDbDao extends JdbcDaoSupport {
 			sql =  "select count(*) as badlogin from pm_user_login where user_id = ? and " +
 					" attempt_cd = 'BADPASSWORD' and " +
 					"(entry_date + cast('" + waittime + " minutes' as interval))  >= now() ";
-		
+
 		int results = jt.queryForInt(sql, userId);
 
 		//int results = 0;
-		
+
 		if (results >= resultmax)
 			return true;
 		else 
 			return false;
 	}
-	
+
 	public int setLoginAttempt(String userId, String attemptCd) {
 		String addSql = "insert into pm_user_login " + 
 				"(user_id, attempt_cd, changeby_char, entry_date, status_cd) values (?,?,?,?,'A')";
 
 		int numRowsAdded =
 				jt.update(addSql, 
-				userId,
-				attemptCd,
-				userId,
-				Calendar.getInstance().getTime());	
+						userId,
+						attemptCd,
+						userId,
+						Calendar.getInstance().getTime());	
 
 		return numRowsAdded;		
 	}
 
 	public int setSession(String userId, String sessionId, int timeout)
 	{
-		
+
 		String addSql = "";
 
 		if (database.equalsIgnoreCase("oracle"))
-			 addSql = "insert into pm_user_session " + 
+			addSql = "insert into pm_user_session " + 
 					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?, systimestamp, systimestamp+numtodsinterval(" + (timeout * 1000) + ",'SECOND'))";
 		else if (database.equalsIgnoreCase("Microsoft sql server"))
-			 addSql = "insert into pm_user_session " + 
+			addSql = "insert into pm_user_session " + 
 					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?, getdate(), DATEADD(ms," + timeout + ",getdate()))";
 		else if (database.equalsIgnoreCase("postgresql"))
-			 addSql = "insert into pm_user_session " + 
+			addSql = "insert into pm_user_session " + 
 					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?,now(),  now() + interval '" + timeout + " millisecond')";
 
 		Calendar now = Calendar.getInstance();
@@ -1133,8 +1134,8 @@ public class PMDbDao extends JdbcDaoSupport {
 				userId,
 				sessionId,
 				userId);
-				//Calendar.getInstance().getTime(),
-				//now.getTime());	
+		//Calendar.getInstance().getTime(),
+		//now.getTime());	
 
 		return numRowsAdded;
 	}
@@ -1510,7 +1511,7 @@ public class PMDbDao extends JdbcDaoSupport {
 							sql +=  " and to_char(value)=?";
 						else
 							sql +=  " and value=?";
-							
+
 						al.add((((UserType) utype).getParam().get(i).getValue()));
 					}
 
@@ -1720,9 +1721,9 @@ public class PMDbDao extends JdbcDaoSupport {
 						Calendar.getInstance().getTime(),
 						caller,
 						((UserType) utype).getParam().get(0).getId());
-                if (numRowsAdded == 0)
-                    throw new I2B2DAOException("Record does not exist or access denied.");
-				
+				if (numRowsAdded == 0)
+					throw new I2B2DAOException("Record does not exist or access denied.");
+
 			}
 		}  		
 		else if ((utype instanceof ProjectType) && (((ProjectType) utype).getUserName() != null) && (((ProjectType) utype).getUserName().equals(caller) ))
@@ -1753,8 +1754,8 @@ public class PMDbDao extends JdbcDaoSupport {
 						Calendar.getInstance().getTime(),			
 						caller,
 						((ProjectType) utype).getParam().get(0).getId());
-                if (numRowsAdded == 0)
-                    throw new I2B2DAOException("Record does not exist or access denied.");
+				if (numRowsAdded == 0)
+					throw new I2B2DAOException("Record does not exist or access denied.");
 			}
 
 		}	else if (validateRole(caller, "admin", null) || validateRole(caller, "manager", project))
@@ -2387,8 +2388,8 @@ public class PMDbDao extends JdbcDaoSupport {
 					caller,
 					caller,
 					((UserType) utype).getParam().get(0).getId());
-            if (numRowsAdded == 0)
-                throw new I2B2DAOException("Record does not exist or access denied.");
+			if (numRowsAdded == 0)
+				throw new I2B2DAOException("Record does not exist or access denied.");
 		} else if ((utype instanceof ProjectType) && (((ProjectType) utype).getUserName() != null) && (((ProjectType) utype).getUserName().equals(caller) ))
 		{
 			String addSql = "update pm_project_user_params " + 
@@ -2399,8 +2400,8 @@ public class PMDbDao extends JdbcDaoSupport {
 					caller,
 					caller,
 					((ProjectType) utype).getParam().get(0).getId());
-            if (numRowsAdded == 0)
-                throw new I2B2DAOException("Record does not exist or access denied.");
+			if (numRowsAdded == 0)
+				throw new I2B2DAOException("Record does not exist or access denied.");
 
 		} 
 		else 
@@ -2542,7 +2543,7 @@ public class PMDbDao extends JdbcDaoSupport {
 						log.debug(ioe.getMessage());
 					}
 				}
-				*/
+				 */
 				//rData.setRequestXml(rs.getClob("request_xml"));
 				return rData;
 			} 
@@ -2699,7 +2700,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		};
 		return map;
 	}
-	
+
 
 	private ParameterizedRowMapper getUserLogin() {
 		ParameterizedRowMapper<SessionData> map = new ParameterizedRowMapper<SessionData>() {
@@ -2784,5 +2785,38 @@ public class PMDbDao extends JdbcDaoSupport {
 		};
 		return map;
 	}
+
+	private ParameterizedRowMapper getUserLoginAttempt() {
+		ParameterizedRowMapper<UserLoginType> map = new ParameterizedRowMapper<UserLoginType>() {
+			public UserLoginType mapRow(ResultSet rs, int rowNum) throws SQLException {
+				DTOFactory factory = new DTOFactory();
+				UserLoginType userData = new UserLoginType();
+				userData.setAttempt(rs.getString("attenpt_cd"));
+				userData.setUserName(rs.getString("user_id"));
+
+				return userData;
+			} 
+		};
+		return map;
+	}
+
+
+	public List<DBInfoType> getUserLogin(UserLoginType value, String caller) throws I2B2Exception, I2B2DAOException { 
+		String sql = null;
+		List<DBInfoType> queryResult = null;
+
+		sql =  "select * from pm_user_login where status_cd<>'D' ";
+		if (value.getEntryDate() != null)
+		{
+			sql += " and entry_date > ?";
+			queryResult = jt.query(sql, getUserLoginAttempt(), value.getEntryDate());
+
+		} else {
+
+			queryResult = jt.query(sql, getUserLoginAttempt());
+		}
+		return queryResult;	
+	}
+
 
 }

@@ -35,7 +35,7 @@ public class VersionMessage {
      * The constructor
      */
     public VersionMessage(String requestPdo) throws I2B2Exception {
-        jaxbUtil = new JAXBUtil(JAXBConstant.DEFAULT_PACKAGE_NAME);
+        jaxbUtil = new JAXBUtil(JAXBConstant.VERSION_PACKAGE_NAME);
 
         try {
             JAXBElement jaxbElement = jaxbUtil.unMashallFromString(requestPdo);

@@ -10,6 +10,11 @@
 
 package edu.harvard.i2b2.pm.ws;
 
+import java.nio.file.FileStore;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.NumberFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,10 +24,15 @@ import org.apache.axiom.om.OMElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
+import edu.harvard.i2b2.pm.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.pm.datavo.i2b2message.ResponseMessageType;
+import edu.harvard.i2b2.pm.datavo.i2b2versionmessage.RequestMessageType.MessageBody;
 import edu.harvard.i2b2.pm.delegate.ServicesHandler;
+import edu.harvard.i2b2.pm.util.StringUtil;
 
 
 /**
@@ -35,6 +45,7 @@ public class PMService {
 	private static Log log = LogFactory.getLog(PMService.class);
 
 	private static String msgVersion = "1.1";
+	private static String i2b2Version = "1.7.10";
 
 	public OMElement getVersion(OMElement getPMDataElement)
 			throws I2B2Exception, JAXBUtilException {
@@ -56,30 +67,74 @@ public class PMService {
 			throw new I2B2Exception("Incoming Version request is null");
 		}
 
+		String messageBody = outString.toLowerCase().substring(outString.indexOf("message_body"));
 
-		VersionMessage servicesMsg = new VersionMessage(getPMDataElement.toString());
+		edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType pmDataResponse = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType();
 
-		String version = servicesMsg.getRequestMessageType().getMessageBody().getGetMessageVersion().toString();
-		if (version.equals(""))
-		{
-			edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType pmDataResponse = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType();
-
-			edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType.MessageBody mb = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType.MessageBody();
+		edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType.MessageBody mb = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType.MessageBody();
+		if (messageBody.contains("get_i2b2_message_version"))
 			mb.setI2B2MessageVersion(msgVersion);
-			pmDataResponse.setMessageBody(mb);
+		if (messageBody.contains("get_i2b2_version"))
+			mb.setI2B2Version(i2b2Version);
+		if (messageBody.contains("get_jdk_version"))
+			mb.setJdkVersion(System.getProperty("java.vendor") + " Java " + System.getProperty("java.version"));
+		if (messageBody.contains("get_os_version"))
+			mb.setOsVersion( System.getProperty("os.name") + " " + System.getProperty("os.arch") + " " + System.getProperty("os.version"));
+		if (messageBody.contains("get_java_memory"))
+		{
+			Runtime r = Runtime.getRuntime();
+			String result = "Total Memory: " + StringUtil.humanReadableByteCount(r.totalMemory(), true);
+			result += "\nMax Memory: " +  StringUtil.humanReadableByteCount( r.maxMemory(), true);
+			result += "\nUsed Memory: " +   StringUtil.humanReadableByteCount((r.maxMemory() -  r.freeMemory()), true);
+			result += "\nFree Memory: " +  StringUtil.humanReadableByteCount(r.freeMemory(), true);
 
-			String xmlMsg = MessageFactory.convertToXMLString(pmDataResponse);
-
-			try {
-				returnElement = MessageFactory.createResponseOMElementFromString(xmlMsg);
-				log.debug("my pm repsonse is: " + pmDataResponse);
-				log.debug("my return is: " + returnElement);
-			} catch (XMLStreamException e) {
-				log.error("Error creating OMElement from response string " +
-						pmDataResponse, e);
-			}
-
+			mb.setJavaMemory(result);
 		}
+		if (messageBody.contains("app_server_version")) 
+		{
+			try {
+				mb.setAppServerVersion(StringUtil.appServerRunningVersion());
+			} catch (Exception e)
+			{
+				mb.setAppServerVersion(e.getMessage());
+			}
+		}
+		if (messageBody.contains("get_disk_usage"))
+		{
+			String result = "";
+			NumberFormat nf = NumberFormat.getNumberInstance();
+			for (Path root : FileSystems.getDefault().getRootDirectories()) {
+				try {
+					FileStore store = Files.getFileStore(root);
+					result += "\nTotal Space for " + root + ": " + StringUtil.humanReadableByteCount(store.getTotalSpace(), true);
+					result += "\nUnallocated Space for " + root + ": " + StringUtil.humanReadableByteCount(store.getUnallocatedSpace(), true);
+					result += "\nUsable Space for " + root + ": " + StringUtil.humanReadableByteCount(store.getUsableSpace(), true);
+				} catch (Exception e)
+				{
+					result += "Erron on " + root;
+				}
+			}
+			if (result.length() > 2)
+				result = result.substring(1);
+			mb.setDiskUsage(result);
+		}
+		if (messageBody.contains("get_axis2_version"))
+		{
+			mb.setAxis2Version(org.apache.axis2.Version.getVersionText());
+		}
+		pmDataResponse.setMessageBody(mb);
+
+		String xmlMsg = MessageFactory.convertToXMLString(pmDataResponse);
+
+		try {
+			returnElement = MessageFactory.createResponseOMElementFromString(xmlMsg);
+			log.debug("my pm repsonse is: " + pmDataResponse);
+			log.debug("my return is: " + returnElement);
+		} catch (XMLStreamException e) {
+			log.error("Error creating OMElement from response string " +
+					pmDataResponse, e);
+		}
+
 
 		return returnElement;
 

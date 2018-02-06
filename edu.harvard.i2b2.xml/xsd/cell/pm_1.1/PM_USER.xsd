@@ -53,6 +53,14 @@
 	<xs:element name="delete_project_user_param" type="xs:string" />
 	<xs:element name="get_all_project_user_param" type="pm:projectType" />
 	<xs:element name="get_project_user_param" type="xs:string" />
+
+	<xs:element name="datasources" type="pm:datasourcesType" />
+
+	<xs:element name="set_datasource" type="pm:datasourceType" />
+	<xs:element name="delete_ddatasource" type="pm:datasourceType" />
+	<xs:element name="get_all_datasource" type="xs:string" />
+	<xs:element name="get_datasource" type="pm:cell_dataType" />
+
 	
 	<xs:element name="set_cell" type="pm:cell_dataType" />
 	<xs:element name="delete_cell" type="pm:cell_dataType" />
@@ -114,6 +122,12 @@
 				maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>	
+	<xs:complexType name="user_loginsType">
+		<xs:sequence>
+			<xs:element name="user_login" type="pm:user_loginType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>	
 	<xs:complexType name="projectsType">
 		<xs:sequence>
 			<xs:element name="project" type="pm:projectType" minOccurs="0"
@@ -150,6 +164,29 @@
 			<xs:element name="active" type="xs:boolean" minOccurs="0"/>
 			<xs:element name="cell_datas" type="pm:cell_datasType" />
 			<xs:element name="global_data" type="pm:global_dataType" />
+			<xs:element name="param" type="pm:paramType" minOccurs="0"
+				maxOccurs="unbounded" />            
+		</xs:sequence>
+	</xs:complexType>
+		<xs:complexType name="datasourcesType">
+		<xs:sequence>
+			<xs:element name="datasource" type="pm:datasourceType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+		<xs:complexType name="datasourceType">
+		<xs:sequence>
+			<xs:element name="data_source" type="xs:string" />
+			<xs:element name="jndi_name" type="xs:string" />
+			<xs:element name="pool_name" type="xs:string" />
+			<xs:element name="connection_url" type="xs:string" />
+			<xs:element name="driver_name" type="xs:string" />
+			<xs:element name="user_name" type="xs:string" />
+			<xs:element name="password" type="xs:string" />
+			<xs:element name="min_pool_size" type="xs:string" minOccurs="0"/>
+			<xs:element name="max_pool_size" type="xs:string" minOccurs="0"/>
+			<xs:element name="jta" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="active" type="xs:boolean"/>
 			<xs:element name="param" type="pm:paramType" minOccurs="0"
 				maxOccurs="unbounded" />            
 		</xs:sequence>
@@ -224,6 +261,14 @@
 			
 			<xs:element name="param" type="pm:paramType" minOccurs="0"
 				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required" />
+	</xs:complexType>	
+	<xs:complexType name="user_loginType">
+		<xs:sequence>
+			<xs:element name="user_name" type="xs:string" />
+			<xs:element name="attempt" type="xs:string"  minOccurs="0" />
+			<xs:element name="entry_date" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:string" use="required" />
 	</xs:complexType>	
