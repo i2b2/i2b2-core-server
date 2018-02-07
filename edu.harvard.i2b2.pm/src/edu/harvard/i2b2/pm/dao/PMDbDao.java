@@ -1100,15 +1100,24 @@ public class PMDbDao extends JdbcDaoSupport {
 	}
 
 	public int setLoginAttempt(String userId, String attemptCd) {
-		String addSql = "insert into pm_user_login " + 
-				"(user_id, attempt_cd, changeby_char, entry_date, status_cd) values (?,?,?,?,'A')";
+		
+		String addSql = "";
+
+		if (database.equalsIgnoreCase("oracle"))
+			addSql = "insert into pm_user_login " + 
+					"(user_id, attempt_cd, changeby_char, entry_date, status_cd) values (?,?,?,systimestamp,'A')";
+		else if (database.equalsIgnoreCase("Microsoft sql server"))
+			addSql = "insert into pm_user_login " + 
+					"(user_id, attempt_cd, changeby_char, entry_date, status_cd) values (?,?,?,getdate(),'A')";
+		else if (database.equalsIgnoreCase("postgresql"))
+			addSql = "insert into pm_user_login " + 
+					"(user_id, attempt_cd, changeby_char, entry_date, status_cd) values (?,?,?,now(),'A')";
 
 		int numRowsAdded =
 				jt.update(addSql, 
 						userId,
 						attemptCd,
-						userId,
-						Calendar.getInstance().getTime());	
+						userId);	
 
 		return numRowsAdded;		
 	}
