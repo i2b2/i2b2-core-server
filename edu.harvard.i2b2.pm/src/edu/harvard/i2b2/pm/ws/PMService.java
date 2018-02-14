@@ -67,8 +67,12 @@ public class PMService {
 			throw new I2B2Exception("Incoming Version request is null");
 		}
 
-		String messageBody = outString.toLowerCase().substring(outString.indexOf("message_body"));
-
+		String messageBody = "get_i2b2_message_version";
+		
+		try {
+			outString.toLowerCase().substring(outString.indexOf("message_body"));
+		} catch (Exception e){}
+		
 		edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType pmDataResponse = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType();
 
 		edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType.MessageBody mb = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType.MessageBody();
