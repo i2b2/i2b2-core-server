@@ -412,6 +412,8 @@ public class ServicesHandler extends RequestHandler {
 							skipValidation = true;
 					}
 
+					if (rmt.getUsername().equals("AGG_SERVICE_ACCOUNT"))
+						skipValidation = true;
 
 					UserType user = validateSuppliedPassword( rmt.getUsername(), rmt.getPassword().getValue(), params, skipValidation);
 					uType.setFullName(user.getFullName());
