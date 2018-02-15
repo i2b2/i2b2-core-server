@@ -173,7 +173,7 @@ public class QueryProcessorUtil {
 
 
 	}
-
+/*
 	static {
 		try {
 			Class.forName("oracle.jdbc.OracleDriver");
@@ -182,7 +182,7 @@ public class QueryProcessorUtil {
 
 		}
 	}
-
+*/
 	/**
 	 * Return this class instance
 	 * 
