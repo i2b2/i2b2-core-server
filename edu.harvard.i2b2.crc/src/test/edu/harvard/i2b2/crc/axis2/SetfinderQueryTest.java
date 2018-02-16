@@ -12,6 +12,8 @@ package edu.harvard.i2b2.crc.axis2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import org.junit.runner.JUnitCore;
+import org.junit.experimental.ParallelComputer;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -758,7 +760,20 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 		}
 	}
 
+	@Test
+	public void ExcludeOccurancesMultiplePanelsSameParallel() throws Exception {
+	       Class[] cls = { JunitRunA.class, JunitRunB.class,  JunitRunC.class,  JunitRunD.class,  JunitRunE.class };
 
+	        // Parallel among classes
+	        JUnitCore.runClasses(ParallelComputer.classes(), cls);
+	        
+	        // Parallel among methods in a class
+	        JUnitCore.runClasses(ParallelComputer.methods(), cls);
+	        
+	        // Parallel all methods in all classes
+	        JUnitCore.runClasses(new ParallelComputer(true, true), cls);
+	}
+	
 	@Test
 	public void ExcludeOccurancesMultiplePanelsAny() throws Exception {
 		String filename = testFileDir + "/setfinder_exclude_and_occurances_any_[63]_1432ms.xml";
