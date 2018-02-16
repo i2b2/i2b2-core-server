@@ -17,13 +17,11 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.QueryToolUtil;
-import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.QueryToolUtilNew;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.RecursiveBuild;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalQueryBuilder;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
@@ -63,6 +61,7 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 	
 	
 	
+	@Override
 	public void setProjectParam(Map projectParamMap) {
 		this.projectParamMap = projectParamMap;
 		if (projectParamMap != null && projectParamMap.get(ParamUtil.PM_ENABLE_PROCESS_TIMING) != null) {
@@ -71,6 +70,7 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 		
 	}
 	
+	@Override
 	public void setAllowLargeTextValueConstrainFlag(boolean allowLargeTextValueConstrainFlag)  { 
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
 	}
@@ -84,6 +84,7 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 	 * @throws I2B2Exception 
 	 * @throws JAXBUtilException 
 	 */
+	@Override
 	public String[] buildSql(String queryRequestXml, boolean encounterSetFlag) throws I2B2Exception, JAXBUtilException {
 		String sql = null, ignoredItemMessage = null, processTimingMessage = null;
 		Connection conn = null;

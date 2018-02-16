@@ -34,7 +34,6 @@ import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MatchStrType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.UserRequestType;
 import edu.harvard.i2b2.crc.util.CacheUtil;
 
 /**
@@ -70,6 +69,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	 * @param queryMaster
 	 * @return query master id
 	 */
+	@Override
 	public String createQueryMaster(QtQueryMaster queryMaster,
 			String i2b2RequestXml, String pmXml) {
 		queryMaster.setDeleteFlag(DELETE_NO_FLAG);
@@ -85,6 +85,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	 * @param masterId
 	 * @param generatedSql
 	 */
+	@Override
 	public void updateQueryAfterRun(String masterId, String generatedSql, String masterType) {
 		String sql = "UPDATE "
 				+ getDbSchemaName()
@@ -100,6 +101,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	 * @return List<QtQueryMaster>
 	 * @throws I2B2Exception 
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<QtQueryMaster> getQueryMasterByNameInfo(SecurityType userRequestType, FindByChildType findChildType) throws I2B2DAOException {
 
@@ -367,6 +369,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	 * @param userId
 	 * @return List<QtQueryMaster>
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<QtQueryMaster> getQueryMasterByUserId(String userId,
 			int fetchSize) {
@@ -408,6 +411,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	 * @param groupId
 	 * @return List<QtQueryMaster>
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<QtQueryMaster> getQueryMasterByGroupId(String groupId,
 			int fetchSize) {
@@ -446,6 +450,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	 * @param masterId
 	 * @return QtQueryMaster
 	 */
+	@Override
 	public QtQueryMaster getQueryDefinition(String masterId) {
 		String sql = "select * from " + getDbSchemaName() + "qt_query_master "
 				+ " where query_master_id = ? and delete_flag = ? ";
@@ -464,6 +469,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	}
 
 
+	@Override
 	public List<QtQueryMaster> getQueryByName(String queryName) {
 		String sql = "select * from " + getDbSchemaName() + "qt_query_master "
 				+ " where name = ? and delete_flag = ? ";
@@ -478,6 +484,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	 * @param queryNewName
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public void renameQuery(String masterId, String queryNewName)
 			throws I2B2DAOException {
 		log.debug("Rename  masterId=" + masterId + " new query name"
@@ -503,6 +510,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	 * @param masterId
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public void deleteQuery(String masterId) throws I2B2DAOException {
 		if (masterId==null){
@@ -670,6 +678,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	}
 
 	private static class QtQueryMasterRowMapper implements RowMapper {
+		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 			QtQueryMaster queryMaster = new QtQueryMaster();
 			queryMaster.setQueryMasterId(String.valueOf(rs.getInt("QUERY_MASTER_ID")));

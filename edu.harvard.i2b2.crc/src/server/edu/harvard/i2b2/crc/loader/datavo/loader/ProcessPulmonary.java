@@ -3,7 +3,6 @@
  */
 package edu.harvard.i2b2.crc.loader.datavo.loader;
 
-import java.util.regex.*;
 import java.io.*;
 
 

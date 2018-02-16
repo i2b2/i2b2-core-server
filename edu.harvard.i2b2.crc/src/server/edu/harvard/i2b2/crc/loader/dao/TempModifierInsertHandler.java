@@ -4,7 +4,6 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import edu.harvard.i2b2.crc.datavo.pdo.ConceptType;
 import edu.harvard.i2b2.crc.datavo.pdo.ModifierType;
 
 /**

@@ -29,6 +29,7 @@ public class ExecException extends I2B2Exception {
 		return exitStatus;
 	}
 
+	@Override
 	public String getMessage() {
 		return message;
 	}

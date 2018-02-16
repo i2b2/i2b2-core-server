@@ -11,10 +11,6 @@
 package edu.harvard.i2b2.crc.datavo.db;
 
 
-import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Types;
 
 /**

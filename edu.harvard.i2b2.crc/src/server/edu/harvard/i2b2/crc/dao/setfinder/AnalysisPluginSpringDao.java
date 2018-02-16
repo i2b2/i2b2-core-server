@@ -39,6 +39,7 @@ public class AnalysisPluginSpringDao extends CRCDAO implements
 	 * @param projectId
 	 * @return
 	 */
+	@Override
 	public List<QtAnalysisPlugin> getAnalysisPluginMetadata(
 			String analysisName, String projectId) {
 		List<QtAnalysisPlugin> analysisPluginList = null;
@@ -61,6 +62,7 @@ public class AnalysisPluginSpringDao extends CRCDAO implements
 		return analysisPluginList;
 	}
 
+	@Override
 	public QtAnalysisPlugin lookupAnalysisPluginByNameVersionProject(
 			String analysisName, String version, String projectId)
 			throws I2B2DAOException {
@@ -138,6 +140,7 @@ public class AnalysisPluginSpringDao extends CRCDAO implements
 		return analysisPluginList;
 	}
 
+	@Override
 	public QtAnalysisPlugin getAnalysisPluginById(int analysisId)
 			throws I2B2DAOException {
 		String lookupSql = "select * from " + getDbSchemaName()
@@ -150,6 +153,7 @@ public class AnalysisPluginSpringDao extends CRCDAO implements
 
 	private static class QtAnalysisPluginRowMapper implements RowMapper {
 
+		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 			QtAnalysisPlugin analysisPlugin = new QtAnalysisPlugin();
 			analysisPlugin.setPluginId(rs.getString("PLUGIN_ID"));

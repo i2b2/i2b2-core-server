@@ -82,6 +82,7 @@ public class EidXmlDbLoader implements StartElementListener {
 		eidInsertHandler.flush();
 	}
 
+	@Override
 	public void process(Object eid) {
 		rowCount++;
 		if (rowCount % 1000 == 0) {
@@ -90,7 +91,7 @@ public class EidXmlDbLoader implements StartElementListener {
 		}
 		EidType eidType = (EidType) eid;
 
-		eidInsertHandler.insertEid((EidType) eidType);
+		eidInsertHandler.insertEid(eidType);
 	}
 
 	public int getRowCount() {

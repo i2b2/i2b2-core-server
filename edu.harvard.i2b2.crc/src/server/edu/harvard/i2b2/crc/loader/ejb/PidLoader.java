@@ -43,6 +43,7 @@ public class PidLoader extends AbstractDimensionLoader {
 
 	}
 
+	@Override
 	public void setStartStatus() {
 		// update the status table
 		UploadStatusDAOI uploadStatusDao = uploaderDaoFactory
@@ -70,6 +71,7 @@ public class PidLoader extends AbstractDimensionLoader {
 
 	}
 
+	@Override
 	public int loadTempTable() throws I2B2Exception {
 
 		PidXmlDbLoader pidDbLoader = new PidXmlDbLoader(
@@ -81,6 +83,7 @@ public class PidLoader extends AbstractDimensionLoader {
 		return pidDbLoader.getRowCount();
 	}
 
+	@Override
 	public int mergeTempTable() throws I2B2Exception {
 		IPidDAO pidDAO = uploaderDaoFactory.getPidDAO();
 		pidDAO
@@ -110,6 +113,7 @@ public class PidLoader extends AbstractDimensionLoader {
 
 	}
 
+	@Override
 	public void load() throws I2B2Exception {
 		UploadStatusDAOI uploadStatusDao = null;
 		InitialContext context = null;

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.ConstrainDateTimeType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ConstrainDateType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InclusiveType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ItemType;
@@ -61,10 +62,11 @@ public class DateConstrainUtil {
 				if (dateFrom != null) {
 					dateFromInclusive = dateFrom.getInclusive();
 					dateFromValue = dateFrom.getValue();
+					dateFrom.getTime();
 					if (dateFrom.getTime() != null
 							&& dateFrom.getTime().name() != null
 							&& dateFrom.getTime().name().equalsIgnoreCase(
-									dateFrom.getTime().END_DATE.name())) {
+									ConstrainDateTimeType.END_DATE.name())) {
 						dateFromColumn = tableAlias + "end_date";
 					} else {
 						dateFromColumn = tableAlias + "start_date";
@@ -75,10 +77,11 @@ public class DateConstrainUtil {
 				if (dateTo != null) {
 					dateToInclusive = dateTo.getInclusive();
 					dateToValue = dateTo.getValue();
+					dateTo.getTime();
 					if (dateTo.getTime() != null
 							&& dateTo.getTime().name() != null
 							&& dateTo.getTime().name().equalsIgnoreCase(
-									dateTo.getTime().END_DATE.name())) {
+									ConstrainDateTimeType.END_DATE.name())) {
 						dateToColumn = tableAlias + "end_date";
 					} else {
 						dateToColumn = tableAlias + "start_date";
@@ -126,10 +129,11 @@ public class DateConstrainUtil {
 				dateFromInclusive = dateFrom.getInclusive();
 				dateFromValue = dateFrom.getValue();
 
+				dateFrom.getTime();
 				if (dateFrom.getTime() != null
 						&& dateFrom.getTime().name() != null
 						&& dateFrom.getTime().name().equalsIgnoreCase(
-								dateFrom.getTime().END_DATE.name())) {
+								ConstrainDateTimeType.END_DATE.name())) {
 					dateFromColumn = tableAlias + "end_date";
 				} else {
 
@@ -142,10 +146,11 @@ public class DateConstrainUtil {
 				dateToInclusive = dateTo.getInclusive();
 				dateToValue = dateTo.getValue();
 
+				dateTo.getTime();
 				if (dateTo.getTime() != null
 						&& dateTo.getTime().name() != null
 						&& dateTo.getTime().name().equalsIgnoreCase(
-								dateTo.getTime().END_DATE.name())) {
+								ConstrainDateTimeType.END_DATE.name())) {
 					dateToColumn = tableAlias + "end_date";
 				} else {
 

@@ -18,6 +18,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
 public class QueryResultPatientVitalCdCountGenerator extends CRCDAO implements
 		IResultGenerator {
 
+	@Override
 	public String getResults() {
 		return xmlResult;
 	}
@@ -26,6 +27,7 @@ public class QueryResultPatientVitalCdCountGenerator extends CRCDAO implements
 	
 	public static final String RESULT_NAME = "PATIENT_VITALSTATUS_COUNT_XML";
 
+	@Override
 	public void generateResult(Map param) throws I2B2DAOException {
 
 		SetFinderConnection sfConn = (SetFinderConnection) param

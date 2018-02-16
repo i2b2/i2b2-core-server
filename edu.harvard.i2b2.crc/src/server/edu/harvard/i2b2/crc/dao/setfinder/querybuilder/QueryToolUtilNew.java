@@ -12,7 +12,6 @@ import javax.xml.bind.JAXBElement;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.exception.StackTraceUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
@@ -22,7 +21,6 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
-import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.PMServiceAccountUtil;
 
@@ -160,7 +158,7 @@ public class QueryToolUtilNew extends CRCDAO {
 		List<String> valList = Arrays.asList(valueList); 
 		for (Iterator<String> i = grpPanelByTimingMap.keySet().iterator();i.hasNext();) { 
 			panelTiming = i.next();
-			List<PanelType> pl = (List<PanelType>)grpPanelByTimingMap.get(panelTiming);
+			List<PanelType> pl = grpPanelByTimingMap.get(panelTiming);
 			if (pl.size() == 0) { 
 				continue;
 			}

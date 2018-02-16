@@ -2,11 +2,8 @@ package edu.harvard.i2b2.crc.loader.util.security;
 
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
-import java.nio.ByteBuffer;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.Hashtable;
 
 import java.sql.*;
@@ -147,10 +144,10 @@ public class HighEncryption {
 		int i;
 		
 		for (i = 0; i < buf.length; i++) {
-			if (((int) buf[i] & 0xff) < 0x10)
+			if ((buf[i] & 0xff) < 0x10)
 				strbuf.append("0");
 			
-			strbuf.append(Long.toString((int) buf[i] & 0xff, 16));
+			strbuf.append(Long.toString(buf[i] & 0xff, 16));
 		}
 		
 		return strbuf.toString();
@@ -611,7 +608,7 @@ public class HighEncryption {
 		
 		if ( (byBase >= 2) && (byBase <= 36) ) 
 		{
-			while (dValue.compareTo((Object) 0) > 0) // x > 0 
+			while (dValue.compareTo(0) > 0) // x > 0 
 			{
 				dRemainder = dValue.divideAndRemainder(byBase);
 				//sResult = BaseNums.substring(dRemainder.intValue(), dRemainder.intValue()+1) + sResult;
@@ -713,7 +710,7 @@ public class HighEncryption {
 			//a = a.substring(0, a.indexOf(0));		
 			
 			byte[] ciph = cipher.decrypt(cipherB);
-			int len =  (int) ciph[15];
+			int len =  ciph[15];
 			if ((len < 0) || (len > 16))
 				throw new Exception ("Invalid key");
 			sValue.append(new String( ciph, 0, len )); //.trim();
@@ -730,33 +727,33 @@ public class HighEncryption {
 		UInt64 value = new UInt64(a.bigIntValue());
 		byte[] w = new byte[8];
 		
-		w[0] = (byte) value.byteValue();
+		w[0] = value.byteValue();
 		value.shiftRight(8);
-		w[1] = (byte) (value.byteValue());
+		w[1] = (value.byteValue());
 		
 		value = new UInt64(a.bigIntValue());
 		value.shiftRight(16);
-		w[2] = (byte) (value.byteValue());
+		w[2] = (value.byteValue());
 		
 		value = new UInt64(a.bigIntValue());
 		value.shiftRight(24);
-		w[3] = (byte) (value.byteValue());
+		w[3] = (value.byteValue());
 		
 		value = new UInt64(a.bigIntValue());
 		value.shiftRight(32);
-		w[4] = (byte) (value.byteValue());
+		w[4] = (value.byteValue());
 		
 		value = new UInt64(a.bigIntValue());
 		value.shiftRight(40);
-		w[5] = (byte) (value.byteValue());
+		w[5] = (value.byteValue());
 		
 		value = new UInt64(a.bigIntValue());
 		value.shiftRight(48);
-		w[6] = (byte) (value.byteValue());
+		w[6] = (value.byteValue());
 		
 		value = new UInt64(a.bigIntValue());
 		value.shiftRight(56);
-		w[7] = (byte) (value.byteValue());
+		w[7] = (value.byteValue());
 		return w;
 	}
 	

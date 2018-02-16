@@ -11,8 +11,6 @@ package edu.harvard.i2b2.crc.delegate;
 
 
 import edu.harvard.i2b2.crc.datavo.setfinder.query.CrcXmlResultResponseType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -59,6 +57,7 @@ public class QTBreakdownHandler extends RequestHandler {
 	 * Perform operation for the given request and
 	 * return response
 	 */
+	@Override
 	public BodyType execute() throws I2B2Exception {
 		// call ejb and pass input object
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();

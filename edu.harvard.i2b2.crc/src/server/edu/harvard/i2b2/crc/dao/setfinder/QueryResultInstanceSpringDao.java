@@ -14,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -77,6 +76,7 @@ IQueryResultInstanceDao {
 	 * @param queryInstanceId
 	 * @return
 	 */
+	@Override
 	public String createPatientSet(String queryInstanceId, String resultName)
 			throws I2B2DAOException {
 		QtQueryResultInstance resultInstance = new QtQueryResultInstance();
@@ -116,6 +116,7 @@ IQueryResultInstanceDao {
 	 * @param statusTypeId
 	 * @param setSize
 	 */
+	@Override
 	public void updatePatientSet(String resultInstanceId, int statusTypeId,
 			int setSize) {
 		updatePatientSet(resultInstanceId, statusTypeId, "", setSize, 0, "");
@@ -128,6 +129,7 @@ IQueryResultInstanceDao {
 	 * @param statusTypeId
 	 * @param setSize
 	 */
+	@Override
 	public void updatePatientSet(String resultInstanceId, int statusTypeId,
 			String message, int setSize, int realSetSize, String obsMethod) {
 
@@ -148,6 +150,7 @@ IQueryResultInstanceDao {
 	 * @param resultInstanceId
 	 * @param description
 	 */
+	@Override
 	public void updateResultInstanceDescription(String resultInstanceId,
 			String description) {
 		String sql = "update "
@@ -164,6 +167,7 @@ IQueryResultInstanceDao {
 	 * @param queryInstanceId
 	 * @return List<QtQueryResultInstance>
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<QtQueryResultInstance> getResultInstanceList(
 			String queryInstanceId) {
@@ -180,6 +184,7 @@ IQueryResultInstanceDao {
 	 * @param queryResultId
 	 * @return QtQueryResultInstance
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public QtQueryResultInstance getResultInstanceById(String queryResultId)
 			throws I2B2DAOException {
@@ -203,6 +208,7 @@ IQueryResultInstanceDao {
 	 * @param resultName
 	 * @return QtQueryResultInstance
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public QtQueryResultInstance getResultInstanceByQueryInstanceIdAndName(
 			String queryInstanceId, String resultName) {
@@ -225,6 +231,7 @@ IQueryResultInstanceDao {
 	 * @param maxListSize
 	 * @return
 	 */
+	@Override
 	public List<QtQueryResultInstance> getUnfinishedInstanceByQueue(
 			String queueName, int maxListSize) {
 		List<QtQueryResultInstance> resultInstanceList = null;
@@ -249,6 +256,7 @@ IQueryResultInstanceDao {
 	 * @return
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public int getResultInstanceCountBySetSize(String userId, int compareDays,
 			int resultTypeId, int setSize, int totalCount)
 					throws I2B2DAOException {
@@ -497,6 +505,7 @@ IQueryResultInstanceDao {
 		QueryResultTypeSpringDao resultTypeDao = new QueryResultTypeSpringDao(
 				dataSource, dataSourceLookup);
 
+		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 			QtQueryResultInstance resultInstance = new QtQueryResultInstance();
 			resultInstance.setResultInstanceId(rs

@@ -7,7 +7,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.exception.StackTraceUtil;
 import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.ejb.role.PriviledgeLocal;
 import edu.harvard.i2b2.crc.util.CacheUtil;

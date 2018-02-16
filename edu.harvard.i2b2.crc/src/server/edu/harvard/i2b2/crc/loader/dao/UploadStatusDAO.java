@@ -63,6 +63,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 	 * @return
 	 * @throws UniqueKeyException
 	 */
+	@Override
 	public UploadStatus findById(int uploadStatusId) throws UniqueKeyException {
 		UploadStatusQuery uploadStatusQuery = new UploadStatusQuery(
 				getDataSource(), this.getDbSchemaName(), dataSourceLookup);
@@ -83,6 +84,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 		return uploadStatus;
 	}
 
+	@Override
 	public void dropTempTable(String tempTable) {
 		final String sql = "{call " + getDbSchemaName()
 				+ "REMOVE_TEMP_TABLE(?)}";
@@ -95,6 +97,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 	 * @param uploadStatus
 	 * @return
 	 */
+	@Override
 	public int insertUploadStatus(UploadStatus uploadStatus) {
 		UploadStatusInsert uploadStatusInsert = new UploadStatusInsert(
 				getDataSource(), this.getDbSchemaName(), dataSourceLookup);
@@ -113,6 +116,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 	 * @param uploadStatus
 	 * @return
 	 */
+	@Override
 	public void insertUploadSetStatus(final UploadSetStatus uploadSetStatus) {
 		String insertSql = "insert into " + this.getDbSchemaName()
 				+ "SET_UPLOAD_STATUS(UPLOAD_ID, " + "SET_TYPE_ID,"
@@ -135,6 +139,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 		 */
 
 		jdbcTemplate.update(insertSql, new PreparedStatementSetter() {
+			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setInt(1, uploadSetStatus.getUploadId());
 				ps.setInt(2, uploadSetStatus.getSetTypeId());
@@ -166,6 +171,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 	 * @param uploadSetStatus
 	 * @return
 	 */
+	@Override
 	public void updateUploadSetStatus(final UploadSetStatus uploadSetStatus) {
 		String updateSql = "update " + this.getDbSchemaName()
 				+ "SET_UPLOAD_STATUS  " + "set NO_OF_RECORD = ?,"
@@ -185,6 +191,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 		 */
 
 		jdbcTemplate.update(updateSql, new PreparedStatementSetter() {
+			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setInt(1, uploadSetStatus.getNoOfRecord());
 				ps.setInt(2, uploadSetStatus.getLoadedRecord());
@@ -216,6 +223,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 	/**
 	 * 
 	 */
+	@Override
 	public UploadSetStatus getUploadSetStatus(int uploadId, int setId) {
 		UploadSetStatus uploadSetStatus = (UploadSetStatus) jdbcTemplate
 				.queryForObject(
@@ -224,6 +232,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 								+ "SET_UPLOAD_STATUS where UPLOAD_ID=? and SET_TYPE_ID=?",
 						new Object[] { uploadId, setId }, new RowMapper() {
 
+							@Override
 							public Object mapRow(ResultSet rs, int rowNum)
 									throws SQLException {
 								UploadSetStatus uploadSetStatus = new UploadSetStatus();
@@ -264,6 +273,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 	 * @param uploadId
 	 * @return
 	 */
+	@Override
 	public List<UploadSetStatus> getUploadSetStatusByLoadId(int uploadId) {
 		List<UploadSetStatus> setUploadStatusList = new ArrayList<UploadSetStatus>();
 		int rowCount = jdbcTemplate.queryForInt("select count(1) from "
@@ -338,6 +348,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 	/**
 	 * Update UploadStatus information based on upload_id.
 	 */
+	@Override
 	public void updateUploadStatus(UploadStatus uploadStatus) {
 		UploadStatusUpdate uploadStatusUpdate = new UploadStatusUpdate(
 				getDataSource(), this.getDbSchemaName());
@@ -345,6 +356,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 		uploadStatusUpdate.flush();
 	}
 
+	@Override
 	public List getAllUploadStatus() {
 		List uploadStatusList = null;
 		UploadStatusQuery uploadStatusQuery = new UploadStatusQuery(
@@ -354,6 +366,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 		return uploadStatusList;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<UploadStatus> getUpoadStatusByUser(String userId) {
 		List<UploadStatus> uploadStatusList = null;
@@ -364,7 +377,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 						+ "upload_status where user_id = ? order by upload_id desc");
 		uploadStatusQuery.declareParameter(new SqlParameter("user_id",
 				Types.CHAR));
-		uploadStatusList = (List<UploadStatus>) uploadStatusQuery
+		uploadStatusList = uploadStatusQuery
 				.execute(userId);
 		return uploadStatusList;
 	}
@@ -377,6 +390,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 	 *            id
 	 * @throws Exception
 	 */
+	@Override
 	public void calculateUploadStatus(int uploadId) throws I2B2Exception {
 		Connection conn = null;
 		try {
@@ -412,6 +426,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 	 *            id
 	 * @throws Exception
 	 */
+	@Override
 	public void deleteUploadData(int uploadId) throws I2B2Exception {
 		Connection conn = null;
 		try {
@@ -477,6 +492,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 			compile();
 		}
 
+		@Override
 		protected Object mapRow(ResultSet rs, int rownum) throws SQLException {
 			UploadStatus uploadStatus = new UploadStatus();
 			uploadStatus.setUploadId(rs.getInt("upload_id"));

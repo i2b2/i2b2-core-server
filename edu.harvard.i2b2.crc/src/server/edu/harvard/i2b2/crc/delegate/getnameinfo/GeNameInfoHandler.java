@@ -56,6 +56,7 @@ public class GeNameInfoHandler extends RequestHandler {
 	 * Perform operation for the given request and
 	 * return response
 	 */
+	@Override
 	public BodyType execute() throws I2B2Exception {
 		// call ejb and pass input object
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();

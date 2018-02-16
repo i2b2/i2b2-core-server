@@ -12,6 +12,7 @@ public class AverageObservationPageMethod implements PageMethod {
 	public AverageObservationPageMethod() {
 	}
 
+	@Override
 	public int calculateListSize(int maxInputList, long totalObservations,
 			long pageSize) {
 

@@ -4,7 +4,6 @@ import java.util.List;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.crc.dao.pdo.input.IInputOptionListHandler;
-import edu.harvard.i2b2.crc.datavo.pdo.ConceptSet;
 import edu.harvard.i2b2.crc.datavo.pdo.ModifierSet;
 
 public interface ITablePdoQueryModifierDao {

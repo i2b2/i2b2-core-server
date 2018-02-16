@@ -53,7 +53,8 @@ public class QtXmlResultId  implements java.io.Serializable {
     }
 
 
-   public boolean equals(Object other) {
+   @Override
+public boolean equals(Object other) {
          if ( (this == other ) ) return true;
 		 if ( (other == null ) ) return false;
 		 if ( !(other instanceof QtXmlResultId) ) return false;
@@ -64,7 +65,8 @@ public class QtXmlResultId  implements java.io.Serializable {
  && ( (this.getXmlValue()==castOther.getXmlValue()) || ( this.getXmlValue()!=null && castOther.getXmlValue()!=null && this.getXmlValue().equals(castOther.getXmlValue()) ) );
    }
    
-   public int hashCode() {
+   @Override
+public int hashCode() {
          int result = 17;
          
          result = 37 * result + ( getXmlResultId() == null ? 0 : this.getXmlResultId().hashCode() );

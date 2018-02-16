@@ -11,12 +11,9 @@ package edu.harvard.i2b2.crc.delegate.setfinder;
 
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
-import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseHeaderType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
-import edu.harvard.i2b2.crc.datavo.i2b2message.ResultStatusType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterRenameRequestType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterResponseType;
@@ -57,6 +54,7 @@ public class RenameQueryMasterHandler extends RequestHandler {
 	 * using business class(ejb) and return response
 	 * @see edu.harvard.i2b2.crc.delegate.RequestHandler#execute()
 	 */
+	@Override
 	public BodyType execute() {
 		// call ejb and pass input object
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();

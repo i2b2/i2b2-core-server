@@ -49,6 +49,7 @@ public class ObservationFactLoader extends AbstractDimensionLoader {
 		setAppendFlag(appendFlag);
 	}
 
+	@Override
 	public void load() throws I2B2Exception {
 
 		try {

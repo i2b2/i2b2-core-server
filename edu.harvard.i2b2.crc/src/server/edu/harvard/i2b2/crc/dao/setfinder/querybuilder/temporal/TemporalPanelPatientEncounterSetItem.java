@@ -15,7 +15,6 @@ import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ConceptNotFoundException;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.OntologyException;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ItemType;
-import edu.harvard.i2b2.crc.util.ItemKeyUtil;
 
 public class TemporalPanelPatientEncounterSetItem extends TemporalPanelItem {
 	

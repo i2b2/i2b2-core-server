@@ -10,7 +10,6 @@
 package edu.harvard.i2b2.crc.delegate.setfinder;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
@@ -19,9 +18,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterRequestType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType;
 import edu.harvard.i2b2.crc.delegate.RequestHandler;
 import edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate;
-import edu.harvard.i2b2.crc.ejb.QueryInfoBean;
 import edu.harvard.i2b2.crc.ejb.QueryManagerBean;
-import edu.harvard.i2b2.crc.ejb.QueryRunBean;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 
@@ -60,7 +57,8 @@ public class RunQueryInstanceFromQueryMasterHandler extends RequestHandler {
     * using business class(ejb) and return response
     * @see edu.harvard.i2b2.crc.delegate.RequestHandler#execute()
     */
-    public BodyType execute() throws I2B2Exception {
+    @Override
+	public BodyType execute() throws I2B2Exception {
         QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
         String response = null;
         BodyType bodyType = new BodyType();

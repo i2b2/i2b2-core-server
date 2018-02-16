@@ -31,6 +31,7 @@ public class PriviledgeSpringDao extends CRCDAO implements IPriviledgeDao {
 
 	}
 
+	@Override
 	public QtPriviledge getPriviledgeByProtectionLabel(String protectionLabel)
 			throws I2B2DAOException {
 		String lookupSql = "select * from "
@@ -43,6 +44,7 @@ public class PriviledgeSpringDao extends CRCDAO implements IPriviledgeDao {
 
 	}
 
+	@Override
 	public List<QtPriviledge> getPriviledgeByPluginId(String pluginId)
 			throws I2B2DAOException {
 		String lookupSql = "select * from "
@@ -55,6 +57,7 @@ public class PriviledgeSpringDao extends CRCDAO implements IPriviledgeDao {
 
 	private static class QtPriviledgeRowMapper implements RowMapper {
 
+		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 			QtPriviledge priviledge = new QtPriviledge();
 			priviledge

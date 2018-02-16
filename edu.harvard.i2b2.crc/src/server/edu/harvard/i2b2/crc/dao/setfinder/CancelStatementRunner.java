@@ -33,6 +33,7 @@ public class CancelStatementRunner implements Runnable {
 		this.sqlFinishedFlag = true;
 	}
 
+	@Override
 	public void run() {
 		long currentTime = System.currentTimeMillis();
 		long finalTime = currentTime + transactionTimeout * 1000L;

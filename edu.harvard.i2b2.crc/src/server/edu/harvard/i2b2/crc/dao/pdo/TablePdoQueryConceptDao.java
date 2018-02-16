@@ -54,6 +54,7 @@ public class TablePdoQueryConceptDao extends CRCDAO implements
 		setDataSource(dataSource);
 	}
 
+	@Override
 	public ConceptSet getConceptByFact(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler, boolean detailFlag,
@@ -191,6 +192,7 @@ public class TablePdoQueryConceptDao extends CRCDAO implements
 	 * @return ConceptSet
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public ConceptSet getConceptByConceptCd(List<String> conceptCdList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 			throws I2B2DAOException {

@@ -30,6 +30,7 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO {
 		}
 	}
 
+	@Override
 	public List<DataSourceLookup> getDbLookupByHive(String domainId) {
 		String sql = "select * from "
 				+ schemaName
@@ -41,6 +42,7 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO {
 	}
 
 	
+	@Override
 	public List<DataSourceLookup> getDbLookupByHiveOwner(String domainId,
 			String ownerId) {
 		String sql = "select * from "
@@ -53,6 +55,7 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO {
 		return dataSourceLookupList;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<DataSourceLookup> getDbLookupByHiveProjectOwner(
 			String domainId, String projectId, String ownerId) {
@@ -74,6 +77,7 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO {
 
 	public class mapper implements RowMapper {
 
+		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 			DataSourceLookup dataSourceLookup = new DataSourceLookup();
 			dataSourceLookup.setDomainId(rs.getString("c_domain_id"));

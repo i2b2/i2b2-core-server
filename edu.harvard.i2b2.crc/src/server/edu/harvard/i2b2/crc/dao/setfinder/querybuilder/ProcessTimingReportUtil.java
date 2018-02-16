@@ -2,8 +2,6 @@ package edu.harvard.i2b2.crc.dao.setfinder.querybuilder;
 
 import java.io.StringWriter;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;

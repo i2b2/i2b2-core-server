@@ -41,7 +41,6 @@ import edu.harvard.i2b2.crc.datavo.pm.RolesType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.delegate.ejbpm.EJBPMUtil;
-import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
 import edu.harvard.i2b2.crc.delegate.pm.CallPMUtil;
 import edu.harvard.i2b2.crc.ejb.role.MissingRoleException;
 import edu.harvard.i2b2.crc.role.AuthrizationHelper;
@@ -567,7 +566,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		//BeanFactory bf = qpUtil.getSpringBeanFactory();
 		// Map ontologyKeyMap = (Map)
 		// bf.getBean("setFinderResultOntologyKeyMap");
-		Map ontologyKeyMap = (Map) new HashMap();
+		Map ontologyKeyMap = new HashMap();
 
 		//	CallOntologyUtil callOntologyUtil = null;
 		String ontologyGetChildrenUrl = null;

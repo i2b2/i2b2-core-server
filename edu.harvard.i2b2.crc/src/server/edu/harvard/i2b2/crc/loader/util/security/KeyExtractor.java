@@ -4,7 +4,6 @@ import java.io.*;
 import java.text.*;
 import java.util.*;
 
-import java.security.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
@@ -136,10 +135,10 @@ public class KeyExtractor {
 		int i;
 		
 		for (i = 0; i < buf.length; i++) {
-			if (((int) buf[i] & 0xff) < 0x10)
+			if ((buf[i] & 0xff) < 0x10)
 				strbuf.append("0");
 			
-			strbuf.append(Long.toString((int) buf[i] & 0xff, 16));
+			strbuf.append(Long.toString(buf[i] & 0xff, 16));
 		}
 		
 		return strbuf.toString();
@@ -317,10 +316,10 @@ public class KeyExtractor {
 	public static void main(String[] args) {
 		KeyExtractor keye = new KeyExtractor();
 		try {
-		keye.setKeyServer("\\\\plato\\Load_Programs\\Ceas\\ceas.xml");
-		keye.setRemovableDeviceLocation("A:");
-		keye.setKeyFile("A1234.txt");
-		String mykey = keye.getFloppyKey(); //"MIKENEW");
+		KeyExtractor.setKeyServer("\\\\plato\\Load_Programs\\Ceas\\ceas.xml");
+		KeyExtractor.setRemovableDeviceLocation("A:");
+		KeyExtractor.setKeyFile("A1234.txt");
+		String mykey = KeyExtractor.getFloppyKey(); //"MIKENEW");
 		int i=0;
 		} catch (Exception e)
 		{e.printStackTrace();}

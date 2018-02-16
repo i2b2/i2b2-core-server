@@ -30,6 +30,7 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 		this.dataSourceLookup = dataSourceLookup;
 	}
 
+	@Override
 	public long getTotalForAllPanel(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler)
@@ -94,6 +95,7 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 		return totalAcrossPanel;
 	}
 
+	@Override
 	public HashMap getMinIndexAndCountAllPanel(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler)
@@ -198,6 +200,7 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 
 	}
 
+	@Override
 	public String buildTotalSql(IFactRelatedQueryHandler factHandler,
 			PanelType panel) throws I2B2DAOException {
 		// call factrelatedhandler to build sql

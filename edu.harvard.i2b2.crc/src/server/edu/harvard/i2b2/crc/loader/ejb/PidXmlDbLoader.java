@@ -82,6 +82,7 @@ public class PidXmlDbLoader implements StartElementListener {
 		pidInsertHandler.flush();
 	}
 
+	@Override
 	public void process(Object pid) {
 		rowCount++;
 		if (rowCount % 1000 == 0) {
@@ -89,7 +90,7 @@ public class PidXmlDbLoader implements StartElementListener {
 			pidInsertHandler.flush();
 		}
 		PidType pidType = (PidType) pid;
-		pidInsertHandler.insertPid((PidType) pidType);
+		pidInsertHandler.insertPid(pidType);
 
 	}
 

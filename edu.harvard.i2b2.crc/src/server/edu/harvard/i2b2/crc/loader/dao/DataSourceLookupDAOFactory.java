@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
-import edu.harvard.i2b2.crc.loader.util.CRCLoaderUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 public class DataSourceLookupDAOFactory {
@@ -53,7 +52,7 @@ public class DataSourceLookupDAOFactory {
 			dataSourceName = crcUtil.getCRCDBLookupDataSource();
 			serverType = crcUtil.getCRCDBLookupServerType();
 			schemaName = crcUtil.getCRCDBLookupSchemaName();
-			lookupDataSource = (DataSource) crcUtil
+			lookupDataSource = crcUtil
 					.getDataSource("java:/CRCBootStrapDS");
 		} catch (I2B2Exception i2b2Ex) {
 			log.error(

@@ -12,7 +12,6 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.junit.Test;
 
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 
 
@@ -25,7 +24,8 @@ public class StaxParser {
      FileReader fr = new FileReader("testfiles/stax.xml");
      XMLEventReader xmler = xmlif.createXMLEventReader(fr);
      EventFilter filter = new EventFilter() {
-         public boolean accept(XMLEvent event) {
+         @Override
+		public boolean accept(XMLEvent event) {
              return event.isStartElement();
          }
      };

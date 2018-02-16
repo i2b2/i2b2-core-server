@@ -7,7 +7,6 @@ import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.UserRequestType;
 
 public interface IQueryMasterDao {
 

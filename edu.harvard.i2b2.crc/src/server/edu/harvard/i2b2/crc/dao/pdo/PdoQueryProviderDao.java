@@ -62,6 +62,7 @@ public class PdoQueryProviderDao extends CRCDAO implements IPdoQueryProviderDao 
 	 * @return PatientDataType.ProviderDimensionSet
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public ObserverSet getProviderById(List<String> providerIdList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 			throws I2B2DAOException {
@@ -180,6 +181,7 @@ public class PdoQueryProviderDao extends CRCDAO implements IPdoQueryProviderDao 
 
 	
 
+	@Override
 	public ObserverSet getProviderByFact(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler, boolean detailFlag,

@@ -52,6 +52,7 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 	 * @param queryMaster
 	 * @return query master id
 	 */
+	@Override
 	public String createPdoQueryMaster(QtQueryMaster queryMaster,
 			String i2b2RequestXml) {
 

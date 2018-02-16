@@ -17,6 +17,7 @@ import java.util.Comparator;
  */
 public class QPanelEntryComparator implements Comparator {
 	
+	@Override
 	public int compare(Object element1, Object element2) {
 		if ((element1.getClass().equals(PanelEntry.class))&&
 				(element2.getClass().equals((PanelEntry.class))))

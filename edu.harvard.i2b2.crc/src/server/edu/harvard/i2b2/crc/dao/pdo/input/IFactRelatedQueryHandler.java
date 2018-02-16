@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
-import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.ontology.XmlValueType;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationSet;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PanelType;

@@ -22,6 +22,7 @@ public class CRCQueueDAO extends CRCDAO implements ICRCQueueDAO {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
+	@Override
 	public void addJob(AnalysisJob analysisJob) {
 		String sql = "insert into "
 				+ getDbSchemaName()
@@ -35,6 +36,7 @@ public class CRCQueueDAO extends CRCDAO implements ICRCQueueDAO {
 		jdbcTemplate.update(sql, params);
 	}
 
+	@Override
 	public List<AnalysisJob> getJob(String jobId, String projectId) {
 		String sql = "select * from  " + getDbSchemaName()
 				+ "CRC_ANALYSIS_JOB where job_id = ? and project_id = ? ";
@@ -43,6 +45,7 @@ public class CRCQueueDAO extends CRCDAO implements ICRCQueueDAO {
 		return analysisJobList;
 	}
 
+	@Override
 	public void moveJob(String jobId, String projectId, String queueName,
 			String statusType) {
 		String sql = "update "
@@ -54,6 +57,7 @@ public class CRCQueueDAO extends CRCDAO implements ICRCQueueDAO {
 				queueName, jobId });
 	}
 
+	@Override
 	public void updateStatus(String jobId, String projectId, String statusType) {
 		String sql = "update "
 				+ getDbSchemaName()
@@ -63,6 +67,7 @@ public class CRCQueueDAO extends CRCDAO implements ICRCQueueDAO {
 				projectId });
 	}
 
+	@Override
 	public List<AnalysisJob> getJobListByQueuedStatus(String queueName,
 			int maxReturnSize) {
 		int QUEUED_STATUS_TYPE_ID = StatusEnum.QUEUED.ordinal();
@@ -80,6 +85,7 @@ public class CRCQueueDAO extends CRCDAO implements ICRCQueueDAO {
 
 	private class AnalysisJobRowMapper implements RowMapper {
 
+		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 			AnalysisJob analysisJob = new AnalysisJob();
 			analysisJob.setJobId(rs.getString("JOB_ID"));

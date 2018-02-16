@@ -25,6 +25,7 @@ public class AnalysisPluginInfo implements AnalysisPluginInfoLocal {
 	/**
 	 * Return analysis plugin metadata by plugin name and project
 	 */
+	@Override
 	public AnalysisPluginMetadataResponseType getAnalysisPluginMetadata(
 			DataSourceLookup dataSourceLookup,
 			AnalysisPluginMetadataRequestType apMetadataRequestType,

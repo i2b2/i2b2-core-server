@@ -39,18 +39,22 @@ public class Job1Listener implements JobListener {
 
 	private static Log _log = LogFactory.getLog(Job1Listener.class);
 
+	@Override
 	public String getName() {
 		return "job1_to_job2";
 	}
 
+	@Override
 	public void jobToBeExecuted(JobExecutionContext inContext) {
 		_log.info("Job1Listener says: Job Is about to be executed.");
 	}
 
+	@Override
 	public void jobExecutionVetoed(JobExecutionContext inContext) {
 		_log.info("Job1Listener says: Job Execution was vetoed.");
 	}
 
+	@Override
 	public void jobWasExecuted(JobExecutionContext inContext,
 			JobExecutionException inException) {
 		_log.info("Job1Listener says: Job was executed.");

@@ -40,6 +40,7 @@ public class PatientDAO extends CRCLoaderDAO implements IPatientDAO {
 
 	}
 
+	@Override
 	public int getRecordCountByUploadId(int uploadId) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
 		int insertCount = jdbcTemplate.queryForInt("select count(1) from "
@@ -54,6 +55,7 @@ public class PatientDAO extends CRCLoaderDAO implements IPatientDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void createTempTable(String tempPatientTableName,
 			String tempPatientMappingTableName) throws I2B2Exception {
 		Connection conn = null;
@@ -92,6 +94,7 @@ public class PatientDAO extends CRCLoaderDAO implements IPatientDAO {
 	 * @param tempTableName
 	 * @return
 	 */
+	@Override
 	public TempPatientDimensionInsertHandler createTempPatientDimensionInsert(
 			String tempTableName) {
 		TempPatientInsert tempPatientInsert = new TempPatientInsert(
@@ -107,6 +110,7 @@ public class PatientDAO extends CRCLoaderDAO implements IPatientDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void createPatientFromTempTable(String tempTableName,
 			String tempMapTableName, int uploadId) throws I2B2Exception {
 		Connection conn = null;

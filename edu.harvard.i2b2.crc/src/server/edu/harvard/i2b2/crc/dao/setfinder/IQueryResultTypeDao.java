@@ -1,6 +1,5 @@
 package edu.harvard.i2b2.crc.dao.setfinder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;

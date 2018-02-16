@@ -19,7 +19,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import oracle.sql.ArrayDescriptor;
+
 
 //import org.jboss.resource.adapter.jdbc.WrappedConnection;
 
@@ -58,6 +58,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 		this.dataSourceLookup = dataSourceLookup;
 	}
 
+	@Override
 	public void setMetaDataParamList(List<ParamType> metaDataParamList) { 
 		this.metaDataParamList = metaDataParamList; 
 	}
@@ -72,6 +73,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 	 * @return PatientDataType.PatientDimensionSet
 	 * @throws Exception
 	 */
+	@Override
 	public PatientSet getPatientByPatientNum(List<String> patientNumList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 					throws I2B2DAOException {
@@ -198,6 +200,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 	 * @return PatientDataType.PatientDimensionSet
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public PatientSet getPatientFromPatientSet(PatientListType patientListType,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 					throws I2B2DAOException {
@@ -285,6 +288,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 	 * @return PatientDataType.PatientDimensionSet
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public PatientSet getPatientFromVisitSet(EventListType visitListType,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 					throws I2B2DAOException {
@@ -411,6 +415,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 
 
 
+	@Override
 	public PatientSet getPatientByFact(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler, boolean detailFlag,

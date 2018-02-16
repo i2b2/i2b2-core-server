@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-
 import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
@@ -15,27 +13,18 @@ import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.exception.StackTraceUtil;
-import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.DataSourceLookupDAO;
 import edu.harvard.i2b2.crc.dao.DataSourceLookupDAOFactory;
 import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
-import edu.harvard.i2b2.crc.dao.pdo.PdoTempTableUtil;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultInstanceDao;
-import edu.harvard.i2b2.crc.datavo.PSMFactory;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
-import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
-import edu.harvard.i2b2.crc.datavo.db.StatusEnum;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceResultResponseType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryInstanceType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryResultInstanceType;
-import edu.harvard.i2b2.crc.quartz.AnalysisQueue.QueueType;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 public class ProcessQueue implements Runnable{
@@ -117,6 +106,7 @@ public class ProcessQueue implements Runnable{
 		}
 }
 
+	@Override
 	public void run() {
 		initialize();
 		

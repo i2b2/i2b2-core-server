@@ -9,8 +9,6 @@
  */
 package edu.harvard.i2b2.crc.loader.ejb.fr;
 
-import java.rmi.RemoteException;
-
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

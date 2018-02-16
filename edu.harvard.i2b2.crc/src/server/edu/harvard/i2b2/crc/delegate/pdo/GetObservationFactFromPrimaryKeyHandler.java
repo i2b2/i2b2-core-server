@@ -14,7 +14,6 @@ import java.util.List;
 
 import edu.harvard.i2b2.crc.datavo.pdo.PatientDataType;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.GetObservationFactByPrimaryKeyRequestType;
@@ -58,7 +57,8 @@ public class GetObservationFactFromPrimaryKeyHandler extends RequestHandler {
      * Perform operation for the given request and
      * return response
      */
-    public BodyType execute() throws I2B2Exception {
+    @Override
+	public BodyType execute() throws I2B2Exception {
         // call ejb and pass input object
         QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
         String responseString = null;

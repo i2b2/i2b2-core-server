@@ -10,7 +10,6 @@
 package edu.harvard.i2b2.crc.ejb;
 
 import java.io.StringWriter;
-import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Map;
 

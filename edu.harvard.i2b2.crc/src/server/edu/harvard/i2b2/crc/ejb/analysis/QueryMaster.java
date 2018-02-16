@@ -56,7 +56,7 @@ public class QueryMaster {
 		try {
 			anaDefType = msgHelper.getAnalysisDefinition();
 
-			String analysisDefinitionXml = msgHelper
+			String analysisDefinitionXml = I2B2RequestMessageHelper
 					.getAnalysisDefinitionXml(anaDefType);
 			queryMaster.setRequestXml(analysisDefinitionXml);
 			queryMaster.setGroupId(groupId);
@@ -106,7 +106,7 @@ public class QueryMaster {
 		try {
 			anaDefType = msgHelper.getAnalysisDefinition();
 
-			String analysisDefinitionXml = msgHelper
+			String analysisDefinitionXml = I2B2RequestMessageHelper
 					.getAnalysisDefinitionXml(anaDefType);
 			queryMaster.setRequestXml(analysisDefinitionXml);
 			queryMaster.setGroupId(groupId);

@@ -62,7 +62,7 @@ public class DataSourceLookupDAOFactory {
 			dataSourceName = crcUtil.getCRCDBLookupDataSource();
 			serverType = crcUtil.getCRCDBLookupServerType();
 			schemaName = crcUtil.getCRCDBLookupSchemaName();
-			lookupDataSource = (DataSource) crcUtil
+			lookupDataSource = crcUtil
 					.getDataSource("java:/CRCBootStrapDS");
 		} catch (I2B2Exception i2b2Ex) {
 			log.error(

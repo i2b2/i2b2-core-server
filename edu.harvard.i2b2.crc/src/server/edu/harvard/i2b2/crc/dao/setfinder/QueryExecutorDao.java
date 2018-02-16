@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +44,6 @@ import edu.harvard.i2b2.crc.datavo.pm.RoleType;
 import edu.harvard.i2b2.crc.datavo.pm.RolesType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.delegate.ejbpm.EJBPMUtil;
@@ -98,6 +96,7 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 	 * @throws JAXBUtilException 
 	 * @throws I2B2Exception 
 	 */
+	@Override
 	public String executeSQL(
 			int transactionTimeout, DataSourceLookup dsLookup,
 			SetFinderDAOFactory sfDAOFactory, String requestXml,

@@ -68,6 +68,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 	 * @return PatientDataType.PatientDimensionSet
 	 * @throws Exception
 	 */
+	@Override
 	public EidSet getEidByEncounterNum(List<String> encounterNumList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 			throws I2B2DAOException {
@@ -170,6 +171,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 	 * @return PatientDataType.PatientDimensionSet
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public EidSet getEidFromPatientSet(PatientListType patientListType,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 			throws I2B2DAOException {
@@ -250,6 +252,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 	 * @return PatientDataType.PatientDimensionSet
 	 * @throws Exception
 	 */
+	@Override
 	public EidSet getEidByEidList(EidListType eidList, boolean detailFlag,
 			boolean blobFlag, boolean statusFlag) throws I2B2DAOException {
 
@@ -475,6 +478,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		tempStmt.executeBatch();
 	}
 
+	@Override
 	public EidSet getEidByFact(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler, boolean detailFlag,

@@ -9,7 +9,6 @@
  */
 package edu.harvard.i2b2.crc.ejb;
 
-import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +29,6 @@ import edu.harvard.i2b2.crc.dao.setfinder.IQueryMasterDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultInstanceDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultTypeDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IResultGenerator;
-import edu.harvard.i2b2.crc.dao.setfinder.IXmlResultDao;
 import edu.harvard.i2b2.crc.dao.setfinder.SetFinderConnection;
 import edu.harvard.i2b2.crc.datavo.PSMFactory;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;

@@ -28,7 +28,8 @@ public class ItemEntry {
     /**
      * Override equals function
      */
-    public boolean equals(Object o) {
+    @Override
+	public boolean equals(Object o) {
         if ((o != null) && (o.getClass().equals(this.getClass()))) {
             ItemEntry p = (ItemEntry) o;
 

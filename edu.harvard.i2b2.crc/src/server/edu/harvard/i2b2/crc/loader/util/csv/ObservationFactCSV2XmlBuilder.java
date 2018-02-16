@@ -126,7 +126,7 @@ public class ObservationFactCSV2XmlBuilder {
 				if (headerFieldCount > fields.size()) {
 					continue;
 				}
-				String col[] = (String[]) fields.toArray(new String[] {});
+				String col[] = fields.toArray(new String[] {});
 
 				observationSet.getObservation().add(getObservationFact(col));
 				i++;

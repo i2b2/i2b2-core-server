@@ -10,10 +10,7 @@
 package edu.harvard.i2b2.crc.ejb;
  
 import java.io.StringWriter;
-import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +35,6 @@ import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.dao.PatientDataDAOFactory;
-import edu.harvard.i2b2.crc.dao.pdo.DimensionTable;
 import edu.harvard.i2b2.crc.dao.pdo.IMetadataDao;
 import edu.harvard.i2b2.crc.dao.pdo.IObservationFactDao;
 import edu.harvard.i2b2.crc.dao.pdo.MetaDataTypeMapper;

@@ -8,12 +8,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.crc.loader.dao.IConceptDAO;
 import edu.harvard.i2b2.crc.loader.dao.IModifierDAO;
 import edu.harvard.i2b2.crc.loader.dao.IUploaderDAOFactory;
-import edu.harvard.i2b2.crc.loader.dao.TempConceptInsertHandler;
 import edu.harvard.i2b2.crc.loader.dao.TempModifierInsertHandler;
-import edu.harvard.i2b2.crc.datavo.pdo.ConceptType;
 import edu.harvard.i2b2.crc.datavo.pdo.ModifierType;
 import edu.harvard.i2b2.crc.loader.util.CryptUtil;
 import edu.harvard.i2b2.crc.loader.xml.StartElementListener;
@@ -89,6 +86,7 @@ public class ModifierXmlDbLoader implements StartElementListener {
 		modifierInsertHandler.flush();
 	}
 
+	@Override
 	public void process(Object pid) {
 		rowCount++;
 		if (rowCount % 1000 == 0) {
@@ -96,7 +94,7 @@ public class ModifierXmlDbLoader implements StartElementListener {
 			modifierInsertHandler.flush();
 		}
 		ModifierType modifierType = (ModifierType) pid;
-		modifierInsertHandler.insertModifier((ModifierType) modifierType);
+		modifierInsertHandler.insertModifier(modifierType);
 	}
 
 	public int getRowCount() {

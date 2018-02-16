@@ -1,22 +1,12 @@
 package edu.harvard.i2b2.crc.loader.delegate;
 
-import java.io.StringWriter;
-
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
-import edu.harvard.i2b2.crc.loader.datavo.CRCLoaderJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.crc.loader.datavo.loader.query.GetMissingTermRequestType;
-import edu.harvard.i2b2.crc.loader.datavo.loader.query.GetUploadInfoRequestType;
-import edu.harvard.i2b2.crc.loader.datavo.loader.query.LoadDataListResponseType;
-import edu.harvard.i2b2.crc.loader.datavo.loader.query.LoadDataResponseType;
 import edu.harvard.i2b2.crc.loader.datavo.loader.query.MissingTermReportResponseType;
-import edu.harvard.i2b2.crc.loader.ejb.LoaderStatusBeanLocal;
 import edu.harvard.i2b2.crc.loader.ejb.MissingTermReportBean;
-import edu.harvard.i2b2.crc.loader.ejb.MissingTermReportBeanLocal;
-import edu.harvard.i2b2.crc.loader.util.CRCLoaderUtil;
 
 public class GetMissingTermRequestHandler extends RequestHandler {
 

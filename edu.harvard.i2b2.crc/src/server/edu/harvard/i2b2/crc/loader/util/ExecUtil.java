@@ -1,7 +1,6 @@
 package edu.harvard.i2b2.crc.loader.util;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -131,7 +130,7 @@ public class ExecUtil {
 				}
 			}
 		}
-		return (String[]) list.toArray(new String[] {});
+		return list.toArray(new String[] {});
 	}
 
 	public static void main(String[] args) {

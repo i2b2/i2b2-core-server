@@ -38,6 +38,7 @@ public class VisitDAO extends CRCLoaderDAO implements IVisitDAO {
 		this.dataSourceLookup = dataSourceLookup;
 	}
 
+	@Override
 	public int getRecordCountByUploadId(int uploadId) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(this.getDataSource());
 		int insertCount = jdbcTemplate.queryForInt(
@@ -53,6 +54,7 @@ public class VisitDAO extends CRCLoaderDAO implements IVisitDAO {
 	 * @param tempTableName
 	 * @return
 	 */
+	@Override
 	public TempVisitDimensionInsertHandler createTempVisitDimensionInsert(
 			String tempTableName) {
 		TempEncounterVisitInsert tempEncounterVisitInsert = new TempEncounterVisitInsert(
@@ -67,6 +69,7 @@ public class VisitDAO extends CRCLoaderDAO implements IVisitDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void createTempTable(String tempTableName) throws I2B2Exception {
 		Connection conn = null;
 		try {
@@ -104,6 +107,7 @@ public class VisitDAO extends CRCLoaderDAO implements IVisitDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void createVisitFromTempTable(String tempTableName, int uploadId)
 			throws I2B2Exception {
 		Connection conn = null;

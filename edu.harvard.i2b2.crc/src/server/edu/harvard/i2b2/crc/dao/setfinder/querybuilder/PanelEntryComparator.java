@@ -18,7 +18,8 @@ import java.util.Comparator;
  * @author chris
  */
 public class PanelEntryComparator implements Comparator {
-    public int compare(Object element1, Object element2) {
+    @Override
+	public int compare(Object element1, Object element2) {
         if ((element1.getClass().equals(PanelEntry.class)) &&
                 (element2.getClass().equals((PanelEntry.class)))) {
             PanelEntry p1 = (PanelEntry) element1;

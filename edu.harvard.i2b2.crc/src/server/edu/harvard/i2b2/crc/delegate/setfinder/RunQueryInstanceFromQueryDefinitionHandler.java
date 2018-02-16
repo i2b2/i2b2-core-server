@@ -12,7 +12,6 @@ package edu.harvard.i2b2.crc.delegate.setfinder;
 import java.util.List;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.IDAOFactory;
@@ -68,6 +67,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 	 * @throws I2B2Exception
 	 * @see edu.harvard.i2b2.crc.delegate.RequestHandler#execute()
 	 */
+	@Override
 	public BodyType execute() throws I2B2Exception {
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 		String response = null;

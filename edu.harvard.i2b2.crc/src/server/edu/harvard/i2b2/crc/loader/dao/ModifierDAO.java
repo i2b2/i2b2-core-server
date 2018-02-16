@@ -15,7 +15,6 @@ import org.springframework.jdbc.object.BatchSqlUpdate;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.loader.datavo.loader.DataSourceLookup;
-import edu.harvard.i2b2.crc.datavo.pdo.ConceptType;
 import edu.harvard.i2b2.crc.datavo.pdo.ModifierType;
 
 /**
@@ -43,6 +42,7 @@ public class ModifierDAO extends CRCLoaderDAO implements IModifierDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void createTempTable(String tempPatientMappingTableName)
 			throws I2B2Exception {
 		Connection conn = null;
@@ -81,6 +81,7 @@ public class ModifierDAO extends CRCLoaderDAO implements IModifierDAO {
 	 * @param tempTableName
 	 * @return
 	 */
+	@Override
 	public TempModifierInsertHandler createTempModifierInsert(String tempTableName) {
 		TempModifierInsert tempModifierInsert = new TempModifierInsert(
 				getDataSource(), tempTableName, getDbSchemaName());
@@ -95,6 +96,7 @@ public class ModifierDAO extends CRCLoaderDAO implements IModifierDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void createModifierFromTempTable(String tempMapTableName, int uploadId)
 			throws I2B2Exception {
 		Connection conn = null;
@@ -128,6 +130,7 @@ public class ModifierDAO extends CRCLoaderDAO implements IModifierDAO {
 		}
 	}
 
+	@Override
 	public int getRecordCountByUploadId(int uploadId) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
 		int insertCount = jdbcTemplate.queryForInt("select count(1) from "
@@ -143,6 +146,7 @@ public class ModifierDAO extends CRCLoaderDAO implements IModifierDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void backupAndSyncModifierDimensionTable(String tempModifierTableName,
 			String backupModifierDimensionTableName, int uploadId)
 			throws I2B2Exception {

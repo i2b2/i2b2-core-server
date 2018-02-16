@@ -1,9 +1,7 @@
 package edu.harvard.i2b2.crc.dao.setfinder;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +20,7 @@ import edu.harvard.i2b2.crc.util.LogTimingUtil;
 public class QueryResultPatientSetGenerator extends CRCDAO implements
 		IResultGenerator {
 
+	@Override
 	public String getResults() {
 		return xmlResult;
 	}
@@ -29,6 +28,7 @@ public class QueryResultPatientSetGenerator extends CRCDAO implements
 	private String xmlResult = null;
 	
 	
+	@Override
 	public void generateResult(Map param) throws I2B2DAOException {
 
 		SetFinderConnection sfConn = (SetFinderConnection) param

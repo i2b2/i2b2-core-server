@@ -1,7 +1,5 @@
 package edu.harvard.i2b2.crc.loader.util;
 
-import java.io.IOException;
-
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.datavo.i2b2message.PasswordType;
 /*

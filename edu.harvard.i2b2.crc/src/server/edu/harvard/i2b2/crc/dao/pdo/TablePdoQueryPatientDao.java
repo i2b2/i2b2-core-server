@@ -63,6 +63,7 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 
 	}
 	
+	@Override
 	public void setMetaDataParamList(List<ParamType> metaDataParamList) { 
 		this.metaDataParamList = metaDataParamList; 
 	}
@@ -78,6 +79,7 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 	 * @return
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public PatientSet getPatientByPatientNum(List<String> patientNumList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 			throws I2B2DAOException {
@@ -198,6 +200,7 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 	 * @return
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public PatientSet getPatientFromPatientSet(PatientListType patientListType,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 			throws I2B2DAOException {
@@ -291,6 +294,7 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 	 * @return PatientSet
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public PatientSet getPatientFromVisitSet(EventListType visitListType,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 			throws I2B2DAOException {
@@ -516,6 +520,7 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 
 	
 
+	@Override
 	public PatientSet getPatientByFact(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler, boolean detailFlag,

@@ -36,7 +36,6 @@ import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalQueryOpt
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalQueryOptions.QueryConstraintStrategy;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
-import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
 import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ItemType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;

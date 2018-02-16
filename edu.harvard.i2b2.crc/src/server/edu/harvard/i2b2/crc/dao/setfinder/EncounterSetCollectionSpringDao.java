@@ -85,12 +85,14 @@ public class EncounterSetCollectionSpringDao extends CRCDAO implements
 
 	}
 
+	@Override
 	public void createPatientEncCollection(String resultInstanceId) {
 		resultInstance = new QtQueryResultInstance();
 		resultInstance.setResultInstanceId(resultInstanceId);
 
 	}
 
+	@Override
 	public String getResultInstanceId() {
 		return resultInstance.getResultInstanceId();
 	}
@@ -101,6 +103,7 @@ public class EncounterSetCollectionSpringDao extends CRCDAO implements
 	 * 
 	 * @param patientId
 	 */
+	@Override
 	public void addEncounter(long encounterId, long patientId) {
 		setIndex++;
 
@@ -127,6 +130,7 @@ public class EncounterSetCollectionSpringDao extends CRCDAO implements
 	 * Call this function at the end. i.e. after loading all patient with
 	 * addPatient function, finally call this function to clear session
 	 */
+	@Override
 	public void flush() {
 		InsertStatementSetter batchSetter = new InsertStatementSetter(
 				patientEncColl, batchDataIndex);
@@ -147,11 +151,13 @@ public class EncounterSetCollectionSpringDao extends CRCDAO implements
 			this.batchSize = batchSize;
 		}
 
+		@Override
 		public int getBatchSize() {
 			return batchSize;
 		}
 
 		// this is called for each row
+		@Override
 		public void setValues(PreparedStatement ps, int i) throws SQLException {
 
 			// ps.setLong(1, data[i].getPatientSetCollId()); // set first value

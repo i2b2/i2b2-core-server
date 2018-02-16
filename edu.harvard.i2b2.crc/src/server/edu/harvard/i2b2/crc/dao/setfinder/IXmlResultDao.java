@@ -1,9 +1,6 @@
 package edu.harvard.i2b2.crc.dao.setfinder;
 
-import java.util.List;
-
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
-import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtXmlResult;
 
 public interface IXmlResultDao {

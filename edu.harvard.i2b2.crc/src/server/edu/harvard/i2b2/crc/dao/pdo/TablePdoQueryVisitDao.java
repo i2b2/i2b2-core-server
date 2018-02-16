@@ -62,6 +62,7 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 		this.setDbSchemaName(dataSourceLookup.getFullSchema());
 	}
 
+	@Override
 	public void setMetaDataParamList(List<ParamType> metaDataParamList) { 
 		this.metaDataParamList = metaDataParamList; 
 	}
@@ -76,6 +77,7 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 	 * @return EventSet
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public EventSet getVisitsByEncounterNum(List<String> encounterNumList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 			throws I2B2DAOException {
@@ -190,6 +192,7 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 	 * @return EventSet
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public EventSet getVisitDimensionSetFromVisitList(
 			EventListType visitListType, boolean detailFlag, boolean blobFlag,
 			boolean statusFlag) throws I2B2DAOException {
@@ -276,6 +279,7 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 	 * @return
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public EventSet getVisitDimensionSetFromPatientList(
 			PatientListType patientListType, boolean detailFlag,
 			boolean blobFlag, boolean statusFlag) throws I2B2DAOException {
@@ -449,6 +453,7 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 
 	
 
+	@Override
 	public EventSet getVisitByFact(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler, boolean detailFlag,

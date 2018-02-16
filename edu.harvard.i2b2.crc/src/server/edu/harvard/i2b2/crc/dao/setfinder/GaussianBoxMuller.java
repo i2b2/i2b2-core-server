@@ -13,7 +13,7 @@ public class GaussianBoxMuller {
 			obNum = Math.round(boxMuller(true, rangeValue, 0));
 		}
 		// if less than three, then return 0
-		return (double) originalValue + obNum;
+		return originalValue + obNum;
 
 	}
 

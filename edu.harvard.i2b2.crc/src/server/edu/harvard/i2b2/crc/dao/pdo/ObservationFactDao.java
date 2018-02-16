@@ -76,6 +76,7 @@ public class ObservationFactDao extends CRCDAO implements IObservationFactDao {
 	 * @return PatientDataType
 	 * @throws I2B2Exception
 	 */
+	@Override
 	public PatientDataType getObservationFactByPrimaryKey(
 			FactPrimaryKeyType factPrimaryKey, OutputOptionType factOutputOption)
 			throws I2B2DAOException {

@@ -1,6 +1,5 @@
 package edu.harvard.i2b2.crc.dao.pdo;
 
-import java.sql.SQLException;
 import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;

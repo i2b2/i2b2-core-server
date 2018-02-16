@@ -53,6 +53,7 @@ public class TablePdoQueryProviderDao extends CRCDAO implements
 		setDataSource(dataSource);
 	}
 
+	@Override
 	public ObserverSet getProviderByFact(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler, boolean detailFlag,
@@ -187,6 +188,7 @@ public class TablePdoQueryProviderDao extends CRCDAO implements
 	 * @return ObserverSet
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public ObserverSet getProviderById(List<String> providerIdList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 			throws I2B2DAOException {

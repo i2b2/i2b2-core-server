@@ -44,6 +44,7 @@ public class VisitLoader extends AbstractDimensionLoader {
 		visitDAO = uploaderDaoFactory.getVisitDAO();
 	}
 
+	@Override
 	public void load() throws I2B2Exception {
 		try {
 

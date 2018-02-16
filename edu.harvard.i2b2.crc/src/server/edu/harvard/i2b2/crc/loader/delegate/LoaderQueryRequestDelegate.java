@@ -43,6 +43,7 @@ public class LoaderQueryRequestDelegate extends RequestHandlerDelegate {
 	/**
 	 * @see edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate#handleRequest(java.lang.String)
 	 */
+	@Override
 	public String handleRequest(String requestXml, RequestHandler requestHandler)
 			throws I2B2Exception {
 		String response = null;

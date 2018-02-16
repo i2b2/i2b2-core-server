@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.QueryTimingHandler;
-import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalSubQuery.TemporalQueryReturnColumns;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryJoinColumnType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryJoinType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryOperatorType;

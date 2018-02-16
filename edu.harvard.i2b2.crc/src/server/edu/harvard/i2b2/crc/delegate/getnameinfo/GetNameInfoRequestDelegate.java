@@ -34,7 +34,6 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
 import edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate;
 import edu.harvard.i2b2.crc.delegate.pm.PMServiceDriver;
 import edu.harvard.i2b2.crc.util.CacheUtil;
-import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.ParamUtil;
 
 
@@ -45,6 +44,7 @@ public class GetNameInfoRequestDelegate extends RequestHandlerDelegate {
 	/**
 	 * @see edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate#handleRequest(java.lang.String)
 	 */
+	@Override
 	public String handleRequest(String requestXml) throws I2B2Exception {
 //		PdoQryHeaderType headerType = null;  PsmQryHeaderType
 		FindByChildType childType = null;

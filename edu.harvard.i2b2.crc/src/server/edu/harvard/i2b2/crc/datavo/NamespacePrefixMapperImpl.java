@@ -18,7 +18,8 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
  * @author rkuttan
  */
 public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
-    public String getPreferredPrefix(String namespaceUri, String suggestion,
+    @Override
+	public String getPreferredPrefix(String namespaceUri, String suggestion,
         boolean requirePrefix) {
         if ("http://www.w3.org/2001/XMLSchema-instance".equals(namespaceUri)) {
             return "xsi";
@@ -34,7 +35,8 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
         }
     }
 
-    public String[] getPreDeclaredNamespaceUris() {
+    @Override
+	public String[] getPreDeclaredNamespaceUris() {
         return new String[] {  };
     }
 }

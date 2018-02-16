@@ -1,9 +1,5 @@
 package edu.harvard.i2b2.crc.quartz;
 
-import javax.annotation.Resource;
-
-import javax.naming.InitialContext;
-
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -33,6 +29,7 @@ public class FirstJob implements Job {
 		executeHelper(jobDataMap);
 	}
 
+	@Override
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
 

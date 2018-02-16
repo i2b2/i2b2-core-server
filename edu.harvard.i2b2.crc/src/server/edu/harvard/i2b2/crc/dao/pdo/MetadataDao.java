@@ -1,6 +1,5 @@
 package edu.harvard.i2b2.crc.dao.pdo;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,13 +15,9 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.JdbcUtils;
-
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
-import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 
 public class MetadataDao extends CRCDAO implements IMetadataDao {
@@ -79,6 +74,7 @@ public class MetadataDao extends CRCDAO implements IMetadataDao {
 	 * 
 	 * @see edu.harvard.i2b2.crc.dao.pdo.IMetadataDao#blah(java.lang.String)
 	 */
+	@Override
 	public Map getMetadataForOptionalField(String tableName)
 			throws I2B2DAOException {
 

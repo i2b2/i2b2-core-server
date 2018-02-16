@@ -34,6 +34,7 @@ public class CronJob implements Job {
 		this.timeout = timeout;
 	}
 
+	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		// read first X rows with timeout or queue type medium/long
 		// call queryinstance dao to get first X rows based on the timestamp

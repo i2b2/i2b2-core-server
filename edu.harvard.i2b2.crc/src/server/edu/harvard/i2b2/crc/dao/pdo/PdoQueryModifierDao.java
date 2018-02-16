@@ -32,11 +32,8 @@ import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.pdo.input.FactRelatedQueryHandler;
 import edu.harvard.i2b2.crc.dao.pdo.input.IInputOptionListHandler;
 import edu.harvard.i2b2.crc.dao.pdo.input.SQLServerFactRelatedQueryHandler;
-import edu.harvard.i2b2.crc.dao.pdo.output.ConceptFactRelated;
 import edu.harvard.i2b2.crc.dao.pdo.output.ModifierFactRelated;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
-import edu.harvard.i2b2.crc.datavo.pdo.ConceptSet;
-import edu.harvard.i2b2.crc.datavo.pdo.ConceptType;
 import edu.harvard.i2b2.crc.datavo.pdo.ModifierSet;
 import edu.harvard.i2b2.crc.datavo.pdo.ModifierType;
 import edu.harvard.i2b2.crc.datavo.pdo.PatientDataType;
@@ -71,6 +68,7 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 	 * @return {@link PatientDataType.ConceptDimensionSet}
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public ModifierSet getModifierByModifierCd(List<String> modifierCdList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 			throws I2B2DAOException {
@@ -196,6 +194,7 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 		preparedStmt.executeBatch();
 	}
 
+	@Override
 	public ModifierSet getModifierByFact(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler, boolean detailFlag,

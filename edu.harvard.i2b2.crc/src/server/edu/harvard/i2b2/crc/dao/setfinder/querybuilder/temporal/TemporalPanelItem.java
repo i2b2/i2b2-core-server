@@ -32,7 +32,6 @@ import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.TotalItemOccurrenceHandle
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.UnitConverstionUtil;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ValueConstrainsHandler;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
-import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.ontology.ModifierType;
 import edu.harvard.i2b2.crc.datavo.ontology.XmlValueType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.TotOccuranceOperatorType;
@@ -409,7 +408,7 @@ public abstract class TemporalPanelItem {
 					&& unitCdConversionFlag.equalsIgnoreCase("ON")) {
 				if (metaDataXml != null
 						&& metaDataXml.getAny().get(0) != null) {
-					Element valueMetadataElement = (Element) metaDataXml.getAny().get(0);
+					Element valueMetadataElement = metaDataXml.getAny().get(0);
 					UnitConverstionUtil unitConverstionUtil = new UnitConverstionUtil();
 					unitCdSwitchClause = unitConverstionUtil
 							.buildUnitCdSwitchClause(valueMetadataElement,
@@ -469,7 +468,7 @@ public abstract class TemporalPanelItem {
 				if (modifierType != null
 						&& modifierType.getMetadataxml() != null
 						&& modifierType.getMetadataxml().getAny().get(0) != null) {
-					Element valueMetadataElement = (Element) modifierType
+					Element valueMetadataElement = modifierType
 							.getMetadataxml().getAny().get(0);
 					UnitConverstionUtil unitConverstionUtil = new UnitConverstionUtil();
 					modifierUnitCdSwitchClause = unitConverstionUtil

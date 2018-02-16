@@ -26,6 +26,7 @@ public class PanelEntry
 	public int totalItemOccurrences = 0;
 	public String totalItemOccurrencesOperator = "";
 	
+	@Override
 	public boolean equals(Object o)
 	{
 		if ((o!=null)&&(o.getClass().equals(this.getClass())))

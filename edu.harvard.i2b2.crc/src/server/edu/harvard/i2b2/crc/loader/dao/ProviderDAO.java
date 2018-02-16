@@ -35,6 +35,7 @@ public class ProviderDAO extends CRCLoaderDAO implements IProviderDAO {
 		this.dataSourceLookup = dataSourceLookup;
 	}
 
+	@Override
 	public int getRecordCountByUploadId(int uploadId) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		int insertCount = jdbcTemplate.queryForInt("select count(1) from "
@@ -50,6 +51,7 @@ public class ProviderDAO extends CRCLoaderDAO implements IProviderDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void createTempTable(String tempProviderTableName)
 			throws I2B2Exception {
 		Connection conn = null;
@@ -88,6 +90,7 @@ public class ProviderDAO extends CRCLoaderDAO implements IProviderDAO {
 	 * @param tempTableName
 	 * @return
 	 */
+	@Override
 	public TempProviderInsertHandler createTempProviderInsert(
 			String tempTableName) {
 		TempProviderInsert tempProviderInsert = new TempProviderInsert(
@@ -103,6 +106,7 @@ public class ProviderDAO extends CRCLoaderDAO implements IProviderDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void createProviderFromTempTable(String tempProviderTableName,
 			int uploadId) throws I2B2Exception {
 		Connection conn = null;
@@ -142,6 +146,7 @@ public class ProviderDAO extends CRCLoaderDAO implements IProviderDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void backupAndSyncProviderDimensionTable(
 			String tempConceptTableName,
 			String backupProviderDimensionTableName, int uploadId)

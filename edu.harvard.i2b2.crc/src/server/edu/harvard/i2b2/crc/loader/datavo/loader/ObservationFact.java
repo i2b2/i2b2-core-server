@@ -170,6 +170,7 @@ public class ObservationFact {
 		this.observationBlob = observationBlob;
 	}
 	
+	@Override
 	public String toString() { 
 		return this.getEncounterNum() + 
 		" "  +

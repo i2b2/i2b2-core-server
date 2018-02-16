@@ -10,17 +10,14 @@
 package edu.harvard.i2b2.crc.delegate.setfinder;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
-import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterRequestType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.UserType;
 import edu.harvard.i2b2.crc.delegate.RequestHandler;
 import edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate;
-import edu.harvard.i2b2.crc.ejb.QueryInfoBean;
 import edu.harvard.i2b2.crc.ejb.QueryRunBean;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
@@ -58,7 +55,8 @@ public class GetQueryInstanceListFromMasterIdHandler extends RequestHandler {
       * Perform operation for the given request
       * using business class(ejb) and return response
       */
-    public BodyType execute() throws I2B2Exception {
+    @Override
+	public BodyType execute() throws I2B2Exception {
         //		 call ejb and pass input object
         QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 

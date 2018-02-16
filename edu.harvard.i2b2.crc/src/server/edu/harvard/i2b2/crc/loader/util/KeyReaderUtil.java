@@ -44,7 +44,7 @@ public class KeyReaderUtil {
 	public static String getKeyFetchCommand() { 
 		CRCLoaderUtil loaderUtil = CRCLoaderUtil.getInstance();
 		Map<String,String> loaderPropertyMap = (Map<String,String>)loaderUtil.getSpringBeanFactory().getBean("loaderproperty");
-		String keyFetchCommand = (String)loaderPropertyMap.get(KeyReaderUtil.KEY_FETCH_COMMAND);
+		String keyFetchCommand = loaderPropertyMap.get(KeyReaderUtil.KEY_FETCH_COMMAND);
 		return keyFetchCommand;
 	}
 	

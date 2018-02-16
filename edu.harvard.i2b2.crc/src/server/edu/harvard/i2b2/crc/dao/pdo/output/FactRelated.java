@@ -9,6 +9,7 @@
  */
 package edu.harvard.i2b2.crc.dao.pdo.output;
 
+import edu.harvard.i2b2.crc.datavo.pdo.query.OutputOptionSelectType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.OutputOptionType;
 
 
@@ -36,7 +37,8 @@ public abstract class FactRelated {
 
     public boolean isFactRelated() {
     	if (outputOptionType != null && outputOptionType.getSelect() !=null) {
-    		if (outputOptionType.getSelect().equals(outputOptionType.getSelect().USING_FILTER_LIST)) {
+    		outputOptionType.getSelect();
+			if (outputOptionType.getSelect().equals(OutputOptionSelectType.USING_FILTER_LIST)) {
     			return true;
     		}
     		else { 

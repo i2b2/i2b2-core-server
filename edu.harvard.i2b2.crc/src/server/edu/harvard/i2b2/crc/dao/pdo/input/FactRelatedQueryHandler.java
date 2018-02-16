@@ -33,7 +33,6 @@ import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.common.util.xml.XMLOperatorLookup;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
-import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.pdo.I2B2PdoFactory;
 import edu.harvard.i2b2.crc.dao.pdo.PdoQueryHandler;
 import edu.harvard.i2b2.crc.dao.pdo.RPDRPdoFactory;
@@ -55,6 +54,7 @@ import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.ontology.XmlValueType;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationSet;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationType;
+import edu.harvard.i2b2.crc.datavo.pdo.query.ConstrainDateTimeType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.ConstrainDateType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.FilterListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.InclusiveType;
@@ -198,19 +198,23 @@ IFactRelatedQueryHandler {
 		}
 	}
 
+	@Override
 	public void setProjectParamMap(Map projectParamMap) {
 		this.projectParamMap = projectParamMap;
 	}
 
+	@Override
 	public void setModifierMetadataXmlMap(Map<String,XmlValueType> modifierMetadataXmlMap) {
 		this.modifierMetadataXmlMap = modifierMetadataXmlMap;
 	}
 
+	@Override
 	public void setRequestVersion(String requestVersion) { 
 		this.requestVersion = requestVersion;
 	}
 
 
+	@Override
 	public List<String> getPanelSqlList() {
 		return this.panelSqlList;
 	}
@@ -239,6 +243,7 @@ IFactRelatedQueryHandler {
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public List<ObservationSet> getPdoObservationFact() throws I2B2DAOException {
 		ResultSet resultSet = null;
 		Connection conn = null;
@@ -397,6 +402,7 @@ IFactRelatedQueryHandler {
 	 * @return ObservationSet list
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public List<ObservationSet> getTablePdoObservationFact()
 			throws I2B2DAOException {
 		Connection conn = null;
@@ -560,6 +566,7 @@ IFactRelatedQueryHandler {
 	 * 
 	 * @return list of provider/observer id
 	 */
+	@Override
 	public List<String> getProviderFactList() {
 		return providerFactList;
 	}
@@ -569,6 +576,7 @@ IFactRelatedQueryHandler {
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<String> getConceptFactList() {
 		return conceptFactList;
 	}
@@ -578,6 +586,7 @@ IFactRelatedQueryHandler {
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<String> getModifierFactList() {
 		return modifierFactList;
 	}
@@ -587,6 +596,7 @@ IFactRelatedQueryHandler {
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<String> getPatientFactList() {
 		return patientFactList;
 	}
@@ -596,10 +606,12 @@ IFactRelatedQueryHandler {
 	 * 
 	 * @return list of encounter number
 	 */
+	@Override
 	public List<String> getVisitFactList() {
 		return visitFactList;
 	}
 
+	@Override
 	public String buildTotalQuery(PanelType panel, String pdoType)
 			throws I2B2DAOException {
 		// TODO Auto-generated method stub
@@ -613,6 +625,7 @@ IFactRelatedQueryHandler {
 	 * @return String
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public String buildQuery(PanelType panel, String pdoType)
 			throws I2B2DAOException {
 		String obsFactSelectClause = null;
@@ -977,7 +990,7 @@ IFactRelatedQueryHandler {
 							if (modifierConstrainValueFlag) { 
 								XmlValueType xmlValueType = this.modifierMetadataXmlMap.get(item.getConstrainByModifier().getModifierKey()+item.getConstrainByModifier().getAppliedPath());
 								if (xmlValueType != null && xmlValueType.getAny().get(0) != null) {
-									Element valueMetadataElement = (Element)xmlValueType.getAny().get(0);
+									Element valueMetadataElement = xmlValueType.getAny().get(0);
 									UnitConverstionUtil unitConverstionUtil = new UnitConverstionUtil();
 									modifierUnitCdSwitchClause = unitConverstionUtil.buildUnitCdSwitchClause(valueMetadataElement,false,"obs.");
 									modifierUnitCdInClause = unitConverstionUtil.buildUnitCdInClause(valueMetadataElement,"");
@@ -1042,11 +1055,12 @@ IFactRelatedQueryHandler {
 						if (dateFrom != null) {
 							dateFromInclusive = dateFrom.getInclusive();
 							dateFromValue = dateFrom.getValue();
+							dateFrom.getTime();
 							if (dateFrom.getTime() != null
 									&& dateFrom.getTime().name() != null
 									&& dateFrom.getTime().name()
 									.equalsIgnoreCase(
-											dateFrom.getTime().END_DATE
+											ConstrainDateTimeType.END_DATE
 											.name())) {
 								dateFromColumn = "obs.end_date";
 							} else {
@@ -1058,11 +1072,12 @@ IFactRelatedQueryHandler {
 						if (dateTo != null) {
 							dateToInclusive = dateTo.getInclusive();
 							dateToValue = dateTo.getValue();
+							dateTo.getTime();
 							if (dateTo.getTime() != null
 									&& dateTo.getTime().name() != null
 									&& dateTo.getTime().name()
 									.equalsIgnoreCase(
-											dateTo.getTime().END_DATE
+											ConstrainDateTimeType.END_DATE
 											.name())) {
 								dateToColumn = "obs.end_date";
 							} else {
@@ -1382,10 +1397,11 @@ IFactRelatedQueryHandler {
 			if (dateFrom != null) {
 				dateFromInclusive = dateFrom.getInclusive();
 				dateFromValue = dateFrom.getValue();
+				dateFrom.getTime();
 				if (dateFrom.getTime() != null
 						&& dateFrom.getTime().name() != null
 						&& dateFrom.getTime().name().equalsIgnoreCase(
-								dateFrom.getTime().END_DATE.name())) {
+								ConstrainDateTimeType.END_DATE.name())) {
 					dateFromColumn = "obs.end_date";
 				} else {
 					dateFromColumn = "obs.start_date";
@@ -1396,10 +1412,11 @@ IFactRelatedQueryHandler {
 			if (dateTo != null) {
 				dateToInclusive = dateTo.getInclusive();
 				dateToValue = dateTo.getValue();
+				dateTo.getTime();
 				if (dateTo.getTime() != null
 						&& dateTo.getTime().name() != null
 						&& dateTo.getTime().name().equalsIgnoreCase(
-								dateTo.getTime().END_DATE.name())) {
+								ConstrainDateTimeType.END_DATE.name())) {
 					dateToColumn = "obs.end_date";
 				} else {
 					dateToColumn = "obs.start_date";

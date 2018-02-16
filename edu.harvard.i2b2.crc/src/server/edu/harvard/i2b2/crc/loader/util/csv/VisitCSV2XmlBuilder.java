@@ -141,7 +141,7 @@ public class VisitCSV2XmlBuilder {
 				}
 				i++;
 
-				String col[] = (String[]) fields.toArray(new String[] {});
+				String col[] = fields.toArray(new String[] {});
 				eventSet.getEvent().add(getVisitDimension(col));
 				if (i % 1000 == 0) {
 					i = 0;

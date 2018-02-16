@@ -12,20 +12,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.loader.dao.IUploaderDAOFactory;
 import edu.harvard.i2b2.crc.loader.dao.LoaderDAOFactoryHelper;
 import edu.harvard.i2b2.crc.loader.dao.UniqueKeyException;
 import edu.harvard.i2b2.crc.loader.dao.UploadStatusDAOI;
-import edu.harvard.i2b2.crc.datavo.i2b2message.PasswordType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.loader.datavo.loader.UploadStatus;
 import edu.harvard.i2b2.crc.loader.datavo.loader.query.DataListType;
 import edu.harvard.i2b2.crc.loader.datavo.loader.query.PublishDataRequestType;
 import edu.harvard.i2b2.crc.loader.ejb.fr.FRBean;
-import edu.harvard.i2b2.crc.loader.util.CRCLoaderUtil;
 
 /**
  * The MessageBean class is a message-driven bean. It implements the

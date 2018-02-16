@@ -12,11 +12,9 @@ import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
-import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
-import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
@@ -27,8 +25,6 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptsType;
 import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
-import edu.harvard.i2b2.crc.ejb.role.MissingRoleException;
-import edu.harvard.i2b2.crc.role.AuthrizationHelper;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 import edu.harvard.i2b2.crc.util.SqlClauseUtil;
@@ -43,6 +39,7 @@ import edu.harvard.i2b2.crc.util.SqlClauseUtil;
 public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
 
+	@Override
 	public String getResults() {
 		return xmlResult;
 	}
@@ -52,6 +49,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 	 * Function accepts parameter in Map. The patient count will be obfuscated
 	 * if the user is OBFUS
 	 */
+	@Override
 	public void generateResult(Map param) throws CRCTimeOutException,
 	I2B2DAOException {
 

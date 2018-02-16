@@ -25,6 +25,7 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO  {
 		this.schemaName = schemaName;
 	}
 	
+	@Override
 	public List<DataSourceLookup> getDbLookupByHiveOwner(String domainId,String ownerId) { 
 		String sql =  "select * from crc_db_lookup where LOWER(c_domain_id) = ? and c_project_path = ? and (LOWER(c_owner_id) = ? or c_owner_id ='@') order by c_project_path";
 		String projectId = "@";
@@ -33,6 +34,7 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO  {
 		return dataSourceLookupList;
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<DataSourceLookup> getDbLookupByHiveProjectOwner(String domainId, String projectId,
 			String ownerId) {
@@ -52,7 +54,8 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO  {
 
 	public class mapper implements RowMapper {
 
-	    public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+	    @Override
+		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 	        DataSourceLookup dataSourceLookup = new DataSourceLookup();
 	        dataSourceLookup.setDomainId(rs.getString("c_domain_id"));
 	        dataSourceLookup.setProjectPath(rs.getString("c_project_path"));

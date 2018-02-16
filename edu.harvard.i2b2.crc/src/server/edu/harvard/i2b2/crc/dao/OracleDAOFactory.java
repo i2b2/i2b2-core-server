@@ -94,11 +94,13 @@ public class OracleDAOFactory implements IDAOFactory {
 		crcUtil = QueryProcessorUtil.getInstance();
 	}
 
+	@Override
 	public SetFinderDAOFactory getSetFinderDAOFactory() {
 		return new OracleSetFinderDAOFactory(dataSource, dataSourceLookup,
 				orignalDataSourceLookup);
 	}
 
+	@Override
 	public PatientDataDAOFactory getPatientDataDAOFactory() {
 		return new OraclePatientDataDAOFactory(dataSource, dataSourceLookup,
 				orignalDataSourceLookup);
@@ -119,6 +121,7 @@ public class OracleDAOFactory implements IDAOFactory {
 
 		}
 
+		@Override
 		public ObservationFactDao getObservationFactDAO() {
 			// TODO Auto-generated method stub
 			//
@@ -127,83 +130,100 @@ public class OracleDAOFactory implements IDAOFactory {
 
 		}
 
+		@Override
 		public PdoQueryConceptDao getPdoQueryConceptDAO() {
 			// TODO Auto-generated method stub
 			return new PdoQueryConceptDao(dataSourceLookup, dataSource);
 			// return null;
 		}
 
+		@Override
 		public PdoQueryModifierDao getPdoQueryModifierDAO() {
 			// TODO Auto-generated method stub
 			return new PdoQueryModifierDao(dataSourceLookup, dataSource);
 			// return null;
 		}
 		
+		@Override
 		public PdoQueryPatientDao getPdoQueryPatientDAO() {
 			// TODO Auto-generated method stub
 			return new PdoQueryPatientDao(dataSourceLookup, dataSource);
 			// return null;
 		}
 
+		@Override
 		public PdoQueryProviderDao getPdoQueryProviderDAO() {
 			// TODO Auto-generated method stub
 			return new PdoQueryProviderDao(dataSourceLookup, dataSource);
 		}
 
+		@Override
 		public PdoQueryVisitDao getPdoQueryVisitDAO() {
 			// TODO Auto-generated method stub
 			return new PdoQueryVisitDao(dataSourceLookup, dataSource);
 		}
 
+		@Override
 		public TablePdoQueryConceptDao getTablePdoQueryConceptDAO() {
 			// TODO Auto-generated method stub
 			return new TablePdoQueryConceptDao(dataSourceLookup, dataSource);
 		}
 		
+		@Override
 		public TablePdoQueryModifierDao getTablePdoQueryModifierDAO() {
 			// TODO Auto-generated method stub
 			return new TablePdoQueryModifierDao(dataSourceLookup, dataSource);
 		}
 
+		@Override
 		public TablePdoQueryPatientDao getTablePdoQueryPatientDAO() {
 			// TODO Auto-generated method stub
 			return new TablePdoQueryPatientDao(dataSourceLookup, dataSource);
 		}
 
+		@Override
 		public TablePdoQueryProviderDao getTablePdoQueryProviderDAO() {
 			// TODO Auto-generated method stub
 			return new TablePdoQueryProviderDao(dataSourceLookup, dataSource);
 		}
 
+		@Override
 		public TablePdoQueryVisitDao getTablePdoQueryVisitDAO() {
 			// TODO Auto-generated method stub
 			return new TablePdoQueryVisitDao(dataSourceLookup, dataSource);
 		}
 
+		@Override
 		public IPageDao getPageDAO() {
 			return new PageTotalDao(dataSourceLookup, dataSource);
 		}
 
+		@Override
 		public IPdoQueryPidDao getPdoQueryPidDAO() {
 			return new PdoQueryPidDao(dataSourceLookup, dataSource);
 		}
 
+		@Override
 		public IPdoQueryEidDao getPdoQueryEidDAO() {
 			return new PdoQueryEidDao(dataSourceLookup, dataSource);
 		}
 		
+		@Override
 		public IMetadataDao getMetadataDAO() {
 			return new MetadataDao(dataSourceLookup, dataSource);
 		}
 
+		@Override
 		public DataSourceLookup getDataSourceLookup() {
 			return dataSourceLookup;
 		}
 
+		@Override
 		public DataSourceLookup getOriginalDataSourceLookup() {
 			return orignalDataSourceLookup;
 		}
 		
+		@Override
 		public DataSource getDataSource() {
 			return this.dataSource;
 		}
@@ -224,79 +244,95 @@ public class OracleDAOFactory implements IDAOFactory {
 
 		}
 
+		@Override
 		public IXmlResultDao getXmlResultDao() {
 			// TODO Auto-generated method stub
 			return new XmlResultSpringDao(dataSource, dataSourceLookup);
 		}
 
+		@Override
 		public IPatientSetCollectionDao getPatientSetCollectionDAO() {
 			// TODO Auto-generated method stub
 			return new PatientSetCollectionSpringDao(dataSource,
 					dataSourceLookup);
 		}
 
+		@Override
 		public IEncounterSetCollectionDao getEncounterSetCollectionDAO() {
 			// TODO Auto-generated method stub
 			return new EncounterSetCollectionSpringDao(dataSource,
 					dataSourceLookup);
 		}
 
+		@Override
 		public IQueryResultInstanceDao getPatientSetResultDAO() {
 			// TODO Auto-generated method stub
 			return new QueryResultInstanceSpringDao(dataSource,
 					dataSourceLookup);
 		}
 
+		@Override
 		public IQueryInstanceDao getQueryInstanceDAO() {
 			// TODO Auto-generated method stub
 			return new QueryInstanceSpringDao(dataSource, dataSourceLookup);
 		}
 
+		@Override
 		public IQueryMasterDao getQueryMasterDAO() {
 			// TODO Auto-generated method stub
 			return new QueryMasterSpringDao(dataSource, dataSourceLookup);
 		}
 
+		@Override
 		public IQueryPdoMasterDao getQueryPdoMasterDAO() {
 			// TODO Auto-generated method stub
 			return new QueryPdoMasterSpringDao(dataSource, dataSourceLookup);
 		}
 
+		@Override
 		public IQueryRequestDao getQueryRequestDAO() {
 			// TODO Auto-generated method stub
 			return new QueryRequestSpringDao(dataSource, dataSourceLookup);
 		}
 
+		@Override
 		public DataSourceLookup getDataSourceLookup() {
 			return dataSourceLookup;
 		}
 
+		@Override
 		public DataSourceLookup getOriginalDataSourceLookup() {
 			return orignalDataSourceLookup;
 		}
 		
+		@Override
 		public DataSource getDataSource() {
 			return dataSource;
 		}
 
+		@Override
 		public IQueryResultTypeDao getQueryResultTypeDao() {
 			// TODO Auto-generated method stub
 			return new QueryResultTypeSpringDao(dataSource, dataSourceLookup);
 		}
 
+		@Override
 		public IQueryStatusTypeDao getQueryStatusTypeDao() {
 			// TODO Auto-generated method stub
 			return new QueryStatusTypeSpringDao(dataSource, dataSourceLookup);
 		}
 
+		@Override
 		public IAnalysisPluginDao getAnalysisPluginDao() {
 			return new AnalysisPluginSpringDao(dataSource, dataSourceLookup);
 		}
 
+		@Override
 		public IPriviledgeDao getPriviledgeDao() {
 			return new PriviledgeSpringDao(dataSource, dataSourceLookup);
 		}
 
+		@Override
 		public IQueryBreakdownTypeDao getQueryBreakdownTypeDao() {
 			return new QueryBreakdownTypeSpringDao(dataSource, dataSourceLookup);
 		}

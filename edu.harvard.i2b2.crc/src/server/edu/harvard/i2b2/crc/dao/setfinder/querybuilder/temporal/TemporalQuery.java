@@ -27,7 +27,6 @@ import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
-import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.DxTableHandler;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.QueryDefinitionUnWrapUtil;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.QueryTimingHandler;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.TempTableNameMap;
@@ -40,7 +39,6 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryConstraintType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.util.PMServiceAccountUtil;
-import edu.harvard.i2b2.crc.util.ParamUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**

@@ -72,6 +72,7 @@ public class ObservationFactXmlDbLoader implements StartElementListener {
 		observationFactInsertHandle.flush();
 	}
 
+	@Override
 	public void process(Object observation) {
 		rowCount++;
 		if (rowCount % 1000 == 0) {
@@ -82,7 +83,7 @@ public class ObservationFactXmlDbLoader implements StartElementListener {
 		observationType.setUploadId(String.valueOf(uploadId));
 
 		observationFactInsertHandle
-				.insertObservationFact((ObservationType) observationType);
+				.insertObservationFact(observationType);
 	}
 
 	public int getRowCount() {

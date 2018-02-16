@@ -26,7 +26,6 @@ import org.springframework.core.io.FileSystemResource;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
-import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.crc.loader.ejb.DataMartLoaderAsyncBeanLocal;
 import edu.harvard.i2b2.crc.loader.ejb.LoaderStatusBeanLocal;
 import edu.harvard.i2b2.crc.loader.ejb.MissingTermReportBeanLocal;

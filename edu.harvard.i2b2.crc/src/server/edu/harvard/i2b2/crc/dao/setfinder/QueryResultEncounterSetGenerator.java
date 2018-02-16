@@ -1,9 +1,7 @@
 package edu.harvard.i2b2.crc.dao.setfinder;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +9,6 @@ import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
-import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.QueryDefinitionUnWrapUtil;
@@ -20,8 +17,6 @@ import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
-import edu.harvard.i2b2.crc.ejb.role.MissingRoleException;
-import edu.harvard.i2b2.crc.role.AuthrizationHelper;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
@@ -29,12 +24,14 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 		IResultGenerator {
 
 
+	@Override
 	public String getResults() {
 		return xmlResult;
 	}
 
 	private String xmlResult = null;
 	
+	@Override
 	public void generateResult(Map param) throws I2B2DAOException {
 
 		SetFinderConnection sfConn = (SetFinderConnection) param

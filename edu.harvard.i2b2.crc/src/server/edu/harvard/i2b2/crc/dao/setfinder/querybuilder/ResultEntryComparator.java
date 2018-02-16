@@ -30,7 +30,8 @@ public class ResultEntryComparator implements Comparator {
         THIRD_TABLE = third_table;
     }
 
-    public int compare(Object element1, Object element2) {
+    @Override
+	public int compare(Object element1, Object element2) {
         if ((element1.getClass().equals(ResultEntry.class)) &&
                 (element2.getClass().equals((ResultEntry.class)))) {
             ResultEntry r1 = (ResultEntry) element1;

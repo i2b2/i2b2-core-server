@@ -18,22 +18,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import javax.sql.DataSource;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
-import edu.harvard.i2b2.crc.dao.setfinder.CheckSkipTempTable;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
-import edu.harvard.i2b2.crc.dao.setfinder.QueryExecutorDao;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
@@ -45,10 +41,6 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseHeaderType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResultStatusType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryModeType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 public class QueryManagerBeanUtil {

@@ -83,6 +83,7 @@ public class VisitXmlDbLoader implements StartElementListener {
 		visitInsertHandler.flush();
 	}
 
+	@Override
 	public void process(Object event) {
 		rowCount++;
 		if (rowCount % 1000 == 0) {
@@ -94,7 +95,7 @@ public class VisitXmlDbLoader implements StartElementListener {
 		EventType eventType = (EventType) event;
 		eventType.setUploadId(String.valueOf(uploadId));
 
-		visitInsertHandler.insertVisitDimension((EventType) eventType);
+		visitInsertHandler.insertVisitDimension(eventType);
 	}
 
 	public int getRowCount() {

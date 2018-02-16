@@ -74,6 +74,7 @@ public class ProviderXmlDbLoader implements StartElementListener {
 		providerInsertHandler.flush();
 	}
 
+	@Override
 	public void process(Object provider) {
 		rowCount++;
 		if (rowCount % 1000 == 0) {

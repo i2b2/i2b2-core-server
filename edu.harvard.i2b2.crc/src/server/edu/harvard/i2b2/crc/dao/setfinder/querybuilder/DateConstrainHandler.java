@@ -10,8 +10,6 @@
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder;
 
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.logging.Log;

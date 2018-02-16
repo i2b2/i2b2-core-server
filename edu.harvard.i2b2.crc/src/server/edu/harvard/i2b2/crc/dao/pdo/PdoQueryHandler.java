@@ -34,13 +34,11 @@ import edu.harvard.i2b2.crc.dao.pdo.output.PidFactRelated;
 import edu.harvard.i2b2.crc.dao.pdo.output.ProviderFactRelated;
 import edu.harvard.i2b2.crc.dao.pdo.output.VisitFactRelated;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
-import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.ontology.XmlValueType;
 import edu.harvard.i2b2.crc.datavo.pdo.ConceptSet;
 import edu.harvard.i2b2.crc.datavo.pdo.EidSet;
 import edu.harvard.i2b2.crc.datavo.pdo.EventSet;
 import edu.harvard.i2b2.crc.datavo.pdo.ModifierSet;
-import edu.harvard.i2b2.crc.datavo.pdo.ModifierType;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationSet;
 import edu.harvard.i2b2.crc.datavo.pdo.ObserverSet;
 import edu.harvard.i2b2.crc.datavo.pdo.ParamType;
@@ -56,7 +54,6 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PatientListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PidListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PidListType.Pid;
-import edu.harvard.i2b2.crc.datavo.pm.ProjectType;
 
 /**
  * <b>Main class for PDO queries.<b>

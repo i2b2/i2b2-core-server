@@ -17,6 +17,7 @@ public class PriviledgeBean implements PriviledgeLocal {
 	// log
 	private static Log log = LogFactory.getLog(PriviledgeBean.class);
 
+	@Override
 	public QtPriviledge checkPriviledge(IDAOFactory daoFactory,
 			String protectionLabel, List<String> roles)
 			throws MissingRoleException, I2B2Exception {
@@ -48,6 +49,7 @@ public class PriviledgeBean implements PriviledgeLocal {
 		}
 	}
 
+	@Override
 	public QtPriviledge checkPluginPrivilege(IDAOFactory daoFactory,
 			String pluginId, List<String> roles) throws MissingRoleException,
 			I2B2Exception {

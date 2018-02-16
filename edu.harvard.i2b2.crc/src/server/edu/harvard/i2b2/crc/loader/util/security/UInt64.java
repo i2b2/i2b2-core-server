@@ -127,7 +127,8 @@ public class UInt64 extends UInt implements Serializable, Comparable {
      * @return true if the specified object is an unsigned 64-bit integer
      *         object. Otherwise, false.
      */ 
-    public boolean equals(Object o) {
+    @Override
+	public boolean equals(Object o) {
         if (!(o instanceof UInt64)) {
             return false;
         }
@@ -237,7 +238,8 @@ public class UInt64 extends UInt implements Serializable, Comparable {
      * @return -1, 0 or 1 as this UnsignedInt64 is numerically less than, equal
      *         to, or greater than <tt>val</tt>.
      */
-    public int compareTo(Object val) {
+    @Override
+	public int compareTo(Object val) {
         
     	BigInteger a = new BigInteger(val.toString());
 	return ((BigInteger)value).compareTo(a);

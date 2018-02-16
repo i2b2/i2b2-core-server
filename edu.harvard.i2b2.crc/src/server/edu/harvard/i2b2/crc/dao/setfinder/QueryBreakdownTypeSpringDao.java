@@ -20,7 +20,6 @@ import org.springframework.jdbc.core.RowMapper;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
-import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 
 /**
  * Class to manager operation of QtBreakdownPath $Id:
@@ -53,6 +52,7 @@ public class QueryBreakdownTypeSpringDao extends CRCDAO implements
 	 * @param userId
 	 * @return List<QtQueryMaster>
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public QtQueryBreakdownType getBreakdownTypeByName(String name) {
 
@@ -66,6 +66,7 @@ public class QueryBreakdownTypeSpringDao extends CRCDAO implements
 	}
 
 	private static class QtBreakdownTypeRowMapper implements RowMapper {
+		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 			QtQueryBreakdownType queryBreakdownType = new QtQueryBreakdownType();
 			queryBreakdownType.setCreateDate(rs.getDate("CREATE_DATE"));

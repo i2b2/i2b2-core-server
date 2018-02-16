@@ -16,9 +16,6 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.loader.datavo.loader.query.LoadDataResponseType;
 import edu.harvard.i2b2.crc.loader.datavo.loader.query.PublishDataRequestType;
 import edu.harvard.i2b2.crc.loader.ejb.DataMartLoaderAsyncBean;
-import edu.harvard.i2b2.crc.loader.ejb.DataMartLoaderAsyncBeanLocal;
-import edu.harvard.i2b2.crc.loader.ejb.IDataMartLoaderBean;
-import edu.harvard.i2b2.crc.loader.util.CRCLoaderUtil;
 
 public class PublishDataRequestHandler extends RequestHandler {
 

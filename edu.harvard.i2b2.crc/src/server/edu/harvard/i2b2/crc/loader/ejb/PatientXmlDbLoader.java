@@ -83,6 +83,7 @@ public class PatientXmlDbLoader implements StartElementListener {
 		patientInsertHandler.flush();
 	}
 
+	@Override
 	public void process(Object patient) {
 		rowCount++;
 		if (rowCount % 1000 == 0) {
@@ -92,7 +93,7 @@ public class PatientXmlDbLoader implements StartElementListener {
 		PatientType patientType = (PatientType) patient;
 		patientType.setUploadId(String.valueOf(uploadId));
 
-		patientInsertHandler.insertPatientDimension((PatientType) patientType);
+		patientInsertHandler.insertPatientDimension(patientType);
 	}
 
 	public int getRowCount() {

@@ -75,6 +75,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 	 * @param statusId
 	 * @return query instance id
 	 */
+	@Override
 	public String createQueryInstance(String queryMasterId, String userId,
 			String groupId, String batchMode, int statusId) {
 		QtQueryInstance queryInstance = new QtQueryInstance();
@@ -106,6 +107,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 	 * @param queryMasterId
 	 * @return List<QtQueryInstance>
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<QtQueryInstance> getQueryInstanceByMasterId(String queryMasterId) {
 		String sql = "select *  from " + getDbSchemaName()
@@ -121,6 +123,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 	 * @param queryInstanceId
 	 * @return QtQueryInstance
 	 */
+	@Override
 	public QtQueryInstance getQueryInstanceByInstanceId(String queryInstanceId) {
 		String sql = "select *  from " + getDbSchemaName()
 				+ "qt_query_instance  where query_instance_id =?";
@@ -139,6 +142,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 	 * @return QtQueryInstance
 	 * @throws I2B2DAOException 
 	 */
+	@Override
 	public QtQueryInstance update(QtQueryInstance queryInstance,
 			boolean appendMessageFlag) throws I2B2DAOException {
 
@@ -239,6 +243,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 	 * @param appendMessageFlag
 	 * @return 
 	 */
+	@Override
 	public void updateMessage(String  queryInstanceId, String message,
 			boolean appendMessageFlag)  throws  I2B2DAOException {
 
@@ -433,6 +438,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 		QueryStatusTypeSpringDao statusTypeDao = new QueryStatusTypeSpringDao(
 				dataSource, dataSourceLookup);
 
+		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 			QtQueryInstance queryInstance = new QtQueryInstance();
 			queryInstance.setQueryInstanceId(rs.getString("QUERY_INSTANCE_ID"));

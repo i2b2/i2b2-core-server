@@ -42,6 +42,7 @@ public class PatientLoader extends AbstractDimensionLoader {
 		patientDAO = uploaderDaoFactory.getPatientDAO();
 	}
 
+	@Override
 	public void load() throws I2B2Exception {
 		try {
 

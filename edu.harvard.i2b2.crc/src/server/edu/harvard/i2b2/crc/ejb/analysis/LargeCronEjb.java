@@ -1,9 +1,5 @@
 package edu.harvard.i2b2.crc.ejb.analysis;
 
-import java.util.Iterator;
-
-import javax.annotation.Resource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.JobExecutionException;
@@ -21,6 +17,7 @@ public class LargeCronEjb implements LargeCronEjbLocal {
 
 //	TimerService timerService;
 
+	@Override
 	public void start() {
 		/*
 		for (Iterator iterator = timerService.getTimers().iterator(); iterator

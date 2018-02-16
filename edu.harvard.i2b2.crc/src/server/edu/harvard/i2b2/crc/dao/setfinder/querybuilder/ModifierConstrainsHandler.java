@@ -9,20 +9,11 @@
  */
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
-import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.exception.StackTraceUtil;
 import edu.harvard.i2b2.crc.datavo.ontology.ModifierType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.ConstrainOperatorType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.ConstrainValueType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.ItemType;
-import edu.harvard.i2b2.crc.util.SqlClauseUtil;
-import edu.harvard.i2b2.crc.util.StringUtil;
 
 /**
  * Class to handle modifier constrains. Generates sql where clause based on the

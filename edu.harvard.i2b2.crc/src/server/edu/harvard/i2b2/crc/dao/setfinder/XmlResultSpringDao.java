@@ -68,6 +68,7 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 	 * @param statusId
 	 * @return query instance id
 	 */
+	@Override
 	public String createQueryXmlResult(String resultInstanceId, String xmlValue) {
 		String ORACLE_SQL = "INSERT INTO " + getDbSchemaName() + "QT_XML_RESULT(xml_result_id,result_instance_id,xml_value) VALUES(?,?,?)"; 
 		String POSTGRESQL_SQL = "INSERT INTO " + getDbSchemaName() + "QT_XML_RESULT(xml_result_id,result_instance_id,xml_value) VALUES(?,?,?)"; 
@@ -95,6 +96,7 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 	 * @param queryMasterId
 	 * @return List<QtQueryInstance>
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public QtXmlResult getXmlResultByResultInstanceId(String resultInstanceId) throws I2B2DAOException {
 		String sql = "select *  from " + getDbSchemaName()
@@ -168,6 +170,7 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 
 
 	private static class QtXmlResultRowMapper implements RowMapper {
+		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 			QtXmlResult xmlResult = new QtXmlResult();
 			xmlResult.setXmlResultId(rs.getString("XML_RESULT_ID"));

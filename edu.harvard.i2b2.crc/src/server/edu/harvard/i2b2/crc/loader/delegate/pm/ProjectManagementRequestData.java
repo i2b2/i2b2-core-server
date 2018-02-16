@@ -17,7 +17,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ApplicationType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.FacilityType;
@@ -26,8 +25,6 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ProcessingIdType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestHeaderType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
-import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
-import edu.harvard.i2b2.crc.loader.datavo.CRCLoaderJAXBUtil;
 
 abstract public class ProjectManagementRequestData {
 

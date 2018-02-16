@@ -23,7 +23,6 @@ import edu.harvard.i2b2.common.exception.StackTraceUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
-import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.I2B2MessageResponseFactory;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
@@ -34,10 +33,8 @@ import edu.harvard.i2b2.crc.datavo.pm.ParamType;
 import edu.harvard.i2b2.crc.datavo.pm.ProjectType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmRequestTypeType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.StatusType.Condition;
 import edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate;
 import edu.harvard.i2b2.crc.delegate.ejbpm.EJBPMUtil;
-import edu.harvard.i2b2.crc.delegate.pm.CallPMUtil;
 import edu.harvard.i2b2.crc.delegate.pm.PMServiceDriver;
 import edu.harvard.i2b2.crc.util.CacheUtil;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
@@ -57,6 +54,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 	/**
 	 * @see edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate#handleRequest(java.lang.String)
 	 */
+	@Override
 	public String handleRequest(String requestXml) throws I2B2Exception {
 		PsmQryHeaderType headerType = null;
 		String response = null;

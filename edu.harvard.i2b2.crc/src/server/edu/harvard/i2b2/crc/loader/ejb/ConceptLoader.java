@@ -43,6 +43,7 @@ public class ConceptLoader extends AbstractDimensionLoader {
 		conceptDAO = uploaderDaoFactory.getConceptDAO();
 	}
 
+	@Override
 	public void load() throws I2B2Exception {
 		try {
 

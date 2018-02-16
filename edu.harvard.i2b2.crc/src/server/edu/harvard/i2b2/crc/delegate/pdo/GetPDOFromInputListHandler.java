@@ -11,7 +11,6 @@ package edu.harvard.i2b2.crc.delegate.pdo;
 
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.IDAOFactory;
@@ -20,7 +19,6 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.GetPDOFromInputListRequestType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PatientDataResponseType;
 import edu.harvard.i2b2.crc.delegate.RequestHandler;
 import edu.harvard.i2b2.crc.ejb.PdoQueryBean;
-import edu.harvard.i2b2.crc.ejb.QueryInfoBean;
 import edu.harvard.i2b2.crc.role.AuthrizationHelper;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
@@ -57,6 +55,7 @@ public class GetPDOFromInputListHandler extends RequestHandler {
 	 * Perform operation for the given request using business class(ejb) and
 	 * return response
 	 */
+	@Override
 	public BodyType execute() throws I2B2Exception {
 		// call ejb and pass input object
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();

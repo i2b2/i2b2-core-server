@@ -18,7 +18,6 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
@@ -73,6 +72,7 @@ public class PatientSetCollectionSpringDao extends CRCDAO implements  IPatientSe
 	}
 	
 	
+	@Override
 	public void createPatientSetCollection(String resultInstanceId) {
 		resultInstance = new QtQueryResultInstance();
 		resultInstance.setResultInstanceId(resultInstanceId);
@@ -82,6 +82,7 @@ public class PatientSetCollectionSpringDao extends CRCDAO implements  IPatientSe
 
 
 
+	@Override
 	public String getResultInstanceId() {
 		return resultInstance.getResultInstanceId();
 	}
@@ -100,6 +101,7 @@ public class PatientSetCollectionSpringDao extends CRCDAO implements  IPatientSe
 	 * 
 	 * @param patientId
 	 */
+	@Override
 	public void addPatient(long patientId) {
 		setIndex++;
 
@@ -124,6 +126,7 @@ public class PatientSetCollectionSpringDao extends CRCDAO implements  IPatientSe
 	 * Call this function at the end. i.e. after loading all patient with
 	 * addPatient function, finally call this function to clear session
 	 */
+	@Override
 	public void flush() {
 		InsertStatementSetter batchSetter = new InsertStatementSetter(
 				patientSetColl, batchDataIndex);
@@ -144,11 +147,13 @@ public class PatientSetCollectionSpringDao extends CRCDAO implements  IPatientSe
 			this.batchSize = batchSize;
 		}
 
+		@Override
 		public int getBatchSize() {
 			return batchSize;
 		}
 
 		// this is called for each row
+		@Override
 		public void setValues(PreparedStatement ps, int i) throws SQLException {
 			
 				//ps.setLong(1, data[i].getPatientSetCollId()); // set first value

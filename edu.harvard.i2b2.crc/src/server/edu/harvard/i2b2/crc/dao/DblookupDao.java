@@ -86,7 +86,8 @@ public class DblookupDao extends JdbcDaoSupport {
 	
 	public ParameterizedRowMapper<DblookupType> getMapper() throws DataAccessException, I2B2DAOException{	
 		ParameterizedRowMapper<DblookupType> mapper = new ParameterizedRowMapper<DblookupType>() {
-	        public DblookupType mapRow(ResultSet rs, int rowNum) throws SQLException {
+	        @Override
+			public DblookupType mapRow(ResultSet rs, int rowNum) throws SQLException {
 	        	DblookupType dblu = new DblookupType();
 	        	dblu.setDomainId(rs.getString("c_domain_id"));
 	        	dblu.setProjectPath(rs.getString("c_project_path"));

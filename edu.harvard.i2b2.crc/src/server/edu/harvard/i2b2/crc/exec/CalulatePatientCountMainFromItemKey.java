@@ -10,7 +10,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
-import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
@@ -38,7 +37,6 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.AnalysisParamType;
 import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
 import edu.harvard.i2b2.crc.ejb.analysis.QueryMaster;
 import edu.harvard.i2b2.crc.util.I2B2RequestMessageHelper;
-import edu.harvard.i2b2.crc.util.PMServiceAccountUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**

@@ -20,12 +20,14 @@ public class QueryResultPatientRaceCdCountGenerator extends CRCDAO implements
 
 	public static final String RESULT_NAME = "PATIENT_RACE_COUNT_XML";
 
+	@Override
 	public String getResults() {
 		return xmlResult;
 	}
 
 	private String xmlResult = null;
 	
+	@Override
 	public void generateResult(Map param) throws I2B2DAOException {
 
 		SetFinderConnection sfConn = (SetFinderConnection) param

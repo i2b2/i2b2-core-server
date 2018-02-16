@@ -66,18 +66,22 @@ public class VisitListTypeHandler extends CRCDAO implements
 		}
 	}
 
+	@Override
 	public int getMinIndex() {
 		return minIndex;
 	}
 
+	@Override
 	public int getMaxIndex() {
 		return maxIndex;
 	}
 
+	@Override
 	public void setMaxIndex(int maxIndex) {
 		visitListType.setMax(maxIndex);
 	}
 
+	@Override
 	public boolean isCollectionId() {
 		if (visitListType.getPatientEventCollId() != null) {
 			return true;
@@ -86,6 +90,7 @@ public class VisitListTypeHandler extends CRCDAO implements
 		}
 	}
 
+	@Override
 	public boolean isEnumerationSet() {
 		if ((visitListType.getEventId() != null)
 				&& (visitListType.getEventId().size() > 0)) {
@@ -95,6 +100,7 @@ public class VisitListTypeHandler extends CRCDAO implements
 		}
 	}
 
+	@Override
 	public boolean isEntireSet() {
 		if (visitListType.getEntireEventSet() != null) {
 			return true;
@@ -106,6 +112,7 @@ public class VisitListTypeHandler extends CRCDAO implements
 	/**
 	 * Function to generate "where" clause for visit/event list
 	 */
+	@Override
 	public String generateWhereClauseSql() {
 		String sqlString = null;
 
@@ -182,6 +189,7 @@ public class VisitListTypeHandler extends CRCDAO implements
 		return sqlString;
 	}
 
+	@Override
 	public List<String> getEnumerationList() {
 		ArrayList<String> encounterNumArrayList = new ArrayList<String>();
 
@@ -217,6 +225,7 @@ public class VisitListTypeHandler extends CRCDAO implements
 		return this.encounterNumList;
 	}
 
+	@Override
 	public String getCollectionId() {
 		if (isCollectionId()) {
 			encounterSetCollId = visitListType.getPatientEventCollId();
@@ -226,6 +235,7 @@ public class VisitListTypeHandler extends CRCDAO implements
 		return encounterSetCollId;
 	}
 
+	@Override
 	public String generateMinIndexSql(String panelSql) {
 		// TODO Auto-generated method stub
 		return null;
@@ -239,6 +249,7 @@ public class VisitListTypeHandler extends CRCDAO implements
 	 * @return
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public int getInputSize() throws I2B2DAOException {
 		if (this.isEnumerationSet()) {
 			return visitListType.getEventId().size();
@@ -259,6 +270,7 @@ public class VisitListTypeHandler extends CRCDAO implements
 		}
 	}
 
+	@Override
 	public void uploadEnumerationValueToTempTable(Connection conn)
 			throws SQLException {
 
@@ -314,6 +326,7 @@ public class VisitListTypeHandler extends CRCDAO implements
 		preparedStmt.executeBatch();
 	}
 
+	@Override
 	public void deleteTempTable(Connection conn) throws SQLException {
 		if (!deleteTempTableFlag) {
 			return;

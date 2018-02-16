@@ -1,16 +1,12 @@
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
@@ -25,7 +21,6 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType.TotalItemOccurrence
 import edu.harvard.i2b2.crc.util.ItemKeyUtil;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.ParamUtil;
-import edu.harvard.i2b2.crc.util.StringUtil;
 
 public class BuildTempTableSql extends CRCDAO {
 
@@ -366,7 +361,7 @@ public class BuildTempTableSql extends CRCDAO {
 				String unitCdConversionFlag = (String)projectParamMap.get(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
 				if (unitCdConversionFlag != null && unitCdConversionFlag.equalsIgnoreCase("ON")) { 
 					if (conceptType.getMetadataxml() != null && conceptType.getMetadataxml().getAny().get(0) != null) {
-						Element valueMetadataElement = (Element)conceptType.getMetadataxml().getAny().get(0);
+						Element valueMetadataElement = conceptType.getMetadataxml().getAny().get(0);
 						UnitConverstionUtil unitConverstionUtil = new UnitConverstionUtil();
 						unitCdSwitchClause = unitConverstionUtil.buildUnitCdSwitchClause(valueMetadataElement,false,"");
 						log.debug("concept unit Conversion sql " +unitCdSwitchClause );
@@ -375,7 +370,7 @@ public class BuildTempTableSql extends CRCDAO {
 					}
 
 					if (modifierType != null && modifierType.getMetadataxml() != null && modifierType.getMetadataxml().getAny().get(0) != null) {
-						Element valueMetadataElement = (Element)modifierType.getMetadataxml().getAny().get(0);
+						Element valueMetadataElement = modifierType.getMetadataxml().getAny().get(0);
 						UnitConverstionUtil unitConverstionUtil = new UnitConverstionUtil();
 						modifierUnitCdSwitchClause = unitConverstionUtil.buildUnitCdSwitchClause(valueMetadataElement,false,"");
 						log.debug("modifier unit Conversion sql " +modifierUnitCdSwitchClause );

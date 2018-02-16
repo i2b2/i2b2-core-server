@@ -1,37 +1,31 @@
 package edu.harvard.i2b2.crc.dao.setfinder;
 
 import java.io.StringWriter;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
-import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
-import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
-import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
-import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
-import edu.harvard.i2b2.crc.ejb.role.MissingRoleException;
-import edu.harvard.i2b2.crc.role.AuthrizationHelper;
 
 public class QueryResultPatientCountGenerator extends CRCDAO implements
 		IResultGenerator {
 	
+	@Override
 	public String getResults() {
 		return xmlResult;
 	}
 
 	private String xmlResult = null;
 
+	@Override
 	public void generateResult(Map param) throws I2B2DAOException {
 
 		SetFinderConnection sfConn = (SetFinderConnection) param

@@ -12,7 +12,6 @@ package edu.harvard.i2b2.crc.delegate;
 import java.io.StringWriter;
 import java.util.List;
 
-import javax.management.MalformedObjectNameException;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;

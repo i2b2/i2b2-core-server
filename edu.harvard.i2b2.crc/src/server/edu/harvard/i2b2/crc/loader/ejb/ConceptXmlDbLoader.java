@@ -86,6 +86,7 @@ public class ConceptXmlDbLoader implements StartElementListener {
 		conceptInsertHandler.flush();
 	}
 
+	@Override
 	public void process(Object pid) {
 		rowCount++;
 		if (rowCount % 1000 == 0) {
@@ -93,7 +94,7 @@ public class ConceptXmlDbLoader implements StartElementListener {
 			conceptInsertHandler.flush();
 		}
 		ConceptType conceptType = (ConceptType) pid;
-		conceptInsertHandler.insertConcept((ConceptType) conceptType);
+		conceptInsertHandler.insertConcept(conceptType);
 	}
 
 	public int getRowCount() {

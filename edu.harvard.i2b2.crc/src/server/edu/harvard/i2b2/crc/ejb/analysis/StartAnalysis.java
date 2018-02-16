@@ -2,8 +2,6 @@ package edu.harvard.i2b2.crc.ejb.analysis;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.SchedulerException;
@@ -22,7 +20,6 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.StatusType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.UserType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.StatusType.Condition;
 import edu.harvard.i2b2.crc.exec.ExecException;
-import edu.harvard.i2b2.crc.loader.datavo.loader.query.LoadDataResponseType;
 import edu.harvard.i2b2.crc.quartz.StartJobHandler;
 import edu.harvard.i2b2.crc.role.AuthrizationHelper;
 import edu.harvard.i2b2.crc.util.I2B2RequestMessageHelper;
@@ -45,6 +42,7 @@ public class StartAnalysis implements StartAnalysisLocal {
 	// log
 	private static Log log = LogFactory.getLog(StartAnalysis.class);
 
+	@Override
 	public MasterInstanceResultResponseType start(IDAOFactory daoFactory,
 			String requestXml) throws I2B2Exception {
 		StatusType statusType = new StatusType();

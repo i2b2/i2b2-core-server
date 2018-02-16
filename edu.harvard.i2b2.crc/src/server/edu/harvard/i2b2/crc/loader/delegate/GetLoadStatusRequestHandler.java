@@ -12,8 +12,6 @@ import edu.harvard.i2b2.crc.loader.datavo.loader.query.GetUploadInfoRequestType;
 import edu.harvard.i2b2.crc.loader.datavo.loader.query.LoadDataListResponseType;
 import edu.harvard.i2b2.crc.loader.datavo.loader.query.LoadDataResponseType;
 import edu.harvard.i2b2.crc.loader.ejb.LoaderStatusBean;
-import edu.harvard.i2b2.crc.loader.ejb.LoaderStatusBeanLocal;
-import edu.harvard.i2b2.crc.loader.util.CRCLoaderUtil;
 
 public class GetLoadStatusRequestHandler extends RequestHandler {
 

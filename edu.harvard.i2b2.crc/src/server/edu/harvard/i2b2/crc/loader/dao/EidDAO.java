@@ -37,6 +37,7 @@ public class EidDAO extends CRCLoaderDAO implements IEidDAO {
 		this.dataSourceLookup = dataSourceLookup;
 	}
 
+	@Override
 	public int getRecordCountByUploadId(int uploadId) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
 		int insertCount = jdbcTemplate.queryForInt("select count(1) from "
@@ -51,6 +52,7 @@ public class EidDAO extends CRCLoaderDAO implements IEidDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void createTempTable(String tempEncounterMappingTableName)
 			throws I2B2Exception {
 		Connection conn = null;
@@ -88,6 +90,7 @@ public class EidDAO extends CRCLoaderDAO implements IEidDAO {
 	 * @param tempTableName
 	 * @return
 	 */
+	@Override
 	public TempEidInsertHandler createTempEidInsert(String tempTableName) {
 		TempEidInsert tempEidInsert = new TempEidInsert(getDataSource(),
 				tempTableName, this.getDbSchemaName());
@@ -102,6 +105,7 @@ public class EidDAO extends CRCLoaderDAO implements IEidDAO {
 	 * @param tempTableName
 	 * @throws Exception
 	 */
+	@Override
 	public void createEidFromTempTable(String tempMapTableName, int uploadId)
 			throws I2B2Exception {
 		Connection conn = null;

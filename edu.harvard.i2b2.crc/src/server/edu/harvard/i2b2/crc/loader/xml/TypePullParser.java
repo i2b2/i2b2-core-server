@@ -41,6 +41,7 @@ public class TypePullParser {
 			fr = new FileReader(filename);
 			XMLEventReader xmler = xmlif.createXMLEventReader(fr);
 			EventFilter filter = new EventFilter() {
+				@Override
 				public boolean accept(XMLEvent event) {
 					return event.isStartElement();
 				}

@@ -3,8 +3,6 @@ package edu.harvard.i2b2.crc.ejb;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import javax.sql.DataSource;
 
 import javax.xml.bind.JAXBElement;
@@ -16,7 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
-import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -26,7 +23,6 @@ import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.setfinder.CRCTimeOutException;
 import edu.harvard.i2b2.crc.dao.setfinder.CheckSkipTempTable;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
-import edu.harvard.i2b2.crc.dao.setfinder.LockedoutException;
 import edu.harvard.i2b2.crc.dao.setfinder.QueryExecutorDao;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;

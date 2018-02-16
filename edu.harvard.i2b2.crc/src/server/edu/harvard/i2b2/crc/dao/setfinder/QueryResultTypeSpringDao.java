@@ -11,7 +11,6 @@ package edu.harvard.i2b2.crc.dao.setfinder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +58,7 @@ IQueryResultTypeDao {
 	 * @param userId
 	 * @return List<QtQueryMaster>
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public QtQueryResultType getQueryResultTypeById(int resultTypeId) {
 
@@ -76,6 +76,7 @@ IQueryResultTypeDao {
 	 * @param userId
 	 * @return List<QtQueryMaster>
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<QtQueryResultType> getQueryResultTypeByName(String resultName,List<String> roles) {
 
@@ -100,6 +101,7 @@ IQueryResultTypeDao {
 		return queryResultType;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<QtQueryResultType> getAllQueryResultType(List<String> roles) {
 
@@ -122,6 +124,7 @@ IQueryResultTypeDao {
 	}
 
 	private static class QtResultTypeRowMapper implements RowMapper {
+		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 			QtQueryResultType queryResultType = new QtQueryResultType();
 			queryResultType.setResultTypeId(rs.getInt("RESULT_TYPE_ID"));

@@ -67,6 +67,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 	 * @return PatientDataType.PatientDimensionSet
 	 * @throws Exception
 	 */
+	@Override
 	public PidSet getPidByPatientNum(List<String> patientNumList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 					throws I2B2DAOException {
@@ -188,6 +189,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 	 * @return PatientDataType.PatientDimensionSet
 	 * @throws I2B2DAOException
 	 */
+	@Override
 	public PidSet getPidFromPatientSet(PatientListType patientListType,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
 					throws I2B2DAOException {
@@ -267,6 +269,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 	 * @return PatientDataType.PatientDimensionSet
 	 * @throws Exception
 	 */
+	@Override
 	public PidSet getPidByPidList(PidListType pidList, boolean detailFlag,
 			boolean blobFlag, boolean statusFlag) throws I2B2DAOException {
 
@@ -513,6 +516,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 		tempStmt.executeBatch();
 	}
 
+	@Override
 	public PidSet getPidByFact(List<String> panelSqlList,
 			List<Integer> sqlParamCountList,
 			IInputOptionListHandler inputOptionListHandler, boolean detailFlag,

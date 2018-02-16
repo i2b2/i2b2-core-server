@@ -52,7 +52,8 @@ abstract class UInt extends Number implements Serializable {
      * 
      * @return the byte value of this unsigned integer object
      */
-    public byte byteValue() {
+    @Override
+	public byte byteValue() {
         return value.byteValue();
     }
 
@@ -61,7 +62,8 @@ abstract class UInt extends Number implements Serializable {
      * 
      * @return value of this unsigned integer object as a short
      */
-    public short shortValue() {
+    @Override
+	public short shortValue() {
         return value.shortValue();
     }
 
@@ -70,7 +72,8 @@ abstract class UInt extends Number implements Serializable {
      * 
      * @return value of this unsigned integer object as an int
      */
-    public int intValue() {
+    @Override
+	public int intValue() {
         return value.intValue();
     }
 
@@ -79,7 +82,8 @@ abstract class UInt extends Number implements Serializable {
      * 
      * @return value of this unsigned integer object as a long
      */
-    public long longValue() {
+    @Override
+	public long longValue() {
         return value.longValue();
     }
 
@@ -88,7 +92,8 @@ abstract class UInt extends Number implements Serializable {
      * 
      * @return value of this unsigned integer object as a float
      */
-    public float floatValue() {
+    @Override
+	public float floatValue() {
         return value.floatValue();
     }
 
@@ -97,7 +102,8 @@ abstract class UInt extends Number implements Serializable {
      * 
      * @return value of this unsigned integer object as a double
      */
-    public double doubleValue() {
+    @Override
+	public double doubleValue() {
         return value.doubleValue();
     }
 
@@ -106,7 +112,8 @@ abstract class UInt extends Number implements Serializable {
      * 
      * @return text representation of this unsigned integer
      */
-    public String toString() {
+    @Override
+	public String toString() {
         return value.toString();
     }
 
@@ -116,7 +123,8 @@ abstract class UInt extends Number implements Serializable {
      * @return the integer representing the hash code for this unsigned
      *         integer object
      */
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         return value.hashCode();
     }
 
@@ -128,7 +136,8 @@ abstract class UInt extends Number implements Serializable {
      * @return true if the specified object is an unsigned 8-bit
      *         integer object. Otherwise, false.
      */
-    public boolean equals(Object o) {
+    @Override
+	public boolean equals(Object o) {
         if (!(o instanceof UInt)) {
             return false;
         }

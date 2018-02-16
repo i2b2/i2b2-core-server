@@ -10,34 +10,17 @@
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
 
 
-import java.io.StringWriter;
-import java.util.List;
 import java.util.Map;
-
-import javax.xml.bind.JAXBElement;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalQueryOptions.QueryConstraintStrategy;
 
-import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
-import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
-import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryJoinColumnType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryJoinType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryOperatorType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QuerySpanConstraintType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryAggregateOperatorType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryConstraintType;
 
 
 public class TemporalQueryHandler extends CRCDAO {
