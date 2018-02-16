@@ -47,6 +47,16 @@ public class PMService {
 	private static String msgVersion = "1.1";
 	private static String i2b2Version = "1.7.10";
 
+	public String getVersion()
+	{
+		return i2b2Version;
+	}
+	
+	public String getMessageVersion()
+	{
+		return msgVersion;
+	}
+	
 	public OMElement getVersion(OMElement getPMDataElement)
 			throws I2B2Exception, JAXBUtilException {
 
@@ -70,7 +80,7 @@ public class PMService {
 		String messageBody = "get_i2b2_message_version";
 		
 		try {
-			outString.toLowerCase().substring(outString.indexOf("message_body"));
+			messageBody = outString.toLowerCase().substring(outString.indexOf("message_body"));
 		} catch (Exception e){}
 		
 		edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType pmDataResponse = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType();

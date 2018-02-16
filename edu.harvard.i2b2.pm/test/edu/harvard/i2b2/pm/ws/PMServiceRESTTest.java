@@ -32,7 +32,10 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	private static String testFileDir = "";
 
 	private static String pmTargetEPR = 
-			"http://127.0.0.1:9090/i2b2/services/PMService/getServices";			
+			"http://127.0.0.1:9090/i2b2/services/PMService/getServices";	
+	private static String pmGetVersion = 
+			"http://127.0.0.1:9090/i2b2/services/PMService/getVersion";	
+	
 	//	"http://127.0.0.1:8080/i2b2/services/PMService/getServices";			
 
 	public static junit.framework.Test suite() { 
@@ -66,6 +69,40 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		} catch (Exception e) { 
 			e.printStackTrace();
 			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void A11_GetVersion() throws Exception {
+		String filename = testFileDir + "/pm_get_i2b2_version.xml";
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(pmGetVersion).sendReceive(requestElement);
+
+			//read test file and store query instance ;
+			//unmarshall this response string 
+			
+			String messageBody = responseElement.toString().toLowerCase().substring(responseElement.toString().indexOf("message_body"));
+
+			PMService pmService = new PMService();
+			
+			if (messageBody.contains(pmService.getVersion()))
+				assertEquals("Get correct i2b2 Version", pmService.getVersion(), pmService.getVersion());
+			else
+				assertEquals("Get incorrect i2b2 Version", null, pmService.getVersion());
+
+			messageBody = getHTML(pmGetVersion);
+			messageBody = messageBody.toLowerCase().substring(messageBody.indexOf("message_body"));
+			if (messageBody.contains(pmService.getMessageVersion()))
+				assertEquals("Get correct Message Version", pmService.getMessageVersion(), pmService.getMessageVersion());
+			else
+				assertEquals("Get incorrect Message Version", null, pmService.getMessageVersion());
+
+			
+		} catch (Exception e) { 
+			e.printStackTrace();
+			throw e;
 		}
 	}
 
