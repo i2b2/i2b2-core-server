@@ -858,7 +858,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				while (it.hasNext())
 				{
 					if (!PMUtil.getInstance().passwordValidation(password))
-						throw new Exception("Password strench enforcement failed.");
+						throw new Exception("Password Validation Failed:\n\n(1) a digit must occur at least once\n(2) a lower case letter must occur at least once\n(3) an upper case letter must occur at least once\n(4) a special character must occur at least once )(;:}{,.!@#$%^&+=\n(5) no whitespace allowed in the entire string\n(6) at least 8 characters')");
 
 					ParamType user = (ParamType)it.next();
 					expiredPassword = Integer.parseInt(user.getValue());
