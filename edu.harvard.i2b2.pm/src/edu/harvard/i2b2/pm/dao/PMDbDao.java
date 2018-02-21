@@ -863,19 +863,9 @@ public class PMDbDao extends JdbcDaoSupport {
 					ParamType user = (ParamType)it.next();
 					expiredPassword = Integer.parseInt(user.getValue());
 
-					int id = -1;
-					sql = "select * from pm_user_params where PARAM_NAME_CD = 'PM_EXPIRED_PASSWORD' and user_id = ?";
+					sql = "delete from pm_user_params where PARAM_NAME_CD = 'PM_EXPIRED_PASSWORD' and user_id = ?";
 
-					List<DBInfoType> queryResults  = jt.query(sql, getParam(), caller);
-					if (queryResults.size() > 0) {
-						Iterator it2 = queryResult.iterator();
-						while (it2.hasNext())
-						{
-
-							ParamType user2 = (ParamType)it2.next();
-							id = user2.getId();
-						}
-					}
+					jt.update(sql,caller);
 
 					UserType uType = new UserType();
 					uType.setUserName(caller);
@@ -888,9 +878,6 @@ public class PMDbDao extends JdbcDaoSupport {
 					//expire.setTime(sdf.parse(user.getValue()));
 					expire.add(Calendar.DATE, Integer.parseInt(user.getValue())); 
 					param.setValue(sdf.format(expire.getTime()));
-
-					if (id != -1)
-						param.setId(id);
 
 					uType.getParam().add(param);
 
