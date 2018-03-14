@@ -848,7 +848,7 @@ public class PMDbDao extends JdbcDaoSupport {
 
 
 			String sql = null;
-			sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD'";
+			sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD' OR param_name_cd='PM_SECURE_PASSWORD'";
 
 			int expiredPassword = -1;
 
@@ -857,32 +857,38 @@ public class PMDbDao extends JdbcDaoSupport {
 				Iterator it = queryResult.iterator();
 				while (it.hasNext())
 				{
-					if (!PMUtil.getInstance().passwordValidation(password))
-						throw new Exception("Password Validation Failed:\n\n(1) a digit must occur at least once\n(2) a lower case letter must occur at least once\n(3) an upper case letter must occur at least once\n(4) a special character must occur at least once )(;:}{,.!@#$%^&+=\n(5) no whitespace allowed in the entire string\n(6) at least 8 characters");
+					//\n\n(1) a digit must occur at least once\n(2) a lower case letter must occur at least once\n(3) an upper case letter must occur at least once\n(4) a special character must occur at least once )(;:}{,.!@#$%^&+=\n(5) no whitespace allowed in the entire string\n(6) at least 8 characters");
 
 					ParamType user = (ParamType)it.next();
-					expiredPassword = Integer.parseInt(user.getValue());
+					if (user.getName().equals("PM_SECURE_PASSWORD") )
+					{
 
-					sql = "delete from pm_user_params where PARAM_NAME_CD = 'PM_EXPIRED_PASSWORD' and user_id = ?";
+						if (!PMUtil.getInstance().passwordValidation(password, user.getValue()))
+							throw new Exception("Password Validation Failed");
+					} else {
 
-					jt.update(sql,caller);
+						expiredPassword = Integer.parseInt(user.getValue());
 
-					UserType uType = new UserType();
-					uType.setUserName(caller);
-					ParamType param = new ParamType();
-					param.setDatatype("T");
-					param.setName("PM_EXPIRED_PASSWORD");
-					//Date datePasswordSet = Date.parse(user.getValue());
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					Calendar expire  = Calendar.getInstance();
-					//expire.setTime(sdf.parse(user.getValue()));
-					expire.add(Calendar.DATE, Integer.parseInt(user.getValue())); 
-					param.setValue(sdf.format(expire.getTime()));
+						sql = "delete from pm_user_params where PARAM_NAME_CD = 'PM_EXPIRED_PASSWORD' and user_id = ?";
 
-					uType.getParam().add(param);
+						jt.update(sql,caller);
 
-					setParam( uType, null, null,  caller);
+						UserType uType = new UserType();
+						uType.setUserName(caller);
+						ParamType param = new ParamType();
+						param.setDatatype("T");
+						param.setName("PM_EXPIRED_PASSWORD");
+						//Date datePasswordSet = Date.parse(user.getValue());
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+						Calendar expire  = Calendar.getInstance();
+						//expire.setTime(sdf.parse(user.getValue()));
+						expire.add(Calendar.DATE, Integer.parseInt(user.getValue())); 
+						param.setValue(sdf.format(expire.getTime()));
 
+						uType.getParam().add(param);
+
+						setParam( uType, null, null,  caller);
+					}
 				}
 			} catch (Exception e)
 			{
@@ -1087,7 +1093,7 @@ public class PMDbDao extends JdbcDaoSupport {
 	}
 
 	public int setLoginAttempt(String userId, String attemptCd) {
-		
+
 		String addSql = "";
 
 		if (database.equalsIgnoreCase("oracle"))

@@ -26,12 +26,10 @@ import org.apache.commons.logging.LogFactory;
 
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
-import edu.harvard.i2b2.pm.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.pm.datavo.i2b2message.ResponseMessageType;
-import edu.harvard.i2b2.pm.datavo.i2b2versionmessage.RequestMessageType.MessageBody;
 import edu.harvard.i2b2.pm.delegate.ServicesHandler;
+import edu.harvard.i2b2.pm.util.AppVersion;
 import edu.harvard.i2b2.pm.util.StringUtil;
 
 
@@ -107,7 +105,7 @@ public class PMService {
 		if (messageBody.contains("app_server_version")) 
 		{
 			try {
-				mb.setAppServerVersion(StringUtil.appServerRunningVersion());
+				mb.setAppServerVersion(AppVersion.appServerRunningVersion());
 			} catch (Exception e)
 			{
 				mb.setAppServerVersion(e.getMessage());

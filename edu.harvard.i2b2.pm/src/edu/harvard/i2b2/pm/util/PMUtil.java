@@ -193,7 +193,7 @@ public class PMUtil {
 		
 	}
 
-	    public boolean passwordValidation(String passwd) {
+	    public boolean passwordValidation(String passwd, String pattern) {
 	    	/*
 	    	 Explanations:
 	    	 
@@ -204,7 +204,7 @@ public class PMUtil {
     			(?=\\S+$) no whitespace allowed in the entire string
     			.{8,} at least 8 characters
 	    	 */
-	      String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[)(;:}{,.><!@#$%^&+=])(?=\\S+$).{8,}";
+	     // String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[)(;:}{,.><!@#$%^&+=])(?=\\S+$).{8,}";
 	      return(passwd.matches(pattern));
 	   }
 	

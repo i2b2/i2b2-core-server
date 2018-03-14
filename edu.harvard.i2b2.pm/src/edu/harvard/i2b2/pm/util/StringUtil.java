@@ -11,9 +11,6 @@ package edu.harvard.i2b2.pm.util;
 
 import java.io.StringWriter;
 
-import org.jboss.as.controller.client.ModelControllerClient;
-import org.jboss.as.controller.client.helpers.Operations;
-import org.jboss.dmr.ModelNode;
 
 /**
  * StringUtil class to perform string parsing tasks
@@ -100,48 +97,4 @@ public class StringUtil {
 		return number;
 	}
 	
-
-    public static String appServerRunningVersion() throws Exception {  
-		StringWriter strWriter = new StringWriter();
-        try (ModelControllerClient client = ModelControllerClient.Factory.create("localhost", 9990)) {  
-            final ModelNode op = Operations.createReadResourceOperation(new ModelNode().setEmptyList());  
-            final ModelNode result = client.execute(op);  
-            if (Operations.isSuccessfulOutcome(result)) {  
-                final ModelNode model = Operations.readResult(result);  
-                final String productName;  
-                if (model.hasDefined("product-name")) {  
-                    productName = model.get("product-name").asString();  
-                } else {  
-                    productName = "WildFly";  
-                }  
-      
-      
-                String productVersion = null;  
-                if (model.hasDefined("product-version")) {  
-                    productVersion = model.get("product-version").asString();  
-                }  
-      
-      
-                String releaseCodename = null;  
-                if (model.hasDefined("release-codename")) {  
-                    releaseCodename = model.get("release-codename").asString();  
-                }  
-      
-      
-                String releaseVersion = null;  
-                if (model.hasDefined("release-version")) {  
-                    releaseVersion = model.get("release-version").asString();  
-                }  
-      
-      
-                strWriter.append((productName != null ? productName : "WildFly"));  
-                strWriter.append(" " + productVersion);  
-                //strWriter.append("\nCodename: " + releaseCodename);  
-                //strWriter.append("\nRelease Version: " +  releaseVersion);  
-            } else {  
-            	strWriter.append(result.toString());  
-            }  
-        }  
-        return strWriter.toString();
-    }  
 }
