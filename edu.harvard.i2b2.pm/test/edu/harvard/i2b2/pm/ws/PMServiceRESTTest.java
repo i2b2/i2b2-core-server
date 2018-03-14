@@ -1060,6 +1060,25 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			e.printStackTrace();
 			throw e;
 		}
+		
+		 filename = testFileDir + "/pm_set_global_complex_password.xml";
+		//ParamType ctype = null;
+		 id = -1;
+		 masterInstanceResult = null;
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+			JAXBElement responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
+			assertNotNull(masterInstanceResult);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			throw e;
+		}		
+		
 	}
 
 	@Test
@@ -1129,6 +1148,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		helper = new  JAXBUnWrapHelper();
 		ParamsType allParams = (ParamsType)helper.getObjectByClass(r.getMessageBody().getAny(),ParamsType.class);
 		int id = -1;
+		int id_complex = -1;
 		for (ParamType param : allParams.getParam())
 		{
 			if (param.getName().equals("PM_EXPIRED_PASSWORD"))
@@ -1136,7 +1156,11 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 				assertNotNull(param);
 				assertEquals(param.getDatatype(),"N");
 				id = param.getId();
-				break;
+			} else if (param.getName().equals("PM_COMPLEX_PASSWORD"))
+			{
+				assertNotNull(param);
+				assertEquals(param.getDatatype(),"T");
+				id_complex = param.getId();
 			}
 		}
 
@@ -1151,6 +1175,18 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		helper = new  JAXBUnWrapHelper();
 		masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
 		assertNotNull(masterInstanceResult);
+
+		requestString = getQueryString(filename);
+		requestString = requestString.replace("{{{id}}}", Integer.toString(id_complex));
+		requestElement = convertStringToOMElement(requestString); 
+		responseElement = getServiceClient(pmTargetEPR).sendReceive(requestElement);
+		responseJaxb = PMJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+		r = (ResponseMessageType)responseJaxb.getValue();
+		helper = new  JAXBUnWrapHelper();
+		masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
+		assertNotNull(masterInstanceResult);
+		
+
 
 		//Check to see if really deleted
 		filename = testFileDir + "/pm_recreate_global_param_with_valid_user_check_secure.xml";

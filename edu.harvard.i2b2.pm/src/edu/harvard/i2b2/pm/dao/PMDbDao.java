@@ -848,7 +848,7 @@ public class PMDbDao extends JdbcDaoSupport {
 
 
 			String sql = null;
-			sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD' OR param_name_cd='PM_SECURE_PASSWORD'";
+			sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD' OR param_name_cd='PM_COMPLEX_PASSWORD'";
 
 			int expiredPassword = -1;
 
@@ -860,7 +860,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					//\n\n(1) a digit must occur at least once\n(2) a lower case letter must occur at least once\n(3) an upper case letter must occur at least once\n(4) a special character must occur at least once )(;:}{,.!@#$%^&+=\n(5) no whitespace allowed in the entire string\n(6) at least 8 characters");
 
 					ParamType user = (ParamType)it.next();
-					if (user.getName().equals("PM_SECURE_PASSWORD") )
+					if (user.getName().equals("PM_COMPLEX_PASSWORD") )
 					{
 
 						if (!PMUtil.getInstance().passwordValidation(password, user.getValue()))
