@@ -1061,10 +1061,17 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			throw e;
 		}
 		
-		 filename = testFileDir + "/pm_set_global_complex_password.xml";
+		
+	}
+	
+	
+	@Test
+	public void Z2_GlobalParamsSetComplexPassword() throws Exception {
+
+		String filename = testFileDir + "/pm_set_global_complex_password.xml";
 		//ParamType ctype = null;
-		 id = -1;
-		 masterInstanceResult = null;
+		int  id = -1;
+		String  masterInstanceResult = null;
 		try { 
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
@@ -1082,7 +1089,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void Z2_setValidPassword() throws Exception {
+	public void Z3_setValidPassword() throws Exception {
 		String filename = testFileDir + "/pm_setpassword_good.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -1103,7 +1110,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void Z3_setInvalidPassword() throws Exception {
+	public void Z4_setInvalidPassword() throws Exception {
 		String filename = testFileDir + "/pm_setpassword_bad.xml";
 		try { 
 			String requestString = getQueryString(filename);
@@ -1124,7 +1131,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	}
 
 	@Test
-	public void Z4_GlobalParamsUnSetExpiredPassword() throws Exception {
+	public void Z5_GlobalParamsUnSetExpiredPassword() throws Exception {
 		String filename = testFileDir + "/pm_setpassword_good_secure.xml";
 		String requestString = getQueryString(filename);
 		OMElement requestElement = convertStringToOMElement(requestString); 
