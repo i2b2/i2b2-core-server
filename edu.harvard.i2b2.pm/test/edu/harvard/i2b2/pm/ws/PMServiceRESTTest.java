@@ -1055,7 +1055,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Setting expired password", masterInstanceResult);
 		} catch (Exception e) { 
 			e.printStackTrace();
 			throw e;
@@ -1073,7 +1073,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
 			masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
-			assertNotNull(masterInstanceResult);
+			assertNotNull("Setting compelx password", masterInstanceResult);
 		} catch (Exception e) { 
 			e.printStackTrace();
 			throw e;
