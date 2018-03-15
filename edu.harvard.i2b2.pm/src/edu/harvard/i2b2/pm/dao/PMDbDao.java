@@ -847,8 +847,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		try {
 
 
-			String sql = null;
-			sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD' OR param_name_cd='PM_COMPLEX_PASSWORD'";
+			String sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD' OR param_name_cd='PM_COMPLEX_PASSWORD'";
 
 			int expiredPassword = -1;
 
@@ -865,7 +864,7 @@ public class PMDbDao extends JdbcDaoSupport {
 
 						if (!PMUtil.getInstance().passwordValidation(password, user.getValue()))
 							throw new Exception("Password Validation Failed");
-					} else {
+					} else if (user.getName().equals("PM_EXPIRED_PASSWORD")) {
 
 						expiredPassword = Integer.parseInt(user.getValue());
 
