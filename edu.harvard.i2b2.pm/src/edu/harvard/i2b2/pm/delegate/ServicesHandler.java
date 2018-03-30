@@ -119,9 +119,15 @@ public class ServicesHandler extends RequestHandler {
 		PMDbDao pmDb = new PMDbDao();
 
 		if (pmDb.verifyNotLockedOut(username))
+		{
+			saveLoginAttempt(pmDb, username, "LOCKED_OUT");
 			throw new Exception ("To many invalid attempts, user locked out");
+		}
 		if (pmDb.verifyExpiredPassword(username) && (skipValidation == false))
+		{
+			saveLoginAttempt(pmDb, username, "PASSWORD_EXPIRED");
 			throw new Exception ("Password Expired.");
+		}
 
 
 		//if (method.equalsIgnoreCase("NTLM"))
