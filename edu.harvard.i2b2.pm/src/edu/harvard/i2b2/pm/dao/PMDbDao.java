@@ -847,7 +847,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		try {
 
 
-			String sql = "select * from pm_global_params where status_cd = 'A' and param_name_cd ='PM_EXPIRED_PASSWORD' OR param_name_cd='PM_COMPLEX_PASSWORD'";
+			String sql = "select * from pm_global_params where status_cd = 'A' and (param_name_cd ='PM_EXPIRED_PASSWORD' OR param_name_cd='PM_COMPLEX_PASSWORD')";
 
 			int expiredPassword = -1;
 
