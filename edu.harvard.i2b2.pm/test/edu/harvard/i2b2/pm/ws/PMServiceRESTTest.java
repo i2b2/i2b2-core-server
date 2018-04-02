@@ -1041,6 +1041,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		assertEquals(ctype.getDatatype(),"T");
 	}	
 
+	/*
 	@Test
 	public void Z1_GlobalParamsSetExpiredPassword() throws Exception {
 		String filename = testFileDir + "/pm_set_global_expired_password.xml";
@@ -1130,6 +1131,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		}
 	}
 
+	
 	@Test
 	public void Z5_GlobalParamsUnSetExpiredPassword() throws Exception {
 		String filename = testFileDir + "/pm_setpassword_good_secure.xml";
@@ -1219,7 +1221,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		 masterInstanceResult = (String)helper.getObjectByClass(r.getMessageBody().getAny(),String.class);
 		assertNotNull(masterInstanceResult);
 	}
-
+	*/
 
 
 }
