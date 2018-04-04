@@ -889,6 +889,16 @@ public class PMDbDao extends JdbcDaoSupport {
 						setParam( uType, null, null,  caller);
 					}
 				}
+
+
+				sql =  "select * from pm_user_data where user_id = ?  and password = ?";
+
+				queryResult = jt.query(sql, getUser(true), caller, hash);
+
+				it = queryResult.iterator();
+				if (it.hasNext())
+					throw new Exception("New password is same as current password.");
+
 			} catch (Exception e)
 			{
 				throw new I2B2DAOException(e.getMessage(), e);
