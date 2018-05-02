@@ -164,6 +164,8 @@ public class ServicesHandler extends RequestHandler {
 				classname = "edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM";
 			else if (param.get("authentication_method").equals("LDAP"))
 				classname = "edu.harvard.i2b2.pm.util.SecurityAuthenticationLDAP";
+			else if (param.get("authentication_method").equals("OIDC"))
+				classname = "edu.harvard.i2b2.pm.util.SecurityAuthenticationOIDC";
 
 			ClassLoader classLoader = ServicesHandler.class.getClassLoader();
 

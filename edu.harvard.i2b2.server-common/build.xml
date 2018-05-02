@@ -145,6 +145,7 @@
 			<fileset dir="${lib}/jdbc" includes="**/*" />			
 			<fileset dir="${lib}/commons" includes="**/*" />	
 			<fileset dir="${lib}/jboss" includes="**/*" />				
+			<fileset dir="${lib}/oidc" includes="**/*" />
 		</copy>
 	</target>
 
