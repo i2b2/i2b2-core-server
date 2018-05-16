@@ -719,7 +719,7 @@ IFactRelatedQueryHandler {
 			throw new I2B2DAOException(i2b2Ex.getMessage(), i2b2Ex);
 		}
 		
-		mainQuerySql.replaceFirst("FROM", mainSelectBlobClause + " FROM");
+		mainQuerySql.replaceFirst("FROM", mainSelectBlobClause + "FROM");
 		
 		mainQuerySql += "   ) ";
 
