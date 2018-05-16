@@ -689,8 +689,9 @@ IFactRelatedQueryHandler {
 		//OMOP WAS...
 		//		String mainQuerySql = "SELECT a.* " + mainSelectBlobClause + " FROM "
 		//				+ this.getDbSchemaName() + "observation_FACT obs ,( \n";
-	
-		String mainQuerySql = "( \n";				
+		 
+		String mainQuerySql = "SELECT a.* " + mainSelectBlobClause + " FROM "
+				+ this.getDbSchemaName() + getFactTable() + " obs ,( \n";				
 
 		try {
 			if (panel != null) {
@@ -718,10 +719,11 @@ IFactRelatedQueryHandler {
 		} catch (I2B2Exception i2b2Ex) {
 			throw new I2B2DAOException(i2b2Ex.getMessage(), i2b2Ex);
 		}
-		
-		mainQuerySql.replaceFirst("FROM", mainSelectBlobClause + "FROM");
-		
-		mainQuerySql += "   ) ";
+
+		mainQuerySql += "   ) a ";
+
+		mainQuerySql += " where obs.encounter_num = a.obs_encounter_num and obs.patient_num = a.obs_patient_num  ";
+		mainQuerySql += "  and obs.concept_cd = a.obs_concept_cd and obs.provider_id = a.obs_provider_id and obs.start_date  = a.obs_start_date and obs.modifier_cd = a.obs_modifier_cd and obs.instance_num = a.obs_instance_num ";
 
 		if (panel != null) {
 			TotalItemOccurrences totOccurance = panel.getTotalItemOccurrences();
