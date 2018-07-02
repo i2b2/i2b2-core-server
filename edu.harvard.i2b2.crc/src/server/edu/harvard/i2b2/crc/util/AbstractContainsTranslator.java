@@ -2,26 +2,19 @@ package edu.harvard.i2b2.crc.util;
 
 import java.util.StringTokenizer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
-import edu.harvard.i2b2.crc.sql.parser.contains.ParseResult;
-import edu.harvard.i2b2.crc.sql.parser.contains.TokenizedStatement;
-import edu.harvard.i2b2.crc.sql.parser.contains.sqlserver.rules.Contains;
 
-public class ContainsUtil {
-	
-	/** log **/
-	protected final static Log log = LogFactory
-			.getLog(ContainsUtil.class);
-			
+public abstract class AbstractContainsTranslator 
+{
+
 	public static final String REMOVE_PUNCTUATION="[\\p{Punct}&&[^-()<>.\\*%/]]";
 	
-	public String formatValue(String containsValue, String dbServerType) {
-		
-		log.info("[tdw9] We got in ContainsUtil.formatValue(...) containsValue = " + containsValue );
-							
+	public abstract String formatValue(String containsValue, String dbServerType);
+	
+	
+	// this is the old formatValue function from ContainsUtils.java -- should be removed when each of the OracleContainsTranslator, SQLServerContainsTranslator, and PostgresSQLTranslator is finished
+	public String defaultFormatValue(String containsValue, String dbServerType)
+	{
 		if (containsValue == null) { 
 			return null;
 		}
@@ -30,17 +23,6 @@ public class ContainsUtil {
 			return  containsValue.substring(1,containsValue.length()-1).replaceAll("'","''");
 			 
 		}
-		
-		// tdw9: using new syntax checker and formatter for SQLSERVER
-		if ( dbServerType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) )
-		{
-			log.info("[tdw9] ContainsUtil.formatValue(...): SQLSERVER parsing '" + containsValue +"'");
-			Contains c = new Contains();
-			ParseResult pr = c.parse( new TokenizedStatement(containsValue) );
-			if (pr.isSuccess()) return containsValue;
-			else return pr.getErrorMsg();
-		}
-		
 		//2: check if value is enclosed in ""
 		if (containsValue.startsWith("\"") && containsValue.endsWith("\"")) {
 			if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.ORACLE) == false) { 
@@ -57,12 +39,9 @@ public class ContainsUtil {
 				containsValue.indexOf("*") > 0) { 
 			textWithoutOperator = false;
 		}
-				
 		
 		//3: remove punctuation 
 		String punctuationStr = containsValue.replaceAll(REMOVE_PUNCTUATION,"");
-		
-		
 		
 		//4 word start with "-", then add NOT
 		StringTokenizer strTokenizer = new StringTokenizer(punctuationStr);
@@ -82,8 +61,6 @@ public class ContainsUtil {
 				}
 			}
 		}
-		
-		 
 		
 		//5 replace CAPS AND with accum (only for oracle)
 		String accumStr = "";
@@ -138,14 +115,5 @@ public class ContainsUtil {
 		} else { 
 			return finalStr;
 		}
-		
-		
 	}
-	
-	public static void main(String[] args) { 
-		ContainsUtil conUtil = new ContainsUtil();
-	String formattedVal = conUtil.formatValue("MRI Knee","SQLSERVER");
-		System.out.println("formattedVal[" + formattedVal + "]");
-	}
-	
 }
