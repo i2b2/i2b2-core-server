@@ -164,10 +164,16 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 			} else {
 			sql += " order by create_date  ";
 			}
-		//	if (findChildType.isAscending())
+			
+			if (findChildType.isAscending() && findChildType.getCreateDate() != null)
+				sql += "asc";
+			else
 				sql += "desc";
-		//	else 
-		//		sql += "asc";
+/*			if (findChildType.isAscending())
+				sql += "desc";
+			else 
+				sql += "asc";
+				*/
 		} 
 		if ((findChildType.getCategory().equals("@")))
 		{
