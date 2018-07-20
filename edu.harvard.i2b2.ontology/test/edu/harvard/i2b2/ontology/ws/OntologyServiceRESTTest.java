@@ -149,6 +149,28 @@ public class OntologyServiceRESTTest extends OntologyAxisAbstract{
 		}
 	}
 	
+	@Test
+	public void GetNameInfoUnknown() throws Exception {
+		String filename = testFileDir + "/GetNameInfoUnknown.xml";
+		String masterInstanceResult = null;
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(ontologyTargetEPR).sendReceive(requestElement);
+			JAXBElement responseJaxb = OntologyJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+
+			String msg = r.getResponseHeader().getResultStatus().getStatus().getType();
+			assertEquals("ERROR", msg);
+
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
 
 	@Test
 	public void GetAllDBlookups_admin() throws Exception { //swc20160722

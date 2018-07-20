@@ -736,6 +736,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		//			value = value.replaceAll("'", "''");
 		//		}
 
+		if (categoryResult.size() == 0)
+			return null;
 		String category = categoryResult.get(0).getKey();
 		if(category.contains("'")){
 			category = category.replaceAll("'", "''");
