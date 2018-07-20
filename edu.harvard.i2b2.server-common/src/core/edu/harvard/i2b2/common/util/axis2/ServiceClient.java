@@ -70,10 +70,12 @@ public class ServiceClient {
 			ServiceContext context = serviceClient.getServiceContext();
 			MultiThreadedHttpConnectionManager connManager = (MultiThreadedHttpConnectionManager)context.getProperty(HTTPConstants.MULTITHREAD_HTTP_CONNECTION_MANAGER);
 
+			
 			if(connManager == null) {
 				connManager = new MultiThreadedHttpConnectionManager();
 				context.setProperty(HTTPConstants.MULTITHREAD_HTTP_CONNECTION_MANAGER, connManager);
 				connManager.getParams().setMaxTotalConnections(100);
+				connManager.getParams().setDefaultMaxConnectionsPerHost(100);
 				connManager.getParams().setMaxConnectionsPerHost(HostConfiguration.ANY_HOST_CONFIGURATION, 100);
 			}
 			HttpClient httpClient = new HttpClient(connManager);
