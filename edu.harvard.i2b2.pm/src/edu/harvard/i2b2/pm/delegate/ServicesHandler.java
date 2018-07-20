@@ -121,7 +121,7 @@ public class ServicesHandler extends RequestHandler {
 		if (pmDb.verifyNotLockedOut(username))
 		{
 			saveLoginAttempt(pmDb, username, "LOCKED_OUT");
-			throw new Exception ("To many invalid attempts, user locked out");
+			throw new Exception ("Too many invalid attempts, user locked out");
 		}
 		if (pmDb.verifyExpiredPassword(username) && (skipValidation == false))
 		{
