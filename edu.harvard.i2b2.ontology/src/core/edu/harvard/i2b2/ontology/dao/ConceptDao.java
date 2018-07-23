@@ -583,11 +583,15 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		};
 
+		String hidden = "";
+		if(termInfoType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%'";
+	
 		//extract table code
 		String tableCd = StringUtil.getTableCd(termInfoType.getSelf());
 		String tableName=null;
 		if (!protectedAccess){
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? ";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd, "N");	    
 			} catch (DataAccessException e) {
@@ -595,7 +599,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw e;
 			}
 		}else {
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd);	    
 			} catch (DataAccessException e) {
@@ -619,11 +623,6 @@ public class ConceptDao extends JdbcDaoSupport {
 		*/
 		
 		String searchPath = path;
-
-
-		String hidden = "";
-		if(termInfoType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%'";
 
 		String synonym = "";
 		if(termInfoType.isSynonyms() == false)
@@ -705,12 +704,17 @@ public class ConceptDao extends JdbcDaoSupport {
 				return category;
 			}
 		};
+		
+
+		String hidden = "";
+		if(vocabType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%'";
 
 		//extract table code
 		String tableCd = vocabType.getCategory();
 		List<ConceptType> categoryResult;
 		if (!protectedAccess){
-			String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? ";
+			String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? " + hidden;
 			try {
 				categoryResult = jt.query(tableSql, map, tableCd, "N");	    
 			} catch (DataAccessException e) {
@@ -718,7 +722,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw e;
 			}
 		}else {
-			String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ?";
+			String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
 			try {
 				categoryResult = jt.query(tableSql, map, tableCd);	    
 			} catch (DataAccessException e) {
@@ -738,6 +742,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		if (categoryResult.size() == 0)
 			return null;
+			
 		String category = categoryResult.get(0).getKey();
 		if(category.contains("'")){
 			category = category.replaceAll("'", "''");
@@ -835,11 +840,6 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		}
 
-
-		String hidden = "";
-		if(vocabType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%'";
-
 		String synonym = "";
 		if(vocabType.isSynonyms() == false)
 			synonym = " and c_synonym_cd = 'N'";
@@ -915,10 +915,15 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		};
 
+
+		String hidden = "";
+		if(vocabType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%'";
+
 		//no table code provided so check all tables user has access to
 		List tableNames=null;
 		if (!protectedAccess){
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_protected_access = ? ";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_protected_access = ? " + hidden;
 			//			log.info(tableSql);
 			try {
 				tableNames = jt.query(tableSql, map, "N");	    
@@ -927,7 +932,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw e;
 			}
 		}else {
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access ";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access " + hidden;
 			try {
 				tableNames = jt.query(tableSql, map);	    
 			} catch (DataAccessException e) {
@@ -935,10 +940,6 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw e;
 			}
 		}
-
-		String hidden = "";
-		if(vocabType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%'";
 
 		String synonym = "";
 		if(vocabType.isSynonyms() == false)
@@ -1265,12 +1266,17 @@ public class ConceptDao extends JdbcDaoSupport {
 				return name;
 			}
 		};
+		
+
+		String hidden = "";
+		if(modifierType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%'";
 
 		//extract table code
 		String tableCd = StringUtil.getTableCd(modifierType.getSelf());
 		String tableName=null;
 		if (!protectedAccess){
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? ";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? " + hidden;
 			//		log.info("getChildren " + tableSql);
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd, "N");	    
@@ -1279,7 +1285,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw new I2B2DAOException("Database Error");
 			}
 		}else {
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd);	    
 			} catch (DataAccessException e) {
@@ -1310,10 +1316,6 @@ public class ConceptDao extends JdbcDaoSupport {
 		if(path.contains("'")){
 			path = path.replaceAll("'", "''");
 		}
-
-		String hidden = "";
-		if(modifierType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%'";
 
 		String synonym = "";
 		if(modifierType.isSynonyms() == false)
@@ -1560,11 +1562,16 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		};
 
+
+		String hidden = "";
+		if(modifierChildrenType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%'";
+
 		//extract table code
 		String tableCd = StringUtil.getTableCd(modifierChildrenType.getParent());
 		String tableName=null;
 		if (!protectedAccess){
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? ";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? " + hidden;
 			//		log.info("getChildren " + tableSql);
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd, "N");	    
@@ -1573,7 +1580,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw new I2B2DAOException("Database Error");
 			}
 		}else {
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd);	    
 			} catch (DataAccessException e) {
@@ -1607,10 +1614,6 @@ public class ConceptDao extends JdbcDaoSupport {
 			log.error(e1.getMessage());
 			throw new I2B2DAOException("Database Error");
 		}
-
-		String hidden = "";
-		if(modifierChildrenType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%'";
 
 		String synonym = "";
 		if(modifierChildrenType.isSynonyms() == false)
@@ -1736,12 +1739,17 @@ public class ConceptDao extends JdbcDaoSupport {
 				return name;
 			}
 		};
+		
+		String hidden = "";
+		if(modifierInfoType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%'";
+
 
 		//extract table code
 		String tableCd = StringUtil.getTableCd(modifierInfoType.getSelf());
 		String tableName=null;
 		if (!protectedAccess){
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? ";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd, "N");	    
 			} catch (DataAccessException e) {
@@ -1749,7 +1757,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw e;
 			}
 		}else {
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd);	    
 			} catch (DataAccessException e) {
@@ -1761,9 +1769,6 @@ public class ConceptDao extends JdbcDaoSupport {
 		String path = StringUtil.getPath(modifierInfoType.getSelf());
 		String searchPath = path;
 
-		String hidden = "";
-		if(modifierInfoType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%'";
 
 		String synonym = "";
 		if(modifierInfoType.isSynonyms() == false)
@@ -1862,12 +1867,17 @@ public class ConceptDao extends JdbcDaoSupport {
 				return name;
 			}
 		};
+		
+		String hidden = "";
+		if(vocabType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%' ";
+
 
 		//extract table code
 		String tableCd = StringUtil.getTableCd(vocabType.getSelf());
 		String tableName=null;
 		if (!protectedAccess){
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? ";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd, "N");	    
 			} catch (DataAccessException e) {
@@ -1875,7 +1885,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw e;
 			}
 		}else {
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd);	    
 			} catch (DataAccessException e) {
@@ -1970,9 +1980,6 @@ public class ConceptDao extends JdbcDaoSupport {
 		}
 
 		String appliedPath   = " and m_applied_path = '" + modifierPath + "' ";
-		String hidden = "";
-		if(vocabType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%' ";
 
 		String synonym = "";
 		if(vocabType.isSynonyms() == false)
@@ -2090,11 +2097,16 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		};
 
+
+		String hidden = "";
+		if(vocabType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%'";
+
 		//extract table code
 		String tableCd = StringUtil.getTableCd(vocabType.getSelf());
 		String tableName=null;
 		if (!protectedAccess){
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? ";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd, "N");	    
 			} catch (DataAccessException e) {
@@ -2102,7 +2114,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw e;
 			}
 		}else {
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd);	    
 			} catch (DataAccessException e) {
@@ -2110,10 +2122,6 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw e;
 			}
 		}
-
-		String hidden = "";
-		if(vocabType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%'";
 
 		String synonym = "";
 		if(vocabType.isSynonyms() == false)
@@ -2267,11 +2275,16 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		};
 
+
+		String hidden = "";
+		if(termInfoType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%'";
+
 		//extract table code
 		String tableCd = StringUtil.getTableCd(termInfoType.getSelf());
 		String tableName=null;
 		if (!protectedAccess){
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? ";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? and c_protected_access = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd, "N");	    
 			} catch (DataAccessException e) {
@@ -2279,7 +2292,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				throw e;
 			}
 		}else {
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd);	    
 			} catch (DataAccessException e) {
@@ -2304,10 +2317,6 @@ public class ConceptDao extends JdbcDaoSupport {
 		
 		String searchPath = path;
 
-
-		String hidden = "";
-		if(termInfoType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%'";
 
 		String synonym = "";
 		if(termInfoType.isSynonyms() == false)
