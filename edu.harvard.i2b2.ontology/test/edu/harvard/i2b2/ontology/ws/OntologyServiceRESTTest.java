@@ -29,6 +29,7 @@ public class OntologyServiceRESTTest extends OntologyAxisAbstract{
 
 	//swc20160722 added following DBlookup related
 	private static String ontTargetEPR = "http://localhost:9090/i2b2/services/OntologyService/";
+	private static String getNameInfoEPR = ontTargetEPR + "getNameInfo";
 	private static String getAllDBlookups = ontTargetEPR + "getAllDblookups";
 	private static String setDBlookup = ontTargetEPR + "setDblookup";
 	private static String getDBlookup = ontTargetEPR + "getDblookup";
@@ -156,7 +157,7 @@ public class OntologyServiceRESTTest extends OntologyAxisAbstract{
 		try { 
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 
-			OMElement responseElement = getServiceClient(ontologyTargetEPR).sendReceive(requestElement);
+			OMElement responseElement = getServiceClient(getNameInfoEPR).sendReceive(requestElement);
 			JAXBElement responseJaxb = OntologyJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
 			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
 			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
