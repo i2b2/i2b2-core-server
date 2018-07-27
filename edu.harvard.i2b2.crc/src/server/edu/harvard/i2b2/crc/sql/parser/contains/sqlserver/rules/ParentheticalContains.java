@@ -10,7 +10,7 @@ public class ParentheticalContains extends AbstractProductionRule {
 	@Override
 	public String toString() 
 	{
-		return "( Contains)";
+		return "(Contains)";
 	}
 
 	@Override

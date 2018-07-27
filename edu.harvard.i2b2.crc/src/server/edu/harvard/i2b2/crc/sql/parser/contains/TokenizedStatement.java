@@ -33,7 +33,6 @@ public class TokenizedStatement
 			index = startingIndex + strLength;
 		}
 		
-		
 		if (isDEBUG)
 			printTokens( tempTokens );
 			
@@ -89,121 +88,6 @@ public class TokenizedStatement
 		}
 
 	}
-
-	
-	private void oldBuildTokens( String containsStatement )
-	{
-		myContainsStatement = containsStatement;
-		StringTokenizer tokenizer = new StringTokenizer( myContainsStatement);
-
-		// build tokens:
-		// 1. Each space-delimited word is a token
-		// 2. Each leading or trailing double quote " is a token
-		// 3. Each double quote in the middle of a word is removed: quo"te -> quote
-		// 4. Each token remembers the position it is in this.myContainsStatement
-		ArrayList<Token> tempTokens = new ArrayList<Token>();
-		int index = 0;
-		while (tokenizer.hasMoreTokens())
-		{
-			String str = tokenizer.nextToken();
-			int startingIndex = myContainsStatement.indexOf(str, index);
-			
-			int counter = 0;
-			while ( str.startsWith("\""))
-			{
-				str = str.substring(1, str.length());				
-				tempTokens.add( new Token("\"", startingIndex+counter) );
-				counter++;
-			}
-			
-			if (str.length() == 0)
-				continue;
-			
-			int numTrailingQuotes = 0;			
-			while ( str.endsWith("\""))
-			{
-				str = str.substring(0, str.length()-1);
-				numTrailingQuotes++;
-			}
-			int strLength = str.length();
-			
-			// remove " within word tokens
-			String mainToken = str.replace("\"", "");
-			tempTokens.add( new Token( mainToken, startingIndex+counter) );
-			
-			int i = 0;
-			for (i=0; i<numTrailingQuotes; i++)
-				tempTokens.add( new Token("\"", startingIndex+counter + strLength + i));
-			index = startingIndex+counter + strLength + i;
-		}
-		
-		
-		// 5. Now we break off "(" and ")" as separate tokens so we can perform syntactic check on the statement. "(" and ")" can be in the leading/trailing positions of a token, and can occur consecutively, e.g. (((arthritis
-		//    The end result should be such that 
-		//    1) every space-separated String is a token, 
-		//    2) every " is a token, unless inside a String token, in which case it is removed, and 
-		//    3) every ( or ) is a token, unless it's inside quotes or if it's inside a String token -- e.g. arthr(itis -- in which case the TokenizedStatement is marked with an invalid token)
-		
-		index = 0; 					// reset index
-		boolean scanParen = false;	// whether we are to scan parentheses (do not scan parentheses inside double quotes)
-		for (int i = 0; i < tempTokens.size(); i++)
-		{
-			Token t = tempTokens.get(i);
-			String str = t.getString();
-			int startingIndex = t.getIndex();
-			//System.err.println("Parsing " + str);
-			
-			if (str.equals("\""))
-				scanParen = !scanParen;
-			if (scanParen)
-			{
-				index++;
-				this.myTokens.add(t); // add current token;
-				continue; 			  // do not scan for ( or ). Advance to the next token
-			}
-		
-			int counter = 0;
-			while ( str.startsWith("(") || str.startsWith(")"))
-			{
-				this.myTokens.add( new Token(str.charAt(0)+"", startingIndex+counter) );
-				str = str.substring(1, str.length());				
-				counter++;
-				if (str.length() == 0)
-					break;
-			}
-			
-			if (str.length() == 0)
-				continue;
-			
-			ArrayList<Character> endingParenChars = new ArrayList<Character>();
-			while ( str.endsWith("(") || str.endsWith(")"))
-			{
-				endingParenChars.add(str.charAt(str.length()-1));
-				str = str.substring(0, str.length()-1);
-			}
-			int strLength = str.length();
-			
-			// mark token as invalid if it still contains ( or )
-			boolean hasInvalidParen = false;
-			if (str.contains("(") || str.contains(")"))
-				hasInvalidParen = true;
-
-			Token newToken = new Token(str, startingIndex+counter);
-			this.myTokens.add( newToken );					// add to tempTokens
-			if (hasInvalidParen)
-				this.myInvalidTokens.add( newToken );	// add to invalid Tokens if has invalid parenthesis
-			
-			int j = 0;
-			for (j=0; j<endingParenChars.size(); j++)
-			{
-				//System.err.println("start="+startingIndex + " counter=" + counter  + " strLength=" + strLength + " j=" + j);
-				this.myTokens.add( new Token( endingParenChars.get(j).toString(), startingIndex + counter + strLength + j));
-			}
-			index = startingIndex+counter + strLength + j;
-
-		}		
-	}
-
 
 	public int getTokenCount()
 	{ return this.myTokens.size(); }
@@ -273,9 +157,12 @@ public class TokenizedStatement
 			TokenizedStatement statement = new TokenizedStatement(sentences[i]);
 			System.err.println( i +"\t Sentence = " + sentences[i]);
 			for (int j=0; j<statement.getTokenCount(); j++)
-				System.err.println("\t [" + j + "] = " + statement.getTokenAt(j) + "");
+				System.err.println("\t [" + j + "] = " + statement.getTokenAt(j));
 			System.err.println("----------------------------------------------------");
 		}
+		
+		
+
 		
 		/*
 		String sentence = "(\"abc)d\")";

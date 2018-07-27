@@ -20,6 +20,7 @@ public class And extends AbstractProductionRule
 		Token t = statement.nextToken();
 		if ( t.getString().equalsIgnoreCase("and"))
 		{
+			t.setPOS(Token.POS.AND);			
 			ParentheticalContains c = new ParentheticalContains();
 			return c.parse(statement);
 		}

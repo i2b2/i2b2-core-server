@@ -20,6 +20,7 @@ public class Or extends AbstractProductionRule
 		Token t = statement.nextToken();
 		if ( t.getString().equalsIgnoreCase("or"))
 		{
+			t.setPOS( Token.POS.OR );
 			ParentheticalContains c = new ParentheticalContains();
 			return c.parse(statement);
 		}

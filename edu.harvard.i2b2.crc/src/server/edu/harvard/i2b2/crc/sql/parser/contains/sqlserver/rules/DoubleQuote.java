@@ -19,7 +19,10 @@ public class DoubleQuote extends AbstractProductionRule
 	{
 		Token t = statement.nextToken();
 		if (t.getString().equals("\""))			// success
+		{
+			t.setPOS( Token.POS.DOUBLEQUOTE );
 			return new ParseResult();
+		}
 		return new ParseResult( "Expecting a '\"' near position " + t.getIndex() ); // failure
 	}
 

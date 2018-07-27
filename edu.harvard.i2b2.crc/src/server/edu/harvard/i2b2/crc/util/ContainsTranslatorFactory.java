@@ -4,7 +4,7 @@ import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 
 public class ContainsTranslatorFactory 
 {
-	public static ContainsTranslatorFactory myInstance = null;
+	private static ContainsTranslatorFactory myInstance = null;
 	
 	public static ContainsTranslatorFactory getInstance()
 	{
@@ -18,18 +18,9 @@ public class ContainsTranslatorFactory
 	
 	public AbstractContainsTranslator getTranslator( String dbServerType )
 	{
-		if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.ORACLE))
-		{
-			return new OracleContainsTranslator();
-		}
-		else if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER))
-		{
-			return new SQLServerContainsTranslator();
-		}
-		else if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
-		{
-			return new PostgreSQLContainsTranslator();
-		}
+		if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.ORACLE))				return OracleContainsTranslator.getInstance();
+		else if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER))		return SQLServerContainsTranslator.getInstance();
+		else if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))	return PostgreSQLContainsTranslator.getInstance();
 		return null;
 	}
 }

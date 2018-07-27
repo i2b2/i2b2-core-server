@@ -22,6 +22,7 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.Scheduler;
+import org.quartz.impl.SchedulerRepository;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -29,6 +30,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
+import edu.harvard.i2b2.common.util.ServiceLocatorException;
 import edu.harvard.i2b2.crc.ejb.ProcessQueue;
 import edu.harvard.i2b2.crc.ejb.QueryManagerBeanUtil;
 import edu.harvard.i2b2.crc.ejb.analysis.AnalysisPluginInfoLocal;
@@ -171,7 +173,7 @@ public class QueryProcessorUtil {
 
 
 	}
-/*
+
 	static {
 		try {
 			Class.forName("oracle.jdbc.OracleDriver");
@@ -180,7 +182,7 @@ public class QueryProcessorUtil {
 
 		}
 	}
-*/
+
 	/**
 	 * Return this class instance
 	 * 
@@ -322,7 +324,7 @@ public class QueryProcessorUtil {
 	 */
 	public Connection getConnection() throws I2B2Exception, SQLException {
 		String dataSourceName = getPropertyValue(DATASOURCE_JNDI_PROPERTIES);
-		dataSource = serviceLocator
+		dataSource = (DataSource) serviceLocator
 				.getAppServerDataSource(dataSourceName);
 
 		Connection conn = dataSource.getConnection();
@@ -479,7 +481,7 @@ public class QueryProcessorUtil {
 	public DataSource getDataSource(String dataSourceName)
 			throws I2B2Exception {
 
-		dataSource = serviceLocator
+		dataSource = (DataSource) serviceLocator
 				.getAppServerDataSource(dataSourceName);
 		//		DataSource dataSource = (DataSource) getSpringBeanFactory().getBean(
 		//				dataSourceName);

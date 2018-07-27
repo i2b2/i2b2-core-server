@@ -2,17 +2,18 @@ package edu.harvard.i2b2.crc.util;
 
 import java.util.StringTokenizer;
 
-import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
+import edu.harvard.i2b2.crc.sql.parser.contains.TokenizedStatement;
 
 public abstract class AbstractContainsTranslator 
 {
 
 	public static final String REMOVE_PUNCTUATION="[\\p{Punct}&&[^-()<>.\\*%/]]";
 	
-	public abstract String formatValue(String containsValue, String dbServerType);
+	public abstract String formatValue(String containsValue, TokenizedStatement ts);
 	
 	
 	// this is the old formatValue function from ContainsUtils.java -- should be removed when each of the OracleContainsTranslator, SQLServerContainsTranslator, and PostgresSQLTranslator is finished
+	/*
 	public String defaultFormatValue(String containsValue, String dbServerType)
 	{
 		if (containsValue == null) { 
@@ -116,4 +117,5 @@ public abstract class AbstractContainsTranslator
 			return finalStr;
 		}
 	}
+	*/
 }

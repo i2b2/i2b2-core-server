@@ -21,7 +21,10 @@ public class ParenClose extends AbstractProductionRule
 		{
 			Token t = statement.nextToken();
 			if (t.getString().equals(")"))
+			{
+				t.setPOS( Token.POS.CLOSE_PARENTHESIS );
 				return new ParseResult();
+			}
 			else
 				return new ParseResult( "'" + this.toString() + "' is expected at position " + t.getIndex());
 		}

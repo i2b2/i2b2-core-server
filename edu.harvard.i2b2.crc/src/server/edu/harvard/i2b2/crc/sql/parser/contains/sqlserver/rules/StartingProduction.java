@@ -49,10 +49,10 @@ public class StartingProduction extends AbstractProductionRule {
 		{
 			TokenizedStatement ts = new TokenizedStatement( strs[i] );
 			System.err.println( strs[i] );
-			for (int j=0; j < ts.getTokenCount(); j++)
-				System.err.println("\t [" + j + "] = " + ts.getTokenAt(j) + "");
-
 			ParseResult r = s.parse( ts );
+			for (int j=0; j < ts.getTokenCount(); j++)
+				System.err.println("\t [" + j + "] = " + ts.getTokenAt(j) + ": (" + ts.getTokenAt(j).getPOS() + ")");
+
 			System.err.println( "["+i + "] Parsing: '" + strs[i] + "'");
 			System.err.println( "\tResult: " + r.toString() );
 			System.err.println( "" );

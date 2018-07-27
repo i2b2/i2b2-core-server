@@ -29,6 +29,10 @@ public class AndNot extends AbstractProductionRule
 			if ( tokens.get(0).getString().equalsIgnoreCase("and") && 
 				 tokens.get(1).getString().equalsIgnoreCase("not") )
 			{
+				// set POS
+				tokens.get(0).setPOS( Token.POS.AND );
+				tokens.get(1).setPOS( Token.POS.NOT );
+				
 				statement.setIndex( statement.getIndex()+2);
 				ParentheticalContains c = new ParentheticalContains();
 				return c.parse(statement);

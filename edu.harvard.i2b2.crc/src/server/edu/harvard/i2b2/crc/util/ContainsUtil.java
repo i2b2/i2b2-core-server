@@ -31,8 +31,8 @@ public class ContainsUtil {
 			 
 		}
 		
-		// tdw9: using new syntax checker and formatter for SQLSERVER
-		if ( dbServerType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) )
+		// bugbug: refactor the following after postgresql is done
+		if ( dbServerType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ) // tdw9: using new syntax checker and formatter for SQLSERVER
 		{
 			log.info("[tdw9] ContainsUtil.formatValue(...): SQLSERVER parsing '" + containsValue +"'");
 			Contains c = new Contains();
@@ -40,6 +40,20 @@ public class ContainsUtil {
 			if (pr.isSuccess()) return containsValue;
 			else return pr.getErrorMsg();
 		}
+		else if ( dbServerType.equalsIgnoreCase(DAOFactoryHelper.ORACLE) ) // for ORACLE
+		{
+			log.info("[tdw9] ContainsUtil.formatValue(...): ORACLE parsing '" + containsValue +"'");
+			Contains c = new Contains();
+			TokenizedStatement ts = new TokenizedStatement(containsValue);
+			ParseResult pr = c.parse( ts );
+			if (pr.isSuccess()) 
+				return OracleContainsTranslator.getInstance().formatValue(containsValue, ts);
+			else 
+				return pr.getErrorMsg();
+		}
+		// let postgresql fall through to the old code for the time being.
+		
+		
 		
 		//2: check if value is enclosed in ""
 		if (containsValue.startsWith("\"") && containsValue.endsWith("\"")) {
