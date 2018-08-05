@@ -12,7 +12,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Hashtable;
 
 /*
- * OpenID Connect authentication for i2b2 v1.6
+ * OpenID Connect authentication for i2b2 v1.7.10 (might work with other versions, not tested).
  * Supports JWT verification signed with RS256 and keys retrieved via JWKS.
  * Token is passed through the password field of the XML.
  *
@@ -23,7 +23,7 @@ import java.util.Hashtable;
  * oidc_user_field - () claim field containing the username
  * oidc_token_issuer - () token issuer
  *
- * 2 JWT fields are checked: https://openid.net/specs/openid-connect-core-1_0.html#ImplicitIDTValidation
+ * Some JWT fields are checked: https://openid.net/specs/openid-connect-core-1_0.html#ImplicitIDTValidation
  * - audience must match the client ID
  * - username must match i2b2 username
  * - nonce check is made by the caller
