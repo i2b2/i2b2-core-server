@@ -1,4 +1,4 @@
-package edu.harvard.i2b2.crc.sql.parser.contains.sqlserver.rules;
+package edu.harvard.i2b2.crc.sql.parser.contains.rules;
 
 import edu.harvard.i2b2.crc.sql.parser.contains.AbstractProductionRule;
 import edu.harvard.i2b2.crc.sql.parser.contains.ParseResult;
@@ -14,6 +14,37 @@ public class KeywordPhrase extends AbstractProductionRule
 		return "KeywordPhrase";
 	}
 
+	
+	@Override
+	public ParseResult parse(TokenizedStatement statement) 
+	{
+		if (!statement.hasMoreTokens())
+			return new ParseResult("Failed: Expecting more token(s) but end of statement is reached.");
+
+		Token t = statement.peekNext();
+		int index = statement.getIndex();
+		if ( t.getString().equalsIgnoreCase("and"))
+		{
+			And a = new And();
+			return a.parse(statement);
+		}
+		else if (t.getString().equalsIgnoreCase("or"))
+		{
+			statement.setIndex(index);
+			Or o = new Or();
+			return o.parse(statement);
+		}
+		else if (t.getString().equalsIgnoreCase("not"))
+		{
+			statement.setIndex(index);
+			AndNot an = new AndNot();
+			return an.parse(statement);
+		}
+		
+		return new ParseResult("Failed to parse:  'and', 'or', or 'not' expected at position " + t.getIndex() );
+	}
+	
+/*
 	@Override
 	public ParseResult parse(TokenizedStatement statement) 
 	{
@@ -43,4 +74,5 @@ public class KeywordPhrase extends AbstractProductionRule
 		}
 		return new ParseResult("Failed to parse:  'and', 'and not', or 'or' expected at position " + t.getIndex() );
 	}
+	*/
 }

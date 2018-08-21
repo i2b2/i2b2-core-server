@@ -1,4 +1,4 @@
-package edu.harvard.i2b2.crc.sql.parser.contains.sqlserver.rules;
+package edu.harvard.i2b2.crc.sql.parser.contains.rules;
 
 import edu.harvard.i2b2.crc.sql.parser.contains.AbstractProductionRule;
 import edu.harvard.i2b2.crc.sql.parser.contains.ParseResult;

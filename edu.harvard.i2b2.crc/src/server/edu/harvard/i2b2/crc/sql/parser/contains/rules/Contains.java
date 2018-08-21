@@ -1,4 +1,4 @@
-package edu.harvard.i2b2.crc.sql.parser.contains.sqlserver.rules;
+package edu.harvard.i2b2.crc.sql.parser.contains.rules;
 
 import edu.harvard.i2b2.crc.sql.parser.contains.AbstractProductionRule;
 import edu.harvard.i2b2.crc.sql.parser.contains.ParseResult;
@@ -21,17 +21,20 @@ public class Contains extends AbstractProductionRule
 		SimpleTerm st = new SimpleTerm();
 		ParseResult r = st.parse(statement);
 
-		if (r.isSuccess()) // try parse to see if simple term is followed by a keywordphrase
+		if (r.isSuccess()) // try parse to see if simple term is followed by a keyword phrase
 		{
-			int saveIndex = statement.getIndex();
-			KeywordPhrase k = new KeywordPhrase();
-			ParseResult pr = k.parse(statement);
-			if (pr.isSuccess())
-				return pr;
-			else
+			if ( statement.hasMoreTokens() )
 			{
-				statement.setIndex( saveIndex );
-				return r;
+				KeywordPhrase k = new KeywordPhrase();
+				ParseResult pr = k.parse(statement);
+				if (pr.isSuccess())
+					return pr;
+				else
+				{
+					if (pr.getErrorMsg().equalsIgnoreCase("Failed: Expecting more token(s) but end of statement is reached."))
+						return pr;
+					return r;
+				}
 			}
 		}
 

@@ -92,7 +92,6 @@ public class TokenizedStatement
 	public int getTokenCount()
 	{ return this.myTokens.size(); }
 
-
 	public void resetIndex()
 	{ this.myCurrentIndex = 0; }
 
@@ -132,11 +131,14 @@ public class TokenizedStatement
 		System.err.println("Sentence = " + this.myContainsStatement);
 		for (int i=0; i<toPrint.size(); i++)
 			System.err.println("\t [" + i + "] = " + toPrint.get(i) + "");
-	}	
+	}
+	
+	/*
 	private void printTokens()
 	{ 
 		printTokens( this.myTokens );
 	}
+	*/
 	/**
 	 *  /TO PRINT
 	 */

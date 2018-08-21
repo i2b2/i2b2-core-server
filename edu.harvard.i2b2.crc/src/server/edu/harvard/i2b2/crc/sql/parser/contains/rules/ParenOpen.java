@@ -1,17 +1,17 @@
-package edu.harvard.i2b2.crc.sql.parser.contains.sqlserver.rules;
+package edu.harvard.i2b2.crc.sql.parser.contains.rules;
 
 import edu.harvard.i2b2.crc.sql.parser.contains.AbstractProductionRule;
 import edu.harvard.i2b2.crc.sql.parser.contains.ParseResult;
 import edu.harvard.i2b2.crc.sql.parser.contains.Token;
 import edu.harvard.i2b2.crc.sql.parser.contains.TokenizedStatement;
 
-public class ParenClose extends AbstractProductionRule 
+public class ParenOpen extends AbstractProductionRule 
 {	
 
 	@Override
 	public String toString() 
 	{
-		return ")";
+		return "(";
 	}
 
 	@Override
@@ -20,9 +20,9 @@ public class ParenClose extends AbstractProductionRule
 		if (statement.hasMoreTokens())
 		{
 			Token t = statement.nextToken();
-			if (t.getString().equals(")"))
+			if (t.getString().equals("("))
 			{
-				t.setPOS( Token.POS.CLOSE_PARENTHESIS );
+				t.setPOS( Token.POS.OPEN_PARENTHESIS );
 				return new ParseResult();
 			}
 			else

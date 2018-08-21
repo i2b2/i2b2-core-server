@@ -1,4 +1,4 @@
-package edu.harvard.i2b2.crc.sql.parser.contains.sqlserver.rules;
+package edu.harvard.i2b2.crc.sql.parser.contains.rules;
 
 import edu.harvard.i2b2.crc.sql.parser.contains.AbstractProductionRule;
 import edu.harvard.i2b2.crc.sql.parser.contains.ParseResult;
@@ -16,6 +16,9 @@ public class ParentheticalContains extends AbstractProductionRule {
 	@Override
 	public ParseResult parse(TokenizedStatement statement) 
 	{
+		if (!statement.hasMoreTokens())
+			return new ParseResult("Failed: Expecting more token(s) but end of statement is reached.");
+
 		if ( statement.getInvalidTokens().size() > 0 )
 		{
 			Token invalid = statement.getInvalidTokens().get(0);

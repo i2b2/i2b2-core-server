@@ -1,7 +1,4 @@
-package edu.harvard.i2b2.crc.sql.parser.contains.sqlserver.rules;
-
-import java.util.ArrayList;
-import java.util.List;
+package edu.harvard.i2b2.crc.sql.parser.contains.rules;
 
 import edu.harvard.i2b2.crc.sql.parser.contains.AbstractProductionRule;
 import edu.harvard.i2b2.crc.sql.parser.contains.ParseResult;
@@ -14,9 +11,26 @@ public class AndNot extends AbstractProductionRule
 	@Override
 	public String toString() 
 	{
-		return "And Not";
+		return "Not";
 	}
 
+	@Override
+	public ParseResult parse(TokenizedStatement statement) 
+	{
+		if (statement.getIndex() < statement.getTokenCount()-1 )
+		{			
+			Token t = statement.nextToken();
+			if ( t.getString().equalsIgnoreCase("not"))
+			{
+				t.setPOS( Token.POS.NOT );
+				ParentheticalContains c = new ParentheticalContains();
+				return c.parse(statement);
+			}
+		}
+		return new ParseResult("Failed to parse 'Not' -- End of statement reached." );
+	}
+	
+	/*
 	@Override
 	public ParseResult parse(TokenizedStatement statement) 
 	{
@@ -42,5 +56,5 @@ public class AndNot extends AbstractProductionRule
 		}
 		return new ParseResult("Failed to parse 'and not' -- End of statement reached." );
 	}
-	
+	*/
 }

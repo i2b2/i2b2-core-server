@@ -13,8 +13,8 @@ public class Token
 
 	public Token(String string, int index)
 	{
-		myString 	= string;
-		myIndex = index;
+		myString = string;
+		myIndex  = index;
 	}
 
 	public String getString()
@@ -34,7 +34,7 @@ public class Token
 	
 	public POS getPOS()
 	{ return this.myPOS;}
-
+	
 	public String toString()
 	{
 		return "[" + myString + " @ " + this.myIndex + "]";
