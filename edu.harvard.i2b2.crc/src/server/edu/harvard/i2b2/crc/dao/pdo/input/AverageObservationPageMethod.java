@@ -24,7 +24,7 @@ public class AverageObservationPageMethod implements PageMethod {
 		if (observationsPerPatient == 0) {
 			return 0;
 		}
-		maxInputList = (int) (pageSize / observationsPerPatient);
+		maxInputList = (int) ((pageSize *0.9) / observationsPerPatient);
 		return maxInputList;
 	}
 
