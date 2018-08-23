@@ -38,8 +38,10 @@ public class TemporalQueryHandler extends CRCDAO {
 	private Map projectParamMap = null;
 	private StringBuffer processTimingStr = new StringBuffer();
 	private boolean allowLargeTextValueConstrainFlag = true;
+	private boolean allowProtectedQueryFlag = false;
 	private boolean queryWithoutTempTableFlag = false;
 	private boolean isTemporalQuery = false;
+	private boolean isProtectedQuery = false;
 
 	public TemporalQueryHandler(DataSourceLookup dataSourceLookup, String queryXML,
 			boolean encounterSetOutputFlag) {
@@ -86,15 +88,19 @@ public class TemporalQueryHandler extends CRCDAO {
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
 	}
 
+	public void setAllowProtectedQueryFlag(boolean allowProtectedQueryFlag)  { 
+		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
+	}
 	
 	public String buildSql() throws JAXBUtilException, I2B2Exception {
-		TemporalQuery tQuery = new TemporalQuery(this.dataSourceLookup, this.projectParamMap, this.queryXML, this.allowLargeTextValueConstrainFlag);
+		TemporalQuery tQuery = new TemporalQuery(this.dataSourceLookup, this.projectParamMap, this.queryXML, this.allowLargeTextValueConstrainFlag, this.allowProtectedQueryFlag);
 		if (this.queryWithoutTempTableFlag)
 			tQuery.getQueryOptions().setQueryConstraintLogic(QueryConstraintStrategy.DERIVED_TABLES);
 		String tQuerySql = tQuery.buildSql();
 		this.ignoredItemMessageBuffer = tQuery.getIgnoredItemMessageBuffer();
 		this.maxPanelNum = tQuery.getMaxPanelIndex();
 		this.isTemporalQuery = (tQuery.getSubQueryCount()>1?true:false);
+		this.isProtectedQuery = tQuery.isProtectedQuery();
 		System.out.println(tQuerySql);
 		
 		return tQuerySql;
@@ -127,5 +133,9 @@ public class TemporalQueryHandler extends CRCDAO {
 
 	public boolean isTemporalQuery(){
 		return this.isTemporalQuery;
+	}
+
+	public boolean isProtectedQuery() {
+		return isProtectedQuery;
 	}
 }

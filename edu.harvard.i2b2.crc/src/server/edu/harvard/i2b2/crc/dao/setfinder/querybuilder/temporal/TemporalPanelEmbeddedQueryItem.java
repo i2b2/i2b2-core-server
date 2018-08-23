@@ -43,8 +43,8 @@ public class TemporalPanelEmbeddedQueryItem extends TemporalPanelItem {
 		QueryDefinitionType queryDef = parent.searchForQueryInRequestDefinition(baseItem.getItemKey());
 		if (queryDef!=null){
 			try {
-				masterQuery = new TemporalQuery(parent.getDataSourceLookup(), parent.getProjectParameterMap(), queryDef, parent.allowLargeTextValueConstrainFlag(), parent.getProcessingLevel() + 1,
-						parent.getProjectId(), parent.getRequestorSecurityType(), parent.getSecurityType());
+				masterQuery = new TemporalQuery(parent.getDataSourceLookup(), parent.getProjectParameterMap(), queryDef, parent.allowLargeTextValueConstrainFlag(), parent.allowProtectedQueryFlag(), parent.getProcessingLevel() + 1,
+						parent.getProjectId(),  parent.getRequestorSecurityType(), parent.getSecurityType());
 			} catch (JAXBUtilException e) {
 				e.printStackTrace();
 				throw new I2B2Exception("Error processing embedded query: " + e.getMessage());
@@ -53,7 +53,7 @@ public class TemporalPanelEmbeddedQueryItem extends TemporalPanelItem {
 		else {
 			String requestXml = getQueryDefinitionRequestXml(baseItem.getItemKey());
 			try {
-				masterQuery = new TemporalQuery(parent.getDataSourceLookup(), parent.getProjectParameterMap(), requestXml, parent.allowLargeTextValueConstrainFlag(), parent.getProcessingLevel() + 1);
+				masterQuery = new TemporalQuery(parent.getDataSourceLookup(), parent.getProjectParameterMap(), requestXml, parent.allowLargeTextValueConstrainFlag(), parent.allowProtectedQueryFlag(), parent.getProcessingLevel() + 1);
 			} catch (JAXBUtilException e) {
 				e.printStackTrace();
 				throw new I2B2Exception("Error processing embedded query: " + e.getMessage());

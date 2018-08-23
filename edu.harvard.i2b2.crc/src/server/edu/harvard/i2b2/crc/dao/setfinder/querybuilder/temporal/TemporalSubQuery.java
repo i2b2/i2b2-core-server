@@ -74,6 +74,8 @@ public class TemporalSubQuery implements Comparable{
 	private int invertedPanelCount = 0;
 	private int startPanelIndex = 0;
 	private int endPanelIndex = -1;
+	private boolean isProtectedQuery = false;
+
 	
 	private EnumSet<TemporalQueryReturnColumns> rtnColumns = EnumSet.of(TemporalQueryReturnColumns.PATIENT);
 	private QueryDefinitionType subQuery = null;
@@ -209,8 +211,15 @@ public class TemporalSubQuery implements Comparable{
 		return parent.isLastSubQuery(this);
 	}
 
+
+	public boolean isProtectedQuery() {
+		return isProtectedQuery;
+	}
 	
-	
+	public void setProtectedQuery(boolean isProtectedQuery) {
+		this.isProtectedQuery = isProtectedQuery;
+	}
+
 	protected TemporalQueryReturnColumns getStartDateReturnType(){
 		//currently, we only support one start and end date type per query.  if both instance and encounter start dates
 		//are specified in a query, we'll use the instance date
@@ -1105,6 +1114,10 @@ public class TemporalSubQuery implements Comparable{
 	
 	protected boolean allowLargeTextValueConstrainFlag(){
 		return parent.allowLargeTextValueConstrainFlag();
+	}
+	
+	protected boolean allowProtectedQueryFlag() {
+		return parent.allowProtectedQueryFlag();
 	}
 	
 	protected boolean hasInvertedPanel(){

@@ -47,6 +47,7 @@ public interface IQueryRequestDao {
 	 */
 	public void setAllowLargeTextValueConstrainFlag(boolean allowLargeTextValueConstrainFlag) ;
 		
+	public void setAllowProtectedQueryFlag(boolean allowProtectedQueryFlag);
 	/**
 	 * set query with temp table optimization
 	 * @param allowLargeTextValueConstrainFlag

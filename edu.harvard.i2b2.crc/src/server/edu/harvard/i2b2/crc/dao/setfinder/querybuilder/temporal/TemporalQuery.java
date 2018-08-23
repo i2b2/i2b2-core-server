@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -69,6 +70,7 @@ public class TemporalQuery {
 	private SecurityType userSecurityType = null;
 	private Map projectParamMap  = null;
 	private boolean allowLargeTextValueConstrainFlag = false;
+	private boolean allowProtectedQueryFlag = false;
 	private TemporalQueryConstraintMapping constraintMapping = null;
 	private int maxPanelIndex = 0;
 	private int processingLevel = 1;
@@ -77,7 +79,7 @@ public class TemporalQuery {
 	private String lastSubQueryId = null;
 	private List<String> preProcessingSql = null;
 	private List<String> postProcessingSql = null;
-	
+	private boolean isProtectedQuery = false;
 
 	/**
 	 * Constructor
@@ -89,8 +91,8 @@ public class TemporalQuery {
 	 * @throws JAXBUtilException					exception thrown when errors arise from converting string to xml and vice versa
 	 * @throws I2B2Exception						exception thrown when i2b2 specific error arises
 	 */
-	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, String queryXml, boolean allowLargeTextValueConstrainFlag) throws JAXBUtilException, I2B2Exception{
-		this(dataSourceLookup, projectParameterMap, queryXml, allowLargeTextValueConstrainFlag, 1);
+	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, String queryXml, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag) throws JAXBUtilException, I2B2Exception{
+		this(dataSourceLookup, projectParameterMap, queryXml, allowLargeTextValueConstrainFlag, allowProtectedQueryFlag, 1);
 	}
 	
 	/**
@@ -103,7 +105,7 @@ public class TemporalQuery {
 	 * @throws JAXBUtilException					exception thrown when errors arise from converting string to xml and vice versa
 	 * @throws I2B2Exception						exception thrown when i2b2 specific error arises
 	 */
-	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, String queryXml, boolean allowLargeTextValueConstrainFlag, int processingLevel) throws JAXBUtilException, I2B2Exception{
+	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, String queryXml, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag, int processingLevel) throws JAXBUtilException, I2B2Exception{
 		dsLookup = dataSourceLookup;
 		projectParamMap = projectParameterMap;
 		
@@ -117,6 +119,7 @@ public class TemporalQuery {
 	
 				
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
+		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
 		this.processingLevel = processingLevel;
 		options = new TemporalQueryOptions();
 		if (getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER)){
@@ -138,16 +141,17 @@ public class TemporalQuery {
 	}
 	
 	
-	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, QueryDefinitionType queryDefinition, boolean allowLargeTextValueConstrainFlag,
-			String queryProjectId, SecurityType userSecurityType, SecurityType querySecurityType) throws JAXBUtilException, I2B2Exception{
-		this(dataSourceLookup, projectParameterMap, queryDefinition, allowLargeTextValueConstrainFlag, 1, queryProjectId, userSecurityType, querySecurityType);
+	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, QueryDefinitionType queryDefinition, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag,
+			String queryProjectId,  SecurityType userSecurityType, SecurityType querySecurityType) throws JAXBUtilException, I2B2Exception{
+		this(dataSourceLookup, projectParameterMap, queryDefinition, allowLargeTextValueConstrainFlag, allowProtectedQueryFlag, 1, queryProjectId,  userSecurityType, querySecurityType);
 	}
 	
-	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, QueryDefinitionType queryDefinition, boolean allowLargeTextValueConstrainFlag, int processingLevel, 
-			String queryProjectId, SecurityType userSecurityType, SecurityType querySecurityType) throws JAXBUtilException, I2B2Exception{
+	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, QueryDefinitionType queryDefinition, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag, int processingLevel, 
+			String queryProjectId, SecurityType userSecurityType,  SecurityType querySecurityType) throws JAXBUtilException, I2B2Exception{
 		dsLookup = dataSourceLookup;
 		projectParamMap = projectParameterMap;
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
+		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
 		this.processingLevel = processingLevel;
 		options = new TemporalQueryOptions();
 		
@@ -249,7 +253,8 @@ public class TemporalQuery {
 					getEveryoneQuery = true;
 				}
 			}
-			
+			if (isProtectedQuery() == false)
+				isProtectedQuery = mainQuery.isProtectedQuery();
 
 			//if there are no subqueries or the main query is not an "everyone" query, include
 			//the main query as a special subquery
@@ -506,7 +511,9 @@ public class TemporalQuery {
 	protected DataSourceLookup getDataSourceLookup() {
 		return dsLookup;
 	}
-	
+	public boolean isProtectedQuery() {
+		return isProtectedQuery;
+	}
 	
 	/**
 	 * Get Database Schema
@@ -628,6 +635,9 @@ public class TemporalQuery {
 		return this.allowLargeTextValueConstrainFlag;
 	}
 	
+	protected boolean allowProtectedQueryFlag() {
+		return this.allowProtectedQueryFlag;
+	}
 	/**
 	 * Return Encounter Num
 	 * 
@@ -701,7 +711,7 @@ public class TemporalQuery {
 	public TemporalQueryOptions getQueryOptions(){
 		return options;
 	}
-	
+
 	/**
 	 * @return the ignoredItemMessageBuffer
 	 */

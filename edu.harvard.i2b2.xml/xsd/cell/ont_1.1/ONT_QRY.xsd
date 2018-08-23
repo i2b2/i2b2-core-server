@@ -153,6 +153,15 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
+        <xs:attribute name="protected" default="auto">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="show"/>
+                    <xs:enumeration value="dont_show"/>
+                    <xs:enumeration value="auto"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>        
         <xs:attribute name="blob" type="xs:boolean" default="false"/>
         <xs:attribute name="hiddens" type="xs:boolean" default="false"/>
         <xs:attribute name="synonyms" type="xs:boolean" default="false"/>

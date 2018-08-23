@@ -108,6 +108,7 @@ public class ExecRunnable implements Runnable{
 			try {
 				QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 				boolean allowLargeTextValueConstrainFlag = true;
+				boolean allowProtectedQueryFlag = true;
 				int queryResultInstanceId = 0;
 
 				QtQueryInstance queryInstance = null;
@@ -144,6 +145,12 @@ public class ExecRunnable implements Runnable{
 						allowLargeTextValueConstrainFlag = false;
 					}
 
+					try { 
+						AuthrizationHelper authHelper = new AuthrizationHelper(dsLookupDomainId, dsLookupProjectId, dsLookupOwnerId, daoFactory);
+						authHelper.checkRoleForProtectionLabel("SETFINDER_QRY_PROTECTED");
+					} catch(I2B2Exception i2b2Ex) {
+						allowProtectedQueryFlag = false;
+					}
 					//try {
 					// check if the status is cancelled
 					queryInstanceDao = sfDAOFactory
@@ -179,7 +186,7 @@ public class ExecRunnable implements Runnable{
 						patientSetId = processQueryRequest(
 								transactionTimeout, dsLookup, sfDAOFactory,
 								xmlRequest, sqlString, sessionId,
-								queryInstanceId, patientSetId,allowLargeTextValueConstrainFlag, pmXml);
+								queryInstanceId, patientSetId,allowLargeTextValueConstrainFlag, allowProtectedQueryFlag, pmXml);
 		
 					}
 
@@ -310,7 +317,7 @@ public class ExecRunnable implements Runnable{
 			int transactionTimeout, DataSourceLookup dsLookup,
 			SetFinderDAOFactory sfDAOFactory, String xmlRequest,
 			String sqlString, String sessionId, String queryInstanceId,
-			String patientSetId, boolean allowLargeTextValueConstrainFlag, String pmXml) throws I2B2DAOException, I2B2Exception, JAXBUtilException {
+			String patientSetId, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag, String pmXml) throws I2B2DAOException, I2B2Exception, JAXBUtilException {
 
 		QueryDefinitionRequestType qdRequestType = getQueryDefinitionRequestType(xmlRequest);
 		ResultOutputOptionListType resultOutputList = qdRequestType
@@ -343,7 +350,7 @@ public class ExecRunnable implements Runnable{
 
 		queryExDao.executeSQL( transactionTimeout, dsLookup,
 				sfDAOFactory, xmlRequest, sqlString, queryInstanceId,
-				patientSetId, resultOutputList,allowLargeTextValueConstrainFlag, pmXml);
+				patientSetId, resultOutputList,allowLargeTextValueConstrainFlag, allowProtectedQueryFlag, pmXml);
 
 		return patientSetId;
 	}

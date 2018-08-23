@@ -82,6 +82,7 @@ public abstract class TemporalPanelItem {
 	protected String columnName = null;
 	protected XmlValueType metaDataXml = null;
 	protected String factTable = "observation_fact";
+	protected boolean isProtected = false;
 	
 	/**
 	 * Constructor
@@ -136,6 +137,7 @@ public abstract class TemporalPanelItem {
 			operator = conceptType.getOperator();
 			columnName = conceptType.getColumnname();
 			metaDataXml = conceptType.getMetadataxml();
+			isProtected = (conceptType.getProtectedAccess().equalsIgnoreCase("Y")?true:false);
 			//OMOP addition
 			parseFactColumn(factTableColumn);
 		}
@@ -925,6 +927,9 @@ public abstract class TemporalPanelItem {
 		return conceptTotal;
 	}
 
+	public boolean isProtected() {
+		return isProtected;
+	}
 	public boolean hasModiferConstraint(){
 		ItemType.ConstrainByModifier modifierConstrain = baseItem.getConstrainByModifier();
 		if (modifierConstrain != null) {

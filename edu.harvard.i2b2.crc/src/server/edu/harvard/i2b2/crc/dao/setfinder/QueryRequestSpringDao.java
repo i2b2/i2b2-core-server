@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -48,7 +49,7 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 	Map projectParamMap = null;
 	boolean allowLargeTextValueConstrainFlag = true;
 	boolean queryWithoutTempTableFlag = false;
-	
+	boolean allowProtectedQueryFlag = false;
 	
 	public QueryRequestSpringDao(DataSource dataSource,
 			DataSourceLookup dataSourceLookup) {
@@ -73,6 +74,11 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 	@Override
 	public void setAllowLargeTextValueConstrainFlag(boolean allowLargeTextValueConstrainFlag)  { 
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
+	}
+
+	@Override
+	public void setAllowProtectedQueryFlag(boolean allowProtectedQueryFlag)  { 
+		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
 	}
 	
 	/**
@@ -114,7 +120,13 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 				sql = temporalBuild.getSql();
 				ignoredItemMessage = temporalBuild.getIgnoredItemMessage();
 				processTimingMessage = temporalBuild.getProcessTimingMessage();
+				
+				if (temporalBuild.isProtectedQuery() && allowProtectedQueryFlag==false)
+					throw new I2B2DAOException("This query contains protected.");
 				queryType = (temporalBuild.isTemporalQuery()?"TEMPORAL":null);
+				queryType = (temporalBuild.isProtectedQuery()?"PROT":null);
+				queryType = (temporalBuild.isProtectedQuery()&&temporalBuild.isTemporalQuery()?"PROT_TEMPORAL":null);
+
 			}
 			else if (queryGeneratorVersion.equals("1.6")) {
 				RecursiveBuild recursiveBuild = new RecursiveBuild(dataSourceLookup,queryRequestXml,encounterSetFlag);

@@ -13,6 +13,6 @@ public interface IQueryExecutorDao {
 			int transactionTimeout, DataSourceLookup dsLookup,
 			SetFinderDAOFactory sfDAOFactory, String requestXml,
 			String sqlString, String queryInstanceId, String patientSetId,
-			ResultOutputOptionListType resultOutputList, boolean allowLargeTextValueConstrainFlag, String pmXMl)
+			ResultOutputOptionListType resultOutputList, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag, String pmXMl)
 			throws CRCTimeOutException, I2B2DAOException, I2B2Exception, JAXBUtilException;
 }

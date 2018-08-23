@@ -12,6 +12,7 @@ package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
  
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +152,8 @@ public class TemporalPanel implements Comparable<Object> {
 								panelItem.getConceptType());
 							
 					}
+					if (parent.isProtectedQuery() == false)
+						parent.setProtectedQuery(panelItem.getConceptType().getProtectedAccess().equalsIgnoreCase("Y")?true:false);
 					/*
 					 * check for derived table parameter and look for other views for this item.
 					 * ...  i.e. item is found in multiple views.
@@ -2025,6 +2028,7 @@ public class TemporalPanel implements Comparable<Object> {
 		return parent.getSecurityType();
 	}
 
+
 	/**
 	 * Get Requestor Security Type
 	 * 
@@ -2196,6 +2200,10 @@ public class TemporalPanel implements Comparable<Object> {
 	 */
 	protected boolean allowLargeTextValueConstrainFlag() {
 		return parent.allowLargeTextValueConstrainFlag();
+	}
+	
+	protected boolean allowProtectedQueryFlag() {
+		return parent.allowProtectedQueryFlag();
 	}
 
 	/**

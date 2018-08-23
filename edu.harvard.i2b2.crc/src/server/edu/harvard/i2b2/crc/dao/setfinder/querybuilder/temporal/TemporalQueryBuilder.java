@@ -29,8 +29,10 @@ public class TemporalQueryBuilder extends CRCDAO {
 	private Map projectParamMap = null;
 	private String processTimingFlag = "";
 	private boolean allowLargeTextValueConstrainFlag = true;
+	private boolean allowProtectedQueryFlag = false;
 	private boolean queryWithoutTempTableFlag = false;
 	private boolean isTemporalQuery = false;
+	private boolean isProtectedQuery = false;
 
 	public TemporalQueryBuilder(DataSourceLookup dataSourceLookup,
 			String queryXML) {
@@ -59,6 +61,10 @@ public class TemporalQueryBuilder extends CRCDAO {
 	public void setAllowLargeTextValueConstrainFlag(
 			boolean allowLargeTextValueConstrainFlag) {
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
+	}
+	public void setAllowProtectedQueryFlag(
+			boolean allowProtectedQueryFlag) {
+		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
 	}
 
 	public String getSql() {
@@ -98,11 +104,13 @@ public class TemporalQueryBuilder extends CRCDAO {
 		}
 		
 		queryTool.setAllowLargeTextValueConstrainFlag(allowLargeTextValueConstrainFlag);
+		queryTool.setAllowProtectedQueryFlag(allowProtectedQueryFlag);
 		queryTool.setQueryWithoutTempTableFlag(queryWithoutTempTableFlag);
 
 		String sql = queryTool.buildSql();
 		String maxPanelNum = String.valueOf(queryTool.getMaxPanelNumber());
 		this.isTemporalQuery = queryTool.isTemporalQuery();
+		this.isProtectedQuery = queryTool.isProtectedQuery();
 
 		ignoredItemBuffer.append(queryTool.getIgnoredItemMessage());
 		if (this.processTimingFlag
@@ -133,6 +141,10 @@ public class TemporalQueryBuilder extends CRCDAO {
 
 	public boolean isTemporalQuery(){
 		return this.isTemporalQuery;
+	}
+
+	public boolean isProtectedQuery() {
+		return isProtectedQuery;
 	}
 	
 }

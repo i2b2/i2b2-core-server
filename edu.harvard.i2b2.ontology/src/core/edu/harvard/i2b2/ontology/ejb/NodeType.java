@@ -23,6 +23,7 @@ public class NodeType {
 	protected String node;
 	protected String type;
 	protected Boolean blob;
+	protected String parent;
 	
 	
     public boolean isBlob() {
@@ -39,6 +40,10 @@ public class NodeType {
 	public String getNode() {
 		return node;
 	}
+	public String getParent() {
+		return parent;
+	}
+
 	public void setNode(String node) {
 		this.node = node;
 	}
@@ -60,12 +65,14 @@ public class NodeType {
 			type = childrenType.getType();
 		}
 		blob = childrenType.isBlob();
+		parent= "mhildren";
 	}
 	
 	public NodeType(GetModifiersType modifiersType) {
 		node = StringUtil.getTableCd(modifiersType.getSelf());
 		type = modifiersType.getType();		
 		blob = modifiersType.isBlob();
+		parent = "modifiers";
 	}
 	
 	public NodeType(GetTermInfoType infoType) {
@@ -76,6 +83,7 @@ public class NodeType {
 			type = infoType.getType();
 		}
 		blob = infoType.isBlob();
+		parent = "terminfo";
 	}
 	
 	public NodeType(GetModifierInfoType modifierInfoType) {
@@ -86,6 +94,7 @@ public class NodeType {
 			type = modifierInfoType.getType();
 		}	
 		blob = modifierInfoType.isBlob();
+		parent = "modifierinfo";
 	}
 	
 	
@@ -97,6 +106,7 @@ public class NodeType {
 			type = modifierChildrenType.getType();
 		}
 		blob = modifierChildrenType.isBlob();
+		parent = "modifierchildren";
 	}
 	
 	public NodeType(VocabRequestType vocabType) {
@@ -106,5 +116,6 @@ public class NodeType {
 			node = vocabType.getCategory();
 		type = vocabType.getType();
 		blob = vocabType.isBlob();
+		parent = "vocabrequest";
 	}
 }

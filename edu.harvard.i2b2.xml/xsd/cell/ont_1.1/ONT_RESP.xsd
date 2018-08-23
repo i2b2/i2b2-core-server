@@ -62,6 +62,7 @@
             <xs:element name="dimcode" type="xs:string" />
             <xs:element name="comment" type="xs:string" />
             <xs:element name="tooltip" type="xs:string" />
+            <xs:element name="protected_access" type="xs:string" />
             <xs:element name="update_date" type="xs:dateTime" />
             <xs:element name="download_date" type="xs:dateTime" />
             <xs:element name="import_date" type="xs:dateTime" />
