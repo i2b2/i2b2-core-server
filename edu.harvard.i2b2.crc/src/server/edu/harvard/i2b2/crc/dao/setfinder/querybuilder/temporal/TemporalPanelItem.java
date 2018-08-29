@@ -137,7 +137,8 @@ public abstract class TemporalPanelItem {
 			operator = conceptType.getOperator();
 			columnName = conceptType.getColumnname();
 			metaDataXml = conceptType.getMetadataxml();
-			isProtected = (conceptType.getProtectedAccess().equalsIgnoreCase("Y")?true:false);
+			if (conceptType.getProtectedAccess() != null)
+				isProtected = (conceptType.getProtectedAccess().equalsIgnoreCase("Y")?true:false);
 			//OMOP addition
 			parseFactColumn(factTableColumn);
 		}
