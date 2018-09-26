@@ -123,10 +123,14 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 				
 				if (temporalBuild.isProtectedQuery() && allowProtectedQueryFlag==false)
 					throw new I2B2DAOException("This query contains protected.");
-				queryType = (temporalBuild.isTemporalQuery()?"TEMPORAL":null);
-				queryType = (temporalBuild.isProtectedQuery()?"PROT":null);
-				queryType = (temporalBuild.isProtectedQuery()&&temporalBuild.isTemporalQuery()?"PROT_TEMPORAL":null);
-
+				if (temporalBuild.isProtectedQuery() && allowProtectedQueryFlag==false)
+					throw new I2B2DAOException("This query contains protected.");
+				if (temporalBuild.isTemporalQuery())
+						queryType = "TEMPORAL";
+				if (temporalBuild.isProtectedQuery())
+					queryType = "PROT";
+				if (temporalBuild.isProtectedQuery()&&temporalBuild.isTemporalQuery())
+					queryType = "PROT_TEMPORAL";
 			}
 			else if (queryGeneratorVersion.equals("1.6")) {
 				RecursiveBuild recursiveBuild = new RecursiveBuild(dataSourceLookup,queryRequestXml,encounterSetFlag);
