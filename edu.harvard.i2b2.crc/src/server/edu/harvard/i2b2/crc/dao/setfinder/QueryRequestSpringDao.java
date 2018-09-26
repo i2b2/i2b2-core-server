@@ -128,7 +128,7 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 				if (temporalBuild.isTemporalQuery())
 						queryType = "TEMPORAL";
 				if (temporalBuild.isProtectedQuery())
-					queryType = "PROT";
+					queryType = "PROT"; 
 				if (temporalBuild.isProtectedQuery()&&temporalBuild.isTemporalQuery())
 					queryType = "PROT_TEMPORAL";
 			}
