@@ -125,14 +125,22 @@ public class PdoQueryBean { //implements SessionBean {
 		String version = getVersion(queryPdoMasterDao, requestXml);
 		// check if the user have the blob permission
 		boolean blobFlag = checkForBlob(getPDOFromInputListReqType);
+		boolean hasProtectedStatus = false;
+		
+		String domainId = dataSourceLookup.getDomainId();
+		String projectId = dataSourceLookup.getProjectPath();
+		String userId = dataSourceLookup.getOwnerId();
+		daoFactory = helper.getDAOFactory();
+		AuthrizationHelper authHelper = new AuthrizationHelper(domainId,
+				projectId, userId, daoFactory);
+		try {
+			authHelper.checkRoleForProtectionLabel("SETFINDER_QRY_PROTECTED");
+			hasProtectedStatus = true;
+		} catch (Exception e)
+		{}
 		if (blobFlag) {
 			//
-			String domainId = dataSourceLookup.getDomainId();
-			String projectId = dataSourceLookup.getProjectPath();
-			String userId = dataSourceLookup.getOwnerId();
-			daoFactory = helper.getDAOFactory();
-			AuthrizationHelper authHelper = new AuthrizationHelper(domainId,
-					projectId, userId, daoFactory);
+
 			authHelper.checkRoleForProtectionLabel("PDO_WITH_BLOB");
 		}
 		
@@ -161,7 +169,7 @@ public class PdoQueryBean { //implements SessionBean {
 						.unMashallFromString(requestXml);
 				RequestMessageType request = (RequestMessageType) responseJaxb
 						.getValue();
-				String projectId = request.getMessageHeader().getProjectId();
+				//String projectId = request.getMessageHeader().getProjectId();
 				SecurityType tempSecurityType = request.getMessageHeader()
 						.getSecurity();
 				SecurityType securityType = PMServiceAccountUtil
@@ -183,7 +191,8 @@ public class PdoQueryBean { //implements SessionBean {
 									.getFacttablecolumn());
 							item.setDimColumndatatype(conceptType
 									.getColumndatatype());
-							
+							if (conceptType.getProtectedAccess().equalsIgnoreCase("Y") && hasProtectedStatus == false)
+								throw new I2B2Exception("Access Denies: Concept has protected access");
 							if (conceptType.getMetadataxml() != null && conceptType.getMetadataxml().getAny().get(0) != null) {
 								MetadataxmlValueType metadataXmlType = new MetadataxmlValueType(); 
 								metadataXmlType.getContent().add(conceptType.getMetadataxml().getAny().get(0));
