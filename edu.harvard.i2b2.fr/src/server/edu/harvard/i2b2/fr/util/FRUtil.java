@@ -19,7 +19,6 @@ import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
-import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.core.io.FileSystemResource;

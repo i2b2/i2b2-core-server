@@ -25,7 +25,6 @@ import org.springframework.core.io.FileSystemResource;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
-import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
  * This is the Ontology service's main utility class This utility class provides
