@@ -30,7 +30,6 @@ import edu.harvard.i2b2.crc.loader.ejb.DataMartLoaderAsyncBeanLocal;
 import edu.harvard.i2b2.crc.loader.ejb.LoaderStatusBeanLocal;
 import edu.harvard.i2b2.crc.loader.ejb.MissingTermReportBeanLocal;
 //import edu.harvard.i2b2.crc.loader.ejb.fr.FRLocalHome;
-import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
  * This is the CRC application's main utility class This utility class provides
@@ -353,7 +352,13 @@ public class CRCLoaderUtil {
 						+ APPLICATIONDIR_PROPERTIES + "from "
 						+ APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
 			}
-			String appPropertyFile = appDir + "/"
+			if (appDir.trim().equals(""))
+			{
+				 String path = CRCLoaderUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+				 path = path.substring(0, path.indexOf("deployments"));
+
+				appDir = path + "configuration/crceapp";
+			}			String appPropertyFile = appDir + "/"
 					+ APPLICATION_PROPERTIES_FILENAME;
 			try {
 				FileSystemResource fileSystemResource = new FileSystemResource(

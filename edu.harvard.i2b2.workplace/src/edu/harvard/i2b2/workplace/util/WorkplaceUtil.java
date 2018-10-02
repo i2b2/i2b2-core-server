@@ -136,7 +136,6 @@ public class WorkplaceUtil {
             } else {
 				 String path = WorkplaceUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 				 path = path.substring(0, path.indexOf("deployments"));
-
                 FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
                         path + "configuration/workplaceapp/WorkplaceApplicationContext.xml");
                 beanFactory = ctx.getBeanFactory();
@@ -244,7 +243,13 @@ public class WorkplaceUtil {
                     APPLICATIONDIR_PROPERTIES + "from " +
                     APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
             }
+			if (appDir.trim().equals(""))
+			{
+				 String path = WorkplaceUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+				 path = path.substring(0, path.indexOf("deployments"));
 
+				appDir = path + "configuration/workplaceapp";
+			}
             String appPropertyFile = appDir + "/" +
                 APPLICATION_PROPERTIES_FILENAME;
 

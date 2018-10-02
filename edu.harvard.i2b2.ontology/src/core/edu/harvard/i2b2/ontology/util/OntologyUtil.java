@@ -312,7 +312,13 @@ public class OntologyUtil {
 						+ APPLICATIONDIR_PROPERTIES + "from "
 						+ APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
 			}
+			if (appDir.trim().equals(""))
+			{
+				 String path = OntologyUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+				 path = path.substring(0, path.indexOf("deployments"));
 
+				appDir = path + "configuration/ontologyapp";
+			}
 			String appPropertyFile = appDir + "/"
 					+ APPLICATION_PROPERTIES_FILENAME;
 

@@ -151,7 +151,7 @@ public class FRUtil {
 			if (appDir == null) { 
 				throw new I2B2Exception("Could not find " + APPLICATIONDIR_PROPERTIES + "from " + APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
 			}
-			if (appDir.equals(""))
+			if (appDir.trim().equals(""))
 			{
 				 String path = FRUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 				 path = path.substring(0, path.indexOf("deployments"));
