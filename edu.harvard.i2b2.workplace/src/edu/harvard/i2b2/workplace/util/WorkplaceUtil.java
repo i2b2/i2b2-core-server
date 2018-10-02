@@ -128,7 +128,7 @@ public class WorkplaceUtil {
                     "could not be located from classpath ");
             }
 
-            if (appDir != null && !appDir.equals("")) {
+            if (appDir != null && !appDir.trim().equals("")) {
                 FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
                         "file:" + appDir + "/" +
                         "WorkplaceApplicationContext.xml");
