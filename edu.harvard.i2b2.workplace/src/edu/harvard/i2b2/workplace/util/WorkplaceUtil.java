@@ -128,14 +128,14 @@ public class WorkplaceUtil {
                     "could not be located from classpath ");
             }
 
-            if (appDir != null) {
+            if (appDir != null && !appDir.equals("")) {
                 FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
                         "file:" + appDir + "/" +
                         "WorkplaceApplicationContext.xml");
                 beanFactory = ctx.getBeanFactory();
             } else {
                 FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-                        "classpath:" + "WorkplaceApplicationContext.xml");
+                        "../standalone/configuration/workplaceapp/WorkplaceApplicationContext.xml");
                 beanFactory = ctx.getBeanFactory();
             }
         }

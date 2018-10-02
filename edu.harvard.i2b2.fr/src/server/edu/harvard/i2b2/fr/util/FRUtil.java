@@ -150,6 +150,8 @@ public class FRUtil {
 			if (appDir == null) { 
 				throw new I2B2Exception("Could not find " + APPLICATIONDIR_PROPERTIES + "from " + APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
 			}
+			if (appDir.equals(""))
+				appDir = "../standalone/configuration/imapp";
 			String appPropertyFile = appDir+"/"+APPLICATION_PROPERTIES_FILENAME;
 			try { 
 				FileSystemResource fileSystemResource = new FileSystemResource(appPropertyFile);

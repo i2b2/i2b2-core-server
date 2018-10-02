@@ -148,14 +148,14 @@ public class OntologyUtil {
 						+ "could not be located from classpath ");
 			}
 
-			if (appDir != null) {
+			if (appDir != null && !appDir.equals("")) {
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
 						"file:" + appDir + "/"
 								+ "OntologyApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			} else {
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						"classpath:" + "OntologyApplicationContext.xml");
+						"../standalone/configuration/ontologyapp/OntologyApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			}
 		}

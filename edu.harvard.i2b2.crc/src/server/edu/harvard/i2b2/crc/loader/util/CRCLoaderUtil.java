@@ -166,14 +166,14 @@ public class CRCLoaderUtil {
 						+ "could not be located from classpath ");
 			}
 
-			if (appDir != null) {
+			if (appDir != null && !appDir.equals("")) {
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
 						"file:" + appDir + "/"
 								+ "CRCLoaderApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			} else {
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						"classpath:" + "CRCLoaderApplicationContext.xml");
+						"../standalone/configuration/crcapp/CRCLoaderApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			}
 

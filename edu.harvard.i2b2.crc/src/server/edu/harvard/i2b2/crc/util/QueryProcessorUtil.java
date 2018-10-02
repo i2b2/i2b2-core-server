@@ -299,13 +299,13 @@ public class QueryProcessorUtil {
 						+ "could not be located from classpath ");
 			}
 
-			if (appDir != null) {
+			if (appDir != null && !appDir.equals("")) {
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
 						"file:" + appDir + "/" + "CRCApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			} else {
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						"classpath:" + "CRCApplicationContext.xml");
+						"../standalone/configuration/crcapp/CRCApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			}
 
