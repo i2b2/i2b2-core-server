@@ -518,10 +518,8 @@ public class QueryProcessorUtil {
 					.getProperty(APPLICATIONDIR_PROPERTIES);
 			if (appDir.trim().equals(""))
 			{
-				 String path = QueryProcessorUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-				 path = path.substring(0, path.indexOf("deployments"));
 
-				appDir = path + "configuration/crcapp";
+				appDir =  "standalone/configuration/crcapp";
 			}
 			if (appDir == null) {
 				throw new I2B2Exception("Could not find "

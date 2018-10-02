@@ -354,11 +354,11 @@ public class CRCLoaderUtil {
 			}
 			if (appDir.trim().equals(""))
 			{
-				 String path = CRCLoaderUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-				 path = path.substring(0, path.indexOf("deployments"));
 
-				appDir = path + "configuration/crceapp";
-			}			String appPropertyFile = appDir + "/"
+				appDir =   "standalone/configuration/crceapp";
+			}			
+			
+			String appPropertyFile = appDir + "/"
 					+ APPLICATION_PROPERTIES_FILENAME;
 			try {
 				FileSystemResource fileSystemResource = new FileSystemResource(

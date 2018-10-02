@@ -11,6 +11,9 @@
 package edu.harvard.i2b2.workplace.util;
 
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -245,10 +248,9 @@ public class WorkplaceUtil {
             }
 			if (appDir.trim().equals(""))
 			{
-				 String path = WorkplaceUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-				 path = path.substring(0, path.indexOf("deployments"));
-
-				appDir = path + "configuration/workplaceapp";
+				
+				appDir =  "standalone/configuration/workplaceapp";
+			
 			}
             String appPropertyFile = appDir + "/" +
                 APPLICATION_PROPERTIES_FILENAME;

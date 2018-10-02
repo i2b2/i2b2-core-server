@@ -283,10 +283,8 @@ public class IMUtil {
             }
 			if (appDir.trim().equals(""))
 			{
-				 String path = IMUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-				 path = path.substring(0, path.indexOf("deployments"));
 
-				appDir = path + "configuration/imapp";
+				appDir =  "standalone/configuration/imapp";
 			}
             String appPropertyFile = appDir + "/" +
                 APPLICATION_PROPERTIES_FILENAME;
