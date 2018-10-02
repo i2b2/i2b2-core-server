@@ -19,6 +19,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.AxisService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.Scheduler;
@@ -304,8 +306,11 @@ public class QueryProcessorUtil {
 						"file:" + appDir + "/" + "CRCApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			} else {
+				 
+				 String path = QueryProcessorUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+				 path = path.substring(0, path.indexOf("deployments"));
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						"../standalone/configuration/crcapp/CRCApplicationContext.xml");
+						path + "configuration/crcapp/CRCApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			}
 

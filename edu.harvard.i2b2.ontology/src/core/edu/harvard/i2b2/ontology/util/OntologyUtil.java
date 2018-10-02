@@ -25,6 +25,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
  * This is the Ontology service's main utility class This utility class provides
@@ -154,8 +155,11 @@ public class OntologyUtil {
 								+ "OntologyApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			} else {
+				 String path = OntologyUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+				 path = path.substring(0, path.indexOf("deployments"));
+
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						"../standalone/configuration/ontologyapp/OntologyApplicationContext.xml");
+						path + "configuration/ontologyapp/OntologyApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			}
 		}

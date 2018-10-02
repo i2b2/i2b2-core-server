@@ -26,6 +26,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 
 /**
@@ -144,8 +145,11 @@ public class IMUtil {
                         "IMApplicationContext.xml");
                 beanFactory = ctx.getBeanFactory();
             } else {
+				 String path = IMUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+				 path = path.substring(0, path.indexOf("deployments"));
+
                 FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-                        "../standalone/configuration/imapp/IMApplicationContext.xml");
+                        path + "configuration/imapp/IMApplicationContext.xml");
                 beanFactory = ctx.getBeanFactory();
             }
         }

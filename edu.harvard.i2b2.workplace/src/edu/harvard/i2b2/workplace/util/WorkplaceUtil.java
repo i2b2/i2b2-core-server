@@ -26,6 +26,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 
 /**
@@ -134,8 +135,11 @@ public class WorkplaceUtil {
                         "WorkplaceApplicationContext.xml");
                 beanFactory = ctx.getBeanFactory();
             } else {
+				 String path = WorkplaceUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+				 path = path.substring(0, path.indexOf("deployments"));
+
                 FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-                        "../standalone/configuration/workplaceapp/WorkplaceApplicationContext.xml");
+                        path + "configuration/workplaceapp/WorkplaceApplicationContext.xml");
                 beanFactory = ctx.getBeanFactory();
             }
         }

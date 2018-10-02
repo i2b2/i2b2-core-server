@@ -30,6 +30,7 @@ import edu.harvard.i2b2.crc.loader.ejb.DataMartLoaderAsyncBeanLocal;
 import edu.harvard.i2b2.crc.loader.ejb.LoaderStatusBeanLocal;
 import edu.harvard.i2b2.crc.loader.ejb.MissingTermReportBeanLocal;
 //import edu.harvard.i2b2.crc.loader.ejb.fr.FRLocalHome;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 /**
  * This is the CRC application's main utility class This utility class provides
@@ -172,8 +173,11 @@ public class CRCLoaderUtil {
 								+ "CRCLoaderApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			} else {
+				 String path = CRCLoaderUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+				 path = path.substring(0, path.indexOf("deployments"));
+				
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						"../standalone/configuration/crcapp/CRCLoaderApplicationContext.xml");
+						path + "configuration/crcapp/CRCLoaderApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			}
 

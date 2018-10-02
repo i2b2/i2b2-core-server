@@ -19,6 +19,8 @@ import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
+import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
+
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.core.io.FileSystemResource;
 
@@ -151,7 +153,12 @@ public class FRUtil {
 				throw new I2B2Exception("Could not find " + APPLICATIONDIR_PROPERTIES + "from " + APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
 			}
 			if (appDir.equals(""))
-				appDir = "../standalone/configuration/imapp";
+			{
+				 String path = FRUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+				 path = path.substring(0, path.indexOf("deployments"));
+
+				appDir = path + "configuration/imapp";
+			}
 			String appPropertyFile = appDir+"/"+APPLICATION_PROPERTIES_FILENAME;
 			try { 
 				FileSystemResource fileSystemResource = new FileSystemResource(appPropertyFile);
