@@ -172,11 +172,9 @@ public class CRCLoaderUtil {
 								+ "CRCLoaderApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			} else {
-				 String path = CRCLoaderUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-				 path = path.substring(0, path.indexOf("deployments"));
-				
+
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						path + "configuration/crcapp/CRCLoaderApplicationContext.xml");
+						  "standalone/configuration/crceapp/CRCLoaderApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			}
 

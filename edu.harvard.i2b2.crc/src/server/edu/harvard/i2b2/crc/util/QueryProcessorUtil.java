@@ -307,10 +307,8 @@ public class QueryProcessorUtil {
 				beanFactory = ctx.getBeanFactory();
 			} else {
 				 
-				 String path = QueryProcessorUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-				 path = path.substring(0, path.indexOf("deployments"));
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						path + "configuration/crcapp/CRCApplicationContext.xml");
+						  "standalone/configuration/crceapp/CRCApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			}
 
