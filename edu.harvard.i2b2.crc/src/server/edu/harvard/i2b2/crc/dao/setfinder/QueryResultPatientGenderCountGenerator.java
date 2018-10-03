@@ -42,7 +42,7 @@ public class QueryResultPatientGenderCountGenerator extends CRCDAO implements
 				.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
 						.getFullSchema());
 
-		String demographics_count_sql = "select count(distince dx.patient_num) as demo_count, case when cl.name_char IS NULL then pd.sex_cd else cl.name_char end pd_demo_cd  from "
+		String demographics_count_sql = "select count(distinct dx.patient_num) as demo_count, case when cl.name_char IS NULL then pd.sex_cd else cl.name_char end pd_demo_cd  from "
 				+ this.getDbSchemaName()
 				+ "patient_dimension pd left join code_lookup  cl on pd.sex_cd = cl.code_cd "
 				+ " and lower(cl.table_cd) = 'patient_dimension' and upper(cl.column_cd) = 'SEX_CD' ,"
