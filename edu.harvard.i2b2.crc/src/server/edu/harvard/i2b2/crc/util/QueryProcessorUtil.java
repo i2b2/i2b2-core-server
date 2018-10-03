@@ -308,7 +308,7 @@ public class QueryProcessorUtil {
 			} else {
 				 
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						  "standalone/configuration/crceapp/CRCApplicationContext.xml");
+						  "standalone/configuration/crcapp/CRCApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			}
 

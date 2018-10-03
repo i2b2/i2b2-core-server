@@ -174,7 +174,7 @@ public class CRCLoaderUtil {
 			} else {
 
 				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						  "standalone/configuration/crceapp/CRCLoaderApplicationContext.xml");
+						  "standalone/configuration/crcapp/CRCLoaderApplicationContext.xml");
 				beanFactory = ctx.getBeanFactory();
 			}
 
@@ -353,7 +353,7 @@ public class CRCLoaderUtil {
 			if (appDir.trim().equals(""))
 			{
 
-				appDir =   "standalone/configuration/crceapp";
+				appDir =   "standalone/configuration/crcapp";
 			}			
 			
 			String appPropertyFile = appDir + "/"
