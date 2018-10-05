@@ -1,8 +1,13 @@
-/*
- * Copyright (c) 2006-2007 Massachusetts General Hospital 
+/*******************************************************************************
+ * Copyright (c) 2006-2018 Massachusetts General Hospital 
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the i2b2 Software License v1.0 
- * which accompanies this distribution. 
+ * are made available under the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. I2b2 is also distributed under
+ * the terms of the Healthcare Disclaimer.
+ ******************************************************************************/
+/*
+
  * 
  * Contributors:
  *     Mike Mendis - initial API and implementation

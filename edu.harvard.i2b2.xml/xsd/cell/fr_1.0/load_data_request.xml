@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2006-2018 Massachusetts General Hospital 
+  All rights reserved. This program and the accompanying materials 
+  are made available under the terms of the Mozilla Public License,
+  v. 2.0. If a copy of the MPL was not distributed with this file, You can
+  obtain one at http://mozilla.org/MPL/2.0/. I2b2 is also distributed under
+  the terms of the Healthcare Disclaimer.
+-->
 <ns1:publish_data_request xmlns:ns1="http://www.i2b2.org/xsd/cell/crc/loader/1.1/"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.i2b2.org/xsd/cell/crc/loader/1.1/ file:/Users/rk903/Documents/Development_Uploader/edu.harvard.i2b2.xml/xsd/cell/crc/loader_1.1/CRC_UPLOADER_QRY_request.xsd">
