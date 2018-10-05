@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	$Id: build.xml,v 1.3 2018/01/18 18:19:26 mem61 Exp $
+-->
+<project basedir="." default="all" name="Project Management Cell">
+
+	
+	<property name="Project" value="edu.harvard.i2b2.pm" />
+
+	<property file="etc/spring/pm_application_directory.properties"/>
+	
+	<!-- ========== Executable Targets ======================================== -->
+	<property name="Name" value="ProjectManagement" />
+	<import file="../edu.harvard.i2b2.server-common/common_build.xml" />
+
+	<!-- =================================================================== -->
+	<!-- 								INIT 								 -->
+	<!-- =================================================================== -->
+	<target name="init" depends="common_init,common-classpath" description="Prepare for build">
+		<path id="classpath">
+			<path refid="common-classpath" />
+			<pathelement location="${classes}" />
+			<pathelement location="lib/jcifs-1.3.3.jar" />
+			<pathelement location="../${i2b2CommonProject}/dist/i2b2Common-core.jar" />
+		</path>
+
+		<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+			<classpath refid="classpath" />
+		</taskdef>
+
+	</target>
+
+
+
+	<!-- =================================================================== -->
+	<!-- 								CLEAN 								 -->
+	<!-- =================================================================== -->
+	<target name="clean" depends="common_clean" description="Clean all build products" />
+
+
+	<!-- =================================================================== -->
+	<!-- 								COMMON JAXB GENERATION 				 -->
+	<!-- =================================================================== -->
+	<target name="jaxb_gen" depends="init" description="Generate JAXB classes for i2b2 and Vocab Data messages">
+				<xjc destdir="${gensrc}" removeOldOutput="no">
+					<schema dir="../${i2b2xmlproject}/xsd/cell/pm_1.1" includes="PM_USER.xsd" />
+					<schema dir="../${i2b2xmlproject}/xsd/hive/msg_1.1" includes="i2b2_response.xsd" />
+					<schema dir="../${i2b2xmlproject}/xsd/cell/pm_1.1" includes="i2b2_version_msg.xsd" />
+					<binding dir="." includes="etc/xsd_1.1/i2b2_pm_bindings.xjb" />
+					<binding dir="." includes="etc/xsd_1.1/i2b2_response_message_bindings.xjb" />
+					<binding dir="." includes="etc/xsd_1.1/i2b2_version_bindings.xjb" />
+				</xjc>
+		</target>
+
+	<!-- =================================================================== -->
+	<!-- 								COMPILE 							 -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="init,jaxb_gen" description="Compile files without cleaning">
+		<mkdir dir="${classes}" />
+		<javac destdir="${classes}" optimize="${javac.opt}" debug="true">
+			<src path="${src}" />
+			<src path="${gensrc}" />
+			<src path="test" /> 
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- 								DIST 								 -->
+	<!-- =================================================================== -->
+	<target name="dist"  description="package application for distribution/deployment">
+		<echo message="${Name}: Creating the archive package!" />
+		<antcall target="axis2aar" />
+		<antcall target="jar_core" />
+	</target>
+	
+	<!-- Axis2 archive file -->
+	<target name="axis2aar" depends="compile" description="Create Axis2 archive file">
+		<jar compress="true" jarfile="${dist}/${Name}.aar">
+			<fileset dir="${classes}">
+				<include name="**/**" /> 
+				<exclude name="**/datavo/**" />
+			</fileset>
+			<zipfileset dir="${etc}/axis2/" prefix="META-INF" includes="services.xml" />
+			<!-- <zipfileset dir="../${i2b2CommonProject}/dist/" prefix="lib" includes="*.jar"/> -->
+						
+		</jar>
+	</target>
+	<!-- Jar core file -->
+	<target name="jar_core" depends="compile" description="Create Work core jar">
+		<jar compress="true" jarfile="${dist}/${Name}-core.jar">
+			<fileset dir="${classes}">
+				<include name="**/datavo/**" />
+				</fileset> 
+			<!-- <zipfileset dir="${etc}/axis2/" prefix="META-INF" includes="services.xml" /> -->
+		</jar> 
+		</target>
+
+	<!-- =================================================================== -->
+	<!-- 								SERVER DIST							 -->
+	<!-- =================================================================== -->
+	<target name="dist-server"  description="package application for distribution/deployment">
+		<echo message="${Name}: Creating the server archive package!" />
+		<jar compress="true" jarfile="${dist}/${Name}-Server.jar">
+		</jar>
+	</target>
+
+	
+	<!-- =================================================================== -->
+	<!-- 								ALL 								 -->
+	<!-- =================================================================== -->
+	<target name="all" depends="dist">
+	</target>
+	
+	<!-- =================================================================== -->
+	<!-- 								JBOSS DEPLOY 						 -->
+	<!-- =================================================================== -->
+	<target name="deploy"  description="Deployment step:copy distribution jar files to app server">
+			<echo message="${Name}: Copying archive package to app server ${jboss.home}" />
+			<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib">
+				<fileset dir="${dist}">
+					<exclude name="**/**.aar" />
+					<exclude name="**/*client.jar"/>
+				</fileset>
+			</copy>
+		
+			<copy todir="${jboss.home}/standalone/deployments">
+				<fileset dir="${etc}/jboss">
+				<!--	<exclude name="**/jboss.xml" /> -->
+				</fileset>
+			</copy>
+			
+			<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/services">
+				<fileset dir="${dist}">
+					<include name="**/**.aar" />
+				</fileset>
+			</copy>
+		</target>
+
+	<!-- =================================================================== -->
+	<!-- 			RUN JUNIT TESTS AND GENERATE REPORT			 			 -->
+	<!-- =================================================================== -->
+	<target name="test" depends="compile" description="Compile and run JUnit tests and testcases">
+		<echo message="${Name}: Running test cases!" />
+		<property name="reports.dir" value="${report}" />
+		<!-- run the unit tests -->
+		<junit fork="yes" haltonfailure="no" maxmemory="512M" printsummary="on" errorProperty="test.failed" failureProperty="test.failed" showoutput="false">
+			<formatter type="xml" />
+			<jvmarg value="-Dtestfiledir=${testfiledir}" />
+			<jvmarg value="-Djava.endorsed.dirs=endorsed_lib" />
+			<!--<test name="AllTests" todir="${report.dir}"/>-->
+			<batchtest fork="yes" todir="${reports.dir}">
+				<fileset dir="test">
+					<include name="**/PMServiceRESTTest.java" />
+				</fileset>
+			</batchtest>
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</junit>
+		<!-- create the junit test report -->
+		<echo message="${Name}: Generating reports!" />
+		<junitreport>
+			<fileset dir="${reports.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${reports.dir}" />
+		</junitreport>
+		<fail message="Tests failed." if="test.failed" />
+	</target>
+
+</project>
+
