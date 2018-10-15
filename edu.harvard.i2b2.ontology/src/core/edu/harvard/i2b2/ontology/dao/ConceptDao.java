@@ -19,6 +19,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -65,9 +66,9 @@ import edu.harvard.i2b2.ontology.ws.GetChildrenDataMessage;
 public class ConceptDao extends JdbcDaoSupport {
 
 	private static Log log = LogFactory.getLog(ConceptDao.class);
-	final static String CAT_CORE = " c_hlevel, c_fullname, c_name, c_synonym_cd, c_visualattributes, c_totalnum, c_basecode, c_facttablecolumn, c_dimtablename, c_columnname, c_columndatatype, c_operator, c_dimcode, c_tooltip, valuetype_cd, c_protected_access ";
+	final static String CAT_CORE = " c_hlevel, c_fullname, c_name, c_synonym_cd, c_visualattributes, c_totalnum, c_basecode, c_facttablecolumn, c_dimtablename, c_columnname, c_columndatatype, c_operator, c_dimcode, c_tooltip, valuetype_cd, c_protected_access, c_ontology_protection ";
 	final static String CAT_DEFAULT = " c_fullname, c_name ";
-	final static String CAT_LIMITED =  " c_hlevel, c_fullname, c_name, c_synonym_cd, c_visualattributes, c_totalnum, c_basecode, c_tooltip, valuetype_cd, c_protected_access ";
+	final static String CAT_LIMITED =  " c_hlevel, c_fullname, c_name, c_synonym_cd, c_visualattributes, c_totalnum, c_basecode, c_tooltip, valuetype_cd, c_protected_access, c_ontology_protection ";
 
 	final static String MOD_DEFAULT = " c_hlevel, c_fullname, c_name, c_synonym_cd, c_visualattributes, c_totalnum, c_basecode, c_facttablecolumn, c_tablename, c_columnname, c_columndatatype, c_operator, c_dimcode, c_tooltip, m_applied_path ";
 	final static String MOD_CORE = MOD_DEFAULT;
@@ -129,6 +130,7 @@ public class ConceptDao extends JdbcDaoSupport {
 			throw e;
 		}
 
+		/*
 		Boolean protectedAccess = false;
 		Iterator it = projectInfo.getRole().iterator();
 		while (it.hasNext()){
@@ -138,6 +140,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				break;
 			}
 		}
+		 */
 
 		final boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
 
@@ -157,7 +160,8 @@ public class ConceptDao extends JdbcDaoSupport {
 					child.setTooltip(rs.getString("c_tooltip"));
 					child.setValuetypeCd(rs.getString("valuetype_cd"));
 					child.setProtectedAccess(rs.getString("c_protected_access"));
-					
+					child.setOntologyProtection(rs.getString("c_ontology_protection"));
+
 				}
 				else if(returnType.getType().equals("core")) {
 					child.setBasecode(rs.getString("c_basecode"));
@@ -165,6 +169,7 @@ public class ConceptDao extends JdbcDaoSupport {
 					child.setSynonymCd(rs.getString("c_synonym_cd"));
 					child.setVisualattributes(rs.getString("c_visualattributes"));
 					child.setProtectedAccess(rs.getString("c_protected_access"));
+					child.setOntologyProtection(rs.getString("c_ontology_protection"));
 
 					Integer totalNum = rs.getInt("c_totalnum");
 					boolean nullFlag = rs.wasNull();
@@ -196,6 +201,20 @@ public class ConceptDao extends JdbcDaoSupport {
 					child.setTooltip(rs.getString("c_tooltip"));
 					child.setValuetypeCd(rs.getString("valuetype_cd"));
 				}
+				if (child.getProtectedAccess().equalsIgnoreCase("Y"))
+				{
+					Boolean protectedAccess = false;
+					String[] dataProt = {"DATA_PROT"};
+					List<String> ontologyProtection = Arrays.asList(child.getOntologyProtection() == null || child.getOntologyProtection().equals("")?dataProt:child.getOntologyProtection().split(","));
+					for (String s: projectInfo.getRole()) {
+						if (ontologyProtection.contains(s))
+							protectedAccess = true;
+						
+					}
+					if (protectedAccess == false)
+						child = null;
+				}
+
 				return child;
 			}
 		};
@@ -204,7 +223,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		List queryResult = null;
 
 
-
+		/*
 		if (!protectedAccess){
 			String categoriesSql = "select c_table_cd, " + parameters + " from " +  metadataSchema +  "table_access where c_protected_access = ? ";
 
@@ -227,33 +246,34 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		}
 		else{
-			String categoriesSql = "select c_table_cd, " + parameters + " from " +  metadataSchema +  "table_access ";
+		 */
+		String categoriesSql = "select c_table_cd, " + parameters + " from " +  metadataSchema +  "table_access ";
 
-			String hidden = "";
-			if(returnType.isHiddens() == false)
-				hidden = " where c_visualattributes not like '_H%'";
+		String hidden = "";
+		if(returnType.isHiddens() == false)
+			hidden = " where c_visualattributes not like '_H%'";
 
-			String synonym = "";
-			if(returnType.isSynonyms() == false)
-				synonym = " c_synonym_cd = 'N'";
+		String synonym = "";
+		if(returnType.isSynonyms() == false)
+			synonym = " c_synonym_cd = 'N'";
 
-			String whereClause = hidden;
-			if((whereClause.length() > 2) && (synonym.length() > 2))
-				whereClause = whereClause + " and " + synonym;
+		String whereClause = hidden;
+		if((whereClause.length() > 2) && (synonym.length() > 2))
+			whereClause = whereClause + " and " + synonym;
 
-			else if (synonym.length() > 2)
-				whereClause = " where " + synonym;
+		else if (synonym.length() > 2)
+			whereClause = " where " + synonym;
 
-			categoriesSql = categoriesSql + whereClause + " order by upper(c_name)";			
-			log.debug(categoriesSql);
+		categoriesSql = categoriesSql + whereClause + " order by upper(c_name)";			
+		log.debug(categoriesSql);
 
-			try {
-				queryResult = jt.query(categoriesSql, mapper);
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw new I2B2DAOException("Database Error");
-			}
+		try {
+			queryResult = jt.query(categoriesSql, mapper);
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
+		//}
 		log.debug("result size = " + queryResult.size());
 
 		if (returnType.isBlob() == true && queryResult != null){
@@ -393,7 +413,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				break;
 			}
 		}
-	*/
+		 */
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = (rs.getString("c_table_name"));
@@ -404,13 +424,13 @@ public class ConceptDao extends JdbcDaoSupport {
 		//extract table code
 		String tableCd = StringUtil.getTableCd(childrenType.getParent());
 		String tableName=null;
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
-			try {
-				tableName = jt.queryForObject(tableSql, map, tableCd);	    
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw new I2B2DAOException("Database Error");
-			}
+		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
+		try {
+			tableName = jt.queryForObject(tableSql, map, tableCd);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw new I2B2DAOException("Database Error");
+		}
 
 		String path = StringUtil.getPath(childrenType.getParent());
 		String searchPath = path + "%";
@@ -469,56 +489,56 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		if ((Float.parseFloat(				
 				childrenMsg.getMessageHeaderType().getSendingApplication().getApplicationVersion()) > 1.5) &&
-					(queryResult.size() > 0)) {
-				Iterator<ConceptType>  it2 = queryResult.iterator();
-				while (it2.hasNext()){
-					ConceptType concept = it2.next();
-					// if a leaf has modifiers report it with visAttrib == F
-					if(concept.getVisualattributes().startsWith("L")){
-						String modPath = StringUtil.getPath(concept.getKey());
-						// I have to do this the hard way because there are a dynamic number of applied paths to check
-						//   prevent SQL injection
-						if(modPath.contains("'")){
-							modPath = modPath.replaceAll("'", "''");
+				(queryResult.size() > 0)) {
+			Iterator<ConceptType>  it2 = queryResult.iterator();
+			while (it2.hasNext()){
+				ConceptType concept = it2.next();
+				// if a leaf has modifiers report it with visAttrib == F
+				if(concept.getVisualattributes().startsWith("L")){
+					String modPath = StringUtil.getPath(concept.getKey());
+					// I have to do this the hard way because there are a dynamic number of applied paths to check
+					//   prevent SQL injection
+					if(modPath.contains("'")){
+						modPath = modPath.replaceAll("'", "''");
+					}
+					String sqlCount = "select count(*) from " + metadataSchema+ tableName  + " where m_exclusion_cd is null and c_fullname in";
+					int queryCount = 0;
+					// build m_applied_path sub-query
+					String m_applied_pathSql = "(m_applied_path = '" + modPath +"'";
+					while (modPath.length() > 3) {
+						if(modPath.endsWith("%")){
+							modPath = modPath.substring(0, modPath.length()-2);
+							modPath = modPath.substring(0, modPath.lastIndexOf("\\") + 1) + "%";			
 						}
-						String sqlCount = "select count(*) from " + metadataSchema+ tableName  + " where m_exclusion_cd is null and c_fullname in";
-						int queryCount = 0;
-						// build m_applied_path sub-query
-						String m_applied_pathSql = "(m_applied_path = '" + modPath +"'";
-						while (modPath.length() > 3) {
-							if(modPath.endsWith("%")){
-								modPath = modPath.substring(0, modPath.length()-2);
-								modPath = modPath.substring(0, modPath.lastIndexOf("\\") + 1) + "%";			
-							}
-							else
-								modPath = modPath + "%";
-							m_applied_pathSql = m_applied_pathSql + " or m_applied_path = '" + modPath + "'" ;
-						}
-						sqlCount = sqlCount + "(select c_fullname from " + metadataSchema+ tableName  + " where c_hlevel = 1 and m_exclusion_cd is null and " + m_applied_pathSql + " )";
-
-						if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE"))
-							sqlCount = sqlCount + " MINUS ";
 						else
-							sqlCount = sqlCount + " EXCEPT ";
+							modPath = modPath + "%";
+						m_applied_pathSql = m_applied_pathSql + " or m_applied_path = '" + modPath + "'" ;
+					}
+					sqlCount = sqlCount + "(select c_fullname from " + metadataSchema+ tableName  + " where c_hlevel = 1 and m_exclusion_cd is null and " + m_applied_pathSql + " )";
 
-						sqlCount = sqlCount+ " (select c_fullname from " + metadataSchema+ tableName  + " where m_exclusion_cd is not null and " + m_applied_pathSql + " )))";
+					if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE"))
+						sqlCount = sqlCount + " MINUS ";
+					else
+						sqlCount = sqlCount + " EXCEPT ";
+
+					sqlCount = sqlCount+ " (select c_fullname from " + metadataSchema+ tableName  + " where m_exclusion_cd is not null and " + m_applied_pathSql + " )))";
 
 
-						try {
-							queryCount = jt.queryForInt(sqlCount);
-						} catch (DataAccessException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						//				log.debug("COUNT " + queryCount + " for " +sqlCount);
+					try {
+						queryCount = jt.queryForInt(sqlCount);
+					} catch (DataAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					//				log.debug("COUNT " + queryCount + " for " +sqlCount);
 
 
-						if(queryCount > 0){
-							concept.setVisualattributes(concept.getVisualattributes().replace('L', 'F'));
-							log.debug("changed " + concept.getName() + " from leaf to folder: modCount > 0");
-						}
+					if(queryCount > 0){
+						concept.setVisualattributes(concept.getVisualattributes().replace('L', 'F'));
+						log.debug("changed " + concept.getName() + " from leaf to folder: modCount > 0");
 					}
 				}
+			}
 		}
 		//		log.debug("Find Children By Parent " + sql);
 		log.debug("get_children result size = " + queryResult.size());
@@ -577,35 +597,35 @@ public class ConceptDao extends JdbcDaoSupport {
 				return name;
 			}
 		};
-		
-		
+
+
 
 		String hidden = "";
 		if(termInfoType.isHiddens() == false)
 			hidden = " and c_visualattributes not like '_H%'";
-	
+
 		//extract table code
 		String tableCd = StringUtil.getTableCd(termInfoType.getSelf());
 		String tableName=null;
 		String protectedAccess=null;
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
-			try {
-				tableName = jt.queryForObject(tableSql, map, tableCd);	    
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw e;
-			}                            
-			 tableSql = "select distinct(c_protected_access) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
-			try {
-				protectedAccess = jt.queryForObject(tableSql, map2, tableCd);	    
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw e;
-			}
-			
-			
+		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
+		try {
+			tableName = jt.queryForObject(tableSql, map, tableCd);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw e;
+		}                            
+		tableSql = "select distinct(c_protected_access) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
+		try {
+			protectedAccess = jt.queryForObject(tableSql, map2, tableCd);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw e;
+		}
 
-			
+
+
+
 		String path = StringUtil.getPath(termInfoType.getSelf());
 		/*
 		if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
@@ -618,15 +638,15 @@ public class ConceptDao extends JdbcDaoSupport {
 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
 			path = StringUtil.escapePOSTGRESQL(path); 
 		}		
-		*/
-		
+		 */
+
 		String searchPath = path;
 
 		String synonym = "";
 		if(termInfoType.isSynonyms() == false)
 			synonym = " and c_synonym_cd = 'N'";
 
-//		String sql = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + ""; 
+		//		String sql = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + ""; 
 		String sql = "select '" + protectedAccess + "' as c_protected_access, "  + parameters +" from " + metadataSchema+tableName  + " where c_fullname = ? "; 
 		sql = sql + hidden + synonym + " order by upper(c_name) ";
 
@@ -694,7 +714,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				return category;
 			}
 		};
-		
+
 
 		String hidden = "";
 		if(vocabType.isHiddens() == false)
@@ -704,13 +724,13 @@ public class ConceptDao extends JdbcDaoSupport {
 		String tableCd = vocabType.getCategory();
 		List<ConceptType> categoryResult;
 
-			String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
-			try {
-				categoryResult = jt.query(tableSql, map, tableCd);	    
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw e;
-			}
+		String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
+		try {
+			categoryResult = jt.query(tableSql, map, tableCd);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw e;
+		}
 
 		String nameInfoSql = null;
 		String compareName = null;
@@ -723,7 +743,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		if (categoryResult.size() == 0)
 			return null;
-			
+
 		String category = categoryResult.get(0).getKey();
 		if(category.contains("'")){
 			category = category.replaceAll("'", "''");
@@ -894,13 +914,13 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		//no table code provided so check all tables user has access to
 		List tableNames=null;
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access " + hidden;
-			try {
-				tableNames = jt.query(tableSql, map);	    
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw e;
-			}
+		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access " + hidden;
+		try {
+			tableNames = jt.query(tableSql, map);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw e;
+		}
 
 		String synonym = "";
 		if(vocabType.isSynonyms() == false)
@@ -1002,8 +1022,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		ParameterizedRowMapper<String> mapper = new ParameterizedRowMapper<String>() {
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String derivedFactTableColumn;          
-				 derivedFactTableColumn=(rs.getString("c_facttablecolumn"));
-				 return derivedFactTableColumn;
+				derivedFactTableColumn=(rs.getString("c_facttablecolumn"));
+				return derivedFactTableColumn;
 			}
 		};
 		return mapper;
@@ -1018,8 +1038,10 @@ public class ConceptDao extends JdbcDaoSupport {
 				if(!(node.getType().equals("default"))){
 					child.setBasecode(rs.getString("c_basecode"));
 					child.setLevel(rs.getInt("c_hlevel"));
-					if (node.getParent().equals("terminfo"))
+					if (node.getParent().equals("terminfo")) {
 						child.setProtectedAccess(rs.getString("c_protected_access"));
+						child.setOntologyProtection(rs.getString("c_ontology_protection"));
+					}
 					// cover get Code Info case where we dont know the vocabType.category apriori
 					if(node.getNode() != null)	
 						child.setKey("\\\\" + node.getNode() + rs.getString("c_fullname"));  
@@ -1220,7 +1242,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				return name;
 			}
 		};
-		
+
 
 		String hidden = "";
 		if(modifierType.isHiddens() == false)
@@ -1229,13 +1251,13 @@ public class ConceptDao extends JdbcDaoSupport {
 		//extract table code
 		String tableCd = StringUtil.getTableCd(modifierType.getSelf());
 		String tableName=null;
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
-			try {
-				tableName = jt.queryForObject(tableSql, map, tableCd);	    
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw new I2B2DAOException("Database Error");
-			}
+		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
+		try {
+			tableName = jt.queryForObject(tableSql, map, tableCd);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw new I2B2DAOException("Database Error");
+		}
 
 
 
@@ -1313,7 +1335,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		sql = sql + " order by (c_name) ";
 
-	//	("findMods: " + sql );
+		//	("findMods: " + sql );
 		final boolean ofuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
 
 		ParameterizedRowMapper<ModifierType> modMapper = getModMapper(new NodeType (modifierType), ofuscatedUserFlag, dbInfo.getDb_serverType());
@@ -1503,13 +1525,13 @@ public class ConceptDao extends JdbcDaoSupport {
 		//extract table code
 		String tableCd = StringUtil.getTableCd(modifierChildrenType.getParent());
 		String tableName=null;
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
-			try {
-				tableName = jt.queryForObject(tableSql, map, tableCd);	    
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw new I2B2DAOException("Database Error");
-			}
+		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
+		try {
+			tableName = jt.queryForObject(tableSql, map, tableCd);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw new I2B2DAOException("Database Error");
+		}
 
 		String path = StringUtil.getPath(modifierChildrenType.getParent());
 
@@ -1591,7 +1613,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		sql = sql + " order by (c_name) ";
 
-	//	log.debug("findModChildren: " + sql + (level+1) + searchPath +  StringUtil.getLiteralPath(modifierChildrenType.getAppliedConcept()));
+		//	log.debug("findModChildren: " + sql + (level+1) + searchPath +  StringUtil.getLiteralPath(modifierChildrenType.getAppliedConcept()));
 
 
 		final boolean ofuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
@@ -1599,7 +1621,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		ParameterizedRowMapper<ModifierType> modMapper = getModMapper(new NodeType (modifierChildrenType), ofuscatedUserFlag, dbInfo.getDb_serverType());
 
 		List queryResult = null;
-		
+
 		try {
 			queryResult = jt.query(sql, modMapper, (level+1), searchPath,  StringUtil.getLiteralPath(modifierChildrenType.getAppliedConcept()),
 					StringUtil.getLiteralPath(modifierChildrenType.getAppliedConcept()));
@@ -1651,7 +1673,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				return name;
 			}
 		};
-		
+
 		String hidden = "";
 		if(modifierInfoType.isHiddens() == false)
 			hidden = " and c_visualattributes not like '_H%'";
@@ -1660,13 +1682,13 @@ public class ConceptDao extends JdbcDaoSupport {
 		//extract table code
 		String tableCd = StringUtil.getTableCd(modifierInfoType.getSelf());
 		String tableName=null;
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
-			try {
-				tableName = jt.queryForObject(tableSql, map, tableCd);	    
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw e;
-			}
+		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
+		try {
+			tableName = jt.queryForObject(tableSql, map, tableCd);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw e;
+		}
 
 		String path = StringUtil.getPath(modifierInfoType.getSelf());
 		String searchPath = path;
@@ -1683,8 +1705,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		// Putting applied path back..  1/4/16   CORE-203
 		// Was originally omitted for SHRINE (paths would be invalid) but result is that MANY modifiers return and messes up i2b2
 		// So first search via applied path; if that returns zero then search w/o applied path
-		
-		
+
+
 		sqlWpath = sqlWpath + hidden + synonym + " order by upper(c_name) ";
 
 		//log.info(sql + " " + path + " " + level);
@@ -1701,7 +1723,7 @@ public class ConceptDao extends JdbcDaoSupport {
 			log.error(e.getMessage());
 			throw e;
 		}
-		
+
 		if(queryResult.size() == 0){
 			sql = sql + hidden + synonym + " order by upper(c_name) ";
 
@@ -1759,7 +1781,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				return name;
 			}
 		};
-		
+
 		String hidden = "";
 		if(vocabType.isHiddens() == false)
 			hidden = " and c_visualattributes not like '_H%' ";
@@ -1768,13 +1790,13 @@ public class ConceptDao extends JdbcDaoSupport {
 		//extract table code
 		String tableCd = StringUtil.getTableCd(vocabType.getSelf());
 		String tableName=null;
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
-			try {
-				tableName = jt.queryForObject(tableSql, map, tableCd);	    
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw e;
-			}
+		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
+		try {
+			tableName = jt.queryForObject(tableSql, map, tableCd);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw e;
+		}
 
 		//   prevent SQL injection and also catch case where the value contains an (')
 		String value = vocabType.getMatchStr().getValue();
@@ -1905,7 +1927,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		String 	modNameInfoSql = " select " + parameters + " from "  + metadataSchema + tableName +  " where m_exclusion_cd is null and m_applied_path in ("
 				+ modifierSelect +") and c_fullname in ("	+ inclusionSql	+ exceptSql + exclusionSql 	+ ")) order by (c_name) ";
 
-//		log.debug("MODnameInfo: " + modNameInfoSql + " " +compareName);
+		//		log.debug("MODnameInfo: " + modNameInfoSql + " " +compareName);
 		boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
 
 		ParameterizedRowMapper<ModifierType> modMapper = getModMapper(new NodeType(vocabType), obfuscatedUserFlag, dbInfo.getDb_serverType());
@@ -1977,13 +1999,13 @@ public class ConceptDao extends JdbcDaoSupport {
 		//extract table code
 		String tableCd = StringUtil.getTableCd(vocabType.getSelf());
 		String tableName=null;
-			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
-			try {
-				tableName = jt.queryForObject(tableSql, map, tableCd);	    
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw e;
-			}
+		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
+		try {
+			tableName = jt.queryForObject(tableSql, map, tableCd);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw e;
+		}
 
 		String synonym = "";
 		if(vocabType.isSynonyms() == false)
@@ -2087,7 +2109,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				+ modifierSelect +") and c_fullname in (" 	+ inclusionSql	+ exceptSql + exclusionSql 	+ ")) order by (c_name) ";
 
 
-//		log.debug("MODCodeInfo " + modCodeInfoSql);
+		//		log.debug("MODCodeInfo " + modCodeInfoSql);
 		boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
 		ParameterizedRowMapper<ModifierType> modMapper = getModMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType());
 
@@ -2105,7 +2127,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		return queryResult;
 
 	} 
-	
+
 	public List findDerivedFactColumns(final GetTermInfoType termInfoType, ProjectType projectInfo, DBInfoType dbInfo) throws DataAccessException, I2B2Exception{
 
 		String metadataSchema = dbInfo.getDb_fullSchema();
@@ -2175,8 +2197,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
 			path = StringUtil.escapePOSTGRESQL(path); 
 		}		
-		*/
-		
+		 */
+
 		String searchPath = path;
 
 
