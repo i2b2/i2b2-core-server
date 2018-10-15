@@ -1121,8 +1121,8 @@ public class TemporalSubQuery implements Comparable{
 		return parent.allowLargeTextValueConstrainFlag();
 	}
 	
-	protected boolean allowProtectedQueryFlag() {
-		return parent.allowProtectedQueryFlag();
+	protected List<String> getUserRoles() {
+		return parent.getUserRoles();
 	}
 	
 	protected boolean hasInvertedPanel(){

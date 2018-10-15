@@ -10,6 +10,7 @@ package edu.harvard.i2b2.crc.ejb;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 
@@ -116,7 +117,7 @@ public class ExecRunnable implements Runnable{
 			try {
 				QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 				boolean allowLargeTextValueConstrainFlag = true;
-				boolean allowProtectedQueryFlag = true;
+				List<String> userRoles = null;
 				int queryResultInstanceId = 0;
 
 				QtQueryInstance queryInstance = null;
@@ -155,9 +156,9 @@ public class ExecRunnable implements Runnable{
 
 					try { 
 						AuthrizationHelper authHelper = new AuthrizationHelper(dsLookupDomainId, dsLookupProjectId, dsLookupOwnerId, daoFactory);
-						authHelper.checkRoleForProtectionLabel("SETFINDER_QRY_PROTECTED");
+						userRoles = authHelper.getRolesFromCache();
 					} catch(I2B2Exception i2b2Ex) {
-						allowProtectedQueryFlag = false;
+						//allowProtectedQueryFlag = false;
 					}
 					//try {
 					// check if the status is cancelled
@@ -194,7 +195,7 @@ public class ExecRunnable implements Runnable{
 						patientSetId = processQueryRequest(
 								transactionTimeout, dsLookup, sfDAOFactory,
 								xmlRequest, sqlString, sessionId,
-								queryInstanceId, patientSetId,allowLargeTextValueConstrainFlag, allowProtectedQueryFlag, pmXml);
+								queryInstanceId, patientSetId,allowLargeTextValueConstrainFlag, pmXml, userRoles);
 		
 					}
 
@@ -325,7 +326,7 @@ public class ExecRunnable implements Runnable{
 			int transactionTimeout, DataSourceLookup dsLookup,
 			SetFinderDAOFactory sfDAOFactory, String xmlRequest,
 			String sqlString, String sessionId, String queryInstanceId,
-			String patientSetId, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag, String pmXml) throws I2B2DAOException, I2B2Exception, JAXBUtilException {
+			String patientSetId, boolean allowLargeTextValueConstrainFlag, String pmXml, List<String> userRoles) throws I2B2DAOException, I2B2Exception, JAXBUtilException {
 
 		QueryDefinitionRequestType qdRequestType = getQueryDefinitionRequestType(xmlRequest);
 		ResultOutputOptionListType resultOutputList = qdRequestType
@@ -358,7 +359,7 @@ public class ExecRunnable implements Runnable{
 
 		queryExDao.executeSQL( transactionTimeout, dsLookup,
 				sfDAOFactory, xmlRequest, sqlString, queryInstanceId,
-				patientSetId, resultOutputList,allowLargeTextValueConstrainFlag, allowProtectedQueryFlag, pmXml);
+				patientSetId, resultOutputList,allowLargeTextValueConstrainFlag,   pmXml, userRoles);
 
 		return patientSetId;
 	}

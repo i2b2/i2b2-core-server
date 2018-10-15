@@ -647,7 +647,7 @@ public class ConceptDao extends JdbcDaoSupport {
 			synonym = " and c_synonym_cd = 'N'";
 
 		//		String sql = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + ""; 
-		String sql = "select '" + protectedAccess + "' as c_protected_access, "  + parameters +" from " + metadataSchema+tableName  + " where c_fullname = ? "; 
+		String sql = "select '" + protectedAccess + "' as c_protected_access, null as c_ontology_protection, "  + parameters +" from " + metadataSchema+tableName  + " where c_fullname = ? "; 
 		sql = sql + hidden + synonym + " order by upper(c_name) ";
 
 		//log.info(sql + " " + path + " " + level);

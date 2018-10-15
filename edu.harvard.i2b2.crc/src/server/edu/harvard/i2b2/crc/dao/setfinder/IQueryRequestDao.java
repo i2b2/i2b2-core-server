@@ -8,6 +8,7 @@
  ******************************************************************************/
 package edu.harvard.i2b2.crc.dao.setfinder;
 
+import java.util.List;
 import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
@@ -55,7 +56,7 @@ public interface IQueryRequestDao {
 	 */
 	public void setAllowLargeTextValueConstrainFlag(boolean allowLargeTextValueConstrainFlag) ;
 		
-	public void setAllowProtectedQueryFlag(boolean allowProtectedQueryFlag);
+	public void setUserRoles(List<String> userRoles);
 	/**
 	 * set query with temp table optimization
 	 * @param allowLargeTextValueConstrainFlag

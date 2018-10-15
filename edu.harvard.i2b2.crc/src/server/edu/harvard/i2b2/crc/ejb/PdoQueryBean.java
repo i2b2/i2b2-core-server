@@ -13,9 +13,10 @@
  *     Rajesh Kuttan
  */
 package edu.harvard.i2b2.crc.ejb;
- 
+
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -120,18 +121,18 @@ public class PdoQueryBean { //implements SessionBean {
 				.getDomainId(), dataSourceLookup.getProjectPath(),
 				dataSourceLookup.getOwnerId());
 		IDAOFactory daoFactory = helper.getDAOFactory();
-	
-		
+
+
 		IQueryPdoMasterDao queryPdoMasterDao = daoFactory
 				.getSetFinderDAOFactory().getQueryPdoMasterDAO();
 
 		savePdoQueryMaster(queryPdoMasterDao, requestXml);
-		
+
 		String version = getVersion(queryPdoMasterDao, requestXml);
 		// check if the user have the blob permission
 		boolean blobFlag = checkForBlob(getPDOFromInputListReqType);
-		boolean hasProtectedStatus = false;
-		
+		//boolean hasProtectedStatus = false;
+		List<String> userRoles = null;
 		String domainId = dataSourceLookup.getDomainId();
 		String projectId = dataSourceLookup.getProjectPath();
 		String userId = dataSourceLookup.getOwnerId();
@@ -139,8 +140,7 @@ public class PdoQueryBean { //implements SessionBean {
 		AuthrizationHelper authHelper = new AuthrizationHelper(domainId,
 				projectId, userId, daoFactory);
 		try {
-			authHelper.checkRoleForProtectionLabel("SETFINDER_QRY_PROTECTED");
-			hasProtectedStatus = true;
+			userRoles = authHelper.getRolesFromCache();
 		} catch (Exception e)
 		{}
 		if (blobFlag) {
@@ -148,19 +148,19 @@ public class PdoQueryBean { //implements SessionBean {
 
 			authHelper.checkRoleForProtectionLabel("PDO_WITH_BLOB");
 		}
-		
+
 		// get unit cd conversion project param from cache 
-				ParamUtil paramUtil = new ParamUtil();
-				DataSourceLookup origDataSourceLookup = daoFactory.getPatientDataDAOFactory().getOriginalDataSourceLookup();
-				String unitCdConversionParam = paramUtil.getParam(origDataSourceLookup.getProjectPath(), origDataSourceLookup.getOwnerId(), 
-						origDataSourceLookup.getDomainId(), ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
-				
-				Map projectParamMap = null;
-				if (unitCdConversionParam != null) { 
-					projectParamMap = new HashMap();
-					projectParamMap.put(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION, unitCdConversionParam.trim());
-					
-				}
+		ParamUtil paramUtil = new ParamUtil();
+		DataSourceLookup origDataSourceLookup = daoFactory.getPatientDataDAOFactory().getOriginalDataSourceLookup();
+		String unitCdConversionParam = paramUtil.getParam(origDataSourceLookup.getProjectPath(), origDataSourceLookup.getOwnerId(), 
+				origDataSourceLookup.getDomainId(), ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
+
+		Map projectParamMap = null;
+		if (unitCdConversionParam != null) { 
+			projectParamMap = new HashMap();
+			projectParamMap.put(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION, unitCdConversionParam.trim());
+
+		}
 
 		// call ontology cell to get the item's metadata to build the query sql
 		FilterListType filterList = getPDOFromInputListReqType.getFilterList();
@@ -169,7 +169,7 @@ public class PdoQueryBean { //implements SessionBean {
 			try {
 				//CallOntologyUtil ontologyUtil = new CallOntologyUtil(requestXml);
 
-				
+
 				JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil()
 						.unMashallFromString(requestXml);
 				RequestMessageType request = (RequestMessageType) responseJaxb
@@ -184,9 +184,9 @@ public class PdoQueryBean { //implements SessionBean {
 					for (ItemType item : panel.getItem()) {
 						//ConceptType conceptType = ontologyUtil.callOntology(item.getItemKey());
 						ConceptType conceptType = CallOntologyUtil.callOntology(item.getItemKey(), securityType, projectId,  QueryProcessorUtil.getInstance().getOntologyUrl());
-						
+
 						log.debug("fetching the metadata information from ontology ["
-										+ item.getItemKey() + "]");
+								+ item.getItemKey() + "]");
 						if (conceptType != null) {
 							item.setDimDimcode(conceptType.getDimcode());
 							item.setDimColumnname(conceptType.getColumnname());
@@ -196,18 +196,29 @@ public class PdoQueryBean { //implements SessionBean {
 									.getFacttablecolumn());
 							item.setDimColumndatatype(conceptType
 									.getColumndatatype());
-							if (conceptType.getProtectedAccess().equalsIgnoreCase("Y") && hasProtectedStatus == false)
-								throw new I2B2Exception("Access Denies: Concept has protected access");
+							if (conceptType.getProtectedAccess().equalsIgnoreCase("Y"))
+							{
+								Boolean protectedAccess = false;
+								String[] dataProt = {"DATA_PROT"};
+								List<String> ontologyProtection = Arrays.asList(conceptType.getOntologyProtection() == null || conceptType.getOntologyProtection().equals("")?dataProt:conceptType.getOntologyProtection().split(","));
+								for (String s: userRoles) {
+									if (ontologyProtection.contains(s))
+										protectedAccess = true;
+
+								}
+								if (protectedAccess == false)
+									throw new I2B2Exception("Access Denies: Concept has protected access");
+							}
 							if (conceptType.getMetadataxml() != null && conceptType.getMetadataxml().getAny().get(0) != null) {
 								MetadataxmlValueType metadataXmlType = new MetadataxmlValueType(); 
 								metadataXmlType.getContent().add(conceptType.getMetadataxml().getAny().get(0));
 								item.setMetadataxml(metadataXmlType);
 							}
-							
+
 							log.debug("metadata from ontology received for ["
 									+ item.getItemKey() + "]"
 									+ conceptType.getTablename());
-							
+
 							//check for modifier constrain and get modifier metadata
 							ItemType.ConstrainByModifier modifierConstrain = item.getConstrainByModifier();
 							if (modifierConstrain != null) { 
@@ -216,7 +227,7 @@ public class PdoQueryBean { //implements SessionBean {
 								String modifierAppliedPath = modifierConstrain.getAppliedPath();
 								ModifierType modifierType = itemMetaDataHandler.getModifierDataFromOntologyCell(modifierKey, modifierAppliedPath,   helper.getDataSourceLookup().getServerType());
 								copyModifierToItem(item,modifierType);
-								
+
 								//cache the modifier metadat in the map
 								if (projectParamMap != null) { 
 									String unitConversionFlag = (String)projectParamMap.get(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
@@ -228,11 +239,11 @@ public class PdoQueryBean { //implements SessionBean {
 									}
 								}
 							}
-							
+
 						} else {
 							log
-									.debug("Unable to get item's metadata from ontology cell ["
-											+ item.getItemKey() + "]");
+							.debug("Unable to get item's metadata from ontology cell ["
+									+ item.getItemKey() + "]");
 						}
 					}
 				}
@@ -253,7 +264,7 @@ public class PdoQueryBean { //implements SessionBean {
 								+ e.getMessage(), e);
 			}
 		}
-		
+
 		PatientDataDAOFactory pdoDaoFactory = daoFactory
 				.getPatientDataDAOFactory();
 
@@ -383,14 +394,14 @@ public class PdoQueryBean { //implements SessionBean {
 	 */
 	public List<ParamType> getPDOTemplate(String dimensionTableName,
 			DataSourceLookup dataSourceLookup,boolean tablePDOFlag) throws I2B2Exception {
-		
+
 		List<ParamType> paramList = new ArrayList<ParamType>();
-		
+
 		DAOFactoryHelper helper = new DAOFactoryHelper(dataSourceLookup
 				.getDomainId(), dataSourceLookup.getProjectPath(),
 				dataSourceLookup.getOwnerId());
 		IDAOFactory daoFactory = helper.getDAOFactory();
-	
+
 		//
 		MetaDataTypeMapper metaDataTypeMapper = new MetaDataTypeMapper();
 		IMetadataDao metadataDao = daoFactory.getPatientDataDAOFactory().getMetadataDAO();
@@ -404,20 +415,20 @@ public class PdoQueryBean { //implements SessionBean {
 				paramType.setColumnDescriptor(tableMetaDataList[i].column_comment);
 				paramType.setType(tableMetaDataList[i].column_xml_type);
 				paramList.add(paramType); 
-				
+
 			}
-	
-			
+
+
 		} catch (Exception i2b2DaoEx) { 
 			i2b2DaoEx.printStackTrace();
 			throw new I2B2Exception(i2b2DaoEx.getMessage(), i2b2DaoEx);
 		}
-		
+
 		return paramList;
 	}
-	
-	
-	
+
+
+
 	private PageType buildPageType(int requestedMinIndex,
 			int requestedMaxIndex, int maxInputIndex, long totalSize,
 			long pageSize) {
@@ -455,23 +466,23 @@ public class PdoQueryBean { //implements SessionBean {
 	public PatientDataType getObservationFactByPrimaryKey(
 			DataSourceLookup dataSourceLookup,
 			GetObservationFactByPrimaryKeyRequestType getObservationFactByPrimaryKeyRequestType)
-			throws I2B2Exception {
+					throws I2B2Exception {
 		PatientDataType patientDataType = null;
 
 		try {
 
 			PatientDataDAOFactory pdoDaoFactory = getPatientDataDaoFactory(
 					dataSourceLookup.getDomainId(), dataSourceLookup
-							.getProjectPath(), dataSourceLookup.getOwnerId());
+					.getProjectPath(), dataSourceLookup.getOwnerId());
 
 			IObservationFactDao observationFactDao = pdoDaoFactory
 					.getObservationFactDAO();
 			patientDataType = observationFactDao
 					.getObservationFactByPrimaryKey(
 							getObservationFactByPrimaryKeyRequestType
-									.getFactPrimaryKey(),
+							.getFactPrimaryKey(),
 							getObservationFactByPrimaryKeyRequestType
-									.getFactOutputOption());
+							.getFactOutputOption());
 		} catch (I2B2DAOException ex) {
 			ex.printStackTrace();
 			log.error(ex.getMessage(), ex);
@@ -613,20 +624,20 @@ public class PdoQueryBean { //implements SessionBean {
 		PasswordType passType = i2b2RequestMsgType.getMessageHeader().getSecurity().getPassword();
 		passType.setValue("password not stored"); 
 		passType.setIsToken(false);
-		
+
 		JAXBUtil util = CRCJAXBUtil.getJAXBUtil();
 		StringWriter strWriter = new StringWriter();
 		edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory i2b2ObjFactory = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
 		try {
-				util.marshaller(i2b2ObjFactory.createRequest(i2b2RequestMsgType), strWriter);
+			util.marshaller(i2b2ObjFactory.createRequest(i2b2RequestMsgType), strWriter);
 		} catch (JAXBUtilException e) {
 			throw new I2B2Exception("Error marshalling the request after resetting the password  ["
 					+ StackTraceUtil.getStackTrace(e) + "]");
 		}
-		
+
 		queryPdoMasterDao.createPdoQueryMaster(queryMaster, strWriter.toString());
 	}
-	
+
 	private String getVersion(IQueryPdoMasterDao queryPdoMasterDao,
 			String requestXml) throws I2B2Exception {
 		QtQueryMaster queryMaster = new QtQueryMaster();
@@ -635,7 +646,7 @@ public class PdoQueryBean { //implements SessionBean {
 				requestXml);
 		return requestMessageHelper.getVersion();
 	}
-	
+
 	private void copyModifierToItem(ItemType itemType, ModifierType modifierType) { 
 		ItemType.ConstrainByModifier modifierConstrain = itemType.getConstrainByModifier();
 		modifierConstrain.setAppliedPath(modifierType.getAppliedPath());

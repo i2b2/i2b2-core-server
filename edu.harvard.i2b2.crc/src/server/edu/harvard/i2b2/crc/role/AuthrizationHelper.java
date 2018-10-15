@@ -80,7 +80,7 @@ public class AuthrizationHelper {
 		checkRoleForPluginId(pluginId, roles);
 	}
 
-	private List<String> getRolesFromCache() throws I2B2Exception {
+	public List<String> getRolesFromCache() throws I2B2Exception {
 		//TODO removed cache
 		/*
 		Cache cache = null;

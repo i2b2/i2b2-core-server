@@ -69,7 +69,6 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 	private static String defaultResultType = null;
 	private Map projectParamMap = new HashMap();
 	private boolean queryWithoutTempTableFlag = false;
-	private boolean allowProtectedQueryFlag = false;
 
 	static {
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
@@ -101,6 +100,7 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 	 *            db connection
 	 * @param sqlString
 	 * @param queryInstanceId
+	 * @param userRoles 
 	 * @return query result instance id
 	 * @throws JAXBUtilException 
 	 * @throws I2B2Exception 
@@ -110,7 +110,7 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 			int transactionTimeout, DataSourceLookup dsLookup,
 			SetFinderDAOFactory sfDAOFactory, String requestXml,
 			String sqlString, String queryInstanceId, String patientSetId,
-			ResultOutputOptionListType resultOutputList, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag, String pmXml)
+			ResultOutputOptionListType resultOutputList, boolean allowLargeTextValueConstrainFlag,   String pmXml, List<String> userRoles)
 			throws I2B2Exception, JAXBUtilException {
 
 		String singleSql = null;
@@ -190,8 +190,9 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 				IQueryRequestDao requestDao = sfDAOFactory.getQueryRequestDAO();
 				requestDao.setProjectParam(projectParamMap) ;
 				requestDao.setAllowLargeTextValueConstrainFlag(allowLargeTextValueConstrainFlag);
-				requestDao.setAllowProtectedQueryFlag(allowProtectedQueryFlag);
+				//requestDao.setAllowProtectedQueryFlag(allowProtectedQueryFlag);
 				requestDao.setQueryWithoutTempTableFlag(queryWithoutTempTableFlag);
+				requestDao.setUserRoles(userRoles);
 				
 				String[] sqlResult = null;
 				if (this.queryWithoutTempTableFlag == false) { 

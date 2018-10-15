@@ -16,6 +16,7 @@ package edu.harvard.i2b2.crc.dao.setfinder;
  
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -54,7 +55,8 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 	Map projectParamMap = null;
 	boolean allowLargeTextValueConstrainFlag = true;
 	boolean queryWithoutTempTableFlag = false;
-	boolean allowProtectedQueryFlag = false;
+	//boolean allowProtectedQueryFlag = false;
+	List<String> userRoles = null;
 	
 	public QueryRequestSpringDao(DataSource dataSource,
 			DataSourceLookup dataSourceLookup) {
@@ -81,10 +83,10 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
 	}
 
-	@Override
-	public void setAllowProtectedQueryFlag(boolean allowProtectedQueryFlag)  { 
-		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
-	}
+	//@Override
+//	public void setAllowProtectedQueryFlag(boolean allowProtectedQueryFlag)  { 
+//		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
+//	}
 	
 	/**
 	 * Function to build sql from given query definition This function uses
@@ -120,16 +122,17 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 				temporalBuild.setProjectParamMap(this.projectParamMap);
 				temporalBuild.setAllowLargeTextValueConstrainFlag(allowLargeTextValueConstrainFlag);
 				temporalBuild.setQueryWithoutTempTableFlag(queryWithoutTempTableFlag);
+				temporalBuild.setUserRoles(userRoles);
 				
 				temporalBuild.startSqlBuild();
 				sql = temporalBuild.getSql();
 				ignoredItemMessage = temporalBuild.getIgnoredItemMessage();
 				processTimingMessage = temporalBuild.getProcessTimingMessage();
 				
-				if (temporalBuild.isProtectedQuery() && allowProtectedQueryFlag==false)
-					throw new I2B2DAOException("This query contains protected.");
-				if (temporalBuild.isProtectedQuery() && allowProtectedQueryFlag==false)
-					throw new I2B2DAOException("This query contains protected.");
+				//if (temporalBuild.isProtectedQuery() && allowProtectedQueryFlag==false)
+				//	throw new I2B2DAOException("This query contains protected.");
+				//if (temporalBuild.isProtectedQuery() && allowProtectedQueryFlag==false)
+			//		throw new I2B2DAOException("This query contains protected.");
 				if (temporalBuild.isTemporalQuery())
 						queryType = "TEMPORAL";
 				if (temporalBuild.isProtectedQuery())
@@ -186,6 +189,15 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 	@Override
 	public void setQueryWithoutTempTableFlag(boolean queryWithoutTempTableFlag) {
 		this.queryWithoutTempTableFlag = queryWithoutTempTableFlag;
+	}
+
+
+
+
+	@Override
+	public void setUserRoles(List<String> userRoles) {
+		this.userRoles = userRoles;
+		
 	}
 
 	

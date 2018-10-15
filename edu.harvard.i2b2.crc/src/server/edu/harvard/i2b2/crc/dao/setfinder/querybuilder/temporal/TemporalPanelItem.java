@@ -88,6 +88,7 @@ public abstract class TemporalPanelItem {
 	protected XmlValueType metaDataXml = null;
 	protected String factTable = "observation_fact";
 	protected boolean isProtected = false;
+	protected String ontologyProtection = null;
 	
 	/**
 	 * Constructor
@@ -142,8 +143,22 @@ public abstract class TemporalPanelItem {
 			operator = conceptType.getOperator();
 			columnName = conceptType.getColumnname();
 			metaDataXml = conceptType.getMetadataxml();
+			ontologyProtection = conceptType.getOntologyProtection();
 			if (conceptType.getProtectedAccess() != null)
 				isProtected = (conceptType.getProtectedAccess().equalsIgnoreCase("Y")?true:false);
+			
+			// If protected check roles
+			if (isProtected)
+			{
+				Boolean protectedAccess = false;
+				for (String s: parent.getUserRoles()) {
+					if (ontologyProtection.contains(s))
+						protectedAccess = true;
+					
+				}
+				if (protectedAccess == false)
+				throw new I2B2DAOException("This query contains protected.");
+			}
 			//OMOP addition
 			parseFactColumn(factTableColumn);
 		}

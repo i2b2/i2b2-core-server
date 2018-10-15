@@ -75,7 +75,7 @@ public class TemporalQuery {
 	private SecurityType userSecurityType = null;
 	private Map projectParamMap  = null;
 	private boolean allowLargeTextValueConstrainFlag = false;
-	private boolean allowProtectedQueryFlag = false;
+	private List<String> userRoles = null;
 	private TemporalQueryConstraintMapping constraintMapping = null;
 	private int maxPanelIndex = 0;
 	private int processingLevel = 1;
@@ -96,8 +96,8 @@ public class TemporalQuery {
 	 * @throws JAXBUtilException					exception thrown when errors arise from converting string to xml and vice versa
 	 * @throws I2B2Exception						exception thrown when i2b2 specific error arises
 	 */
-	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, String queryXml, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag) throws JAXBUtilException, I2B2Exception{
-		this(dataSourceLookup, projectParameterMap, queryXml, allowLargeTextValueConstrainFlag, allowProtectedQueryFlag, 1);
+	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, String queryXml, boolean allowLargeTextValueConstrainFlag, List<String> userRoles) throws JAXBUtilException, I2B2Exception{
+		this(dataSourceLookup, projectParameterMap, queryXml, allowLargeTextValueConstrainFlag, userRoles, 1);
 	}
 	
 	/**
@@ -110,7 +110,7 @@ public class TemporalQuery {
 	 * @throws JAXBUtilException					exception thrown when errors arise from converting string to xml and vice versa
 	 * @throws I2B2Exception						exception thrown when i2b2 specific error arises
 	 */
-	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, String queryXml, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag, int processingLevel) throws JAXBUtilException, I2B2Exception{
+	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, String queryXml, boolean allowLargeTextValueConstrainFlag, List<String> userRoles, int processingLevel) throws JAXBUtilException, I2B2Exception{
 		dsLookup = dataSourceLookup;
 		projectParamMap = projectParameterMap;
 		
@@ -124,7 +124,7 @@ public class TemporalQuery {
 	
 				
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
-		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
+		this.userRoles = userRoles;
 		this.processingLevel = processingLevel;
 		options = new TemporalQueryOptions();
 		if (getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER)){
@@ -146,17 +146,17 @@ public class TemporalQuery {
 	}
 	
 	
-	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, QueryDefinitionType queryDefinition, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag,
+	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, QueryDefinitionType queryDefinition, boolean allowLargeTextValueConstrainFlag, List<String> userRoles,
 			String queryProjectId,  SecurityType userSecurityType, SecurityType querySecurityType) throws JAXBUtilException, I2B2Exception{
-		this(dataSourceLookup, projectParameterMap, queryDefinition, allowLargeTextValueConstrainFlag, allowProtectedQueryFlag, 1, queryProjectId,  userSecurityType, querySecurityType);
+		this(dataSourceLookup, projectParameterMap, queryDefinition, allowLargeTextValueConstrainFlag, userRoles, 1, queryProjectId,  userSecurityType, querySecurityType);
 	}
 	
-	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, QueryDefinitionType queryDefinition, boolean allowLargeTextValueConstrainFlag, boolean allowProtectedQueryFlag, int processingLevel, 
+	public TemporalQuery(DataSourceLookup dataSourceLookup, Map projectParameterMap, QueryDefinitionType queryDefinition, boolean allowLargeTextValueConstrainFlag, List<String> userRoles, int processingLevel, 
 			String queryProjectId, SecurityType userSecurityType,  SecurityType querySecurityType) throws JAXBUtilException, I2B2Exception{
 		dsLookup = dataSourceLookup;
 		projectParamMap = projectParameterMap;
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
-		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
+		this.userRoles = userRoles;
 		this.processingLevel = processingLevel;
 		options = new TemporalQueryOptions();
 		
@@ -640,8 +640,8 @@ public class TemporalQuery {
 		return this.allowLargeTextValueConstrainFlag;
 	}
 	
-	protected boolean allowProtectedQueryFlag() {
-		return this.allowProtectedQueryFlag;
+	protected List<String> getUserRoles() {
+		return this.userRoles;
 	}
 	/**
 	 * Return Encounter Num

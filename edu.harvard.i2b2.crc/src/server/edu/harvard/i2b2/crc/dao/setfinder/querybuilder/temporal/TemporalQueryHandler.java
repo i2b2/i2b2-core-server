@@ -15,6 +15,7 @@
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
 
 
+import java.util.List;
 import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
@@ -43,7 +44,7 @@ public class TemporalQueryHandler extends CRCDAO {
 	private Map projectParamMap = null;
 	private StringBuffer processTimingStr = new StringBuffer();
 	private boolean allowLargeTextValueConstrainFlag = true;
-	private boolean allowProtectedQueryFlag = false;
+	private List<String> userRoles = null;
 	private boolean queryWithoutTempTableFlag = false;
 	private boolean isTemporalQuery = false;
 	private boolean isProtectedQuery = false;
@@ -93,12 +94,12 @@ public class TemporalQueryHandler extends CRCDAO {
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
 	}
 
-	public void setAllowProtectedQueryFlag(boolean allowProtectedQueryFlag)  { 
-		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
+	public void setUserRoles(List<String> userRoles)  { 
+		this.userRoles = userRoles;
 	}
 	
 	public String buildSql() throws JAXBUtilException, I2B2Exception {
-		TemporalQuery tQuery = new TemporalQuery(this.dataSourceLookup, this.projectParamMap, this.queryXML, this.allowLargeTextValueConstrainFlag, this.allowProtectedQueryFlag);
+		TemporalQuery tQuery = new TemporalQuery(this.dataSourceLookup, this.projectParamMap, this.queryXML, this.allowLargeTextValueConstrainFlag, this.userRoles);
 		if (this.queryWithoutTempTableFlag)
 			tQuery.getQueryOptions().setQueryConstraintLogic(QueryConstraintStrategy.DERIVED_TABLES);
 		String tQuerySql = tQuery.buildSql();

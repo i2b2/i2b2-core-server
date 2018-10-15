@@ -2207,8 +2207,8 @@ public class TemporalPanel implements Comparable<Object> {
 		return parent.allowLargeTextValueConstrainFlag();
 	}
 	
-	protected boolean allowProtectedQueryFlag() {
-		return parent.allowProtectedQueryFlag();
+	protected List<String> getUserRoles() {
+		return parent.getUserRoles();
 	}
 
 	/**

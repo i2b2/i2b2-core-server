@@ -14,6 +14,7 @@
  */
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
 
+import java.util.List;
 import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -34,7 +35,7 @@ public class TemporalQueryBuilder extends CRCDAO {
 	private Map projectParamMap = null;
 	private String processTimingFlag = "";
 	private boolean allowLargeTextValueConstrainFlag = true;
-	private boolean allowProtectedQueryFlag = false;
+	private List<String> userRoles = null;
 	private boolean queryWithoutTempTableFlag = false;
 	private boolean isTemporalQuery = false;
 	private boolean isProtectedQuery = false;
@@ -67,9 +68,9 @@ public class TemporalQueryBuilder extends CRCDAO {
 			boolean allowLargeTextValueConstrainFlag) {
 		this.allowLargeTextValueConstrainFlag = allowLargeTextValueConstrainFlag;
 	}
-	public void setAllowProtectedQueryFlag(
-			boolean allowProtectedQueryFlag) {
-		this.allowProtectedQueryFlag = allowProtectedQueryFlag;
+	public void setUserRoles(
+			List<String> userRoles) {
+		this.userRoles = userRoles;
 	}
 
 	public String getSql() {
@@ -109,7 +110,7 @@ public class TemporalQueryBuilder extends CRCDAO {
 		}
 		
 		queryTool.setAllowLargeTextValueConstrainFlag(allowLargeTextValueConstrainFlag);
-		queryTool.setAllowProtectedQueryFlag(allowProtectedQueryFlag);
+		queryTool.setUserRoles(userRoles);
 		queryTool.setQueryWithoutTempTableFlag(queryWithoutTempTableFlag);
 
 		String sql = queryTool.buildSql();
