@@ -2206,15 +2206,28 @@ public class ConceptDao extends JdbcDaoSupport {
 		if(termInfoType.isSynonyms() == false)
 			synonym = " and c_synonym_cd = 'N'";
 
-		String sql = "select distinct(c_facttablecolumn) from " + metadataSchema+tableName  + " where c_facttablecolumn is not null and c_fullname like ? "; 
+		String sql = "select distinct(c_facttablecolumn) from " + metadataSchema+tableName  + " where c_facttablecolumn is not null and c_fullname like ? {ESCAPE '?'}" ;
 		sql = sql + hidden + synonym ;
 
+		if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+			searchPath = StringUtil.escapeSQLSERVER(path);
+			searchPath += "%";
+		}
+
+		else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
+			searchPath = StringUtil.escapeORACLE(path); 
+			searchPath += "%";
+		}
+		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
+			searchPath = StringUtil.escapePOSTGRESQL(path); 
+			searchPath += "%";
+		}
 
 		ParameterizedRowMapper<String> columnMapper = getColumnMapper();
 
 		List queryResult = null;
 		try {
-			queryResult = jt.query(sql, columnMapper, searchPath+"%" );
+			queryResult = jt.query(sql, columnMapper, searchPath );
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			throw e;
