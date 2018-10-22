@@ -152,7 +152,7 @@ public abstract class TemporalPanelItem {
 			{
 				Boolean protectedAccess = false;
 				for (String s: parent.getUserRoles()) {
-					if (ontologyProtection.contains(s))
+					if (ontologyProtection != null && ontologyProtection.equalsIgnoreCase(s))
 						protectedAccess = true;
 					
 				}

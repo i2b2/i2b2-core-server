@@ -597,6 +597,13 @@ public class ConceptDao extends JdbcDaoSupport {
 				return name;
 			}
 		};
+		ParameterizedRowMapper<String> map3 = new ParameterizedRowMapper<String>() {
+			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+				String name = (rs.getString("c_ontology_protection"));
+				return name;
+			}
+		};
+
 
 
 
@@ -608,6 +615,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		String tableCd = StringUtil.getTableCd(termInfoType.getSelf());
 		String tableName=null;
 		String protectedAccess=null;
+		String ontologyProtection = null;
 		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
 		try {
 			tableName = jt.queryForObject(tableSql, map, tableCd);	    
@@ -622,7 +630,13 @@ public class ConceptDao extends JdbcDaoSupport {
 			log.error(e.getMessage());
 			throw e;
 		}
-
+		tableSql = "select c_ontology_protection from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
+		try {
+			ontologyProtection = jt.queryForObject(tableSql, map3, tableCd);	    
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw e;
+		}
 
 
 
@@ -647,7 +661,7 @@ public class ConceptDao extends JdbcDaoSupport {
 			synonym = " and c_synonym_cd = 'N'";
 
 		//		String sql = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + ""; 
-		String sql = "select '" + protectedAccess + "' as c_protected_access, null as c_ontology_protection, "  + parameters +" from " + metadataSchema+tableName  + " where c_fullname = ? "; 
+		String sql = "select '" + protectedAccess + "' as c_protected_access, '" + ontologyProtection + "' as c_ontology_protection, "  + parameters +" from " + metadataSchema+tableName  + " where c_fullname = ? "; 
 		sql = sql + hidden + synonym + " order by upper(c_name) ";
 
 		//log.info(sql + " " + path + " " + level);
