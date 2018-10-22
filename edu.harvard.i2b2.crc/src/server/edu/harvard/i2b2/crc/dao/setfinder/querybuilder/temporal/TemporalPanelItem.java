@@ -15,6 +15,7 @@
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
  
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
@@ -151,13 +152,16 @@ public abstract class TemporalPanelItem {
 			if (isProtected)
 			{
 				Boolean protectedAccess = false;
+				String[] dataProt = {"DATA_PROT"};
+				List<String> ontologyProtection = Arrays.asList(conceptType.getOntologyProtection() == null || conceptType.getOntologyProtection().equals("")?dataProt:conceptType.getOntologyProtection().split(","));
 				for (String s: parent.getUserRoles()) {
-					if (ontologyProtection != null && ontologyProtection.equalsIgnoreCase(s))
+					if (ontologyProtection.contains(s))
 						protectedAccess = true;
 					
 				}
+				
 				if (protectedAccess == false)
-				throw new I2B2DAOException("This query contains protected.");
+				 throw new I2B2DAOException("This query contains protected.");
 			}
 			//OMOP addition
 			parseFactColumn(factTableColumn);
