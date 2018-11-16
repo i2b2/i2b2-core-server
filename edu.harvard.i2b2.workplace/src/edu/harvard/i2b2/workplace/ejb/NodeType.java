@@ -15,7 +15,6 @@
  package edu.harvard.i2b2.workplace.ejb;
 
 import edu.harvard.i2b2.workplace.datavo.wdo.GetChildrenType;
-import edu.harvard.i2b2.workplace.datavo.wdo.FolderType;
 import edu.harvard.i2b2.workplace.util.StringUtil;
 
 

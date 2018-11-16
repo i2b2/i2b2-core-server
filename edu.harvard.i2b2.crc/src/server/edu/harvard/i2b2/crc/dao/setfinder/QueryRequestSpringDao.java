@@ -153,14 +153,15 @@ public class QueryRequestSpringDao extends CRCDAO implements IQueryRequestDao {
 				//		dataSourceLookup, queryRequestXml, encounterSetFlag);
 				//sql = queryUtil.getSetfinderSqlForQueryDefinition();
 				//ignoredItemMessage = queryUtil.getIgnoredItemMessage();
-			} else {
+			} 
+			/*else {
 				log
 						.warn("*** USING THE OLD QUERY GENERATOR *** QueryToolUtil.java");
 				QueryToolUtil queryUtil = new QueryToolUtil(dataSourceLookup);
 				sql = queryUtil.generateSQL(conn, queryRequestXml,
 						encounterSetFlag);
 				ignoredItemMessage = queryUtil.getIgnoredItemMessage();
-			}
+			} */
 
 		} catch (SQLException ex) {
 			log.error("Error while building sql", ex);

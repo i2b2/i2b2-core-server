@@ -69,7 +69,7 @@
 	<!-- =================================================================== -->
 	<target name="compile" depends="init,jaxb_gen" description="Compile files without cleaning">
 		<mkdir dir="${classes}" />
-		<javac destdir="${classes}" optimize="${javac.opt}" debug="${javac.debug}">
+		<javac destdir="${classes}" optimize="${javac.opt}" debug="true">
 			<src path="${src}/core" />
 			<src path="${gensrc}" />
 			<src path="test" />			

@@ -17,16 +17,10 @@ package edu.harvard.i2b2.workplace.delegate;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
-
 import edu.harvard.i2b2.workplace.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.ResponseMessageType;
-import edu.harvard.i2b2.workplace.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.workplace.datavo.wdo.FolderType;
 import edu.harvard.i2b2.workplace.datavo.wdo.FoldersType;
 import edu.harvard.i2b2.workplace.datavo.wdo.GetReturnType;
@@ -50,6 +44,7 @@ public class GetFoldersByProjectHandler extends RequestHandler {
 		setDbInfo(requestMsg.getMessageHeaderType());
 	}
 	
+	@Override
 	public String execute() throws I2B2Exception{
 		// call ejb and pass input object
 		FolderDao foldersDao = new FolderDao();

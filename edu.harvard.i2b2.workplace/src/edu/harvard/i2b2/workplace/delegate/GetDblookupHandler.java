@@ -91,7 +91,7 @@ public class GetDblookupHandler extends RequestHandler {
 				Iterator<DblookupType> it = response.iterator();
 				if (it.hasNext()) {
 					do {
-						DblookupType dblu = (DblookupType) it.next();
+						DblookupType dblu = it.next();
 						dblus.getDblookup().add(dblu);
 					} while (it.hasNext());
 					responseMessageType = MessageFactory.createBuildResponse(msgHdr, dblus);

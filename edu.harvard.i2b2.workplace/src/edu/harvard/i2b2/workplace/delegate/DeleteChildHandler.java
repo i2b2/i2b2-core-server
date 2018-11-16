@@ -37,6 +37,7 @@ public class DeleteChildHandler extends RequestHandler {
 
 	}
 	
+	@Override
 	public String execute() throws I2B2Exception{
 		// call ejb and pass input object
 		FolderDao deleteChildDao = new FolderDao();

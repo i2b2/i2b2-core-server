@@ -14,29 +14,13 @@
  */
 package edu.harvard.i2b2.workplace.delegate;
 
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
-import edu.harvard.i2b2.common.util.xml.XMLUtil;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.QueryDefinitionType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.RequestXmlType;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.ResponseMessageType;
-import edu.harvard.i2b2.workplace.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.workplace.datavo.wdo.ExportChildType;
 import edu.harvard.i2b2.workplace.datavo.pm.ProjectType;
 import edu.harvard.i2b2.workplace.dao.FolderDao;
-import edu.harvard.i2b2.workplace.util.WorkplaceJAXBUtil;
 import edu.harvard.i2b2.workplace.ws.ExportChildDataMessage;
 import edu.harvard.i2b2.workplace.ws.MessageFactory;
 
@@ -56,6 +40,7 @@ public class ExportChildHandler extends RequestHandler {
 			setDbInfo(requestMsg.getMessageHeaderType());
 	}
 	
+	@Override
 	public String execute() throws I2B2Exception {
 		// call ejb and pass input object
 		FolderDao exportChildDao = new FolderDao();

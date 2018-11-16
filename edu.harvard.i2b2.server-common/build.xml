@@ -140,7 +140,6 @@
 		<echo>Copying to ${jboss.home} directory</echo>
 		<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib">
 			<fileset dir="${lib}/spring" includes="**/*" />
-			<fileset dir="${lib}/jdom" includes="**/*" />
 			<fileset dir="${lib}/jcifs" includes="**/*" />			
 			<fileset dir="${lib}/jdbc" includes="**/*" />			
 			<fileset dir="${lib}/commons" includes="**/*" />	

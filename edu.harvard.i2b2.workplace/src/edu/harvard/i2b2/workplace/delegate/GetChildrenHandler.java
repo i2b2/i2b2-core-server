@@ -43,6 +43,7 @@ public class GetChildrenHandler extends RequestHandler {
 		setDbInfo(requestMsg.getMessageHeaderType());
 	}
 	
+	@Override
 	public String execute() throws I2B2Exception{
 		// call ejb and pass input object
 		FolderDao childDao = new FolderDao();

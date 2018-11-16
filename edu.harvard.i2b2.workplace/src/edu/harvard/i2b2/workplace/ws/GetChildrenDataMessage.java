@@ -22,10 +22,6 @@ import edu.harvard.i2b2.workplace.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.workplace.datavo.wdo.GetChildrenType;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-
 
 /**
  * The GetChildrenDataMessage class is a helper class to build Workplace messages in the

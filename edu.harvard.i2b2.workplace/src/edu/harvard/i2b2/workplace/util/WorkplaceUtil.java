@@ -16,11 +16,6 @@
 package edu.harvard.i2b2.workplace.util;
 
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -224,7 +219,7 @@ public class WorkplaceUtil {
      * @throws I2B2Exception
      */
     public DataSource getDataSource(String dataSourceName) throws I2B2Exception {    	
-    	dataSource = (DataSource) serviceLocator
+    	dataSource = serviceLocator
 		.getAppServerDataSource(dataSourceName);
     	return dataSource;
   

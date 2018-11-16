@@ -27,27 +27,17 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.DOMOutputter;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
 import edu.harvard.i2b2.common.util.xml.XMLUtil;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.CrcXmlResultResponseType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.MasterInstanceResultResponseType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.MasterResponseType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.RequestXmlType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.ResultResponseType;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.workplace.datavo.pm.ProjectType;
 import edu.harvard.i2b2.workplace.datavo.wdo.AnnotateChildType;
@@ -260,6 +250,7 @@ public class FolderDao extends JdbcDaoSupport {
 		String entriesSql = "select c_name  from " +  metadataSchema +  "workplace_access where LOWER(c_user_id) = ? and LOWER(c_group_id) = ?"; 
 
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = rs.getString("c_name") ;
 				return name;
@@ -301,6 +292,7 @@ public class FolderDao extends JdbcDaoSupport {
 		String tableSql = "select distinct(c_table_cd), c_table_name from " +  metadataSchema +  "workplace_access"; 
 
 		ParameterizedRowMapper<String> map2 = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = "\\\\" + rs.getString("c_table_cd") + "\\" + rs.getString("c_table_name");
 				return name;
@@ -432,6 +424,7 @@ public class FolderDao extends JdbcDaoSupport {
 		}
 
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = (rs.getString("c_table_name"));
 				return name;
@@ -637,6 +630,7 @@ public class FolderDao extends JdbcDaoSupport {
 		setDataSource(dbInfo.getDb_dataSource());
 		
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = "\\\\" + rs.getString("c_table_cd") + "\\" + rs.getString("c_table_name");
 				return name;
@@ -740,6 +734,7 @@ public class FolderDao extends JdbcDaoSupport {
 		setDataSource(dbInfo.getDb_dataSource());
 		
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = "\\\\" + rs.getString("c_table_cd") + "\\" + rs.getString("c_table_name");
 				return name;
@@ -863,6 +858,7 @@ public class FolderDao extends JdbcDaoSupport {
 		setDataSource(dbInfo.getDb_dataSource());
 		
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = rs.getString("c_share_id") ;
 				return name;
@@ -918,6 +914,7 @@ public class FolderDao extends JdbcDaoSupport {
 		}
 
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = (rs.getString("c_table_name"));
 				return name;
@@ -951,6 +948,7 @@ public class FolderDao extends JdbcDaoSupport {
 		// get original name and work xml
 		String sql = "select c_name, c_work_xml, c_work_xml_i2b2_type from " + metadataSchema + tableName + " where c_index = ? ";
 		ParameterizedRowMapper<FolderType> map2 = new ParameterizedRowMapper<FolderType>() {
+			@Override
 			public FolderType mapRow(ResultSet rs, int rowNum) throws SQLException {
 				FolderType child = new FolderType();
 				child.setName(rs.getString("c_name"));
@@ -1079,6 +1077,7 @@ public class FolderDao extends JdbcDaoSupport {
 		}
 
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = (rs.getString("c_table_name"));
 				return name;
@@ -1147,6 +1146,7 @@ public class FolderDao extends JdbcDaoSupport {
 		}
 
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = (rs.getString("c_table_name"));
 				return name;
@@ -1216,6 +1216,7 @@ public class FolderDao extends JdbcDaoSupport {
 		}
 
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = (rs.getString("c_table_name"));
 				return name;
@@ -1305,6 +1306,7 @@ public class FolderDao extends JdbcDaoSupport {
 		}
 
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String name = (rs.getString("c_table_name"));
 				return name;
@@ -1402,6 +1404,7 @@ public class FolderDao extends JdbcDaoSupport {
 		}
 				
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 							
 				String resultRow = "\\tablename=" +  rs.getString("c_table_name") + "\\share_id=" + rs.getString("c_share_id") + "\\user_id=" + rs.getString("c_user_id") ;
@@ -1477,6 +1480,7 @@ public class FolderDao extends JdbcDaoSupport {
 			
 			List result;
 			ParameterizedRowMapper<String> mapTocheckAccess = new ParameterizedRowMapper<String>() {
+				@Override
 				public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 								
 					String resultRow = "\\share_id=" + rs.getString("c_share_id") + "\\user_id=" + rs.getString("c_user_id") + "\\type=" + rs.getString("c_work_xml_i2b2_type") ;
@@ -1538,6 +1542,7 @@ public class FolderDao extends JdbcDaoSupport {
 			
 			List resultingIndx;
 			ParameterizedRowMapper<String> mapForIndexes = new ParameterizedRowMapper<String>() {
+				@Override
 				public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 					String name = (rs.getString("c_index"));
 					return name;
@@ -1633,6 +1638,7 @@ public class FolderDao extends JdbcDaoSupport {
 		String folderSql = "select c_index from " + metadataSchema+tableName + " where c_parent_index = ? and c_visualattributes like 'F%' ";
 
 		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 				String index = (rs.getString("c_index"));
 				return index;
@@ -1660,6 +1666,7 @@ public class FolderDao extends JdbcDaoSupport {
 	private ParameterizedRowMapper<FolderType> getMapper(final String type, final boolean isBlob, final String tableCd, final String dbType){
 
 		ParameterizedRowMapper<FolderType> mapper = new ParameterizedRowMapper<FolderType>() {
+			@Override
 			public FolderType mapRow(ResultSet rs, int rowNum) throws SQLException {
 				FolderType child = new FolderType();
 				//TODO fix this for all/+blob
@@ -1711,17 +1718,15 @@ public class FolderDao extends JdbcDaoSupport {
 							//c_xml = JDBCUtil.getClobString(xml_clob);
 							if ((c_xml!=null)&&(c_xml.trim().length()>0)&&(!c_xml.equals("(null)")))
 							{
-								SAXBuilder parser = new SAXBuilder();
-								java.io.StringReader xmlStringReader = new java.io.StringReader(c_xml);
+								//SAXBuilder parser = new SAXBuilder();
+								//java.io.StringReader xmlStringReader = new java.io.StringReader(c_xml);
 								Element rootElement = null;
 								try {
-									org.jdom.Document metadataDoc = parser.build(xmlStringReader);
-									org.jdom.output.DOMOutputter out = new DOMOutputter(); 
-									Document doc = out.output(metadataDoc);
+									//org.jdom.Document metadataDoc = parser.build(xmlStringReader);
+									Document doc = XMLUtil.loadXMLFrom(new java.io.ByteArrayInputStream(c_xml.getBytes()));
+									//org.jdom.output.DOMOutputter out = new DOMOutputter(); 
+									//Document doc = out.output(metadataDoc);
 									rootElement = doc.getDocumentElement();
-								} catch (JDOMException e) {
-									log.error(e.getMessage());
-									child.setWorkXml(null);
 								} catch (IOException e1) {
 									log.error(e1.getMessage());
 									child.setWorkXml(null);
@@ -1755,17 +1760,15 @@ public class FolderDao extends JdbcDaoSupport {
 							c_xml = JDBCUtil.getClobString(xml_schema_clob);
 							if ((c_xml!=null)&&(c_xml.trim().length()>0)&&(!c_xml.equals("(null)")))
 							{
-								SAXBuilder parser = new SAXBuilder();
-								java.io.StringReader xmlStringReader = new java.io.StringReader(c_xml);
 								Element rootElement = null;
 								try {
-									org.jdom.Document metadataDoc = parser.build(xmlStringReader);
-									org.jdom.output.DOMOutputter out = new DOMOutputter(); 
-									Document doc = out.output(metadataDoc);
+									//org.jdom.Document metadataDoc = parser.build(xmlStringReader);
+									Document doc = XMLUtil.loadXMLFrom(new java.io.ByteArrayInputStream(c_xml.getBytes()));
+									//org.jdom.output.DOMOutputter out = new DOMOutputter(); 
+									//Document doc = out.output(metadataDoc);
 									rootElement = doc.getDocumentElement();
-								} catch (JDOMException e) {
-									log.error(e.getMessage());
-									child.setWorkXmlSchema(null);
+
+								
 								} catch (IOException e1) {
 									log.error(e1.getMessage());
 									child.setWorkXmlSchema(null);

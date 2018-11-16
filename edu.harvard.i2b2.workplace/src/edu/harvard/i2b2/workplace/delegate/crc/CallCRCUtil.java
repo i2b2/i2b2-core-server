@@ -38,24 +38,11 @@ import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 
 import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.CrcXmlResultResponseType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.InstanceRequestType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.InstanceResponseType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.InstanceResultResponseType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.ItemType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.MasterInstanceResultResponseType;
 import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.MasterRequestType;
 import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.MasterResponseType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.PanelType;
 import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.PsmQryHeaderType;
 import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.PsmRequestTypeType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.QueryDefinitionRequestType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.QueryDefinitionType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.ResponseType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.ResultOutputOptionListType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.ResultRequestType;
-import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.ResultResponseType;
-
 import edu.harvard.i2b2.workplace.datavo.i2b2message.ApplicationType;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.FacilityType;

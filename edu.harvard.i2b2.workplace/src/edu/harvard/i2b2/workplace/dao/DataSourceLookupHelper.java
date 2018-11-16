@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.workplace.ejb.DBInfoType;
-import edu.harvard.i2b2.workplace.ejb.DataSourceLookup;
 
 public class DataSourceLookupHelper {
 

@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src/core"/>
 	<classpathentry kind="src" path="gensrc"/>
-	<classpathentry exported="true" kind="lib" path="lib/jdom/jdom.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/axis2-1.6.1/activation-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/axis2-1.6.1/antlr-2.7.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/axis2-1.6.1/axiom-api-1.2.12.jar"/>
@@ -67,8 +66,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/axis2-1.6.1/xmlbeans-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/axis2-1.6.1/XmlSchema-1.4.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-logging-1.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jdom/jdom-contrib.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring/spring-2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring/spring-2.0.jar" sourcepath="/Users/mem61/.m2/repository/org/springframework/spring/2.5.6.SEC03/spring-2.5.6.SEC03-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

@@ -15,12 +15,8 @@
  */
 package edu.harvard.i2b2.workplace.ws;
 
-import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.workplace.datavo.i2b2message.ResponseMessageType;
-import edu.harvard.i2b2.workplace.delegate.GetChildrenHandler;
 import edu.harvard.i2b2.workplace.delegate.RequestHandler;
 
-import org.apache.axiom.om.OMElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -77,7 +73,8 @@ public class ExecutorRunnable implements Runnable {
         this.outputString = outputString;
     }
 
-    public void run() {
+    @Override
+	public void run() {
         try {
             outputString = reqHandler.execute();
             setJobCompleteFlag(true);

@@ -56,35 +56,6 @@ public class QueryProcessorUtilTest {
 		}
 	}
 
-	@Test
-	public void testSetfinderQueryBuilder() throws Exception {
-		DataSourceLookup dataSourceLookup = (DataSourceLookup) QueryProcessorUtil
-				.getInstance().getSpringBeanFactory().getBean(
-						"TestDataSourceLookup");
-
-		QueryToolUtil queryUtil = new QueryToolUtil(dataSourceLookup);
-		// QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-		// Connection conn = qpUtil.getManualConnection();
-		Connection conn = null;
-		// assertNotNull("check database connection not null",conn);
-
-		// String filename = testFileDir
-		// +
-		// "/edu.harvard.i2b2.crc.dao.setfinder.querybuilder/setfinder_query_old.xml"
-		// ;
-
-		// String filename = testFileDir + "/setfinder_250_concepts_1.xml";
-		// String filename = testFileDir + "/setfinder_query.xml";
-		// String filename = testFileDir + "/setfinder_item_nonexist.xml";
-		String filename = testFileDir + "/setfinder_query_1.xml";
-		String xml = CRCAxisAbstract.getQueryString(filename);
-		String sql = queryUtil.generateSQL(conn, xml, true);
-		assertNotNull("check sql not null", sql);
-		System.out.println("Generated SQL " + sql);
-		System.out.println("Ignored Message "
-				+ queryUtil.getIgnoredItemMessage());
-
-	}
 
 	@Ignore
 	@Test

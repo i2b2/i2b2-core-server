@@ -27,9 +27,6 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.DOMOutputter;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
@@ -44,6 +41,7 @@ import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
+import edu.harvard.i2b2.common.util.xml.XMLUtil;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetCategoriesType;
@@ -311,18 +309,16 @@ public class ConceptDao extends JdbcDaoSupport {
 
 							if ((c_xml!=null)&&(c_xml.trim().length()>0)&&(!c_xml.equals("(null)")))
 							{
-								SAXBuilder parser = new SAXBuilder();
+								//SAXBuilder parser = new SAXBuilder();
 								java.io.StringReader xmlStringReader = new java.io.StringReader(c_xml);
 								Element rootElement = null;
 								try {
-									org.jdom.Document metadataDoc = parser.build(xmlStringReader);
-									org.jdom.output.DOMOutputter out = new DOMOutputter(); 
-									Document doc = out.output(metadataDoc);
+									Document doc = XMLUtil.loadXMLFrom(new java.io.ByteArrayInputStream(c_xml.getBytes()));
 									rootElement = doc.getDocumentElement();
-								} catch (JDOMException e) {
+								} catch (IOException e) {
 									log.error(e.getMessage());
 									concept.setMetadataxml(null);
-								} catch (IOException e) {
+								} catch (Exception e) {
 									log.error(e.getMessage());
 									concept.setMetadataxml(null);
 								}
@@ -1131,18 +1127,14 @@ public class ConceptDao extends JdbcDaoSupport {
 					}else {
 						if ((c_xml!=null)&&(c_xml.trim().length()>0)&&(!c_xml.equals("(null)")))
 						{
-							SAXBuilder parser = new SAXBuilder();
-							java.io.StringReader xmlStringReader = new java.io.StringReader(c_xml);
 							Element rootElement = null;
 							try {
-								org.jdom.Document metadataDoc = parser.build(xmlStringReader);
-								org.jdom.output.DOMOutputter out = new DOMOutputter(); 
-								Document doc = out.output(metadataDoc);
+								Document doc = XMLUtil.loadXMLFrom(new java.io.ByteArrayInputStream(c_xml.getBytes()));
 								rootElement = doc.getDocumentElement();
-							} catch (JDOMException e) {
+							} catch (IOException e) {
 								log.error(e.getMessage());
 								child.setMetadataxml(null);
-							} catch (IOException e1) {
+							} catch (Exception e1) {
 								log.error(e1.getMessage());
 								child.setMetadataxml(null);
 							}
@@ -1439,18 +1431,14 @@ public class ConceptDao extends JdbcDaoSupport {
 
 						if ((c_xml!=null)&&(c_xml.trim().length()>0)&&(!c_xml.equals("(null)")))
 						{
-							SAXBuilder parser = new SAXBuilder();
-							java.io.StringReader xmlStringReader = new java.io.StringReader(c_xml);
 							Element rootElement = null;
 							try {
-								org.jdom.Document metadataDoc = parser.build(xmlStringReader);
-								org.jdom.output.DOMOutputter out = new DOMOutputter(); 
-								Document doc = out.output(metadataDoc);
+								Document doc = XMLUtil.loadXMLFrom(new java.io.ByteArrayInputStream(c_xml.getBytes()));
 								rootElement = doc.getDocumentElement();
-							} catch (JDOMException e) {
+							} catch (IOException e) {
 								log.error(e.getMessage());
 								child.setMetadataxml(null);
-							} catch (IOException e1) {
+							} catch (Exception e1) {
 								log.error(e1.getMessage());
 								child.setMetadataxml(null);
 							}

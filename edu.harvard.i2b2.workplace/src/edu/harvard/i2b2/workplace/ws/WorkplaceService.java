@@ -27,8 +27,6 @@ import edu.harvard.i2b2.workplace.ws.SetDblookupDataMessage;
 import edu.harvard.i2b2.workplace.delegate.RequestHandler;
 import edu.harvard.i2b2.workplace.ws.ExecutorRunnable;
 import edu.harvard.i2b2.workplace.ws.MessageFactory;
-import edu.harvard.i2b2.workplace.datavo.i2b2message.MessageHeaderType;
-import edu.harvard.i2b2.workplace.datavo.i2b2message.ResponseHeaderType;
 import edu.harvard.i2b2.workplace.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.workplace.delegate.AddChildHandler;
 import edu.harvard.i2b2.workplace.delegate.AnnotateChildHandler;
