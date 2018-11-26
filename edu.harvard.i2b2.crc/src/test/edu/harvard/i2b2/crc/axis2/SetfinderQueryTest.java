@@ -7533,6 +7533,45 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			assertTrue(false);
 		}
 	}
+	
+	@Test
+	public void AllIdentityTests() throws Exception {
+		//		String filename = testFileDir + "/SQP1I1_Circulatory_Same_[66]_3016ms.xml";
+		try { 
+			File f = new File(testFileDir + "/identity");
+			ArrayList<String> names = new ArrayList<String>(Arrays.asList(f.list()));
+
+			for (String filename: names) {
+				if (filename.startsWith("QT_SI")) {
+					int result = Integer.parseInt(filename.substring(filename.indexOf('[')+1,filename.indexOf(']') ));
+					filename = testFileDir + "/identity/" + filename;
+					String requestString = getQueryString(filename);
+					OMElement requestElement = convertStringToOMElement(requestString); 
+					OMElement responseElement = getServiceClient(setfinderUrl).sendReceive(requestElement);
+
+					//read test file and store query instance ;
+					//unmarshall this response string 
+					JAXBElement responseJaxb = CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+					ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+					JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+					MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
+
+					assertNotNull(masterInstanceResult);
+					for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
+					{
+						if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
+							assertEquals("Working on: " + filename, results.getSetSize(), result);
+						else
+							assertTrue(false);
+					}
+				}
+			}
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}	
 	public static RequestMessageType buildRequestMessage(PsmQryHeaderType requestHeaderType, RequestType requestType) {
 		//create body type
 		BodyType bodyType = new BodyType();
