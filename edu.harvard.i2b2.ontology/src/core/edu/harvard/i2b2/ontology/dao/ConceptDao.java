@@ -600,9 +600,6 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		};
 
-
-
-
 		String hidden = "";
 		if(termInfoType.isHiddens() == false)
 			hidden = " and c_visualattributes not like '_H%'";
@@ -726,15 +723,11 @@ public class ConceptDao extends JdbcDaoSupport {
 		};
 
 
-		String hidden = "";
-		if(vocabType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%'";
-
 		//extract table code
 		String tableCd = vocabType.getCategory();
 		List<ConceptType> categoryResult;
 
-		String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
+		String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ? " ;
 		try {
 			categoryResult = jt.query(tableSql, map, tableCd);	    
 		} catch (DataAccessException e) {
@@ -850,6 +843,12 @@ public class ConceptDao extends JdbcDaoSupport {
 				compareName = null;
 			}
 		}
+		
+
+		String hidden = "";
+		if(vocabType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%'";
+
 
 		String synonym = "";
 		if(vocabType.isSynonyms() == false)
@@ -1784,15 +1783,10 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		};
 
-		String hidden = "";
-		if(vocabType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%' ";
-
-
 		//extract table code
 		String tableCd = StringUtil.getTableCd(vocabType.getSelf());
 		String tableName=null;
-		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
+		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " ;
 		try {
 			tableName = jt.queryForObject(tableSql, map, tableCd);	    
 		} catch (DataAccessException e) {
@@ -1886,6 +1880,10 @@ public class ConceptDao extends JdbcDaoSupport {
 		}
 
 		String appliedPath   = " and m_applied_path = '" + modifierPath + "' ";
+
+		String hidden = "";
+		if(vocabType.isHiddens() == false)
+			hidden = " and c_visualattributes not like '_H%' ";
 
 		String synonym = "";
 		if(vocabType.isSynonyms() == false)
