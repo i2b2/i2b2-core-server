@@ -501,7 +501,7 @@ public class CallOntologyUtil {
 		// build message body
 		GetTermInfoType getTermInfo = new GetTermInfoType();
 		getTermInfo.setSelf(conceptPath);
-		getTermInfo.setHiddens(false);
+		getTermInfo.setHiddens(true);
 		getTermInfo.setSynonyms(false);
 		getTermInfo.setType("core");
 		getTermInfo.setBlob(false);
