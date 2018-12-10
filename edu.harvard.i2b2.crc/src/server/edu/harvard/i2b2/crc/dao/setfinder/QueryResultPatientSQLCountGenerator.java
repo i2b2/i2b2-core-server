@@ -136,7 +136,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			if (itemCountSql.contains("{{{DX}}}"))
 				itemCountSql = itemCountSql.replace("{{{DX}}}", TEMP_DX_TABLE);
 			if (itemCountSql.contains("{{{DATABASE_NAME}}}"))
-				itemCountSql = itemCountSql.replaceAll("{{{DATABASE_NAME}}}", this.getDbSchemaName());
+				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DATABASE_NAME\\}\\}\\}", this.getDbSchemaName());
 
 
 			String[] sqls = itemCountSql.split("<\\*>");
