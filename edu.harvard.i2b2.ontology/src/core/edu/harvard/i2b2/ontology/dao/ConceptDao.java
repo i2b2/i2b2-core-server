@@ -268,7 +268,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			queryResult = jt.query(categoriesSql, mapper);
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
+			log.error("Get Categories " +e.getMessage());
 			throw new I2B2DAOException("Database Error");
 		}
 		//}
@@ -285,10 +285,6 @@ public class ConceptDao extends JdbcDaoSupport {
 						//			        	ResultSetMetaData rsmd = rs.getMetaData();
 						//			        	rsmd.get
 
-
-
-
-
 						String c_xml = null;
 						try {
 
@@ -304,8 +300,6 @@ public class ConceptDao extends JdbcDaoSupport {
 						if(c_xml == null){
 							concept.setMetadataxml(null);
 						}else {
-
-
 
 							if ((c_xml!=null)&&(c_xml.trim().length()>0)&&(!c_xml.equals("(null)")))
 							{
@@ -424,7 +418,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			tableName = jt.queryForObject(tableSql, map, tableCd);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
+			log.error("Get Children " + e.getMessage());
 			throw new I2B2DAOException("Database Error");
 		}
 
@@ -440,7 +434,7 @@ public class ConceptDao extends JdbcDaoSupport {
 			level = jt.queryForInt(levelSql, path);
 		} catch (DataAccessException e1) {
 			// should only get 1 result back  (path == c_fullname which should be unique)
-			log.error(e1.getMessage());
+			log.error("Get Children " + e1.getMessage());
 			throw new I2B2DAOException("Database Error");
 		}
 
@@ -478,7 +472,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			queryResult = jt.query(sql, mapper, searchPath, (level + 1) );
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			log.error("Get Children " + e.getMessage());
 			throw new I2B2DAOException("Database Error");
 		}
 
@@ -523,8 +517,8 @@ public class ConceptDao extends JdbcDaoSupport {
 					try {
 						queryCount = jt.queryForInt(sqlCount);
 					} catch (DataAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error("Get Children " + e.getMessage());
+						throw new I2B2DAOException("Database Error");
 					}
 					//				log.debug("COUNT " + queryCount + " for " +sqlCount);
 
@@ -550,7 +544,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		//   <parent>\\testrpdr\RPDR\HealthHistory\PHY\Health Maintenance\Mammogram\Mammogram - Deferred</parent> 
 	}
 
-	public List findByFullname(final GetTermInfoType termInfoType, ProjectType projectInfo, DBInfoType dbInfo) throws DataAccessException, I2B2Exception{
+	public List findByFullname(final GetTermInfoType termInfoType, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception{
 
 		// find return parameters
 		String parameters = DEFAULT;		
@@ -613,25 +607,23 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			tableName = jt.queryForObject(tableSql, map, tableCd);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Term Info " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}                            
 		tableSql = "select distinct(c_protected_access) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
 		try {
 			protectedAccess = jt.queryForObject(tableSql, map2, tableCd);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Term Info " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 		tableSql = "select c_ontology_protection from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
 		try {
 			ontologyProtection = jt.queryForObject(tableSql, map3, tableCd);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Term Info " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
-
-
 
 		String path = StringUtil.getPath(termInfoType.getSelf());
 		/*
@@ -665,8 +657,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			queryResult = jt.query(sql, mapper, searchPath );
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Term Info " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 		log.debug("Term Info result size = " + queryResult.size());
@@ -678,7 +670,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 
 
-	public List findNameInfo(final VocabRequestType vocabType, ProjectType projectInfo, DBInfoType dbInfo) throws DataAccessException, I2B2Exception{
+	public List findNameInfo(final VocabRequestType vocabType, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception{
 
 		// find return parameters
 		String parameters = NAME_DEFAULT;		
@@ -731,8 +723,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			categoryResult = jt.query(tableSql, map, tableCd);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Search by Name " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 		String nameInfoSql = null;
@@ -744,8 +736,10 @@ public class ConceptDao extends JdbcDaoSupport {
 		//			value = value.replaceAll("'", "''");
 		//		}
 
-		if (categoryResult.size() == 0)
+		if (categoryResult.size() == 0){
+			log.error("Non existent tableCd category passed in getNameInfo request " + tableCd);
 			return null;
+		}
 
 		String category = categoryResult.get(0).getKey();
 		if(category.contains("'")){
@@ -867,15 +861,15 @@ public class ConceptDao extends JdbcDaoSupport {
 			else
 				queryResult = jt.query(nameInfoSql, mapper);
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Search by Name " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 		log.debug("search by NameInfo result size = " + queryResult.size());
 		return queryResult;
 
 	}
 
-	public List findCodeInfo(final VocabRequestType vocabType, ProjectType projectInfo, DBInfoType dbInfo) throws DataAccessException, I2B2Exception{
+	public List findCodeInfo(final VocabRequestType vocabType, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception{
 
 		// find return parameters
 		String parameters = NAME_DEFAULT;	
@@ -929,8 +923,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			tableNames = jt.query(tableSql, map);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Search by Code " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 		String synonym = "";
@@ -1017,8 +1011,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			queryResult = jt.query(codeInfoSql, mapper);
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Search by Code " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 		log.debug("searchByCodeInfo result size = " + queryResult.size());
@@ -1262,7 +1256,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			tableName = jt.queryForObject(tableSql, map, tableCd);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
+			log.error("Find Modifiers " + e.getMessage());
 			throw new I2B2DAOException("Database Error");
 		}
 
@@ -1353,7 +1347,7 @@ public class ConceptDao extends JdbcDaoSupport {
 			//			queryResult = jt.query(sql, modMapper, path );
 			queryResult = jt.query(sql, modMapper);
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
+			log.error("Find Modifiers " + e.getMessage());
 			throw new I2B2DAOException("Database Error");
 		}
 		log.debug("findModifiers result size " + queryResult.size());
@@ -1532,7 +1526,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			tableName = jt.queryForObject(tableSql, map, tableCd);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
+			log.error("Get Modifier Children " + e.getMessage());
 			throw new I2B2DAOException("Database Error");
 		}
 
@@ -1558,7 +1552,7 @@ public class ConceptDao extends JdbcDaoSupport {
 			level = jt.queryForInt(levelSql, path, modifierChildrenType.getAppliedPath());
 		} catch (DataAccessException e1) {
 			// should only get 1 result back  (path == c_fullname which should be unique)
-			log.error(e1.getMessage());
+			log.error("Get Modifier Children " + e1.getMessage());
 			throw new I2B2DAOException("Database Error");
 		}
 
@@ -1629,7 +1623,7 @@ public class ConceptDao extends JdbcDaoSupport {
 			queryResult = jt.query(sql, modMapper, (level+1), searchPath,  StringUtil.getLiteralPath(modifierChildrenType.getAppliedConcept()),
 					StringUtil.getLiteralPath(modifierChildrenType.getAppliedConcept()));
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
+			log.error("Get Modifier Children " + e.getMessage());
 			throw new I2B2DAOException("Database Error");
 		}
 
@@ -1643,7 +1637,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 
 
-	public List findByFullname(final GetModifierInfoType modifierInfoType, ProjectType projectInfo, DBInfoType dbInfo) throws DataAccessException, I2B2Exception{
+	public List findByFullname(final GetModifierInfoType modifierInfoType, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception{
 
 		// find return parameters
 		String parameters = MOD_DEFAULT;	
@@ -1689,8 +1683,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			tableName = jt.queryForObject(tableSql, map, tableCd);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Modifier " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 		String path = StringUtil.getPath(modifierInfoType.getSelf());
@@ -1723,8 +1717,8 @@ public class ConceptDao extends JdbcDaoSupport {
 			queryResult = jt.query(sqlWpath, modMapper, searchPath, modifierInfoType.getAppliedPath());
 
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Modifier " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 		if(queryResult.size() == 0){
@@ -1734,8 +1728,8 @@ public class ConceptDao extends JdbcDaoSupport {
 				queryResult = jt.query(sql, modMapper, searchPath);
 
 			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw e;
+				log.error("Get Modifier " + e.getMessage());
+				throw new I2B2DAOException("Database Error");
 			}
 		}
 
@@ -1746,7 +1740,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 	}
 
-	public List findModifierNameInfo(final VocabRequestType vocabType, ProjectType projectInfo, DBInfoType dbInfo) throws DataAccessException, I2B2Exception{
+	public List findModifierNameInfo(final VocabRequestType vocabType, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception{
 
 		// find return parameters
 		String parameters = NAME_DEFAULT;		
@@ -1792,8 +1786,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			tableName = jt.queryForObject(tableSql, map, tableCd);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Modifier by name " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 		//   prevent SQL injection and also catch case where the value contains an (')
@@ -1941,8 +1935,8 @@ public class ConceptDao extends JdbcDaoSupport {
 			else
 				queryResult = jt.query(modNameInfoSql, modMapper);
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Modifier by name " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 		log.debug("Mod search by name result size = " + queryResult.size());
@@ -1952,7 +1946,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 	}
 
-	public List findModifierCodeInfo(final VocabRequestType vocabType, ProjectType projectInfo, DBInfoType dbInfo) throws DataAccessException, I2B2Exception{
+	public List findModifierCodeInfo(final VocabRequestType vocabType, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception{
 
 		// find return parameters
 		String parameters = NAME_DEFAULT;	
@@ -2005,8 +1999,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			tableName = jt.queryForObject(tableSql, map, tableCd);	    
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Modifier by Code " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 		String synonym = "";
@@ -2119,8 +2113,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			queryResult = jt.query(modCodeInfoSql, modMapper);
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Modifier by Code " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 
@@ -2130,7 +2124,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 	} 
 
-	public List findDerivedFactColumns(final GetTermInfoType termInfoType, ProjectType projectInfo, DBInfoType dbInfo) throws DataAccessException, I2B2Exception{
+	public List findDerivedFactColumns(final GetTermInfoType termInfoType, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception{
 
 		String metadataSchema = dbInfo.getDb_fullSchema();
 		setDataSource(dbInfo.getDb_dataSource());
@@ -2174,16 +2168,16 @@ public class ConceptDao extends JdbcDaoSupport {
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd, "N");	    
 			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw e;
+				log.error("Get Derived Fact Columns " + e.getMessage());
+				throw new I2B2DAOException("Database Error");
 			}
 		}else {
 			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ? " + hidden;
 			try {
 				tableName = jt.queryForObject(tableSql, map, tableCd);	    
 			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw e;
+				log.error("Get Derived Fact Columns " + e.getMessage());
+				throw new I2B2DAOException("Database Error");
 			}
 		}
 
@@ -2231,8 +2225,8 @@ public class ConceptDao extends JdbcDaoSupport {
 		try {
 			queryResult = jt.query(sql, columnMapper, searchPath );
 		} catch (DataAccessException e) {
-			log.error(e.getMessage());
-			throw e;
+			log.error("Get Derived Fact Columna " + e.getMessage());
+			throw new I2B2DAOException("Database Error");
 		}
 
 		log.debug("Derived Fact columns result size = " + queryResult.size());
