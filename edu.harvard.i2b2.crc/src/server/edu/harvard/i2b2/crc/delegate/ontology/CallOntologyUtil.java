@@ -459,7 +459,7 @@ public class CallOntologyUtil {
 		messageHeaderType.setReceivingFacility(facilityType);
 		// build message body
 		VocabRequestType getCodeInfo = new VocabRequestType();
-		getCodeInfo.setHiddens(false);
+		getCodeInfo.setHiddens(true);
 		getCodeInfo.setSynonyms(false);
 		getCodeInfo.setType("core");
 		getCodeInfo.setBlob(false);
