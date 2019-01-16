@@ -940,34 +940,37 @@ public class ConceptDao extends JdbcDaoSupport {
 		String whereClause = null;
 
 		String compareCode = value.toUpperCase();
-		if(dbType.toUpperCase().equals("SQLSERVER")){
-			compareCode = StringUtil.escapeSQLSERVER(compareCode);
-		}
-		else if(dbType.toUpperCase().equals("ORACLE")){
-			compareCode = StringUtil.escapeORACLE(compareCode);
-		}
-		else if(dbType.toUpperCase().equals("POSTGRESQL")){
-			compareCode = StringUtil.escapePOSTGRESQL(compareCode);
-		}
-
+		
 		if(vocabType.getMatchStr().getStrategy().equals("exact")) {
 			whereClause = " where upper(c_basecode) = '" + compareCode+ "'";
 		}
 
-		else if(vocabType.getMatchStr().getStrategy().equals("left")){
-			whereClause = " where upper(c_basecode) like '" + compareCode + "%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
-		}
+		else { // need escape logic for like operator
+			
+			if(dbType.toUpperCase().equals("SQLSERVER")){
+				compareCode = StringUtil.escapeSQLSERVER(compareCode);
+			}
+			else if(dbType.toUpperCase().equals("ORACLE")){
+				compareCode = StringUtil.escapeORACLE(compareCode);
+			}
+			else if(dbType.toUpperCase().equals("POSTGRESQL")){
+				compareCode = StringUtil.escapePOSTGRESQL(compareCode);
+			}
 
-		else if(vocabType.getMatchStr().getStrategy().equals("right")) {
-			compareCode = compareCode.replaceFirst(":", ":%");
-			whereClause = " where upper(c_basecode) like '" +  compareCode + "' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
-		}
+			if(vocabType.getMatchStr().getStrategy().equals("left")){
+				whereClause = " where upper(c_basecode) like '" + compareCode + "%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
+			}
 
-		else if(vocabType.getMatchStr().getStrategy().equals("contains")) {
-			compareCode = compareCode.replaceFirst(":", ":%");
-			whereClause = " where upper(c_basecode) like '" + compareCode + "%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
-		}
+			else if(vocabType.getMatchStr().getStrategy().equals("right")) {
+				compareCode = compareCode.replaceFirst(":", ":%");
+				whereClause = " where upper(c_basecode) like '" +  compareCode + "' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
+			}
 
+			else if(vocabType.getMatchStr().getStrategy().equals("contains")) {
+				compareCode = compareCode.replaceFirst(":", ":%");
+				whereClause = " where upper(c_basecode) like '" + compareCode + "%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
+			}
+		}
 		//	log.debug(vocabType.getMatchStr().getStrategy() + whereClause);
 
 		String codeInfoSql = null;
