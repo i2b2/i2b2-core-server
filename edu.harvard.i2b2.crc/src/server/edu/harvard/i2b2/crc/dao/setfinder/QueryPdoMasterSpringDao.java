@@ -15,6 +15,8 @@
 package edu.harvard.i2b2.crc.dao.setfinder;
 
 import java.sql.Types;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -130,12 +132,16 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 			int masterQueryId = 0;
 			Object[] object = null;
 			int queryMasterIdentityId = 0;
+			
+			Pattern p = Pattern.compile("<password.+</password>");
+			Matcher m = p.matcher(queryMaster.getRequestXml());
+			String getRequestXmlNoPass = m.replaceAll("<password>*********</password>");
 
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SQLSERVER)) {
 				object = new Object[] { queryMaster.getUserId(),
 						queryMaster.getGroupId(), queryMaster.getCreateDate(),
-						queryMaster.getRequestXml(), i2b2RequestXml };
+						getRequestXmlNoPass, i2b2RequestXml };
 				update(object);
 				queryMasterIdentityId = jdbc.queryForInt("SELECT @@IDENTITY");
 
@@ -145,7 +151,7 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 				object = new Object[] { queryMasterIdentityId,
 						queryMaster.getUserId(), queryMaster.getGroupId(),
 						queryMaster.getCreateDate(),
-						queryMaster.getRequestXml(), i2b2RequestXml };
+						getRequestXmlNoPass, i2b2RequestXml };
 				update(object);
 
 			} else  if (dataSourceLookup.getServerType().equalsIgnoreCase(
@@ -154,7 +160,7 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 				object = new Object[] { queryMasterIdentityId,
 						queryMaster.getUserId(), queryMaster.getGroupId(),
 						queryMaster.getCreateDate(),
-						queryMaster.getRequestXml(), i2b2RequestXml };
+						getRequestXmlNoPass, i2b2RequestXml };
 				update(object);
 
 			}
