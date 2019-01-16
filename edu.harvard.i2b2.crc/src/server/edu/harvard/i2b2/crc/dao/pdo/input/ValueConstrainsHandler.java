@@ -86,7 +86,12 @@ public class ValueConstrainsHandler {
 					//panelAccuracyScale = 100 - panelAccuracyScale;
 					
 					constrainSql = " valtype_cd = 'B' AND " ;
-					if (oracleFlag == true) { 
+					if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+					{
+						
+						constrainSql +=  " observation_blob like '%" + containsSql + "%' ";
+					}
+					else if (oracleFlag == true) { 
 						constrainSql +=  " contains(observation_blob,'" + containsSql + "') ";
 						if (panelAccuracyScale>0) {
 							constrainSql += " >= " + panelAccuracyScale + " ";
