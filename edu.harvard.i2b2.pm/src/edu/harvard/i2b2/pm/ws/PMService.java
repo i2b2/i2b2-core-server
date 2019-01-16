@@ -48,7 +48,7 @@ public class PMService {
 	private static Log log = LogFactory.getLog(PMService.class);
 
 	private static String msgVersion = "1.1";
-	private static String i2b2Version = "1.7.10";
+	private static String i2b2Version = "1.7.11";
 
 	public String getVersion()
 	{
@@ -89,7 +89,7 @@ public class PMService {
 		edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType pmDataResponse = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType();
 
 		edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType.MessageBody mb = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType.MessageBody();
-		if (messageBody.contains("get_i2b2_message_version"))
+		if (messageBody.contains("get_i2b2_message_version") || (messageBody.contains("get_message_version")))
 			mb.setI2B2MessageVersion(msgVersion);
 		if (messageBody.contains("get_i2b2_version"))
 			mb.setI2B2Version(i2b2Version);
