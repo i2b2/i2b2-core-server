@@ -74,11 +74,15 @@ public class DateConstrainHandler {
 				dateConstrainSql = fromDateField + sqlOperator + "to_date('"
 						+ fromDateString + "','DD-MON-YYYY HH24:MI:SS')";
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					DAOFactoryHelper.SQLSERVER) || dataSourceLookup.getServerType().equalsIgnoreCase(
-							DAOFactoryHelper.POSTGRESQL)) {
+					DAOFactoryHelper.SQLSERVER) ) {
 				// {ts '2005-06-27 00:00:00'}
 				dateConstrainSql = fromDateField + sqlOperator + " '"
 						+ fromDateString + "'";
+			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+							DAOFactoryHelper.POSTGRESQL)) {
+				// {ts '2005-06-27 00:00:00'}
+				dateConstrainSql = fromDateField + sqlOperator + " '"
+						+ fromDateString + ".00'";
 			}
 		}
 
@@ -108,10 +112,13 @@ public class DateConstrainHandler {
 				dateConstrainSql += (toDateField + sqlOperator + "to_date('"
 						+ toDateString + "','DD-MON-YYYY HH24:MI:SS')");
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					DAOFactoryHelper.SQLSERVER) || dataSourceLookup.getServerType().equalsIgnoreCase(
-							DAOFactoryHelper.POSTGRESQL)) {
+					DAOFactoryHelper.SQLSERVER) ) {
 				dateConstrainSql += (toDateField + sqlOperator + " '"
 						+ toDateString + "'");
+			} else if ( dataSourceLookup.getServerType().equalsIgnoreCase(
+							DAOFactoryHelper.POSTGRESQL)) {
+				dateConstrainSql += (toDateField + sqlOperator + " '"
+						+ toDateString + ".99'");
 			}
 		}
 
