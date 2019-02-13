@@ -38,6 +38,7 @@ import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.InclusiveType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MatchStrType;
 import edu.harvard.i2b2.crc.util.CacheUtil;
 
@@ -149,20 +150,22 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 			sql += "  LOWER(name) like ? and delete_flag = ? "; //and master_type_cd is NULL";
 			if (findChildType.getCreateDate() != null)
 			{
+				InclusiveType inclusive = InclusiveType.NO;
+				
 				DateConstrainHandler dateConstrainHandler = new DateConstrainHandler(
 						dataSourceLookup);
 
 				if (findChildType.isAscending())
 					sql +=" and " + dateConstrainHandler
 					.constructDateConstrainClause("create_date",
-							"create_date", null,
-							null, findChildType.getCreateDate() ,
+							"create_date", inclusive,
+							inclusive, findChildType.getCreateDate() ,
 							null);
 				else
 					sql += " and " +  dateConstrainHandler
 					.constructDateConstrainClause("create_date",
-							"create_date", null,
-							null,null ,
+							"create_date", inclusive,
+							inclusive,null ,
 							findChildType.getCreateDate());
 				sql += " order by create_date  ";
 
