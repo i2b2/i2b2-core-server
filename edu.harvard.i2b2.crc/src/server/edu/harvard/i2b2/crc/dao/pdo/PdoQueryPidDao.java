@@ -580,6 +580,11 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 			int sqlParamCount = 0;
 			ResultSet resultSet = null;
 			for (String panelSql : panelSqlList) {
+				// if sqlserver and getting a pid than remove order by
+				 if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER)) {
+					 panelSql = panelSql.replace("ORDER BY obs_patient_num,obs_start_date,obs_concept_cd,obs_instance_num,obs_modifier_cd,rnum", "");
+					
+				}
 				insertSql = " insert into "
 						+ tempTable
 						+ "(char_param1) select distinct obs_patient_num from ( "
