@@ -207,7 +207,7 @@ public class ConceptDao extends JdbcDaoSupport {
 					for (String s: projectInfo.getRole()) {
 						if (ontologyProtection.contains(s))
 							protectedAccess = true;
-						
+
 					}
 					if (protectedAccess == false)
 						child = null;
@@ -719,12 +719,26 @@ public class ConceptDao extends JdbcDaoSupport {
 		String tableCd = vocabType.getCategory();
 		List<ConceptType> categoryResult;
 
-		String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ? " ;
-		try {
-			categoryResult = jt.query(tableSql, map, tableCd);	    
-		} catch (DataAccessException e) {
-			log.error("Search by Name " + e.getMessage());
-			throw new I2B2DAOException("Database Error");
+		List<ConceptType> queryResult = null;
+		if (tableCd.equals("@"))
+		{
+			String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_visualattributes not like '_H%'" ;
+			try {
+				categoryResult = jt.query(tableSql, map);	    
+			} catch (DataAccessException e) {
+				log.error("Search by Name " + e.getMessage());
+				throw new I2B2DAOException("Database Error");
+			}
+
+
+		} else {
+			String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ? " ;
+			try {
+				categoryResult = jt.query(tableSql, map, tableCd);	    
+			} catch (DataAccessException e) {
+				log.error("Search by Name " + e.getMessage());
+				throw new I2B2DAOException("Database Error");
+			}
 		}
 
 		String nameInfoSql = null;
@@ -739,69 +753,53 @@ public class ConceptDao extends JdbcDaoSupport {
 		if (categoryResult.size() == 0){
 			log.error("Non existent tableCd category passed in getNameInfo request " + tableCd);
 			return null;
-		}
-
-		String category = categoryResult.get(0).getKey();
-		if(category.contains("'")){
-			category = category.replaceAll("'", "''");
-		}
-
-		if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-			category = StringUtil.escapeSQLSERVER(category);
-		}
-		else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-			category = StringUtil.escapeORACLE(category);
-		}
-		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-			category = StringUtil.escapePOSTGRESQL(category); 
-		}		
+		} 
 
 
-		// dont do the sql injection replace; it breaks the service.
-		if(vocabType.getMatchStr().getStrategy().equals("exact")) {
-			nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(0).getTablename() + " where upper(c_name) = ? and c_fullname like '" + category +	"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
-			compareName = value.toUpperCase();  	
-		}
 
-		else if(vocabType.getMatchStr().getStrategy().equals("left")){
-			nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(0).getTablename() +" where upper(c_name) like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
+		for (int i=0; i < categoryResult.size(); i++) {
+			String category = categoryResult.get(i).getKey();
+			if(category.contains("'")){
+				category = category.replaceAll("'", "''");
+			}
+
 			if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-				compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
-				//compareName = compareName.replaceAll("\\[", "[[]");
+				category = StringUtil.escapeSQLSERVER(category);
 			}
 			else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-				compareName = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
-				//compareName = compareName.replaceAll("\\[", "[[]");
+				category = StringUtil.escapeORACLE(category);
 			}
 			else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-				compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
-				//compareName = compareName.replaceAll("\\[", "[[]");
-			}
-			compareName = compareName + "%";
+				category = StringUtil.escapePOSTGRESQL(category); 
+			}		
 
-		}
 
-		else if(vocabType.getMatchStr().getStrategy().equals("right")) {
-			nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(0).getTablename() +" where upper(c_name) like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";     {ESCAPE '?'}";
-			if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-				compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
-			}
-			else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-				compareName = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
-			}
-			else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-				compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
+			// dont do the sql injection replace; it breaks the service.
+			if(vocabType.getMatchStr().getStrategy().equals("exact")) {
+				nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(i).getTablename() + " where upper(c_name) = ? and c_fullname like '" + category +	"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
+				compareName = value.toUpperCase();  	
 			}
 
-			compareName =  "%" + compareName;
-			//   	if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-			//		compareName = compareName.replaceAll("\\[", "[[]");
-			//	}
-		}
+			else if(vocabType.getMatchStr().getStrategy().equals("left")){
+				nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(i).getTablename() +" where upper(c_name) like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
+				if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+					compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
+					//compareName = compareName.replaceAll("\\[", "[[]");
+				}
+				else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
+					compareName = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
+					//compareName = compareName.replaceAll("\\[", "[[]");
+				}
+				else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
+					compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
+					//compareName = compareName.replaceAll("\\[", "[[]");
+				}
+				compareName = compareName + "%";
 
-		else if(vocabType.getMatchStr().getStrategy().equals("contains")) {
-			if(!(value.contains(" "))){
-				nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(0).getTablename() +" where upper(c_name) like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + "and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + "";
+			}
+
+			else if(vocabType.getMatchStr().getStrategy().equals("right")) {
+				nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(i).getTablename() +" where upper(c_name) like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";     {ESCAPE '?'}";
 				if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
 					compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
 				}
@@ -811,58 +809,86 @@ public class ConceptDao extends JdbcDaoSupport {
 				else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
 					compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
 				}
-				compareName =  "%" + compareName + "%";
-				//if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+
+				compareName =  "%" + compareName;
+				//   	if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
 				//		compareName = compareName.replaceAll("\\[", "[[]");
 				//	}
-			}else{
-				nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(0).getTablename();
-				if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-					compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
-				}
-				else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-					compareName = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
-				}
-				else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-					compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
-				}
-
-				//		if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-				//			value = value.replaceAll("\\[", "[[]");
-				//		}
-				//	WAS
-				//		nameInfoSql = nameInfoSql + parseMatchString(value)+ " and c_fullname like '" + category +"%'" + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + "";;
-				nameInfoSql = nameInfoSql + parseMatchString(compareName, dbInfo)+ " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " ";;
-
-				compareName = null;
 			}
-		}
-		
 
-		String hidden = "";
-		if(vocabType.isHiddens() == false)
-			hidden = " and c_visualattributes not like '_H%'";
+			else if(vocabType.getMatchStr().getStrategy().equals("contains")) {
+				if(!(value.contains(" "))){
+					nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(i).getTablename() +" where upper(c_name) like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + "";
+					if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+						compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
+					}
+					else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
+						compareName = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
+					}
+					else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
+						compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
+					}
+					compareName =  "%" + compareName + "%";
+					//if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+					//		compareName = compareName.replaceAll("\\[", "[[]");
+					//	}
+				}else{
+					nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(i).getTablename();
+					if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+						compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
+					}
+					else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
+						compareName = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
+					}
+					else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
+						compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
+					}
+
+					//		if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+					//			value = value.replaceAll("\\[", "[[]");
+					//		}
+					//	WAS
+					//		nameInfoSql = nameInfoSql + parseMatchString(value)+ " and c_fullname like '" + category +"%'" + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + "";;
+					nameInfoSql = nameInfoSql + parseMatchString(compareName, dbInfo)+ " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " ";;
+
+					compareName = null;
+				}
+			}
 
 
-		String synonym = "";
-		if(vocabType.isSynonyms() == false)
-			synonym = " and c_synonym_cd = 'N'";
+			String hidden = "";// and c_totalnum != 0 ";
+			if(vocabType.isHiddens() == false)
+				hidden += " and c_visualattributes not like '_H%'";
 
-		nameInfoSql = nameInfoSql + hidden + synonym + " order by upper(c_name) ";
 
-		log.info(nameInfoSql + " " +compareName);
-		boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
-		ParameterizedRowMapper<ConceptType> mapper = getMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType());
+			String synonym = "";
+			if(vocabType.isSynonyms() == false)
+				synonym = " and c_synonym_cd = 'N'";
 
-		List queryResult = null;
-		try {
-			if(compareName != null)
-				queryResult = jt.query(nameInfoSql, mapper, compareName);
-			else
-				queryResult = jt.query(nameInfoSql, mapper);
-		} catch (DataAccessException e) {
-			log.error("Search by Name " + e.getMessage());
-			throw new I2B2DAOException("Database Error");
+			nameInfoSql = nameInfoSql + hidden + synonym + " order by c_totalnum, upper(c_name) ";
+
+			log.info(nameInfoSql + " " +compareName);
+			boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
+			ParameterizedRowMapper<ConceptType> mapper = getMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType());
+
+
+			try {
+				List<ConceptType> list = null;
+				if(compareName != null) {
+					list = jt.query(nameInfoSql, mapper, compareName);
+					//queryResult.addAll(list);
+				} else {
+					list = jt.query(nameInfoSql, mapper);
+					//queryResult.addAll(list);
+				}
+				if (queryResult == null)
+					queryResult = list;
+				else
+					queryResult.addAll(list);
+			} catch (DataAccessException e) {
+				log.error("Search by Name " + e.getMessage());
+				throw new I2B2DAOException("Database Error");
+			}
 		}
 		log.debug("search by NameInfo result size = " + queryResult.size());
 		return queryResult;
@@ -940,13 +966,13 @@ public class ConceptDao extends JdbcDaoSupport {
 		String whereClause = null;
 
 		String compareCode = value.toUpperCase();
-		
+
 		if(vocabType.getMatchStr().getStrategy().equals("exact")) {
 			whereClause = " where upper(c_basecode) = '" + compareCode+ "'";
 		}
 
 		else { // need escape logic for like operator
-			
+
 			if(dbType.toUpperCase().equals("SQLSERVER")){
 				compareCode = StringUtil.escapeSQLSERVER(compareCode);
 			}
@@ -1051,7 +1077,7 @@ public class ConceptDao extends JdbcDaoSupport {
 						child.setOntologyProtection(rs.getString("c_ontology_protection"));
 					}
 					// cover get Code Info case where we dont know the vocabType.category apriori
-					if(node.getNode() != null)	
+					if ((node.getNode() != null) && !node.getNode().equals("@"))
 						child.setKey("\\\\" + node.getNode() + rs.getString("c_fullname"));  
 					else
 						child.setKey("\\\\" + rs.getString("tableCd") + rs.getString("c_fullname")); 
