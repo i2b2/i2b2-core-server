@@ -16,7 +16,6 @@ package edu.harvard.i2b2.crc.loader.datavo;
 
 import java.util.List;
 
-import org.springframework.beans.factory.BeanFactory;
 
 import edu.harvard.i2b2.crc.loader.util.CRCLoaderUtil;
 
@@ -37,15 +36,7 @@ public class CRCLoaderJAXBUtil {
 	@SuppressWarnings("unchecked")
 	public static edu.harvard.i2b2.common.util.jaxb.JAXBUtil getJAXBUtil() {
 		if (jaxbUtil == null) {
-			BeanFactory springBean = CRCLoaderUtil.getInstance()
-					.getSpringBeanFactory();
-			List jaxbPackageName = (List) springBean.getBean("jaxbPackage");
-			String[] jaxbPackageNameArray = (String[]) jaxbPackageName
-					.toArray(new String[] {
-
-					});
-			jaxbUtil = new edu.harvard.i2b2.common.util.jaxb.JAXBUtil(
-					jaxbPackageNameArray);
+			jaxbUtil = new edu.harvard.i2b2.common.util.jaxb.JAXBUtil(edu.harvard.i2b2.crc.util.JAXBConstant.DEFAULT_PACKAGE_NAME);
 		}
 		return jaxbUtil;
 	}

@@ -16,7 +16,14 @@ package edu.harvard.i2b2.common.util.axis2;
  */
 
 import java.io.StringReader;
+import java.lang.management.ManagementFactory;
 
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -34,6 +41,7 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
+import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.ServiceContext;
 import org.apache.axis2.transport.http.HTTPConstants;
@@ -239,6 +247,18 @@ public class ServiceClient {
 		log.debug(i2b2Response);
 
 		return i2b2Response;		
+	}
+	public static String getContextRoot() throws InstanceNotFoundException, AttributeNotFoundException, MalformedObjectNameException, ReflectionException, MBeanException, AxisFault {
+		
+		org.apache.axis2.client.ServiceClient cl = ServiceClient.getServiceClient();
+		Integer port = (Integer) ManagementFactory.getPlatformMBeanServer().getAttribute(new ObjectName("jboss.as:socket-binding-group=standard-sockets,socket-binding=http"), "port"); 
+
+		MessageContext mCtx =
+				MessageContext.getCurrentMessageContext();
+		ConfigurationContext cCtx =
+				mCtx.getConfigurationContext();
+		 return   "http://localhost:" + port + cCtx.getContextRoot();
+
 	}
 
 	public static  org.apache.axis2.client.ServiceClient getServiceClient() throws AxisFault{

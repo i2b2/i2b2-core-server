@@ -37,22 +37,27 @@ public class WorkplaceDbDao extends JdbcDaoSupport {
     private static Log log = LogFactory.getLog(WorkplaceDbDao.class);
    
     private SimpleJdbcTemplate jt;
+    private String metadataSchema;
     
     public WorkplaceDbDao() throws I2B2Exception{
 		DataSource ds = null;
 		try {
 			ds = WorkplaceUtil.getInstance().getDataSource("java:/WorkplaceBootStrapDS");
 	//		log.info(ds.toString());
+			metadataSchema = ds.getConnection().getSchema();
 		} catch (I2B2Exception e2) {
 			log.error("bootstrap ds failure: " + e2.getMessage());
 			throw e2;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} 
 		this.jt = new SimpleJdbcTemplate(ds);
 	}
 	
 	private String getMetadataSchema() throws I2B2Exception{
 
-		return WorkplaceUtil.getInstance().getMetaDataSchemaName();
+		return metadataSchema; //WorkplaceUtil.getInstance().getMetaDataSchemaName();
 	}
 	
 	

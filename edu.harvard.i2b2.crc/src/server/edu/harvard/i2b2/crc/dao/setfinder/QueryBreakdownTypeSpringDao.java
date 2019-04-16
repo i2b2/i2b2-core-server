@@ -80,7 +80,7 @@ public class QueryBreakdownTypeSpringDao extends CRCDAO implements
 			queryBreakdownType.setValue(rs.getString("VALUE"));
 			queryBreakdownType.setUserId(rs.getString("USER_ID"));
 			queryBreakdownType.setUserRoleCd(rs.getString("USER_ROLE_CD"));
-
+			queryBreakdownType.setClassname(rs.getString("CLASSNAME"));
 			return queryBreakdownType;
 		}
 	}

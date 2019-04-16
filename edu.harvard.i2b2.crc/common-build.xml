@@ -15,7 +15,7 @@
 	<property name="web"        value="web"/>
     <property name="gensrc"     value="gensrc"/>
     <property name="genlib"     value="genlib"/>
-    
+	<property name="xjc"   		  value="xjc"/>
 
 	<!-- LIBRARY INFORMATION, CONFIGURE ANT_HOME, XDOCLET_HOME, TOMCAT,etc SPECIFIC DIRECTORY -->
     <property environment="env"/>
@@ -34,9 +34,20 @@
     <property name="ejbspec" value="2.0" />
 	<property name="jboss.version" value="4.0" />
 
-                 
+                 <!--
 
-	
+	 <condition property="isWindows">
+				    <os family="windows" />
+				  </condition>
+
+				  <condition property="isUnix">
+				    <os family="unix" />
+				  </condition>
+				
+				<target name="setWindowsRoot" if="isWindows">
+					<property name="xjc"     value="${jdk.dir}/bin/xjc.exe"/>
+				  </target>
+-->
 	
 <!-- INITIALIZE THE DISTRIBUTION DIRECTORY -->
     <target name="common_init"  description="Internal initialize the environment">

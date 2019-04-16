@@ -72,26 +72,7 @@ public abstract class RequestHandler {
     {
     	ProjectType projectType = null;
     	
-		// Are we bypassing the PM cell?  Look in properties file.
-		Boolean pmBypass = false;
-		String pmBypassRole = null;
-		String pmBypassProject = null;
-		try {
-			pmBypass = WorkplaceUtil.getInstance().isPmBypass();
-			pmBypassRole = WorkplaceUtil.getInstance().getPmBypassRole();
-			pmBypassProject = WorkplaceUtil.getInstance().getPmBypassProject();
-			log.debug(pmBypass + pmBypassRole + pmBypassProject);
-		} catch (I2B2Exception e1) {
-			pmBypass = false;
-			log.error(e1.getMessage());
-		}
-    	
-		if(pmBypass == true){
-			projectType = new ProjectType();
-			projectType.getRole().add(pmBypassRole);
-			projectType.setId(pmBypassProject);
-		}
-		else {
+
 			try {
 				GetUserConfigurationType userConfigType = new GetUserConfigurationType();
 
@@ -147,7 +128,7 @@ public abstract class RequestHandler {
 			} catch (Exception e) {
 				log.error("General PM processing problem:  "+ e.getMessage());
 			}
-		}
+		
 		return projectType;
     }
     

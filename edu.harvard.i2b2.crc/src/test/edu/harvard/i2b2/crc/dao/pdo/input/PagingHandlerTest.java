@@ -45,8 +45,8 @@ public class PagingHandlerTest {
 		}
 
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-		dataSourceLookup = (DataSourceLookup) qpUtil.getSpringBeanFactory()
-				.getBean("TestDataSourceLookup");
+	//	dataSourceLookup = (DataSourceLookup) qpUtil.getSpringBeanFactory()
+	//			.getBean("TestDataSourceLookup");
 
 		String filename = testFileDir
 				+ "/edu.harvard.i2b2.crc.dao.pdo/pdo_query.xml";

@@ -127,6 +127,7 @@
             <xs:element name="visual_attribute_type" type="xs:string" minOccurs="0"/>
             <xs:element name="description" type="crc:descriptionType" minOccurs="0"/>
             <xs:element name="user_role_cd" type="xs:string" minOccurs="0"/>
+            <xs:element name="classname" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 

@@ -270,7 +270,7 @@ public class PMUtil {
 
         String propertyValue = appProperties.getProperty(propertyName);
 
-        if ((propertyValue != null) && (propertyValue.trim().length() > 0)) {
+        if ((propertyValue != null) || (propertyValue.trim().length() > 0)) {
             ;
         } else {
             throw new I2B2Exception("Application property file(" +

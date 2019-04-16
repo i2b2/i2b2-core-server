@@ -15,6 +15,9 @@
 package edu.harvard.i2b2.fr.util;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -22,11 +25,18 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
+import edu.harvard.i2b2.common.util.axis2.ServiceClient;
+import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
+import edu.harvard.i2b2.fr.datavo.pm.ParamType;
 
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 /**
  * This is the CRC application's main utility class This utility class provides
@@ -41,26 +51,9 @@ public class FRUtil {
 	  /** log **/
     protected final static Log log = LogFactory.getLog(FRUtil.class);
 
-	/** property file name which holds application directory name **/
-	public static final String APPLICATION_DIRECTORY_PROPERTIES_FILENAME = "fr_application_directory.properties";
-
-	/** application directory property name **/
-	public static final String APPLICATIONDIR_PROPERTIES = "edu.harvard.i2b2.fr.applicationdir";
-	
-	/** application property filename* */
-	public static final String APPLICATION_PROPERTIES_FILENAME = "edu.harvard.i2b2.fr.properties";
-
-	/** property name for datasource present in app property file* */
-	//private static final String DATASOURCE_JNDI_PROPERTIES = "queryprocessor.jndi.datasource_name";
-		
 	/** property name for metadata schema name* */
 	private static final String PMCELL_WS_URL_PROPERTIES = "edu.harvard.i2b2.fr.ws.pm.url";
 
-	/** property name for metadata schema name* */
-	private static final String PMCELL_BYPASS_FLAG_PROPERTIES = "edu.harvard.i2b2.fr.ws.pm.bypass";
-
-	/** property name for metadata schema name* */
-	private static final String PMCELL_BYPASS_ROLE_PROPERTIES = "edu.harvard.i2b2.fr.ws.pm.bypass.role";
 	
 	private static final String PM_WS_EPR = "fr.ws.pm.url";
 
@@ -74,9 +67,7 @@ public class FRUtil {
 	private static ServiceLocator serviceLocator = null;
 
 	/** field to store application properties * */
-	private static Properties appProperties = null;
-	
-	private static Properties loadProperties = null;
+	private static List<ParamType> appProperties = null;
 
 	/** field to store app datasource* */
 	private DataSource dataSource = null;
@@ -102,7 +93,15 @@ public class FRUtil {
 	}
 	
 	
-	
+	public String getMetaDataSchemaName() throws I2B2Exception {
+		try {
+			return dataSource.getConnection().getSchema() + "." ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  //getPropertyValue(METADATA_SCHEMA_NAME_PROPERTIES).trim() + ".";
+		return null;
+	}
 	/**
 	 * Get Project managment cell's service url
 	 * @return
@@ -113,30 +112,41 @@ public class FRUtil {
 	}
 
 	/**
-	 * Get Project management bypass flag
-	 * @return
+	 * Return app server datasource
+	 * 
+	 * @return datasource
 	 * @throws I2B2Exception
+	 * @throws SQLException
 	 */
-	public boolean getProjectManagementByPassFlag() throws I2B2Exception {
-		String  pmByPassFlag = getPropertyValue(PMCELL_BYPASS_FLAG_PROPERTIES);
-		if (pmByPassFlag == null) { 
-			return false;
-		}
-		else if (pmByPassFlag.trim().equalsIgnoreCase("true")) {
-			return true;
-		}
-		else { 
-			return false;
-		}
+	public DataSource getDataSource(String dataSourceName) throws I2B2Exception {
+		// DataSource dataSource = (DataSource) getSpringBeanFactory()
+		// .getBean(DATASOURCE_BEAN_NAME);
+
+		dataSource = (DataSource) serviceLocator
+				.getAppServerDataSource(dataSourceName);
+		return dataSource;
+
 	}
 	
-	/**
-	 * Get Project management bypass flag
-	 * @return
-	 * @throws I2B2Exception
-	 */
-	public String getProjectManagementByPassRole() throws I2B2Exception {
-		return getPropertyValue(PMCELL_BYPASS_ROLE_PROPERTIES );
+	
+
+	private ParameterizedRowMapper getHiveCellParam() {
+		ParameterizedRowMapper<ParamType> map = new ParameterizedRowMapper<ParamType>() {
+			public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
+				DTOFactory factory = new DTOFactory();
+
+
+
+				log.debug("setting name");
+				ParamType param = new ParamType();
+				param.setId(rs.getInt("id"));
+				param.setName(rs.getString("param_name_cd"));
+				param.setValue(rs.getString("value"));
+				param.setDatatype(rs.getString("datatype_cd"));
+				return param;
+			} 
+		};
+		return map;
 	}
 
 
@@ -148,44 +158,60 @@ public class FRUtil {
 	 * Load application property file into memory
 	 */
 	private String getPropertyValue(String propertyName) throws I2B2Exception {
-		if (appProperties == null) {
-			//read application directory property file
-			loadProperties = ServiceLocator.getProperties(APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
-			//read application directory property
-			String appDir = loadProperties.getProperty(APPLICATIONDIR_PROPERTIES);
-			if (appDir == null) { 
-				throw new I2B2Exception("Could not find " + APPLICATIONDIR_PROPERTIES + "from " + APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
-			}
-			if (appDir.trim().equals(""))
-			{
 
-				appDir =  "standalone/configuration/imapp";
+		if (appProperties == null) {
+
+
+
+			//		log.info(sql + domainId + projectId + ownerId);
+			//	List<ParamType> queryResult = null;
+			try {
+				DataSource   ds = this.getDataSource("java:/FRBootStrapDS");
+
+				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
+				String sql =  "select * from " + ds.getConnection().getSchema() + ".hive_cell_params where status_cd <> 'D' and cell_id = 'ONT'";
+
+				log.debug("Start query");
+				appProperties = jt.query(sql, getHiveCellParam());
+				log.debug("End query");
+
+
+			} catch (DataAccessException e) {
+				log.error(e.getMessage());
+				e.printStackTrace();
+				throw new I2B2DAOException("Database error");
 			}
-			String appPropertyFile = appDir+"/"+APPLICATION_PROPERTIES_FILENAME;
-			try { 
-				FileSystemResource fileSystemResource = new FileSystemResource(appPropertyFile);
-				PropertiesFactoryBean pfb = new PropertiesFactoryBean();
-				pfb.setLocation(fileSystemResource);
-				pfb.afterPropertiesSet();
-				appProperties = (Properties) pfb.getObject();
-			} catch (IOException e) {
-				throw new I2B2Exception(
-						"Application property file("+appPropertyFile+") missing entries or not loaded properly");
+			//return queryResult;	
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			if (appProperties == null) {
-				throw new I2B2Exception(
-						"Application property file("+appPropertyFile+") missing entries or not loaded properly");
+
+		}
+
+		String propertyValue = null;//appProperties.getProperty(propertyName);
+		for (int i=0; i < appProperties.size(); i++)
+		{
+			if (appProperties.get(i).getName() != null)
+			{
+				if (appProperties.get(i).getName().equalsIgnoreCase(propertyName))
+					if (appProperties.get(i).getDatatype().equalsIgnoreCase("U"))
+						try {
+							 propertyValue = ServiceClient.getContextRoot() + appProperties.get(i).getValue();
+
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					else 
+						propertyValue = appProperties.get(i).getValue();
 			}
 		}
 
-		String propertyValue = appProperties.getProperty(propertyName);
-
-		if ((propertyValue != null) && (propertyValue.trim().length() > 0)) {
-			;
-		} else {
-			throw new I2B2Exception(
-					"Application property file("+APPLICATION_PROPERTIES_FILENAME+") missing "
-							+ propertyName + " entry");
+		if ((propertyValue == null) || (propertyValue.trim().length() == 0)) {
+			throw new I2B2Exception("Application property file("
+					//	+ APPLICATION_PROPERTIES_FILENAME + ") missing "
+					+ propertyName + " entry");
 		}
 
 		return propertyValue;

@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.BeanFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
@@ -70,9 +69,7 @@ public class QueryInstance {
 			}
 		} else {
 			QueryProcessorUtil qp = QueryProcessorUtil.getInstance();
-			BeanFactory bf = qp.getSpringBeanFactory();
-			String defaultResultType = (String) bf
-					.getBean(QueryProcessorUtil.DEFAULT_SETFINDER_RESULT_BEANNAME);
+			String defaultResultType = "PATIENTSET";
 			patientSetId = patientSetResultDao.createPatientSet(
 					queryInstanceId, defaultResultType);
 			log.debug("Patient Set ID [" + patientSetId

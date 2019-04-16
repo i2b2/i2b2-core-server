@@ -26,6 +26,15 @@ public class QtQueryResultType implements java.io.Serializable {
 	private String displayType;
 	private String visualAttributeType;
 	private String userRoleCd;
+	private String classname;
+
+	public String getClassname() {
+		return classname;
+	}
+
+	public void setClassname(String classname) {
+		this.classname = classname;
+	}
 
 	private Set<QtQueryResultInstance> qtQueryResultInstances = new HashSet<QtQueryResultInstance>(
 			0);

@@ -12,7 +12,7 @@
  * Contributors:
  * 		Lori Phillips
  * 		Wayne Chan
-*/
+ */
 package edu.harvard.i2b2.im.delegate;
 
 import java.util.Iterator;
@@ -37,15 +37,15 @@ import edu.harvard.i2b2.im.datavo.pm.ProjectsType;
 import edu.harvard.i2b2.im.util.IMUtil;
 
 public abstract class RequestHandler {
-    protected final Log log = LogFactory.getLog(getClass());
-    public abstract String execute() throws I2B2Exception;
-    private SecurityType securityType = null;
-    private DBInfoType dbInfo;
-    private ConfigureType configureType;
-    
-    
-    //swc20160520
-    public boolean isAdmin(MessageHeaderType header) {
+	protected final Log log = LogFactory.getLog(getClass());
+	public abstract String execute() throws I2B2Exception;
+	private SecurityType securityType = null;
+	private DBInfoType dbInfo;
+	private ConfigureType configureType;
+
+
+	//swc20160520
+	public boolean isAdmin(MessageHeaderType header) {
 		try {
 			GetUserConfigurationType userConfigType = new GetUserConfigurationType();
 			String response = PMServiceDriver.getRoles(userConfigType, header);		
@@ -56,64 +56,46 @@ public abstract class RequestHandler {
 			ConfigureType pmConfigure = msg.readUserInfo();
 			if (pmConfigure.getUser().isIsAdmin()) return true;
 		} catch (AxisFault e) {
-				log.error("Can't connect to PM service");
+			log.error("Can't connect to PM service");
 		} catch (I2B2Exception e) {
-				log.error("Problem processing PM service address");
+			log.error("Problem processing PM service address");
 		} catch (Exception e) {
-				log.error("General PM processing problem: "+ e.getMessage());
+			log.error("General PM processing problem: "+ e.getMessage());
 		}
 		return false;
-    }        
-    
+	}        
 
-    public ConfigureType getConfigureType() {
-    	return configureType;
-    }
 
-    public SecurityType getSecurityType() {
+	public ConfigureType getConfigureType() {
+		return configureType;
+	}
+
+	public SecurityType getSecurityType() {
 		return securityType;
 	}
 
 	public ProjectType getAllProjectsInfo(MessageHeaderType header, String projectId) 
-    {
-    	ProjectType projectType = null;
-    	
-		// Are we bypassing the PM cell?  Look in properties file.
-		Boolean pmBypass = false;
-		String pmBypassRole = null;
-		String pmBypassProject = null;
-		try {
-			pmBypass = IMUtil.getInstance().isPmBypass();
-			pmBypassRole = IMUtil.getInstance().getPmBypassRole();
-			pmBypassProject = IMUtil.getInstance().getPmBypassProject();
-			log.debug(pmBypass + pmBypassRole + pmBypassProject);
-		} catch (I2B2Exception e1) {
-			pmBypass = false;
-			log.error(e1.getMessage());
-		}
-    	
-		if(pmBypass == true){
-			projectType = new ProjectType();
-			projectType.getRole().add(pmBypassRole);
-			projectType.setId(pmBypassProject);
-		}
-		else {
-			try {
-				//GetUserConfigurationType userConfigType = new GetUserConfigurationType();
+	{
+		ProjectType projectType = null;
 
-				PMResponseMessage msg = new PMResponseMessage();
-				StatusType procStatus = null;	
-				String response = PMServiceDriver.getAllProjects(header);		
-				log.debug(response);
-				procStatus = msg.processResult(response);
-				if(procStatus.getType().equals("ERROR"))
-					return null;
-				// check that user has access to this project.
-				ProjectsType pmConfigure = msg.readProjectsInfo();
-				Iterator it = pmConfigure.getProject().iterator();
-				
-				//Set Security Type
-				/*
+		// Are we bypassing the PM cell?  Look in properties file.
+
+		try {
+			//GetUserConfigurationType userConfigType = new GetUserConfigurationType();
+
+			PMResponseMessage msg = new PMResponseMessage();
+			StatusType procStatus = null;	
+			String response = PMServiceDriver.getAllProjects(header);		
+			log.debug(response);
+			procStatus = msg.processResult(response);
+			if(procStatus.getType().equals("ERROR"))
+				return null;
+			// check that user has access to this project.
+			ProjectsType pmConfigure = msg.readProjectsInfo();
+			Iterator it = pmConfigure.getProject().iterator();
+
+			//Set Security Type
+			/*
 				log.debug("Setting security type needed for CRC");
 				securityType = new SecurityType();
 				securityType.setDomain(pmConfigure.getUser().getDomain());
@@ -123,133 +105,115 @@ public abstract class RequestHandler {
 				ptype.setTokenMsTimeout(pmConfigure.getUser().getPassword().getTokenMsTimeout());
 				ptype.setValue(pmConfigure.getUser().getPassword().getValue());
 				securityType.setPassword(ptype);
-				*/
-				while (it.hasNext())
-				{
-					projectType = (ProjectType)it.next();
-					if (projectType.getId().equals(projectId)) {
-				//		log.info(header.getProjectId());
-				//		log.info(projectType.getId());
-						break;	
-					}
-					projectType = null;
-
+			 */
+			while (it.hasNext())
+			{
+				projectType = (ProjectType)it.next();
+				if (projectType.getId().equals(projectId)) {
+					//		log.info(header.getProjectId());
+					//		log.info(projectType.getId());
+					break;	
 				}
-				projectType.getRole().add("ADMIN");
+				projectType = null;
 
-				//	projectType = pmConfigure.getUser().getProject().get(0);
-			} catch (AxisFault e) {
-				log.error("Cant connect to PM service");
-			} catch (I2B2Exception e) {
-				log.error("Problem processing PM service address");
-			} catch (Exception e) {
-				log.error("General PM processing problem:  "+ e.getMessage());
 			}
+			projectType.getRole().add("ADMIN");
+
+			//	projectType = pmConfigure.getUser().getProject().get(0);
+		} catch (AxisFault e) {
+			log.error("Cant connect to PM service");
+		} catch (I2B2Exception e) {
+			log.error("Problem processing PM service address");
+		} catch (Exception e) {
+			log.error("General PM processing problem:  "+ e.getMessage());
 		}
+
 		return projectType;
-    }
+	}
 
 	public ProjectType getRoleInfo(MessageHeaderType header) 
-    {
-    	ProjectType projectType = null;
-    	
+	{
+		ProjectType projectType = null;
+
 		// Are we bypassing the PM cell?  Look in properties file.
-		Boolean pmBypass = false;
-		String pmBypassRole = null;
-		String pmBypassProject = null;
+
 		try {
-			pmBypass = IMUtil.getInstance().isPmBypass();
-			pmBypassRole = IMUtil.getInstance().getPmBypassRole();
-			pmBypassProject = IMUtil.getInstance().getPmBypassProject();
-			log.debug(pmBypass + pmBypassRole + pmBypassProject);
-		} catch (I2B2Exception e1) {
-			pmBypass = false;
-			log.error(e1.getMessage());
-		}
-    	
-		if(pmBypass == true){
-			projectType = new ProjectType();
-			projectType.getRole().add(pmBypassRole);
-			projectType.setId(pmBypassProject);
-		}
-		else {
-			try {
-				GetUserConfigurationType userConfigType = new GetUserConfigurationType();
+			GetUserConfigurationType userConfigType = new GetUserConfigurationType();
 
-				PMResponseMessage msg = new PMResponseMessage();
-				StatusType procStatus = null;	
-				String response = PMServiceDriver.getRoles(userConfigType,header);		
-				log.debug(response);
-				procStatus = msg.processResult(response);
-				if(procStatus.getType().equals("ERROR"))
-					return null;
-				// check that user has access to this project.
-				configureType = msg.readUserInfo();
-				Iterator it = configureType.getUser().getProject().iterator();
-				
-				//Set CRC Cell URL
-				for (CellDataType cell : configureType.getCellDatas().getCellData())
-				{
-					if (cell.getId().equals("CRC"))
-					{
-						IMUtil.getInstance().setCRCEndpointReference(cell.getUrl());
-						break;
-					}
-					
-				}
-				
-				//Set Security Type
-				log.debug("Setting security type needed for CRC");
-				securityType = new SecurityType();
-				securityType.setDomain(configureType.getUser().getDomain());
-				securityType.setUsername(configureType.getUser().getUserName());
-				edu.harvard.i2b2.im.datavo.i2b2message.PasswordType ptype = new edu.harvard.i2b2.im.datavo.i2b2message.PasswordType();
-				ptype.setIsToken(configureType.getUser().getPassword().isIsToken());
-				ptype.setTokenMsTimeout(configureType.getUser().getPassword().getTokenMsTimeout());
-				ptype.setValue(configureType.getUser().getPassword().getValue());
-				securityType.setPassword(ptype);
-				
-				while (it.hasNext())
-				{
-					projectType = (ProjectType)it.next();
-					if (projectType.getId().equals(header.getProjectId())) {
-				//		log.info(header.getProjectId());
-				//		log.info(projectType.getId());
-						//If admin add role of admin
-						if (configureType.getUser().isIsAdmin())
-							projectType.getRole().add("ADMIN");
-						break;	
-					}
-					projectType = null;
+			PMResponseMessage msg = new PMResponseMessage();
+			StatusType procStatus = null;	
+			String response = PMServiceDriver.getRoles(userConfigType,header);		
+			log.debug(response);
+			procStatus = msg.processResult(response);
+			if(procStatus.getType().equals("ERROR"))
+				return null;
+			// check that user has access to this project.
+			configureType = msg.readUserInfo();
+			Iterator it = configureType.getUser().getProject().iterator();
 
+			//Set CRC Cell URL
+			for (CellDataType cell : configureType.getCellDatas().getCellData())
+			{
+				if (cell.getId().equals("CRC"))
+				{
+					IMUtil.getInstance().setCRCEndpointReference(cell.getUrl());
+					break;
 				}
 
-				//	projectType = pmConfigure.getUser().getProject().get(0);
-			} catch (AxisFault e) {
-				log.error("Cant connect to PM service");
-			} catch (I2B2Exception e) {
-				log.error("Problem processing PM service address");
-			} catch (Exception e) {
-				log.error("General PM processing problem:  "+ e.getMessage());
 			}
+
+			//Set Security Type
+			log.debug("Setting security type needed for CRC");
+			securityType = new SecurityType();
+			securityType.setDomain(configureType.getUser().getDomain());
+			securityType.setUsername(configureType.getUser().getUserName());
+			edu.harvard.i2b2.im.datavo.i2b2message.PasswordType ptype = new edu.harvard.i2b2.im.datavo.i2b2message.PasswordType();
+			ptype.setIsToken(configureType.getUser().getPassword().isIsToken());
+			ptype.setTokenMsTimeout(configureType.getUser().getPassword().getTokenMsTimeout());
+			ptype.setValue(configureType.getUser().getPassword().getValue());
+			securityType.setPassword(ptype);
+
+			while (it.hasNext())
+			{
+				projectType = (ProjectType)it.next();
+				if (projectType.getId().equals(header.getProjectId())) {
+					//		log.info(header.getProjectId());
+					//		log.info(projectType.getId());
+					//If admin add role of admin
+					if (configureType.getUser().isIsAdmin())
+						projectType.getRole().add("ADMIN");
+					break;	
+				}
+				projectType = null;
+
+			}
+
+			//	projectType = pmConfigure.getUser().getProject().get(0);
+		} catch (AxisFault e) {
+			log.error("Cant connect to PM service");
+		} catch (I2B2Exception e) {
+			log.error("Problem processing PM service address");
+		} catch (Exception e) {
+			log.error("General PM processing problem:  "+ e.getMessage());
 		}
+
 		return projectType;
-    }
-		
-    public void setDbInfo(MessageHeaderType requestMessageHeader) throws I2B2Exception{
+	}
 
-    	DataSourceLookupHelper dsHelper = new DataSourceLookupHelper();
-    	this.dbInfo =
-    		dsHelper.matchDataSource(requestMessageHeader.getSecurity().getDomain(),  
-    				requestMessageHeader.getProjectId(),
-    				requestMessageHeader.getSecurity().getUsername());
-    }     
+	public void setDbInfo(MessageHeaderType requestMessageHeader) throws I2B2Exception{
 
-		
+		DataSourceLookupHelper dsHelper = new DataSourceLookupHelper();
+		this.dbInfo =
+				dsHelper.matchDataSource(requestMessageHeader.getSecurity().getDomain(),  
+						requestMessageHeader.getProjectId(),
+						requestMessageHeader.getSecurity().getUsername());
+	}     
+
+
 	public DBInfoType getDbInfo() {
 		return this.dbInfo;
 	}
-    
+
 	public String getMetadata_dataSource() {
 		return dbInfo.getDb_dataSource();
 	}

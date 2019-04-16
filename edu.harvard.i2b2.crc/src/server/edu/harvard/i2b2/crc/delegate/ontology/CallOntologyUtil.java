@@ -368,8 +368,7 @@ public class CallOntologyUtil {
 
 	private static RequestMessageType getI2B2RequestMessage(String conceptPath, SecurityType securityType,  String projectId ) {
 		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
-		MessageHeaderType messageHeaderType = (MessageHeaderType) queryUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =  queryUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 
@@ -407,8 +406,7 @@ public class CallOntologyUtil {
 
 	private static RequestMessageType getChildrenI2B2RequestMessage(String conceptPath, SecurityType securityType,  String projectId ) {
 		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
-		MessageHeaderType messageHeaderType = (MessageHeaderType) queryUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =  queryUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 
@@ -446,8 +444,7 @@ public class CallOntologyUtil {
 
 	private static RequestMessageType getConceptsByCodeI2B2RequestMessage(String conceptCd, SecurityType securityType,  String projectId ) {
 		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
-		MessageHeaderType messageHeaderType = (MessageHeaderType) queryUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =  queryUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 
@@ -487,8 +484,7 @@ public class CallOntologyUtil {
 
 	private static RequestMessageType getDerivedFactColumnsI2B2RequestMessage(String conceptPath, SecurityType securityType,  String projectId ) {
 		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
-		MessageHeaderType messageHeaderType = (MessageHeaderType) queryUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =  queryUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 
@@ -524,8 +520,7 @@ public class CallOntologyUtil {
 
 	private static RequestMessageType getModifierI2B2RequestMessage(String modifierPath, String appliedPath, SecurityType securityType,  String projectId ) {
 		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
-		MessageHeaderType messageHeaderType = (MessageHeaderType) queryUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =  queryUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 

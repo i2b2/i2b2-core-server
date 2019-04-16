@@ -8,6 +8,8 @@
  ******************************************************************************/
 package edu.harvard.i2b2.crc.loader.dao;
 
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
@@ -24,10 +26,10 @@ public class DataSourceLookupDAOFactory {
 	protected final static Log log = LogFactory.getLog(DataSourceLookupDAOFactory.class);
 
 	public static final String ORACLE = "ORACLE";
-	public static final String SQLSERVER = "SQLSERVER";
+	public static final String SQLSERVER = "MICROSOFT SQL SERVER";
 	public static final String POSTGRESQL = "POSTGRESQL";
 
-	private static String dataSourceName = null;
+	//private static String dataSourceName = null;
 	private static String serverType = null;
 	private static String schemaName = null;
 	private static DataSource lookupDataSource = null;
@@ -57,11 +59,13 @@ public class DataSourceLookupDAOFactory {
 			throws I2B2DAOException {
 		QueryProcessorUtil crcUtil = QueryProcessorUtil.getInstance();
 		try {
-			dataSourceName = crcUtil.getCRCDBLookupDataSource();
-			serverType = crcUtil.getCRCDBLookupServerType();
-			schemaName = crcUtil.getCRCDBLookupSchemaName();
+			//dataSourceName = crcUtil.getCRCDBLookupDataSource();
+			//serverType = crcUtil.getCRCDBLookupServerType();
+			//schemaName = crcUtil.getCRCDBLookupSchemaName();
 			lookupDataSource = crcUtil
 					.getDataSource("java:/CRCBootStrapDS");
+			serverType = lookupDataSource.getConnection().getMetaData().getDatabaseProductName().toUpperCase();
+			schemaName = lookupDataSource.getConnection().getSchema();
 		} catch (I2B2Exception i2b2Ex) {
 			log.error(
 					"DataSourceLookupDAOFactory.getLookupDataSourceFromPropertyFile"
@@ -69,6 +73,11 @@ public class DataSourceLookupDAOFactory {
 			throw new I2B2DAOException(
 					"DataSourceLookupDAOFactory.getLookupDataSourceFromPropertyFile"
 							+ i2b2Ex.getMessage(), i2b2Ex);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new I2B2DAOException(
+					"DataSourceLookupDAOFactory.getLookupDataSourceFromPropertyFile SQL Error"
+							+ e.getMessage(), e);
 		}
 	}
 	/*

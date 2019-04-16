@@ -17,7 +17,9 @@ package edu.harvard.i2b2.im.util;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -28,9 +30,16 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
+import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
+import edu.harvard.i2b2.common.util.axis2.ServiceClient;
+import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
+import edu.harvard.i2b2.im.datavo.pm.ParamType;
 
 
 /**
@@ -42,17 +51,6 @@ import edu.harvard.i2b2.common.util.ServiceLocator;
  * @author rkuttan
  */
 public class IMUtil {
-    /** property file name which holds application directory name **/
-    public static final String APPLICATION_DIRECTORY_PROPERTIES_FILENAME = "im_application_directory.properties";
-
-    /** application directory property name **/
-    public static final String APPLICATIONDIR_PROPERTIES = "edu.harvard.i2b2.im.applicationdir";
-
-    /** application property filename**/
-    public static final String APPLICATION_PROPERTIES_FILENAME = "im.properties";
-
-    /** property name for im schema name**/
-    private static final String IM_SCHEMA_NAME_PROPERTIES = "im.bootstrapdb.imschema";
 
     /** property name for PM endpoint reference **/
     private static final String PM_WS_EPR = "im.ws.pm.url";
@@ -62,14 +60,6 @@ public class IMUtil {
     /** property name for PM webserver method **/
     private static final String PM_WS_METHOD = "im.ws.pm.webServiceMethod";
 
-    /** property name for PM bypass **/
-    private static final String PM_BYPASS = "im.ws.pm.bypass";
-
-    /** property name for PM bypass project **/
-    private static final String PM_BYPASS_PROJECT = "im.ws.pm.bypass.project";
-
-    /** property name for PM bypass role **/
-    private static final String PM_BYPASS_ROLE = "im.ws.pm.bypass.role";
 
     /** property name for EMPI Service **/
     private static final String EMPI_SERVICE = "im.empi.service";
@@ -94,7 +84,7 @@ public class IMUtil {
     private static ServiceLocator serviceLocator = null;
 
     /** field to store application properties **/
-    private static Properties appProperties = null;
+	private static List<ParamType> appProperties = null;
 
     /** log **/
     protected final Log log = LogFactory.getLog(getClass());
@@ -125,49 +115,21 @@ public class IMUtil {
         return thisInstance;
     }
 
-    /**
-     * Return the ontology spring config
-     * @return
-     */
-    public BeanFactory getSpringBeanFactory() {
-        if (beanFactory == null) {
-            String appDir = null;
-
-            try {
-                //read application directory property file via classpath
-                Properties loadProperties = ServiceLocator.getProperties(APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
-                //read directory property
-                appDir = loadProperties.getProperty(APPLICATIONDIR_PROPERTIES);
-            } catch (I2B2Exception e) {
-                log.error(APPLICATION_DIRECTORY_PROPERTIES_FILENAME +
-                    "could not be located from classpath ");
-            }
-
-            if (appDir != null && !appDir.equals("")) {
-                FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-                        "file:" + appDir + "/" +
-                        "IMApplicationContext.xml");
-                beanFactory = ctx.getBeanFactory();
-            } else {
-				 String path = IMUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-				 path = path.substring(0, path.indexOf("deployments"));
-
-                FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-                        path + "configuration/imapp/IMApplicationContext.xml");
-                beanFactory = ctx.getBeanFactory();
-            }
-        }
-
-        return beanFactory;
-    }
-    
+ 
     /**
      * Return im schema name
      * @return
      * @throws I2B2Exception
      */
     public String getIMDataSchemaName() throws I2B2Exception {
-        return getPropertyValue(IM_SCHEMA_NAME_PROPERTIES).trim()+ ".";
+		try {
+			return dataSource.getConnection().getSchema() + "." ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  //getPropertyValue(METADATA_SCHEMA_NAME_PROPERTIES).trim() + ".";
+		return null;
+
     }
 
     /**
@@ -225,32 +187,6 @@ public class IMUtil {
         return getPropertyValue(PM_WS_METHOD).trim();
     }
     
-    /**
-     * Return PM bypass flag
-     * @return
-     * @throws I2B2Exception
-     */
-    public Boolean isPmBypass() throws I2B2Exception {
-        return Boolean.valueOf(getPropertyValue(PM_BYPASS).trim());
-    }
-
-    /**
-     * Return PM bypass project name
-     * @return
-     * @throws I2B2Exception
-     */
-    public String getPmBypassProject() throws I2B2Exception {
-        return getPropertyValue(PM_BYPASS_PROJECT).trim();
-    }
-
-    /**
-     * Return PM bypass role assignment
-     * @return
-     * @throws I2B2Exception
-     */
-    public String getPmBypassRole() throws I2B2Exception {
-        return getPropertyValue(PM_BYPASS_ROLE).trim();
-    }
 
     
     /**
@@ -269,60 +205,84 @@ public class IMUtil {
     // private methods here
     //---------------------
 
+	private ParameterizedRowMapper getHiveCellParam() {
+		ParameterizedRowMapper<ParamType> map = new ParameterizedRowMapper<ParamType>() {
+			public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
+				DTOFactory factory = new DTOFactory();
+
+
+
+				log.debug("setting name");
+				ParamType param = new ParamType();
+				param.setId(rs.getInt("id"));
+				param.setName(rs.getString("param_name_cd"));
+				param.setValue(rs.getString("value"));
+				param.setDatatype(rs.getString("datatype_cd"));
+				return param;
+			} 
+		};
+		return map;
+	}
     /**
      * Load application property file into memory
      */
-    private String getPropertyValue(String propertyName)
-        throws I2B2Exception {
-        if (appProperties == null) {
-            //read application directory property file
-            Properties loadProperties = ServiceLocator.getProperties(APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
+	private String getPropertyValue(String propertyName) throws I2B2Exception {
 
-            //read application directory property
-            String appDir = loadProperties.getProperty(APPLICATIONDIR_PROPERTIES);
+		if (appProperties == null) {
 
-            if (appDir == null) {
-                throw new I2B2Exception("Could not find " +
-                    APPLICATIONDIR_PROPERTIES + "from " +
-                    APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
-            }
-			if (appDir.trim().equals(""))
-			{
 
-				appDir =  "standalone/configuration/imapp";
+
+			//		log.info(sql + domainId + projectId + ownerId);
+			//	List<ParamType> queryResult = null;
+			try {
+				DataSource   ds = this.getDataSource("java:/IMBootStrapDS");
+
+				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
+				String sql =  "select * from " + ds.getConnection().getSchema() + ".hive_cell_params where status_cd <> 'D' and cell_id = 'ONT'";
+
+				log.debug("Start query");
+				appProperties = jt.query(sql, getHiveCellParam());
+				log.debug("End query");
+
+
+			} catch (DataAccessException e) {
+				log.error(e.getMessage());
+				e.printStackTrace();
+				throw new I2B2DAOException("Database error");
 			}
-            String appPropertyFile = appDir + "/" +
-                APPLICATION_PROPERTIES_FILENAME;
+			//return queryResult;	
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-            try {
-                FileSystemResource fileSystemResource = new FileSystemResource(appPropertyFile);
-                PropertiesFactoryBean pfb = new PropertiesFactoryBean();
-                pfb.setLocation(fileSystemResource);
-                pfb.afterPropertiesSet();
-                appProperties = (Properties) pfb.getObject();
-            } catch (IOException e) {
-                throw new I2B2Exception("Application property file(" +
-                    appPropertyFile +
-                    ") missing entries or not loaded properly");
-            }
+		}
 
-            if (appProperties == null) {
-                throw new I2B2Exception("Application property file(" +
-                    appPropertyFile +
-                    ") missing entries or not loaded properly");
-            }
-        }
+		String propertyValue = null;//appProperties.getProperty(propertyName);
+		for (int i=0; i < appProperties.size(); i++)
+		{
+			if (appProperties.get(i).getName() != null)
+			{
+				if (appProperties.get(i).getName().equalsIgnoreCase(propertyName))
+					if (appProperties.get(i).getDatatype().equalsIgnoreCase("U"))
+						try {
+							 propertyValue = ServiceClient.getContextRoot() + appProperties.get(i).getValue();
 
-        String propertyValue = appProperties.getProperty(propertyName);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					else 
+						propertyValue = appProperties.get(i).getValue();
+			}
+		}
 
-        if ((propertyValue != null) && (propertyValue.trim().length() > 0)) {
-            ;
-        } else {
-            throw new I2B2Exception("Application property file(" +
-                APPLICATION_PROPERTIES_FILENAME + ") missing " + propertyName +
-                " entry");
-        }
+		if ((propertyValue == null) || (propertyValue.trim().length() == 0)) {
+			throw new I2B2Exception("Application property file("
+					//	+ APPLICATION_PROPERTIES_FILENAME + ") missing "
+					+ propertyName + " entry");
+		}
 
-        return propertyValue;
-    }
+		return propertyValue;
+	}
 }

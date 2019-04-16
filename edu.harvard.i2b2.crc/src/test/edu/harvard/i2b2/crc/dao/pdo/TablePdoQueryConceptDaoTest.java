@@ -66,8 +66,7 @@ public class TablePdoQueryConceptDaoTest {
 						GetPDOFromInputListRequestType.class);
 		QueryProcessorUtil queryProcessorUtil = QueryProcessorUtil
 				.getInstance();
-		DataSourceLookup dataSourceLookup = (DataSourceLookup) queryProcessorUtil
-				.getSpringBeanFactory().getBean("TestDataSourceLookup");
+		DataSourceLookup dataSourceLookup = null;
 		DataSource dataSource = queryProcessorUtil
 				.getSpringDataSource("TestDataSource");
 		IFactRelatedQueryHandler pdoQueryHandler = null;

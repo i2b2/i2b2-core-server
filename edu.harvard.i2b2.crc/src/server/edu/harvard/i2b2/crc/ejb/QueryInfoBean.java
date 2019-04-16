@@ -34,6 +34,7 @@ import edu.harvard.i2b2.crc.dao.setfinder.IQueryMasterDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultInstanceDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultTypeDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IResultGenerator;
+import edu.harvard.i2b2.crc.dao.setfinder.QueryResultTypeSpringDao;
 import edu.harvard.i2b2.crc.dao.setfinder.SetFinderConnection;
 import edu.harvard.i2b2.crc.datavo.PSMFactory;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
@@ -478,12 +479,13 @@ public class QueryInfoBean { //implements SessionBean {
 	}
 
 
+	
 	public CrcXmlResultResponseType getQTBreakdownForAdmin(DataSourceLookup dataSourceLookup, SecurityType userRequestType,
 			ResultOutputOptionListType resultOutputList) throws I2B2DAOException, SQLException {
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 
 		CrcXmlResultResponseType response = new CrcXmlResultResponseType();
-		Map generatorMap = (Map)  qpUtil.getSpringBeanFactory().getBean("setFinderResultGeneratorMap");
+	//	Map generatorMap = (Map)  qpUtil.getSpringBeanFactory().getBean("setFinderResultGeneratorMap");
 
 		SetFinderDAOFactory sfDAOFactory = getSetFinderDaoFactory(
 				dataSourceLookup.getDomainId(), dataSourceLookup
@@ -514,7 +516,11 @@ public class QueryInfoBean { //implements SessionBean {
 			param.put("ResultOptionName", resultName);
 			if (!resultName.startsWith("ADMIN"))
 				throw new I2B2DAOException ("Only ADMIN breakdowns can be run.");
-			String generatorClassName = (String) generatorMap.get(resultName);
+			QueryResultTypeSpringDao resultTypeDao = new QueryResultTypeSpringDao(
+					sfDAOFactory.getDataSource(), dataSourceLookup);
+			String generatorClassName = resultTypeDao.getQueryResultTypeClassname(resultName);
+					
+					//(String) generatorMap.get(resultName);
 			if (generatorClassName == null) {
 				throw new I2B2DAOException("Could not find result name ["
 						+ resultName + "] in the config file");

@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.quartz.SchedulerException;
+//import org.quartz.SchedulerException;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -28,7 +28,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.StatusType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.UserType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.StatusType.Condition;
 import edu.harvard.i2b2.crc.exec.ExecException;
-import edu.harvard.i2b2.crc.quartz.StartJobHandler;
+//import edu.harvard.i2b2.crc.quartz.StartJobHandler;
 import edu.harvard.i2b2.crc.role.AuthrizationHelper;
 import edu.harvard.i2b2.crc.util.I2B2RequestMessageHelper;
 import edu.harvard.i2b2.crc.util.I2B2ResponseMessageHelper;
@@ -131,7 +131,7 @@ public class StartAnalysis implements StartAnalysisLocal {
 			 */
 
 			long timeout = msgHelper.getTimeout();
-			StartJobHandler startJobHandler = new StartJobHandler(
+	/*  TODO Fix		StartJobHandler startJobHandler = new StartJobHandler(
 					QueryProcessorUtil.getInstance().getQuartzScheduler());
 
 			startJobHandler.startNonQuartzJob(domainId, projectId, userId,
@@ -139,6 +139,7 @@ public class StartAnalysis implements StartAnalysisLocal {
 
 			// Thread.sleep(timeout);
 			waitForProcess(timeout, queryInstanceId);
+			*/
 		} catch (ExecException execEx) {
 			if (execEx.getExitStatus().equals(ExecException.TIMEOUT_STATUS)) {
 				statusName = StatusEnum.QUEUED.toString();
@@ -163,9 +164,9 @@ public class StartAnalysis implements StartAnalysisLocal {
 			statusName = StatusEnum.ERROR.toString();
 			statusMessage = edu.harvard.i2b2.common.exception.StackTraceUtil
 					.getStackTrace(e);
-		} catch (SchedulerException e) {
+	//	} catch (SchedulerException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
 		} finally {
 			// just update query instance status, result instance status will be
 			// updated by queryexecutor

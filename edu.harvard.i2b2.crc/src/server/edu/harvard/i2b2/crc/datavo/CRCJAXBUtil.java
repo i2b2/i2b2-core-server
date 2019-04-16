@@ -16,7 +16,6 @@ package edu.harvard.i2b2.crc.datavo;
 
 import java.util.List;
 
-import org.springframework.beans.factory.BeanFactory;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
@@ -39,17 +38,8 @@ public class CRCJAXBUtil {
 	//@SuppressWarnings("unchecked")
 	public static JAXBUtil getJAXBUtil() {
 		if (jaxbUtil == null) {
-			BeanFactory springBean = QueryProcessorUtil.getInstance()
-					.getSpringBeanFactory();
-			List jaxbPackageName = (List) springBean.getBean("jaxbPackage");
-			String[] jaxbPackageNameArray = (String[]) jaxbPackageName
-					.toArray(new String[] {
-
-					});
-			jaxbUtil = new JAXBUtil(
-					jaxbPackageNameArray);
+			jaxbUtil = new edu.harvard.i2b2.common.util.jaxb.JAXBUtil(edu.harvard.i2b2.crc.util.JAXBConstant.DEFAULT_PACKAGE_NAME);
 		}
-
 		return jaxbUtil;
 	}
 

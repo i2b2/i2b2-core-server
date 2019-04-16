@@ -244,8 +244,7 @@ public class TemporalPanelCellQueryItem extends TemporalPanelItem {
 
 	private RequestMessageType getI2B2RequestMessage(SecurityType securityType,  String projectId) throws Exception {
 		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
-		MessageHeaderType messageHeaderType = (MessageHeaderType) queryUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =  queryUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 

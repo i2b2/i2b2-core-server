@@ -25,7 +25,7 @@ import javax.sql.DataSource;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.axis2.AxisFault;
-import org.springframework.beans.factory.BeanFactory;
+//import org.springframework.beans.factory.BeanFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -65,16 +65,18 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 
 	private DataSourceLookup dataSourceLookup = null,
 			originalDataSourceLookup = null;
-	private static Map generatorMap = null;
-	private static String defaultResultType = null;
+//	private static Map generatorMap = null;
+//	private static String defaultResultType = null;
 	private Map projectParamMap = new HashMap();
 	private boolean queryWithoutTempTableFlag = false;
 
 	static {
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-		BeanFactory bf = qpUtil.getSpringBeanFactory();
-		generatorMap = (Map) bf.getBean("setFinderResultGeneratorMap");
-		defaultResultType = (String) bf.getBean("defaultSetfinderResultType");
+	//	qpUtil.getManualConnection()
+		
+//		BeanFactory bf = qpUtil.getSpringBeanFactory();
+	//	generatorMap = (Map) bf.getBean("setFinderResultGeneratorMap");
+	//	defaultResultType = (String) bf.getBean("defaultSetfinderResultType");
 	}
 
 	public QueryExecutorDao(DataSource dataSource,

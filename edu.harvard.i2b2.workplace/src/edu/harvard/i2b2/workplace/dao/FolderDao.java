@@ -68,20 +68,25 @@ public class FolderDao extends JdbcDaoSupport {
 	final static String BLOB = ", c_work_xml, c_work_xml_schema, c_work_xml_i2b2_type ";
 
 	private SimpleJdbcTemplate jt;
-
+	 private String metadataSchema;
+	    
 	private void setDataSource(String dataSource) {
 		DataSource ds = null;
 		try {
 			ds = WorkplaceUtil.getInstance().getDataSource(dataSource);
+			metadataSchema = ds.getConnection().getSchema();
 		} catch (I2B2Exception e2) {
 			log.error(e2.getMessage());;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} 
 		this.jt = new SimpleJdbcTemplate(ds);
 	}
 
 	private String getMetadataSchema() throws I2B2Exception{
 
-		return WorkplaceUtil.getInstance().getMetaDataSchemaName();
+		return metadataSchema; //WorkplaceUtil.getInstance().getMetaDataSchemaName();
 	}
 
 

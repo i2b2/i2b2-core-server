@@ -64,10 +64,10 @@ public class DblookupDao extends JdbcDaoSupport {
 		jt = new SimpleJdbcTemplate(ds);
 		String dataSchema = "";
 		try {
-			dataSchema = QueryProcessorUtil.getInstance().getCRCDBLookupSchemaName();
-		} catch (I2B2Exception e1) {
+			dataSchema = ds.getConnection().getSchema();
+		} catch (SQLException e1) {
 			log.error(e1.getMessage());
-		}
+		} 
 		if (dataSchema.endsWith(".")) {
 			dbluTable = dataSchema + "crc_db_lookup ";
 		} else {

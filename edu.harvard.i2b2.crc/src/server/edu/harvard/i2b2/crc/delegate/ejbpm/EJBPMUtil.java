@@ -130,22 +130,22 @@ public class EJBPMUtil {
 			throws AxisFault, I2B2Exception {
 		RolesType rolesType = new RolesType();
 		String pmBypassRole = null, pmBypassProject = null;
-		boolean pmBypass = false;
-		try {
-			pmBypass = QueryProcessorUtil.getInstance()
-					.getProjectManagementByPassFlag();
-			pmBypassRole = QueryProcessorUtil.getInstance()
-					.getProjectManagementByPassRole();
+	//	boolean pmBypass = false;
+	//	try {
+	//		pmBypass = QueryProcessorUtil.getInstance()
+	//				.getProjectManagementByPassFlag();
+	//		pmBypassRole = QueryProcessorUtil.getInstance()
+	//				.getProjectManagementByPassRole();
 
-			log.debug("Project Management bypass flag  from property file :["
-					+ pmBypass + "] bypass role [" + pmBypassRole
-					+ "] project [" + pmBypassProject + "]");
-		} catch (I2B2Exception e1) {
-			e1.printStackTrace();
-			log
-					.info("Could not read Project Management bypass setting, trying PM without bypass option");
-		}
-
+	//		log.debug("Project Management bypass flag  from property file :["
+	//				+ pmBypass + "] bypass role [" + pmBypassRole
+	//				+ "] project [" + pmBypassProject + "]");
+	//	} catch (I2B2Exception e1) {
+	//		e1.printStackTrace();
+	//		log
+	//				.info("Could not read Project Management bypass setting, trying PM without bypass option");
+	//	}
+/*
 		if (pmBypass == true) {
 			log.info("Using Project Management by pass option ");
 			log
@@ -166,6 +166,7 @@ public class EJBPMUtil {
 			}
 
 		} else {
+		*/
 			RoleType roleType = new RoleType();
 			roleType.setUserName(userId);
 			roleType.setProjectId(projectId);
@@ -190,7 +191,7 @@ public class EJBPMUtil {
 				e.printStackTrace();
 				throw new I2B2Exception("" + StackTraceUtil.getStackTrace(e));
 			}
-		}
+	//	}
 
 		return rolesType;
 	}
@@ -294,8 +295,7 @@ public class EJBPMUtil {
 
 	private static RequestMessageType getI2B2RequestMessage(BodyType bodyType, SecurityType securityType,  String projectId ) {
 		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
-		MessageHeaderType messageHeaderType = (MessageHeaderType) queryUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =  queryUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 

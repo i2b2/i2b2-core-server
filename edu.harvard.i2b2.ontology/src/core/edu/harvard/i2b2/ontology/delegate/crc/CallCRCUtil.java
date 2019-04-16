@@ -68,6 +68,7 @@ import edu.harvard.i2b2.ontology.datavo.i2b2message.ResultStatusType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.ontology.util.OntologyJAXBUtil;
 import edu.harvard.i2b2.ontology.util.OntologyUtil;
+import edu.harvard.i2b2.ontology.ws.MessageFactory;
 
 public class CallCRCUtil {
 
@@ -283,8 +284,8 @@ public class CallCRCUtil {
 		OutputOptionListType outOption = new OutputOptionListType();
 		publishDataRequest.setOutputList(outOption);
 
-		MessageHeaderType messageHeaderType = (MessageHeaderType) ontologyUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =   ontologyUtil.getMessageHeader();
+		
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 
@@ -314,8 +315,7 @@ public class CallCRCUtil {
 		getUploadInfo.setLoadId(uploadId);
 		getUploadInfo.setUserId(securityType.getUsername());
 
-		MessageHeaderType messageHeaderType = (MessageHeaderType) ontologyUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =   ontologyUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 
@@ -344,8 +344,7 @@ public class CallCRCUtil {
 		InstanceRequestType instanceRequestType = new InstanceRequestType();
 		instanceRequestType.setQueryInstanceId(queryInstanceId);
 
-		MessageHeaderType messageHeaderType = (MessageHeaderType) ontologyUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =   ontologyUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 
@@ -380,8 +379,7 @@ public class CallCRCUtil {
 		masterDeleteReqType.setQueryMasterId(queryMasterId);
 		masterDeleteReqType.setUserId(userId); 
 
-		MessageHeaderType messageHeaderType = (MessageHeaderType) ontologyUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =   ontologyUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 
@@ -428,8 +426,7 @@ public class CallCRCUtil {
 		queryDefinitionRequestType.setQueryDefinition(queryDef);
 		queryDefinitionRequestType.setResultOutputList(resultOutputOptionListType);
 
-		MessageHeaderType messageHeaderType = (MessageHeaderType) ontologyUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =   ontologyUtil.getMessageHeader();
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 

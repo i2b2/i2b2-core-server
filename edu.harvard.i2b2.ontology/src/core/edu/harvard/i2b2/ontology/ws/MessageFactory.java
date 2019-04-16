@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -72,17 +73,22 @@ public class MessageFactory {
 		OMElement returnElement = null;
 
 		try {
+			/*
 			StringReader strReader = new StringReader(xmlString);
 			XMLInputFactory xif = XMLInputFactory.newInstance();
 			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
 
 			StAXOMBuilder builder = new StAXOMBuilder(reader);
 			returnElement = builder.getDocumentElement();
+			*/
+			returnElement = AXIOMUtil.stringToOM(xmlString);
 
-		} catch (XMLStreamException e) {
+			
+		} catch (Exception e) {
 			log
 					.error("Error while converting Ontology response VDO to OMElement");
-			throw new I2B2Exception("XML Stream error ", e);
+			//throw new I2B2Exception("XML Stream error ", e);
+			
 		}
 
 		return returnElement;

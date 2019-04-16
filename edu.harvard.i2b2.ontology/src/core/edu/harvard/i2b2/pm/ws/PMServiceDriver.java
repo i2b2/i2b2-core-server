@@ -93,21 +93,18 @@ public class PMServiceDriver {
 
 			// First step is to get PM endpoint reference from properties file.
 			String pmEPR = "";
-			String pmMethod = "";
+		//	String pmMethod = "";
 			try {
 				pmEPR = OntologyUtil.getInstance().getPmEndpointReference();
-				pmMethod = OntologyUtil.getInstance().getPmWebServiceMethod();
+		//		pmMethod = OntologyUtil.getInstance().getPmWebServiceMethod();
 			} catch (I2B2Exception e1) {
 				log.error(e1.getMessage());
 				throw e1;
 			}
 
-			if(pmMethod.equals("SOAP")) {
-				response = ServiceClient.sendSOAP(pmEPR, getRolesRequestString, "http://rpdr.partners.org/GetUserConfiguration", "GetUserConfiguration" );
-			}
-			else {
+		
 				response = ServiceClient.sendREST(pmEPR, getRolesRequestString);
-			}
+			
 
 			log.debug("PM response = " + response);
 		} catch (Exception e) {

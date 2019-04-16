@@ -132,8 +132,10 @@ public class CallFileRepositoryUtil {
 
 	private RequestMessageType getI2B2RequestMessage(String recvFileName) {
 		CRCLoaderUtil queryUtil = CRCLoaderUtil.getInstance();
-		MessageHeaderType messageHeaderType = (MessageHeaderType) queryUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType = new MessageHeaderType();
+		
+				//(MessageHeaderType) queryUtil
+				//.getSpringBeanFactory().getBean("message_header");
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 

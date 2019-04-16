@@ -17,10 +17,17 @@ package edu.harvard.i2b2.ontology.delegate;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.util.XMLGregorianCalendarDeserializer;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.ontology.dao.ConceptDao;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.MessageHeaderType;
@@ -69,7 +76,7 @@ public class GetNameInfoHandler extends RequestHandler {
 			return response; 
 		} 
 	
-		List response = null;
+		List<ConceptType> response = null;
 		try {
 			response = conceptDao.findNameInfo(vocabType, project, this.getDbInfo());
 		} catch (I2B2DAOException e1) {
@@ -80,6 +87,15 @@ public class GetNameInfoHandler extends RequestHandler {
 				responseMessageType = MessageFactory.doBuildErrorResponse(nameInfoMsg.getMessageHeaderType(), "Database configuration error");
 		}
 		// no errors found 
+		 String responseVdo = null;
+		 
+		 Gson gson = new GsonBuilder().setPrettyPrinting()
+	                .registerTypeAdapter(
+	                     XMLGregorianCalendar.class,
+	                     new XMLGregorianCalendarDeserializer() )
+	                .create();
+		 
+		 
 		if(responseMessageType == null) {
 			// no db error but response is empty
 			if (response == null) {
@@ -117,10 +133,14 @@ public class GetNameInfoHandler extends RequestHandler {
 				}
 				MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(nameInfoMsg.getMessageHeaderType());          
 				responseMessageType = MessageFactory.createBuildResponse(messageHeader,concepts);
+				
+							 
+				//responseVdo = gson.toJson(response);
 			}        
 		}
-        String responseVdo = null;
-        responseVdo = MessageFactory.convertToXMLString(responseMessageType);
+       
+		if (responseVdo == null)
+			responseVdo = MessageFactory.convertToXMLString(responseMessageType);
 		return responseVdo;
 	}
 }

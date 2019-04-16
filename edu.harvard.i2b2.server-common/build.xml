@@ -67,6 +67,83 @@
 	</target>
 
 
+	<!-- =================================================================== -->
+	<!-- 								WAR 								 -->
+	<!-- =================================================================== -->
+	<target name="war" depends="init,compile" description="package application for distribution/deployment">
+
+		<echo message="${Name}: Creating the war package!" />
+		
+		<copy todir="${dist}/${axis2.war.name}">
+					<fileset dir="lib/axis2.war">
+						<include name="**/**" />
+					</fileset>
+				</copy>		
+		
+		<copy todir="${dist}/${axis2.war.name}/WEB-INF/lib">
+			<fileset dir="${lib}/spring" includes="**/*" />
+			<fileset dir="${lib}/jcifs" includes="**/*" />			
+			<fileset dir="${lib}/jdbc" includes="**/*" />			
+			<fileset dir="${lib}/jboss" includes="**/*" />				
+		</copy>
+		
+		<copy todir="${dist}/${axis2.war.name}/WEB-INF/lib">
+		                                <fileset dir="${dist}" includes="**/*-core.jar" />
+		                        </copy>
+		
+		<echo message="${Name}: Building CRC package!" />
+		    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.crc" target="clean"/>
+		    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.crc" target="all">
+		    	 <property name="Name" value="CRC"/>
+		    </ant>
+		<copy todir="${dist}/${axis2.war.name}/WEB-INF/lib">
+		     <fileset dir="../edu.harvard.i2b2.crc/${dist}" includes="**/*-core.jar" />
+		</copy>
+		<copy todir="${dist}/${axis2.war.name}/WEB-INF/services">
+		     <fileset dir="../edu.harvard.i2b2.crc/${dist}" includes="**/*.aar" />
+		</copy>
+		
+		
+		<echo message="${Name}: Building Ontology package!" />
+		    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.ontology" target="clean"/>
+		    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.ontology" target="all">
+		    	 <property name="Name" value="Ontology"/>
+		    </ant>
+		<copy todir="${dist}/${axis2.war.name}/WEB-INF/lib">
+		     <fileset dir="../edu.harvard.i2b2.ontology/${dist}" includes="**/*-core.jar" />
+		</copy>
+		<copy todir="${dist}/${axis2.war.name}/WEB-INF/services">
+		     <fileset dir="../edu.harvard.i2b2.ontology/${dist}" includes="**/*.aar" />
+		</copy>
+				
+		<echo message="${Name}: Building Workplace package!" />
+		    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.workplace" target="clean"/>
+		    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.workplace" target="all">
+		    	 <property name="Name" value="Workplace"/>
+		    </ant>
+		<copy todir="${dist}/${axis2.war.name}/WEB-INF/lib">
+		     <fileset dir="../edu.harvard.i2b2.workplace/${dist}" includes="**/*-core.jar" />
+		</copy>
+		<copy todir="${dist}/${axis2.war.name}/WEB-INF/services">
+		     <fileset dir="../edu.harvard.i2b2.workplace/${dist}" includes="**/*.aar" />
+		</copy>		
+		
+		<echo message="${Name}: Building PM package!" />
+		    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.pm" target="clean"/>
+		    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.pm" target="all">
+		    	 <property name="Name" value="PM"/>
+		    </ant>
+		<copy todir="${dist}/${axis2.war.name}/WEB-INF/lib">
+		     <fileset dir="../edu.harvard.i2b2.pm/${dist}" includes="**/*-core.jar" />
+		</copy>
+		<copy todir="${dist}/${axis2.war.name}/WEB-INF/services">
+		     <fileset dir="../edu.harvard.i2b2.pm/${dist}" includes="**/*.aar" />
+		</copy>			
+		
+		
+		<zip destfile="${dist}/${axis2.war.name}.zip"
+		     basedir="${dist}/${axis2.war.name}"/>
+	</target>
 
 
 	<!-- =================================================================== -->
@@ -142,7 +219,6 @@
 			<fileset dir="${lib}/spring" includes="**/*" />
 			<fileset dir="${lib}/jcifs" includes="**/*" />			
 			<fileset dir="${lib}/jdbc" includes="**/*" />			
-			<fileset dir="${lib}/commons" includes="**/*" />	
 			<fileset dir="${lib}/jboss" includes="**/*" />				
 		</copy>
 	</target>

@@ -128,21 +128,7 @@ public class PMServiceDriver {
 		String pmBypassRole = null;
 		String pmBypassProject = null;
 		String response = null;
-		try {
-			pmBypass = FRUtil.getInstance().getProjectManagementByPassFlag();
-			pmBypassRole = FRUtil.getInstance().getProjectManagementByPassRole();
-			log.debug(pmBypass + pmBypassRole + pmBypassProject);
-		} catch (I2B2Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			log.error(e1.getMessage());
-		}
 
-		if(pmBypass == true){
-			throw new I2B2Exception ("Cannot bypass PM in File Repository");
-
-		}
-		else {
 			try {
 				GetUserConfigurationType userConfigType = new GetUserConfigurationType();
 				PMResponseMessage msg = new PMResponseMessage();
@@ -161,7 +147,7 @@ public class PMServiceDriver {
 				throw new I2B2Exception(e.getMessage());
 				//pmResponseUserInfo = null;
 			}
-		}
+		
 		return pmResponseUserInfo;
 	}
 

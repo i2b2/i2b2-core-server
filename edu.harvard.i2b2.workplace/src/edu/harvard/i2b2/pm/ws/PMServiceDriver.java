@@ -76,20 +76,13 @@ public class PMServiceDriver {
 
 			// First step is to get PM endpoint reference from properties file.
 			String pmEPR = "";
-			String pmMethod = "";
 			try {
 				pmEPR = WorkplaceUtil.getInstance().getPmEndpointReference();
-				pmMethod = WorkplaceUtil.getInstance().getPmWebServiceMethod();
 			} catch (I2B2Exception e1) {
 				log.error(e1.getMessage());
 				throw e1;
 			}
-			 if(pmMethod.equals("SOAP")) {
-				 response = ServiceClient.sendSOAP(pmEPR, getRolesRequestString, "http://rpdr.partners.org/GetUserConfiguration", "GetUserConfiguration" );
-			 }
-			 else {
 				 response = ServiceClient.sendREST(pmEPR, getRolesRequestString);
-			 }
 
 		} catch (AxisFault e) {
 			log.error(e.getMessage());

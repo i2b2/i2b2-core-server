@@ -49,11 +49,12 @@ public class KeyReaderUtil {
 	 * Static function to fetch default command line value to fetch key file
 	 * @return
 	 */
-	public static String getKeyFetchCommand() { 
-		CRCLoaderUtil loaderUtil = CRCLoaderUtil.getInstance();
-		Map<String,String> loaderPropertyMap = (Map<String,String>)loaderUtil.getSpringBeanFactory().getBean("loaderproperty");
-		String keyFetchCommand = loaderPropertyMap.get(KeyReaderUtil.KEY_FETCH_COMMAND);
-		return keyFetchCommand;
+	public static String getKeyFetchCommands() { 
+//		CRCLoaderUtil loaderUtil = CRCLoaderUtil.getInstance();
+//		Map<String,String> loaderPropertyMap = (Map<String,String>)loaderUtil.getSpringBeanFactory().getBean("loaderproperty");
+//		String keyFetchCommand = loaderPropertyMap.get(KeyReaderUtil.KEY_FETCH_COMMAND);
+//		return keyFetchCommand;
+		return null;
 	}
 	
 	
@@ -130,7 +131,7 @@ public class KeyReaderUtil {
 	
 	/**
 	 * @param args
-	 */
+
 	public static void main(String[] args) throws Exception {
 		String keyFetchCommand = KeyReaderUtil.getKeyFetchCommand();
 		System.out.println("keyFetchCommand " +keyFetchCommand);
@@ -139,5 +140,5 @@ public class KeyReaderUtil {
 		System.out.println("Empi Key " + keys[0]);
 		System.out.println("Notes Key " + keys[1]);
 	}
-
+	 */
 }

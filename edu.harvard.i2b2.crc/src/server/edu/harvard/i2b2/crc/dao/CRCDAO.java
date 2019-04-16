@@ -54,6 +54,7 @@ public abstract class CRCDAO {
 	 * @throws I2B2DAOException
 	 * @throws SQLException
 	 */
+	/*
 	protected Connection getConnection() throws SQLException, I2B2DAOException {
 		try {
 			return QueryProcessorUtil.getInstance().getConnection();
@@ -61,6 +62,7 @@ public abstract class CRCDAO {
 			throw new I2B2DAOException("Could not get connection", i2b2Ex);
 		}
 	}
+	*/
 
 	protected DataSource getApplicationDataSource(String dataSourceName)
 			throws I2B2DAOException {

@@ -58,11 +58,9 @@ public class I2B2MessageResponseFactory {
 			throws JAXBUtilException {
 		JAXBUtil util = CRCJAXBUtil.getJAXBUtil();
 		
-		MessageHeaderType messageHeader = new MessageHeaderType();
-		ApplicationType appType = (ApplicationType) QueryProcessorUtil
-		.getInstance().getSpringBeanFactory()
-		.getBean("appType");
 		
+		MessageHeaderType messageHeader =  QueryProcessorUtil.getInstance().getMessageHeader();
+		ApplicationType appType  = messageHeader.getSendingApplication();
 		if (requestXml != null) {
 			RequestMessageType requestMsgType = getI2B2RequestMessageType(requestXml);
 			MessageHeaderType clientMessageHeader = requestMsgType.getMessageHeader();

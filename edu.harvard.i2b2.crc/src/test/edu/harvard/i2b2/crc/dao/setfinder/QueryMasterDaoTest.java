@@ -37,8 +37,7 @@ public class QueryMasterDaoTest {
 		 */
 
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-		DataSourceLookup dataSourceLookup = (DataSourceLookup) qpUtil
-				.getSpringBeanFactory().getBean("TestDataSourceLookup");
+		DataSourceLookup dataSourceLookup = null;
 		// instanciate datasource
 		DataSource dataSource = QueryProcessorUtil.getInstance()
 				.getSpringDataSource(dataSourceLookup.getDataSource());

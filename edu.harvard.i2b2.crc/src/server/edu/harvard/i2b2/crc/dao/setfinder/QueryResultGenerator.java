@@ -257,29 +257,6 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				}
 			}
 			//tm.commit();
-		} catch (com.microsoft.sqlserver.jdbc.SQLServerException sqlServerEx) {
-			// if the setQueryTimeout worked, then the message would be timed
-			// out
-			if (sqlServerEx.getMessage().indexOf("timed out") > -1) {
-				timeoutFlag = true;
-				throw new CRCTimeOutException(sqlServerEx.getMessage(),
-						sqlServerEx);
-			} else if (sqlServerEx.getMessage().indexOf( // if the stmt.cancel()
-					// worked, then this
-					// exception is
-					// thrown
-					"The query was canceled.") > -1) {
-
-				timeoutFlag = true;
-				throw new CRCTimeOutException(sqlServerEx.getMessage(),
-						sqlServerEx);
-			} else {
-
-				errorFlag = true;
-				log.error("Sqlserver error while executing sql", sqlServerEx);
-				throw new I2B2DAOException(
-						"Sqlserver error while executing sql", sqlServerEx);
-			}
 
 		} catch (SQLException sqlEx) {
 			// catch oracle query timeout error ORA-01013

@@ -14,6 +14,16 @@ import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
 
 public interface IQueryResultTypeDao {
 
+	
+	/**
+	 * Returns list of query master by user id
+	 * 
+	 * @param userId
+	 * @return List<QtQueryMaster>
+	 */
+	@SuppressWarnings("unchecked")
+	public String getQueryResultTypeClassname(String resultName);
+
 	/**
 	 * Returns list of query master by user id
 	 * 

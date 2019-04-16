@@ -22,9 +22,7 @@ import javax.sql.DataSource;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.axis2.AxisFault;
-import org.springframework.beans.factory.BeanFactory;
-
-import com.microsoft.sqlserver.jdbc.SQLServerException;
+//import org.springframework.beans.factory.BeanFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -38,6 +36,7 @@ import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
@@ -67,17 +66,17 @@ public class QueryExecutorHelperDao extends CRCDAO {
 
 	private DataSourceLookup dataSourceLookup = null,
 			originalDataSourceLookup = null;
-	private static Map generatorMap = null;
-	private static String defaultResultType = null;
+//	private static Map generatorMap = null;
+	private static String defaultResultType = "PATIENT_COUNT_XML";
 	private String processTimingFlag = ProcessTimingReportUtil.NONE;
 	private ProcessTimingReportUtil ptrUtil = null;
 	private boolean queryWithoutTempTableFlag = false;
 
 	static {
-		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-		BeanFactory bf = qpUtil.getSpringBeanFactory();
-		generatorMap = (Map) bf.getBean("setFinderResultGeneratorMap");
-		defaultResultType = (String) bf.getBean("defaultSetfinderResultType");
+//		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+//		BeanFactory bf = qpUtil.getSpringBeanFactory();
+//		generatorMap = (Map) bf.getBean("setFinderResultGeneratorMap");
+//		defaultResultType = (String) bf.getBean("defaultSetfinderResultType");
 	}
 
 	public QueryExecutorHelperDao(DataSource dataSource,
@@ -435,28 +434,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			//TRANSACTION timeout  ... do nothing
 //			timeOutErrorFlag = true;
 			throw timeoutEx;
-		} catch (SQLServerException sqlServerEx) {
-			if (sqlServerEx.getMessage().indexOf("The query was canceled.") > -1) {
-				log.info("Query timed out");
-				//TRANSACTION	timeout
-				//			timeOutErrorFlag = true;
-							throw new CRCTimeOutException(sqlServerEx.getMessage(),
-									sqlServerEx);
-			}
-			if (sqlServerEx.getMessage().indexOf("timed out") > -1) {
-				log.info("Query timed out");
-	//TRANSACTION	timeout .. 
-	//			timeOutErrorFlag = true;
-				throw new CRCTimeOutException(sqlServerEx.getMessage(),
-						sqlServerEx);
-			} else {
-				errorFlag = true;
-				exception = sqlServerEx;
-				log.error("Sqlserver error while executing sql " + singleSql, sqlServerEx);
-				throw new I2B2DAOException(
-						"Sqlserver error while executing sql", sqlServerEx);
-			}
-
+		
 		} catch (SQLException sqlEx) {
 			if (sqlEx.toString().indexOf("ORA-01013") > -1) {
 				log.info("Query timed out");
@@ -713,9 +691,15 @@ public class QueryExecutorHelperDao extends CRCDAO {
 							sfDAOFactory, queryInstanceId, resultName);
 					param.put("ResultInstanceId", resultInstanceId);
 					param.put("ResultOptionName", resultName);
+					
+					
+					IQueryBreakdownTypeDao queryBreakdownTypeDao = sfDAOFactory
+							.getQueryBreakdownTypeDao();
+					QtQueryBreakdownType queryBreakdownType = queryBreakdownTypeDao
+							.getBreakdownTypeByName(resultName);
 					// ::TODO check if the result state is completed, before
 					// running the result
-					runGenerator(resultName, param);
+					runGenerator(resultName, param, queryBreakdownType.getClassname());
 					// check if the user need to be locked
 					// if the lockoutQueryCount = -1 skip lockout check
 					log.debug("check if the user need to be locked");
@@ -752,7 +736,16 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			String resultInstanceId = getQueryResultInstanceId(sfDAOFactory,
 					queryInstanceId, defaultResultType);
 			param.put("ResultInstanceId", resultInstanceId);
-			runGenerator(resultType, param);
+
+
+			IQueryBreakdownTypeDao queryBreakdownTypeDao = sfDAOFactory
+					.getQueryBreakdownTypeDao();
+			QtQueryBreakdownType queryBreakdownType = queryBreakdownTypeDao
+					.getBreakdownTypeByName(resultType);
+			// ::TODO check if the result state is completed, before
+			// running the result
+			runGenerator(resultType, param, queryBreakdownType.getClassname());
+
 			// check if the user need to be locked
 			// if the lockoutQueryCount = -1 skip lockout check
 			if (lockoutQueryCount>-1) {
@@ -779,9 +772,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		}
 	}
 
-	private void runGenerator(String resultName, Map param)
+	private void runGenerator(String resultName, Map param, String generatorClassName)
 			throws I2B2DAOException, CRCTimeOutException {
-		String generatorClassName = (String) generatorMap.get(resultName);
 		if (generatorClassName == null) {
 			throw new I2B2DAOException("Could not find result name ["
 					+ resultName + "] in the config file");

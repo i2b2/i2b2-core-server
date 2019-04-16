@@ -174,37 +174,9 @@ public class PMServiceDriver {
 		ProjectType projectType = null;
 
 		// Are we bypassing the PM cell? Look in properties file.
-		Boolean pmBypass = false;
-		String pmBypassRole = null, pmBypassProject = null, response = null;
-		try {
-			pmBypass = CRCLoaderUtil.getInstance()
-					.getProjectManagementByPassFlag();
-			pmBypassRole = CRCLoaderUtil.getInstance()
-					.getProjectManagementByPassRole();
-			pmBypassProject = CRCLoaderUtil.getInstance()
-					.getProjectManagementByPassProject();
-			log.debug("Project Management bypass flag  from property file :["
-					+ pmBypass + "] bypass role [" + pmBypassRole
-					+ "] project [" + pmBypassProject + "]");
-		} catch (I2B2Exception e1) {
-			e1.printStackTrace();
-			log
-					.info("Could not read Project Management bypass setting, trying PM without bypass option");
-		}
 
-		if (pmBypass == true) {
-			log.info("Using Project Management by pass option ");
-			log
-					.info("Using project Management bypass flag  from property file :["
-							+ pmBypass
-							+ "] bypass role ["
-							+ pmBypassRole
-							+ "] project [" + pmBypassProject + "]");
-			projectType = new ProjectType();
-			projectType.getRole().add(pmBypassRole);
-			projectType.setId(pmBypassProject);
+		String response = null;
 
-		} else {
 			PMResponseMessage msg = new PMResponseMessage();
 			response = getRoles(security);
 			StatusType procStatus = msg.processResult(response);
@@ -228,7 +200,7 @@ public class PMServiceDriver {
 				}
 
 			}
-		}
+		
 		return projectType;
 	}
 }

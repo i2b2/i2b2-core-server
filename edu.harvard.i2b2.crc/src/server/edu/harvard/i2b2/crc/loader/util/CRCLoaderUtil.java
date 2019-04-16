@@ -15,7 +15,9 @@
 package edu.harvard.i2b2.crc.loader.util;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
@@ -24,13 +26,18 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.core.io.FileSystemResource;
 
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+
+import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
+import edu.harvard.i2b2.common.util.axis2.ServiceClient;
+import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
+import edu.harvard.i2b2.crc.datavo.pm.ParamType;
 import edu.harvard.i2b2.crc.loader.ejb.DataMartLoaderAsyncBeanLocal;
 import edu.harvard.i2b2.crc.loader.ejb.LoaderStatusBeanLocal;
 import edu.harvard.i2b2.crc.loader.ejb.MissingTermReportBeanLocal;
@@ -49,29 +56,12 @@ public class CRCLoaderUtil {
 	/** log **/
 	protected final static Log log = LogFactory.getLog(CRCLoaderUtil.class);
 
-	/** property file name which holds application directory name **/
-	public static final String APPLICATION_DIRECTORY_PROPERTIES_FILENAME = "crc_application_directory.properties";
-
-	/** application directory property name **/
-	public static final String APPLICATIONDIR_PROPERTIES = "edu.harvard.i2b2.crc.applicationdir";
-
-	/** application property filename* */
-	public static final String APPLICATION_PROPERTIES_FILENAME = "edu.harvard.i2b2.crc.loader.properties";
-
 	/** property name for datasource present in app property file* */
 	private static final String DATASOURCE_JNDI_PROPERTIES = "queryprocessor.jndi.datasource_name";
 
 	/** property name for metadata schema name* */
 	private static final String PMCELL_WS_URL_PROPERTIES = "edu.harvard.i2b2.crc.loader.ws.pm.url";
 
-	/** property name for metadata schema name* */
-	private static final String PMCELL_BYPASS_FLAG_PROPERTIES = "edu.harvard.i2b2.crc.loader.ws.pm.bypass";
-
-	/** property name for metadata schema name* */
-	private static final String PMCELL_BYPASS_ROLE_PROPERTIES = "edu.harvard.i2b2.crc.loader.ws.pm.bypass.role";
-
-	/** property name for pm bypass project name **/
-	private static final String PMCELL_BYPASS_PROJECT_PROPERTIES = "edu.harvard.i2b2.crc.loader.ws.pm.bypass.project";
 
 	/** property name for metadata schema name* */
 	private static final String DS_LOOKUP_DATASOURCE_PROPERTIES = "edu.harvard.i2b2.crc.loader.ds.lookup.datasource";
@@ -107,15 +97,13 @@ public class CRCLoaderUtil {
 	private static ServiceLocator serviceLocator = null;
 
 	/** field to store application properties * */
-	private static Properties appProperties = null;
+	private static List<ParamType> appProperties = null;
 
 	private static Properties loadProperties = null;
 
 	/** field to store app datasource* */
 	private DataSource dataSource = null;
 
-	/** single instance of spring bean factory* */
-	private BeanFactory beanFactory = null;
 
 	/**
 	 * Private constructor to make the class singleton
@@ -149,13 +137,33 @@ public class CRCLoaderUtil {
 		return (FRLocalHome) serviceLocator
 				.getLocalHome("ejb.crc.loader.FRBeanLocal");
 	}
-	*/
+	 */
 
+
+	/**
+	 * Return app server datasource
+	 * 
+	 * @return datasource
+	 * @throws I2B2Exception
+	 * @throws SQLException
+	 */
+	public DataSource getDataSource(String dataSourceName)
+			throws I2B2Exception {
+
+		dataSource = serviceLocator
+				.getAppServerDataSource(dataSourceName);
+		//		DataSource dataSource = (DataSource) getSpringBeanFactory().getBean(
+		//				dataSourceName);
+
+		return dataSource;
+
+	}
 	/**
 	 * Function to create spring bean factory
 	 * 
 	 * @return BeanFactory
 	 */
+	/*
 	public BeanFactory getSpringBeanFactory() {
 		if (beanFactory == null) {
 			String appDir = null;
@@ -186,6 +194,7 @@ public class CRCLoaderUtil {
 		}
 		return beanFactory;
 	}
+	 */
 
 	public DataMartLoaderAsyncBeanLocal getDataMartLoaderBean()
 			throws I2B2Exception {
@@ -226,36 +235,7 @@ public class CRCLoaderUtil {
 	 * @return
 	 * @throws I2B2Exception
 	 */
-	public boolean getProjectManagementByPassFlag() throws I2B2Exception {
-		String pmByPassFlag = getPropertyValue(PMCELL_BYPASS_FLAG_PROPERTIES);
-		if (pmByPassFlag == null) {
-			return false;
-		} else if (pmByPassFlag.trim().equalsIgnoreCase("true")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
-	/**
-	 * Get Project management bypass flag
-	 * 
-	 * @return
-	 * @throws I2B2Exception
-	 */
-	public String getProjectManagementByPassRole() throws I2B2Exception {
-		return getPropertyValue(PMCELL_BYPASS_ROLE_PROPERTIES);
-	}
-
-	/**
-	 * Get Project management bypass project
-	 * 
-	 * @return
-	 * @throws I2B2Exception
-	 */
-	public String getProjectManagementByPassProject() throws I2B2Exception {
-		return getPropertyValue(PMCELL_BYPASS_PROJECT_PROPERTIES);
-	}
 
 	public String getCRCDBLookupDataSource() throws I2B2Exception {
 		return getPropertyValue(DS_LOOKUP_DATASOURCE_PROPERTIES);
@@ -307,7 +287,7 @@ public class CRCLoaderUtil {
 		}
 
 	}
-	
+
 	public MissingTermReportBeanLocal getMissingTermReportBean() throws I2B2Exception {
 		InitialContext ctx;
 		try {
@@ -326,6 +306,7 @@ public class CRCLoaderUtil {
 	 * @throws I2B2Exception
 	 * @throws SQLException
 	 */
+	/*
 	public DataSource getSpringDataSource(String dataSourceName)
 			throws I2B2Exception {
 		DataSource dataSource = (DataSource) getSpringBeanFactory().getBean(
@@ -334,6 +315,7 @@ public class CRCLoaderUtil {
 		return dataSource;
 
 	}
+	 */
 
 	// ---------------------
 	// private methods here
@@ -342,57 +324,99 @@ public class CRCLoaderUtil {
 	/**
 	 * Load application property file into memory
 	 */
+
+	private ParameterizedRowMapper getHiveCellParam() {
+		ParameterizedRowMapper<ParamType> map = new ParameterizedRowMapper<ParamType>() {
+			public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
+				DTOFactory factory = new DTOFactory();
+
+
+
+				log.debug("setting name");
+				ParamType param = new ParamType();
+				param.setId(rs.getInt("id"));
+				param.setName(rs.getString("param_name_cd"));
+				param.setValue(rs.getString("value"));
+				param.setDatatype(rs.getString("datatype_cd"));
+				return param;
+			} 
+		};
+		return map;
+	}
+	/**
+	 * Load application property file into memoryß
+	 */
 	private String getPropertyValue(String propertyName) throws I2B2Exception {
 		if (appProperties == null) {
-			// read application directory property file
-			loadProperties = ServiceLocator
-					.getProperties(APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
-			// read application directory property
-			String appDir = loadProperties
-					.getProperty(APPLICATIONDIR_PROPERTIES);
-			if (appDir == null) {
-				throw new I2B2Exception("Could not find "
-						+ APPLICATIONDIR_PROPERTIES + "from "
-						+ APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
-			}
-			if (appDir.trim().equals(""))
-			{
 
-				appDir =   "standalone/configuration/crcapp";
-			}			
-			
-			String appPropertyFile = appDir + "/"
-					+ APPLICATION_PROPERTIES_FILENAME;
+
+
+			//		log.info(sql + domainId + projectId + ownerId);
+			//	List<ParamType> queryResult = null;
 			try {
-				FileSystemResource fileSystemResource = new FileSystemResource(
-						appPropertyFile);
-				PropertiesFactoryBean pfb = new PropertiesFactoryBean();
-				pfb.setLocation(fileSystemResource);
-				pfb.afterPropertiesSet();
-				appProperties = (Properties) pfb.getObject();
-			} catch (IOException e) {
-				throw new I2B2Exception("Application property file("
-						+ appPropertyFile
-						+ ") missing entries or not loaded properly");
+				DataSource   ds = this.getDataSource("java:/CRCBootStrapDS");
+
+				JdbcTemplate jt =  new JdbcTemplate(ds);
+				String sql =  "select * from " + ds.getConnection().getSchema() + ".hive_cell_params where status_cd <> 'D' and cell_id = 'CRC'";
+
+				log.debug("Start query");
+				appProperties = jt.query(sql, getHiveCellParam());
+				log.debug("End query");
+
+
+			} catch (DataAccessException e) {
+				log.error(e.getMessage());
+				e.printStackTrace();
+				throw new I2B2DAOException("Database error");
 			}
-			if (appProperties == null) {
-				throw new I2B2Exception("Application property file("
-						+ appPropertyFile
-						+ ") missing entries or not loaded properly");
+			//return queryResult;	
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		String propertyValue = null;//appProperties.getProperty(propertyName);
+		for (int i=0; i < appProperties.size(); i++)
+		{
+			if (appProperties.get(i).getName() != null)
+			{
+				if (appProperties.get(i).getDatatype().equalsIgnoreCase("U"))
+					try {
+						propertyValue = ServiceClient.getContextRoot() + appProperties.get(i).getValue();
+
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				else 
+					propertyValue = appProperties.get(i).getValue();
 			}
 		}
 
-		String propertyValue = appProperties.getProperty(propertyName);
-
-		if ((propertyValue != null) && (propertyValue.trim().length() > 0)) {
-			;
-		} else {
+		if ((propertyValue == null) && (propertyValue.trim().length() == 0)) {
 			throw new I2B2Exception("Application property file("
-					+ APPLICATION_PROPERTIES_FILENAME + ") missing "
+					//	+ APPLICATION_PROPERTIES_FILENAME + ") missing "
 					+ propertyName + " entry");
 		}
 
 		return propertyValue;
 	}
 
+/*
+
+	public class  HiveCellParamMapper void getHiveCellParam() implements RowMapper {  
+
+		public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {  
+			ParamType param = new ParamType();
+			param.setId(rs.getInt("id"));
+			param.setName(rs.getString("param_name_cd"));
+			param.setValue(rs.getString("value"));
+			param.setDatatype(rs.getString("datatype_cd"));
+			return param;
+		}
+	}
+*/
 }
+

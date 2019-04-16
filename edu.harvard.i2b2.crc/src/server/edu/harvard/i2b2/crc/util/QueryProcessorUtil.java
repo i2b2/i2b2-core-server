@@ -13,11 +13,14 @@
  *     Rajesh Kuttan
  */
 package edu.harvard.i2b2.crc.util;
- 
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
@@ -28,14 +31,23 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.quartz.Scheduler;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
+import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
+import edu.harvard.i2b2.common.util.axis2.ServiceClient;
+import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
+import edu.harvard.i2b2.crc.dao.mapper.HiveCellParam;
+import edu.harvard.i2b2.crc.datavo.i2b2message.ApplicationType;
+import edu.harvard.i2b2.crc.datavo.i2b2message.MessageHeaderType;
+import edu.harvard.i2b2.crc.datavo.pm.ParamType;
+import edu.harvard.i2b2.crc.datavo.pm.ParamsType;
 import edu.harvard.i2b2.crc.ejb.ProcessQueue;
 import edu.harvard.i2b2.crc.ejb.QueryManagerBeanUtil;
 import edu.harvard.i2b2.crc.ejb.analysis.AnalysisPluginInfoLocal;
@@ -43,7 +55,7 @@ import edu.harvard.i2b2.crc.ejb.analysis.CronEjbLocal;
 import edu.harvard.i2b2.crc.ejb.analysis.StartAnalysisLocal;
 import edu.harvard.i2b2.crc.ejb.role.PriviledgeBean;
 import edu.harvard.i2b2.crc.ejb.role.PriviledgeLocal;
-import edu.harvard.i2b2.crc.quartz.QuartzFactory;
+
 
 /**
  * This is the CRC application's main utility class This utility class provides
@@ -59,95 +71,37 @@ public class QueryProcessorUtil {
 	protected final static Log log = LogFactory
 			.getLog(QueryProcessorUtil.class);
 
-	/** property file name which holds application directory name **/
-	public static final String APPLICATION_DIRECTORY_PROPERTIES_FILENAME = "crc_application_directory.properties";
-
-	/** application directory property name **/
-	public static final String APPLICATIONDIR_PROPERTIES = "edu.harvard.i2b2.crc.applicationdir";
-
-	/** application property filename* */
-	public static final String APPLICATION_PROPERTIES_FILENAME = "crc.properties";
-
-	/** property name for query manager ejb present in app property file* */
-	private static final String EJB_LOCAL_JNDI_QUERYMANAGER_PROPERTIES = "queryprocessor.jndi.querymanagerlocal";
-
-	/** property name for query info ejb present in app property file* */
-	private static final String EJB_LOCAL_JNDI_QUERYINFO_PROPERTIES = "queryprocessor.jndi.queryinfolocal";
-
-	/** property name for query run ejb present in app property file* */
-	private static final String EJB_LOCAL_JNDI_QUERYRUN_PROPERTIES = "queryprocessor.jndi.queryrunlocal";
-
-	/** property name for query result ejb present in app property file* */
-	private static final String EJB_LOCAL_JNDI_QUERYRESULT_PROPERTIES = "queryprocessor.jndi.queryresultlocal";
-
-	/** property name for pdo query ejb present in app property file* */
-	private static final String EJB_LOCAL_JNDI_PDOQUERY_PROPERTIES = "queryprocessor.jndi.pdoquerylocal";
-
-	/** property name for datasource present in app property file* */
-	private static final String DATASOURCE_JNDI_PROPERTIES = "queryprocessor.jndi.datasource_name";
-
-	/** property name for database connection string in app property file* */
-	private static final String DATABASE_CONNECTION_STRING_PROPERTIES = "queryprocessor.database.connection_string";
-	/** property name for database user in app property file* */
-	private static final String DATABASE_CONNECTION_USER_PROPERTIES = "queryprocessor.database.user";
-	/** property name for database password in app property file* */
-	private static final String DATABASE_CONNECTION_PASSWORD_PROPERTIES = "queryprocessor.database.password";
 
 	/** property name for metadata schema name* */
-	private static final String METADATA_SCHEMA_NAME_PROPERTIES = "queryprocessor.db.metadataschema";
+	private static final String PMCELL_WS_URL_PROPERTIES = "queryprocessor.ws.pm.url";  //http://localhost:9090/i2b2/services/PMService/getServices
 
-	/** property name for metadata schema name* */
-	private static final String PMCELL_WS_URL_PROPERTIES = "queryprocessor.ws.pm.url";
-
-	/** property name for PM bypass flag **/
-	private static final String PMCELL_BYPASS_FLAG_PROPERTIES = "queryprocessor.ws.pm.bypass";
-
-	/** property name for PM bypass project role name* */
-	private static final String PMCELL_BYPASS_ROLE_PROPERTIES = "queryprocessor.ws.pm.bypass.role";
-
-	/** property name for pm bypass project name **/
-	private static final String PMCELL_BYPASS_PROJECT_PROPERTIES = "queryprocessor.ws.pm.bypass.project";
-
-	/** property name for metadata schema name* */
-	private static final String DS_LOOKUP_DATASOURCE_PROPERTIES = "queryprocessor.ds.lookup.datasource";
-
-	/** property name for metadata schema name* */
-	private static final String DS_LOOKUP_SCHEMANAME_PROPERTIES = "queryprocessor.ds.lookup.schemaname";
-
-	/** property name for metadata schema name* */
-	private static final String DS_LOOKUP_SERVERTYPE_PROPERTIES = "queryprocessor.ds.lookup.servertype";
 
 	/** property name for ontology url schema name **/
-	private static final String ONTOLOGYCELL_WS_URL_PROPERTIES = "queryprocessor.ws.ontology.url";
+	private static final String ONTOLOGYCELL_WS_URL_PROPERTIES = "queryprocessor.ws.ontology.url"; //http://localhost:9090/i2b2/services/OntologyService/getTermInfo
 
-	public static final String ONTOLOGYCELL_ROOT_WS_URL_PROPERTIES = "edu.harvard.i2b2.crc.delegate.ontology.url";
+	public static final String ONTOLOGYCELL_ROOT_WS_URL_PROPERTIES = "edu.harvard.i2b2.crc.delegate.ontology.url"; //http://localhost:9090/i2b2/services/OntologyService
 
-	public static final String ONTOLOGYCELL_GETTERMINFO_URL_PROPERTIES = "edu.harvard.i2b2.crc.delegate.ontology.operation.getterminfo";
+	public static final String ONTOLOGYCELL_GETTERMINFO_URL_PROPERTIES = "edu.harvard.i2b2.crc.delegate.ontology.operation.getterminfo";  //   /getTermInfo
 
-	public static final String ONTOLOGYCELL_GETCHILDREN_URL_PROPERTIES = "edu.harvard.i2b2.crc.delegate.ontology.operation.getchildren";
+	public static final String ONTOLOGYCELL_GETCHILDREN_URL_PROPERTIES = "edu.harvard.i2b2.crc.delegate.ontology.operation.getchildren"; //   /getChildren
 
-	public static final String ONTOLOGYCELL_GETMODIFIERINFO_URL_PROPERTIES = "edu.harvard.i2b2.crc.delegate.ontology.operation.getmodifierinfo";
+	public static final String ONTOLOGYCELL_GETMODIFIERINFO_URL_PROPERTIES = "edu.harvard.i2b2.crc.delegate.ontology.operation.getmodifierinfo";  //   /getModifierInfo
 
-	public static final String SINGLEPANEL_SKIPTEMPTABLE_PROPERTIES = "edu.harvard.i2b2.crc.setfinderquery.singlepanel.skiptemptable";
+	//	public static final String SINGLEPANEL_SKIPTEMPTABLE_PROPERTIES = "edu.harvard.i2b2.crc.setfinderquery.singlepanel.skiptemptable";
 
-	public static final String SINGLEPANEL_SKIPTEMPTABLE_MAXCONCEPT_PROPERTIES = "edu.harvard.i2b2.crc.setfinderquery.skiptemptable.maxconcept";
+	public static final String SINGLEPANEL_SKIPTEMPTABLE_MAXCONCEPT_PROPERTIES = "edu.harvard.i2b2.crc.setfinderquery.skiptemptable.maxconcept";   // 40
 
-	/** spring bean name for datasource **/
-	private static final String DATASOURCE_BEAN_NAME = "dataSource";
+	public static final String PAGING_OBSERVATION_SIZE = "edu.harvard.i2b2.crc.pdo.paging.observation.size";	//7500
 
-	public static final String DEFAULT_SETFINDER_RESULT_BEANNAME = "defaultSetfinderResultType";
+	public static final String PAGING_MINPERCENT = "edu.harvard.i2b2.crc.pdo.paging.inputlist.minpercent";	// 20
 
-	public static final String PAGING_OBSERVATION_SIZE = "edu.harvard.i2b2.crc.pdo.paging.observation.size";
+	public static final String PAGING_MINSIZE = "edu.harvard.i2b2.crc.pdo.paging.inputlist.minsize";		// 1
 
-	public static final String PAGING_MINPERCENT = "edu.harvard.i2b2.crc.pdo.paging.inputlist.minpercent";
+	public static final String PAGING_METHOD = "edu.harvard.i2b2.crc.pdo.paging.method";  //# Paging method can be SUBDIVIDE_INPUT_METHOD / AVERAGE_OBSERVATION_METHOD
+	// SUBDIVIDE_INPUT_METHOD
+	public static final String PAGING_ITERATION = "edu.harvard.i2b2.crc.pdo.paging.iteration";				//100
 
-	public static final String PAGING_MINSIZE = "edu.harvard.i2b2.crc.pdo.paging.inputlist.minsize";
-
-	public static final String PAGING_METHOD = "edu.harvard.i2b2.crc.pdo.paging.method";
-
-	public static final String PAGING_ITERATION = "edu.harvard.i2b2.crc.pdo.paging.iteration";
-	
-	public static final	String MULTI_FACT_TABLE = "queryprocessor.multifacttable";
+	public static final	String MULTI_FACT_TABLE = "queryprocessor.multifacttable";					// false
 
 	/** class instance field* */
 	private static volatile QueryProcessorUtil thisInstance = null;
@@ -156,21 +110,19 @@ public class QueryProcessorUtil {
 	private static ServiceLocator serviceLocator = null;
 
 	/** field to store application properties * */
-	private static Properties appProperties = null;
+	private static List<ParamType> appProperties = null;
 
 	private static Properties loadProperties = null;
 
 	/** field to store app datasource* */
 	private DataSource dataSource = null;
 
-	/** single instance of spring bean factory* */
-	private BeanFactory beanFactory = null;
 
 	private static volatile ProcessQueue pqMedium = null;
 	private static volatile ProcessQueue pqLarge = null;
-		
+
 	private static final Object lock = new Object();
-	
+
 	/**
 	 * Private constructor to make the class singleton
 	 */
@@ -178,23 +130,14 @@ public class QueryProcessorUtil {
 
 
 	}
-/*
-	static {
-		try {
-			Class.forName("oracle.jdbc.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			log.error(e);
 
-		}
-	}
-*/
 	/**
 	 * Return this class instance
 	 * 
 	 * @return QueryProcessorUtil
 	 */
 	public static QueryProcessorUtil getInstance() {
-		
+
 		QueryProcessorUtil i = thisInstance;
 		if (i == null) {
 			synchronized (lock){
@@ -222,18 +165,6 @@ public class QueryProcessorUtil {
 		}
 
 		return i;
-	}
-
-	private static void startCronJob() {
-		CronEjbLocal cronLocal;
-		try {
-			cronLocal = thisInstance.getCronLocal();
-			cronLocal.start();
-		} catch (I2B2Exception e) {
-
-			e.printStackTrace();
-		}
-
 	}
 
 
@@ -271,54 +202,7 @@ public class QueryProcessorUtil {
 
 	public PriviledgeLocal getPriviledgeLocal() throws I2B2Exception {
 		return new PriviledgeBean();
-		/* removed ejb
-		InitialContext ctx;
-		try {
-			ctx = new InitialContext();
-			return (PriviledgeLocal) ctx.lookup("QP1/PriviledgeBean/local");
-		} catch (NamingException e) {
-			throw new I2B2Exception("Bean lookup error Priviledge", e);
-		}
-		 */
-	}
 
-	public Scheduler getQuartzScheduler() throws I2B2Exception {
-		return QuartzFactory.getInstance().getScheduler();
-	}
-
-	/**
-	 * Function to create spring bean factory
-	 * 
-	 * @return BeanFactory
-	 */
-	public BeanFactory getSpringBeanFactory() {
-		if (beanFactory == null) {
-			String appDir = null;
-			try {
-				// read application directory property file via classpath
-				loadProperties = ServiceLocator
-						.getProperties(APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
-				// read directory property
-				appDir = loadProperties.getProperty(APPLICATIONDIR_PROPERTIES);
-
-			} catch (I2B2Exception e) {
-				log.error(APPLICATION_DIRECTORY_PROPERTIES_FILENAME
-						+ "could not be located from classpath ");
-			}
-
-			if (appDir != null && !appDir.equals("")) {
-				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						"file:" + appDir + "/" + "CRCApplicationContext.xml");
-				beanFactory = ctx.getBeanFactory();
-			} else {
-				 
-				FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(
-						  "standalone/configuration/crcapp/CRCApplicationContext.xml");
-				beanFactory = ctx.getBeanFactory();
-			}
-
-		}
-		return beanFactory;
 	}
 
 	/**
@@ -328,6 +212,7 @@ public class QueryProcessorUtil {
 	 * @throws I2B2Exception
 	 * @throws SQLException
 	 */
+	/*
 	public Connection getConnection() throws I2B2Exception, SQLException {
 		String dataSourceName = getPropertyValue(DATASOURCE_JNDI_PROPERTIES);
 		dataSource = serviceLocator
@@ -336,7 +221,7 @@ public class QueryProcessorUtil {
 		Connection conn = dataSource.getConnection();
 		return conn;
 	}
-
+	 */
 	/**
 	 * Function returns database connection from app server
 	 * 
@@ -344,14 +229,14 @@ public class QueryProcessorUtil {
 	 * @throws I2B2Exception
 	 * @throws SQLException
 	 */
-	public Connection getManualConnection() throws I2B2Exception, SQLException {
+	/*	public Connection getManualConnection() throws I2B2Exception, SQLException {
 		String dbConnectionString = getPropertyValue(DATABASE_CONNECTION_STRING_PROPERTIES);
 		String dbUser = getPropertyValue(DATABASE_CONNECTION_USER_PROPERTIES);
 		String dbPassword = getPropertyValue(DATABASE_CONNECTION_PASSWORD_PROPERTIES);
 		return DriverManager.getConnection(dbConnectionString, dbUser,
 				dbPassword);
 	}
-
+	 */
 	/**
 	 * Function to return metadata schema name, which is specified in property
 	 * file
@@ -359,9 +244,9 @@ public class QueryProcessorUtil {
 	 * @return String
 	 * @throws I2B2Exception
 	 */
-	public String getMetaDataSchemaName() throws I2B2Exception {
-		return getPropertyValue(METADATA_SCHEMA_NAME_PROPERTIES);
-	}
+	//	public String getMetaDataSchemaName() throws I2B2Exception {
+	//		return getPropertyValue(METADATA_SCHEMA_NAME_PROPERTIES);
+	//	}
 
 	/**
 	 * Get Project managment cell's service url
@@ -379,6 +264,7 @@ public class QueryProcessorUtil {
 	 * @return
 	 * @throws I2B2Exception
 	 */
+	/*
 	public boolean getProjectManagementByPassFlag() throws I2B2Exception {
 		String pmByPassFlag = getPropertyValue(PMCELL_BYPASS_FLAG_PROPERTIES);
 		if (pmByPassFlag == null) {
@@ -389,6 +275,7 @@ public class QueryProcessorUtil {
 			return false;
 		}
 	}
+	 */
 
 	public long getPagingObservationSize() throws I2B2Exception {
 		String obsPageSizeStr = getPropertyValue(PAGING_OBSERVATION_SIZE);
@@ -417,43 +304,10 @@ public class QueryProcessorUtil {
 	}
 
 
-
-	/**
-	 * Get Project management bypass project role
-	 * 
-	 * @return
-	 * @throws I2B2Exception
-	 */
-	public String getProjectManagementByPassRole() throws I2B2Exception {
-		return getPropertyValue(PMCELL_BYPASS_ROLE_PROPERTIES);
-	}
-
-	/**
-	 * Get Project management bypass project
-	 * 
-	 * @return
-	 * @throws I2B2Exception
-	 */
-	public String getProjectManagementByPassProject() throws I2B2Exception {
-		return getPropertyValue(PMCELL_BYPASS_PROJECT_PROPERTIES);
-	}
-
-	public String getCRCDBLookupDataSource() throws I2B2Exception {
-		return getPropertyValue(DS_LOOKUP_DATASOURCE_PROPERTIES);
-	}
-
-	public String getCRCDBLookupServerType() throws I2B2Exception {
-		return getPropertyValue(DS_LOOKUP_SERVERTYPE_PROPERTIES);
-	}
-
-	public String getCRCDBLookupSchemaName() throws I2B2Exception {
-		return getPropertyValue(DS_LOOKUP_SCHEMANAME_PROPERTIES);
-	}
-
 	public String getOntologyUrl() throws I2B2Exception {
 		return getPropertyValue(ONTOLOGYCELL_WS_URL_PROPERTIES);
 	}
-	
+
 	public boolean getDerivedFactTable()  {
 		String setting = "false";
 		try {
@@ -475,7 +329,7 @@ public class QueryProcessorUtil {
 				return false;
 		}
 	}
-	
+
 
 	/**
 	 * Return app server datasource
@@ -489,8 +343,7 @@ public class QueryProcessorUtil {
 
 		dataSource = serviceLocator
 				.getAppServerDataSource(dataSourceName);
-		//		DataSource dataSource = (DataSource) getSpringBeanFactory().getBean(
-		//				dataSourceName);
+
 
 		return dataSource;
 
@@ -508,55 +361,90 @@ public class QueryProcessorUtil {
 	// private methods here
 	// ---------------------
 
+	public MessageHeaderType getMessageHeader()  {
+		MessageHeaderType messageHeader = new MessageHeaderType();
+		ApplicationType appType = new ApplicationType();
+		try {
+			appType.setApplicationName(getPropertyValue("applicationName"));
+			appType.setApplicationVersion(getPropertyValue("applicationVersion"));
+		} catch (I2B2Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		messageHeader.setSendingApplication(appType);
+		return messageHeader;
+	}
+
+
+	private ParameterizedRowMapper getHiveCellParam() {
+		ParameterizedRowMapper<ParamType> map = new ParameterizedRowMapper<ParamType>() {
+			public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
+				DTOFactory factory = new DTOFactory();
+
+
+
+				log.debug("setting name");
+				ParamType param = new ParamType();
+				param.setId(rs.getInt("id"));
+				param.setName(rs.getString("param_name_cd"));
+				param.setValue(rs.getString("value"));
+				param.setDatatype(rs.getString("datatype_cd"));
+				return param;
+			} 
+		};
+		return map;
+	}
+	
 	/**
 	 * Load application property file into memory
 	 */
 	private String getPropertyValue(String propertyName) throws I2B2Exception {
 		if (appProperties == null) {
-			// read application directory property file
-			loadProperties = ServiceLocator
-					.getProperties(APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
-			// read application directory property
-			String appDir = loadProperties
-					.getProperty(APPLICATIONDIR_PROPERTIES);
-			if (appDir.trim().equals(""))
-			{
 
-				appDir =  "standalone/configuration/crcapp";
-			}
-			if (appDir == null) {
-				throw new I2B2Exception("Could not find "
-						+ APPLICATIONDIR_PROPERTIES + "from "
-						+ APPLICATION_DIRECTORY_PROPERTIES_FILENAME);
-			}
-			String appPropertyFile = appDir + "/"
-					+ APPLICATION_PROPERTIES_FILENAME;
+
+
+			//		log.info(sql + domainId + projectId + ownerId);
+			//	List<ParamType> queryResult = null;
 			try {
-				FileSystemResource fileSystemResource = new FileSystemResource(
-						appPropertyFile);
-				PropertiesFactoryBean pfb = new PropertiesFactoryBean();
-				pfb.setLocation(fileSystemResource);
-				pfb.afterPropertiesSet();
-				appProperties = (Properties) pfb.getObject();
-			} catch (IOException e) {
-				throw new I2B2Exception("Application property file("
-						+ appPropertyFile
-						+ ") missing entries or not loaded properly");
+				DataSource   ds = this.getDataSource("java:/CRCBootStrapDS");
+
+				
+				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
+				String sql =  "select * from " + ds.getConnection().getSchema() + ".hive_cell_params where status_cd <> 'D' and cell_id = 'CRC'";
+
+				log.debug("Start query");
+				appProperties = jt.query(sql, getHiveCellParam());
+				log.debug("End query");
+
+			} catch (Exception e) {
+				log.error(e.getMessage());
+				e.printStackTrace();
+				throw new I2B2DAOException("Database error");
 			}
-			if (appProperties == null) {
-				throw new I2B2Exception("Application property file("
-						+ appPropertyFile
-						+ ") missing entries or not loaded properly");
-			}
+
 		}
 
-		String propertyValue = appProperties.getProperty(propertyName);
+		String propertyValue = null;//appProperties.getProperty(propertyName);
+		for (int i=0; i < appProperties.size(); i++)
+		{
+			if (appProperties.get(i).getName() != null)
+			{
+				if (appProperties.get(i).getDatatype().equalsIgnoreCase("U"))
+					try {
+						 propertyValue = ServiceClient.getContextRoot() + appProperties.get(i).getValue();
 
-		if ((propertyValue != null) && (propertyValue.trim().length() > 0)) {
-			;
-		} else {
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				else 
+					propertyValue = appProperties.get(i).getValue();
+		}
+		}
+
+		if ((propertyValue == null) && (propertyValue.trim().length() == 0)) {
 			throw new I2B2Exception("Application property file("
-					+ APPLICATION_PROPERTIES_FILENAME + ") missing "
+					//	+ APPLICATION_PROPERTIES_FILENAME + ") missing "
 					+ propertyName + " entry");
 		}
 

@@ -24,8 +24,17 @@ public class QtQueryBreakdownType implements java.io.Serializable {
 	private Date updateDate;
 	private String userId;
 	private String userRoleCd;
+	private String classname;
 
 	// Constructors
+
+	public String getClassname() {
+		return classname;
+	}
+
+	public void setClassname(String classname) {
+		this.classname = classname;
+	}
 
 	public String getUserRoleCd() {
 		return userRoleCd;

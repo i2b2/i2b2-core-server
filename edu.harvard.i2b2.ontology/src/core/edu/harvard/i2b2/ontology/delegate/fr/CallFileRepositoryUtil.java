@@ -113,8 +113,8 @@ public class CallFileRepositoryUtil {
 
 	private static RequestMessageType getI2B2RequestMessage(String sendFileName,  SecurityType securityType,  String projectId) {
 
-		MessageHeaderType messageHeaderType = (MessageHeaderType) ontologyUtil
-				.getSpringBeanFactory().getBean("message_header");
+		MessageHeaderType messageHeaderType =   ontologyUtil.getMessageHeader();
+//				.getSpringBeanFactory().getBean("message_header");
 		messageHeaderType.setSecurity(securityType);
 		messageHeaderType.setProjectId(projectId);
 

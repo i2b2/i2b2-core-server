@@ -56,9 +56,10 @@ public class QueryProcessorUtilTest {
 		}
 	}
 
-
+	/*
 	@Ignore
 	@Test
+	
 	public void testQueryDefinitionDOM() throws Exception {
 		QueryToolUtil queryUtil = new QueryToolUtil();
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
@@ -112,7 +113,7 @@ public class QueryProcessorUtilTest {
 		System.out.println("query name " + qftype.getQueryName());
 
 	}
-
+*/
 	@Test
 	public void testXmlToSqlDateConverion() throws Exception {
 		DatatypeFactory dataTypeFactory = DatatypeFactory.newInstance();
