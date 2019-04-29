@@ -34,7 +34,7 @@ import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
  * 
  */
 public class QueryBreakdownTypeSpringDao extends CRCDAO implements
-		IQueryBreakdownTypeDao {
+IQueryBreakdownTypeDao {
 
 	JdbcTemplate jdbcTemplate = null;
 
@@ -61,12 +61,13 @@ public class QueryBreakdownTypeSpringDao extends CRCDAO implements
 	@SuppressWarnings("unchecked")
 	public QtQueryBreakdownType getBreakdownTypeByName(String name) {
 
-		String sql = "select a.*, b.user_role_cd from " + getDbSchemaName()
-				+ "qt_breakdown_path a, " + getDbSchemaName()
-				+ "qt_query_result_type b where a.name = ? and a.name = b.name";
-		QtQueryBreakdownType queryStatusType = (QtQueryBreakdownType) jdbcTemplate
+		String sql = "select b.VALUE  ,   b.CREATE_DATE  ,   b.UPDATE_DATE   ,  b.USER_ID , a.name, a.user_role_cd, a.classname from " + getDbSchemaName()
+		+ "qt_query_result_type a left join " + getDbSchemaName()
+		+ "qt_breakdown_path b on  a.name = b.name where a.name = ? ";
+		QtQueryBreakdownType queryStatusType  = (QtQueryBreakdownType) jdbcTemplate
 				.queryForObject(sql, new Object[] { name },
 						queryBreakdownTypeMapper);
+
 		return queryStatusType;
 	}
 

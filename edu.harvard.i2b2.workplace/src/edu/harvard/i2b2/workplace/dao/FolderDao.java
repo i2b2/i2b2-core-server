@@ -74,7 +74,7 @@ public class FolderDao extends JdbcDaoSupport {
 		DataSource ds = null;
 		try {
 			ds = WorkplaceUtil.getInstance().getDataSource(dataSource);
-			metadataSchema = ds.getConnection().getSchema();
+			metadataSchema = ds.getConnection().getSchema() + ".";
 		} catch (I2B2Exception e2) {
 			log.error(e2.getMessage());;
 		} catch (SQLException e) {

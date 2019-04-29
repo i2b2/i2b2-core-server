@@ -147,6 +147,7 @@ public class QueryProcessorUtil {
 					thisInstance = i;
 					serviceLocator = ServiceLocator.getInstance();
 
+					/* 
 					pqMedium = new ProcessQueue(QueryManagerBeanUtil.MEDIUM_QUEUE);
 					pqLarge = new ProcessQueue( QueryManagerBeanUtil.LARGE_QUEUE);
 
@@ -158,7 +159,7 @@ public class QueryProcessorUtil {
 					Thread m2 = new Thread(pqLarge);
 					m2.start();
 					log.info("started LARGE");
-
+					 */
 				}
 			}
 
@@ -394,7 +395,7 @@ public class QueryProcessorUtil {
 		};
 		return map;
 	}
-	
+
 	/**
 	 * Load application property file into memory
 	 */
@@ -408,7 +409,7 @@ public class QueryProcessorUtil {
 			try {
 				DataSource   ds = this.getDataSource("java:/CRCBootStrapDS");
 
-				
+
 				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
 				String sql =  "select * from " + ds.getConnection().getSchema() + ".hive_cell_params where status_cd <> 'D' and cell_id = 'CRC'";
 
@@ -429,20 +430,21 @@ public class QueryProcessorUtil {
 		{
 			if (appProperties.get(i).getName() != null)
 			{
-				if (appProperties.get(i).getDatatype().equalsIgnoreCase("U"))
-					try {
-						 propertyValue = ServiceClient.getContextRoot() + appProperties.get(i).getValue();
+				if (appProperties.get(i).getName().equalsIgnoreCase(propertyName))
+					if (appProperties.get(i).getDatatype().equalsIgnoreCase("U"))
+						try {
+							propertyValue = ServiceClient.getContextRoot() + appProperties.get(i).getValue();
 
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				else 
-					propertyValue = appProperties.get(i).getValue();
-		}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					else 
+						propertyValue = appProperties.get(i).getValue();
+			}
 		}
 
-		if ((propertyValue == null) && (propertyValue.trim().length() == 0)) {
+		if ((propertyValue == null) || (propertyValue.trim().length() == 0)) {
 			throw new I2B2Exception("Application property file("
 					//	+ APPLICATION_PROPERTIES_FILENAME + ") missing "
 					+ propertyName + " entry");

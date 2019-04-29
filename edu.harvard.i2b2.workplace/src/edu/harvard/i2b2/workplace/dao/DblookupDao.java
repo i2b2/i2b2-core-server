@@ -64,7 +64,7 @@ public class DblookupDao extends JdbcDaoSupport {
 		jt = new SimpleJdbcTemplate(ds);
 		String metadataSchema = "";
 		try {
-			metadataSchema = ds.getConnection().getSchema();//WorkplaceUtil.getInstance().getMetaDataSchemaName();
+			metadataSchema = ds.getConnection().getSchema() + ".";//WorkplaceUtil.getInstance().getMetaDataSchemaName();
 		} catch (Exception e1) {
 			log.error(e1.getMessage());
 		}

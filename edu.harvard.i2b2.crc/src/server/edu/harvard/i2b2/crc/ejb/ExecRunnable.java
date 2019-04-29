@@ -236,6 +236,7 @@ public class ExecRunnable implements Runnable{
 					}
 
 				} catch (Exception e) {
+					e.printStackTrace();
 					if(e.getMessage() != null){
 						log.error(e.getMessage());
 						if(e.getMessage().contains("Interrupted")){
