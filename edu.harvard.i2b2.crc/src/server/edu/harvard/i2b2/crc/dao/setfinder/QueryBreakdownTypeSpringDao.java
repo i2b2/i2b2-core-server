@@ -61,7 +61,7 @@ IQueryBreakdownTypeDao {
 	@SuppressWarnings("unchecked")
 	public QtQueryBreakdownType getBreakdownTypeByName(String name) {
 
-		String sql = "select b.VALUE  ,   b.CREATE_DATE  ,   b.UPDATE_DATE   ,  b.USER_ID , a.name, a.user_role_cd, a.classname from " + getDbSchemaName()
+		String sql = "select distinct  b.VALUE  ,   b.CREATE_DATE  ,   b.UPDATE_DATE   ,  b.USER_ID , a.name, a.user_role_cd, a.classname from " + getDbSchemaName()
 		+ "qt_query_result_type a left join " + getDbSchemaName()
 		+ "qt_breakdown_path b on  a.name = b.name where a.name = ? ";
 		QtQueryBreakdownType queryStatusType  = (QtQueryBreakdownType) jdbcTemplate

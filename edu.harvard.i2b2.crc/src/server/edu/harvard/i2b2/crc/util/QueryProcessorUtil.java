@@ -31,6 +31,7 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.quartz.Scheduler;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -55,6 +56,7 @@ import edu.harvard.i2b2.crc.ejb.analysis.CronEjbLocal;
 import edu.harvard.i2b2.crc.ejb.analysis.StartAnalysisLocal;
 import edu.harvard.i2b2.crc.ejb.role.PriviledgeBean;
 import edu.harvard.i2b2.crc.ejb.role.PriviledgeLocal;
+import edu.harvard.i2b2.crc.quartz.QuartzFactory;
 
 
 /**
@@ -178,6 +180,10 @@ public class QueryProcessorUtil {
 			throw new I2B2Exception("Bean lookup error Analysis ", e);
 		}
 	}
+	
+    public Scheduler getQuartzScheduler() throws I2B2Exception {
+        return QuartzFactory.getInstance().getScheduler();
+}
 
 	public AnalysisPluginInfoLocal getAnalysisPluginInfoLocal()
 			throws I2B2Exception {
