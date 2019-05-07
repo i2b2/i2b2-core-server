@@ -864,8 +864,8 @@ public class ConceptDao extends JdbcDaoSupport {
 			String synonym = "";
 			if(vocabType.isSynonyms() == false)
 				synonym = " and c_synonym_cd = 'N'";
-
-			nameInfoSql = nameInfoSql + hidden + synonym + " order by c_totalnum, upper(c_name) ";
+	
+			nameInfoSql = nameInfoSql + hidden + synonym + " order by c_hlevel, c_totalnum, upper(c_name) asc ";  
 
 			log.info(nameInfoSql + " " +compareName);
 			boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
@@ -891,6 +891,8 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		}
 		log.debug("search by NameInfo result size = " + queryResult.size());
+		
+		
 		return queryResult;
 
 	}

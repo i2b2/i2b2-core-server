@@ -14,6 +14,8 @@
  */
 package edu.harvard.i2b2.ontology.delegate;
 
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,6 +38,7 @@ import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptsType;
 import edu.harvard.i2b2.ontology.datavo.vdo.VocabRequestType;
+import edu.harvard.i2b2.ontology.util.OntologyJAXBUtil;
 import edu.harvard.i2b2.ontology.ws.GetNameInfoDataMessage;
 import edu.harvard.i2b2.ontology.ws.MessageFactory;
 
@@ -86,6 +89,43 @@ public class GetNameInfoHandler extends RequestHandler {
 				log.error(e1.getMessage());
 				responseMessageType = MessageFactory.doBuildErrorResponse(nameInfoMsg.getMessageHeaderType(), "Database configuration error");
 		}
+		
+		//jgk
+		// This does a linear search through fullnames for each previous fullname, O(n^2) :(
+		// BUT it assumes its sorted by hlevel so it only has to search through whats already seen - n(n+1)/2 operations 
+		if (response.size()>0 && vocabType.isReducedResults()!=null && vocabType.isReducedResults()) {
+			ArrayList<String> seen = new ArrayList<String>(); 
+			ArrayList<ConceptType> keep = new ArrayList<ConceptType>();
+			Iterator it = response.iterator();
+			while (it.hasNext())
+			{
+				ConceptType node = (ConceptType)it.next();
+				String key = node.getKey();
+				boolean bAbort = false;
+				for (String k : seen) {
+					if(key.startsWith(k) && !key.equals(k) /* <-- don't kill the synonyms */ ) {
+						bAbort = true;
+						break;
+					}
+				}
+				if (!bAbort) { 
+					/*// This section annotates node names with a category prefix, either PREFIX:code from basecode or CATEGORY\etc\ in the key
+					String nodeType = "";
+					if (node.getBasecode().contains(":")) nodeType=node.getBasecode().substring(0,node.getBasecode().indexOf(":"));
+					else if (node.getKey().contains("\\")) node.getKey().substring(0, node.getKey().indexOf("\\"));
+					node.setName("("+nodeType+") "+node.getName());
+					*/
+					// Add nodes that were not subsumed to the keep list
+					keep.add(node);
+				}
+				// Hidden and inactive should not subsume other nodes - exclude them
+				if (node.getVisualattributes().contains("A")) 
+					seen.add(node.getKey());
+			}
+			log.debug("Reduced find terms from "+response.size()+" to "+keep.size());
+			response = keep;
+		}
+		
 		// no errors found 
 		 String responseVdo = null;
 		 

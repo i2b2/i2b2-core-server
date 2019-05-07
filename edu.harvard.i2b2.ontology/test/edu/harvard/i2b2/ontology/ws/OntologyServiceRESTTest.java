@@ -180,6 +180,53 @@ public class OntologyServiceRESTTest extends OntologyAxisAbstract{
 		}
 	}
 	
+		
+	@Test
+	public void GetNameInfo() throws Exception {
+		String filename = testFileDir + "/nameinfo.xml";
+		String masterInstanceResult = null;
+		try { 
+			String requestString = getQueryString(filename);
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(ontTargetEPR+"getNameInfo").sendReceive(requestElement);
+			JAXBElement responseJaxb = OntologyJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			ConceptsType folders = (ConceptsType)helper.getObjectByClass(r.getMessageBody().getAny(),ConceptsType.class);
+			assertNotNull(folders);
+			assertTrue(folders.getConcept().size() > 30);
+
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+
+	@Test
+	public void GetNameInfo_reduced() throws Exception {
+		String filename = testFileDir + "/nameinfo.xml";
+		String masterInstanceResult = null;
+		try { 
+			String requestString = getQueryString(filename).replace("<ns4:get_name_info blob=\"true\"", 
+					"<ns4:get_name_info blob=\"true\" reducedResults=\"true\" ");
+			OMElement requestElement = convertStringToOMElement(requestString); 
+			OMElement responseElement = getServiceClient(ontTargetEPR+"getNameInfo").sendReceive(requestElement);
+			JAXBElement responseJaxb = OntologyJAXBUtil.getJAXBUtil().unMashallFromString(responseElement.toString());
+			ResponseMessageType r = (ResponseMessageType)responseJaxb.getValue();
+			JAXBUnWrapHelper helper = new  JAXBUnWrapHelper();
+
+			ConceptsType folders = (ConceptsType)helper.getObjectByClass(r.getMessageBody().getAny(),ConceptsType.class);
+			assertNotNull(folders);
+			assertTrue(folders.getConcept().size() > 3);
+			assertTrue(folders.getConcept().size() < 10);
+
+		} catch (Exception e) { 
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+
 
 	@Test
 	public void GetAllDBlookups_admin() throws Exception { //swc20160722

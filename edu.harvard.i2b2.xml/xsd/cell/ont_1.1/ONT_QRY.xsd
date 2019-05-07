@@ -114,14 +114,15 @@
     </xs:complexType>
     
     <xs:complexType name="vocab_requestType">
-        <xs:sequence>
-            <xs:element name="match_str" type="ont:match_strType"/>
-            <xs:element name="self" type = "xs:string"/>
-        </xs:sequence>
-        <xs:attribute name="category" type="xs:string"/>
-        <xs:attributeGroup ref="ont:return_attributeGroup"/>
+    	<xs:sequence>
+    		<xs:element name="match_str" type="ont:match_strType" />
+    		<xs:element name="self" type="xs:string" />
+    	</xs:sequence>
+    	<xs:attribute name="category" type="xs:string" />
+    	<xs:attributeGroup ref="ont:return_attributeGroup" />
+    	<xs:attribute name="reducedResults" type="xs:boolean"></xs:attribute>
     </xs:complexType>
-    
+
     <xs:attributeGroup name="return_attributeGroup">
         <xs:attribute name="hiddens" type="xs:boolean" default="false"/>
         <xs:attribute name="synonyms" type="xs:boolean" default="false"/>
