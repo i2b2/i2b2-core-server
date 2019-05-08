@@ -255,9 +255,16 @@ public class ServiceClient {
 
 		MessageContext mCtx =
 				MessageContext.getCurrentMessageContext();
-		ConfigurationContext cCtx =
-				mCtx.getConfigurationContext();
-		 return   "http://localhost:" + port + cCtx.getContextRoot();
+		String url = null;
+		if (mCtx == null)
+		{
+			url =  "http://localhost:" + port + "/i2b2";
+		} else  {
+			ConfigurationContext cCtx =
+					mCtx.getConfigurationContext();
+			url=    "http://localhost:" + port + cCtx.getContextRoot();
+		}
+		return url;
 
 	}
 
