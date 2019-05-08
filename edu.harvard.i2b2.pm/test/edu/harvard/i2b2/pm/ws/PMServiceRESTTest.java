@@ -70,7 +70,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		String masterInstanceResult = null;
 		try { 
 
-			Thread.sleep(60);
+			Thread.sleep(60000);
 
 			assertTrue(true);
 
