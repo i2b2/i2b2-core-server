@@ -220,6 +220,7 @@
 			<fileset dir="${lib}/jcifs" includes="**/*" />			
 			<fileset dir="${lib}/jdbc" includes="**/*" />			
 			<fileset dir="${lib}/jboss" includes="**/*" />				
+			<fileset dir="${lib}/oidc" includes="**/*" />
 		</copy>
 	</target>
 
