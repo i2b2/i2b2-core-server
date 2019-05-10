@@ -78,7 +78,6 @@ public class DataSourceLookupDAOFactory {
 			
 			Connection conn = lookupDataSource.getConnection();
 			
-			conn.close();
 			serverType = conn.getMetaData().getDatabaseProductName().toUpperCase();
 			schemaName = conn.getSchema();
 			conn.close();
