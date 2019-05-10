@@ -18,7 +18,7 @@
 			<password>demouser</password>
 		</security>
 		<validation>
-			<valid-connection-checker class-name="org.jboss.resource.adapter.jdbc.vendor.OracleValidConnectionChecker"/>
+			<valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
 			<validate-on-match>false</validate-on-match>
 			<background-validation>true</background-validation>
 			<background-validation-millis>60000</background-validation-millis>
