@@ -14,6 +14,7 @@
  */
 package edu.harvard.i2b2.workplace.dao;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -44,7 +45,10 @@ public class WorkplaceDbDao extends JdbcDaoSupport {
 		try {
 			ds = WorkplaceUtil.getInstance().getDataSource("java:/WorkplaceBootStrapDS");
 	//		log.info(ds.toString());
-			metadataSchema = ds.getConnection().getSchema() + ".";
+			Connection conn = ds.getConnection();
+			
+			metadataSchema = conn.getSchema() + ".";
+			conn.close();
 		} catch (I2B2Exception e2) {
 			log.error("bootstrap ds failure: " + e2.getMessage());
 			throw e2;
