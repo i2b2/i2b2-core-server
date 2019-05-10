@@ -8,6 +8,7 @@
  ******************************************************************************/
 package edu.harvard.i2b2.crc.loader.dao;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -64,8 +65,11 @@ public class DataSourceLookupDAOFactory {
 			//schemaName = crcUtil.getCRCDBLookupSchemaName();
 			lookupDataSource = crcUtil
 					.getDataSource("java:/CRCBootStrapDS");
-			serverType = lookupDataSource.getConnection().getMetaData().getDatabaseProductName().toUpperCase();
-			schemaName = lookupDataSource.getConnection().getSchema();
+			Connection conn = lookupDataSource.getConnection();
+			
+			serverType = conn.getMetaData().getDatabaseProductName().toUpperCase();
+			schemaName = conn.getSchema();
+			conn.close();
 		} catch (I2B2Exception i2b2Ex) {
 			log.error(
 					"DataSourceLookupDAOFactory.getLookupDataSourceFromPropertyFile"

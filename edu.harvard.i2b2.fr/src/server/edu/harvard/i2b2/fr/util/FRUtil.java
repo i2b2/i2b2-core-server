@@ -96,7 +96,11 @@ public class FRUtil {
 	
 	public String getMetaDataSchemaName() throws I2B2Exception {
 		try {
-			return dataSource.getConnection().getSchema() + "." ;
+			Connection conn = dataSource.getConnection();
+			
+			String metadataSchema = conn.getSchema() + ".";
+			conn.close();
+			return metadataSchema + "." ;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

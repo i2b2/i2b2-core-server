@@ -123,7 +123,11 @@ public class IMUtil {
      */
     public String getIMDataSchemaName() throws I2B2Exception {
 		try {
-			return dataSource.getConnection().getSchema() + "." ;
+			Connection conn = dataSource.getConnection();
+			
+			String metadataSchema = conn.getSchema() + ".";
+			conn.close();
+			return metadataSchema + "." ;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -240,7 +244,7 @@ public class IMUtil {
 				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
 				Connection conn = ds.getConnection();
 				
-				metadataSchema = conn.getSchema() + ".";
+				String metadataSchema = conn.getSchema() + ".";
 				conn.close();
 				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'ONT'";
 
