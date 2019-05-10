@@ -238,7 +238,11 @@ public class IMUtil {
 				DataSource   ds = this.getDataSource("java:/IMBootStrapDS");
 
 				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
-				String sql =  "select * from " + ds.getConnection().getSchema() + ".hive_cell_params where status_cd <> 'D' and cell_id = 'ONT'";
+				Connection conn = ds.getConnection();
+				
+				metadataSchema = conn.getSchema() + ".";
+				conn.close();
+				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'ONT'";
 
 				log.debug("Start query");
 				appProperties = jt.query(sql, getHiveCellParam());

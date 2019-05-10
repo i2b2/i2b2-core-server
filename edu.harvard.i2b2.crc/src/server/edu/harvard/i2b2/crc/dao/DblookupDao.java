@@ -22,6 +22,8 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.DblookupType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.DeleteDblookupType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.SetDblookupType;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
+
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -64,7 +66,11 @@ public class DblookupDao extends JdbcDaoSupport {
 		jt = new SimpleJdbcTemplate(ds);
 		String dataSchema = "";
 		try {
-			dataSchema = ds.getConnection().getSchema();
+			
+			Connection conn = ds.getConnection();
+			
+			dataSchema = conn.getSchema();
+			conn.close();
 		} catch (SQLException e1) {
 			log.error(e1.getMessage());
 		} 

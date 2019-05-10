@@ -22,6 +22,8 @@ import edu.harvard.i2b2.workplace.datavo.wdo.DblookupType;
 import edu.harvard.i2b2.workplace.datavo.wdo.DeleteDblookupType;
 import edu.harvard.i2b2.workplace.datavo.wdo.SetDblookupType;
 import edu.harvard.i2b2.workplace.util.WorkplaceUtil;
+
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -64,7 +66,10 @@ public class DblookupDao extends JdbcDaoSupport {
 		jt = new SimpleJdbcTemplate(ds);
 		String metadataSchema = "";
 		try {
-			metadataSchema = ds.getConnection().getSchema() + ".";//WorkplaceUtil.getInstance().getMetaDataSchemaName();
+			Connection conn = ds.getConnection();
+			
+			metadataSchema = conn.getSchema() + ".";
+			conn.close();
 		} catch (Exception e1) {
 			log.error(e1.getMessage());
 		}

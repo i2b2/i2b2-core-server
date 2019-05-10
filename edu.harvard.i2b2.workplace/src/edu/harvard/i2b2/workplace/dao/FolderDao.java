@@ -16,6 +16,7 @@ package edu.harvard.i2b2.workplace.dao;
 
 import java.io.IOException;
 import java.sql.Clob;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -74,7 +75,11 @@ public class FolderDao extends JdbcDaoSupport {
 		DataSource ds = null;
 		try {
 			ds = WorkplaceUtil.getInstance().getDataSource(dataSource);
-			metadataSchema = ds.getConnection().getSchema() + ".";
+//			metadataSchema = ds.getConnection().getSchema() + ".";
+			Connection conn = ds.getConnection();
+			
+			metadataSchema = conn.getSchema() + ".";
+			conn.close();
 		} catch (I2B2Exception e2) {
 			log.error(e2.getMessage());;
 		} catch (SQLException e) {

@@ -416,8 +416,12 @@ public class QueryProcessorUtil {
 				DataSource   ds = this.getDataSource("java:/CRCBootStrapDS");
 
 
+				Connection conn = ds.getConnection();
+				
+				String metadataSchema = conn.getSchema() + ".";
+				conn.close();
 				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
-				String sql =  "select * from " + ds.getConnection().getSchema() + ".hive_cell_params where status_cd <> 'D' and cell_id = 'CRC'";
+				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'CRC'";
 
 				log.debug("Start query");
 				appProperties = jt.query(sql, getHiveCellParam());

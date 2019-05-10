@@ -16,6 +16,7 @@
 package edu.harvard.i2b2.workplace.util;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -239,7 +240,11 @@ public class WorkplaceUtil {
 				DataSource   ds = this.getDataSource("java:/WorkplaceBootStrapDS");
 
 				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
-				String sql =  "select * from " + ds.getConnection().getSchema() + ".hive_cell_params where status_cd <> 'D' and cell_id = 'WORK'";
+				Connection conn = ds.getConnection();
+				
+				String metadataSchema = conn.getSchema() + ".";
+				conn.close();
+				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'WORK'";
 
 				log.debug("Start query");
 				appProperties = jt.query(sql, getHiveCellParam());
