@@ -176,7 +176,7 @@ public class FRUtil {
 				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
 				Connection conn = ds.getConnection();
 				
-				String metadataSchema = conn.getSchema() + ".";
+				String metadataSchema = conn.getSchema();
 				conn.close();
 				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'ONT'";
 

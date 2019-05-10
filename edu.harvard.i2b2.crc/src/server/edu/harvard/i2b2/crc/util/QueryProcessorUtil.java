@@ -418,7 +418,7 @@ public class QueryProcessorUtil {
 
 				Connection conn = ds.getConnection();
 				
-				String metadataSchema = conn.getSchema() + ".";
+				String metadataSchema = conn.getSchema();
 				conn.close();
 				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
 				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'CRC'";
