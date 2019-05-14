@@ -20,16 +20,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
@@ -57,10 +53,6 @@ public class IMUtil {
     
     private static  String CRC_WS_EPR = "";
     
-    /** property name for PM webserver method **/
-    private static final String PM_WS_METHOD = "im.ws.pm.webServiceMethod";
-
-
     /** property name for EMPI Service **/
     private static final String EMPI_SERVICE = "im.empi.service";
 
@@ -181,15 +173,6 @@ public class IMUtil {
         return Boolean.parseBoolean(getPropertyValue(CHECK_PATIENT_IN_PROJECT).trim());
     }
     
-    
-    /**
-     * Return PM cell web service method
-     * @return
-     * @throws I2B2Exception
-     */
-    public String getPmWebServiceMethod() throws I2B2Exception {
-        return getPropertyValue(PM_WS_METHOD).trim();
-    }
     
 
     

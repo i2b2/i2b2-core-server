@@ -76,10 +76,10 @@ public class PMServiceDriver {
 
 			// First step is to get PM endpoint reference from properties file.
 			String pmEPR = "";
-			String pmMethod = "";
+			//String pmMethod = "";
 			try {
 				pmEPR = IMUtil.getInstance().getPmEndpointReference();
-				pmMethod = IMUtil.getInstance().getPmWebServiceMethod();
+			//	pmMethod = IMUtil.getInstance().getPmWebServiceMethod();
 			} catch (I2B2Exception e1) {
 				log.error(e1.getMessage());
 				throw e1;
@@ -114,10 +114,10 @@ public class PMServiceDriver {
 
 			// First step is to get PM endpoint reference from properties file.
 			String pmEPR = "";
-			String pmMethod = "";
+		//	String pmMethod = "";
 			try {
 				pmEPR = IMUtil.getInstance().getPmEndpointReference();
-				pmMethod = IMUtil.getInstance().getPmWebServiceMethod();
+			//	pmMethod = IMUtil.getInstance().getPmWebServiceMethod();
 			} catch (I2B2Exception e1) {
 				log.error(e1.getMessage());
 				throw e1;
