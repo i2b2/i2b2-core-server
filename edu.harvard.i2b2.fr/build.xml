@@ -76,7 +76,7 @@
 		<echo message="${Name}: Creating the archive package!" />
 		<antcall target="axis2aar" />
 		<antcall target="jar_core" />
-		<antcall target="dist-server" />
+<!--		<antcall target="dist-server" /> -->
 	</target>
 	
 	<!-- Axis2 archive file -->

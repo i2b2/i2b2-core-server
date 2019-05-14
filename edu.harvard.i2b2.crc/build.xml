@@ -133,7 +133,7 @@
 			<echo message="${Name}: Creating the archive package!" />
 			<antcall target="axis2aar" />
 			<antcall target="jar_core" />
-			<antcall target="dist-server" />
+<!--			<antcall target="dist-server" /> -->
 		</target>
 		
 		<!-- Axis2 archive file -->
@@ -208,12 +208,14 @@
 				</fileset>
 			</copy>
 
+			<!--
 				<echo message="copying property files to ${edu.harvard.i2b2.crc.applicationdir}"/>
 				<copy todir="${edu.harvard.i2b2.crc.applicationdir}">
 					<fileset dir="${etc}/spring">
 						<exclude name="crc_application_directory.properties" />
 					</fileset>
 				</copy>
+				-->
 			</target>
 
 
