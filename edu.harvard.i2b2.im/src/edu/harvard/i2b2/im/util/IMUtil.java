@@ -246,7 +246,7 @@ public class IMUtil {
 				
 				String metadataSchema = conn.getSchema();
 				conn.close();
-				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'ONT'";
+				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'IM'";
 
 				log.debug("Start query");
 				appProperties = jt.query(sql, getHiveCellParam());
