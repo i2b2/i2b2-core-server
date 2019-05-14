@@ -137,13 +137,14 @@
 				<include name="**/**.aar" />
 			</fileset>
 		</copy>
-			
+			<!--
 			<echo message="copying property files to ${edu.harvard.i2b2.fr.applicationdir}"/>
 			<copy todir="${edu.harvard.i2b2.fr.applicationdir}">
 				<fileset dir="${etc}/spring">
 					<exclude name="fr_application_directory.properties" />
 				</fileset>
 			</copy>
+			-->
 		</target>
 
 	<!-- =================================================================== -->
