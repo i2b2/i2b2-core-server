@@ -119,7 +119,7 @@ public class IMUtil {
 			
 			String metadataSchema = conn.getSchema() + ".";
 			conn.close();
-			return metadataSchema + "." ;
+			return metadataSchema;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
