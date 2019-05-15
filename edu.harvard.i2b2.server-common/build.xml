@@ -178,12 +178,12 @@
 		<echo>Copying to ${jboss.home} directory</echo>
 		<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib">
 			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
-			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.0.0.jre8.jar"/>
+			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.2.1.jre8.jar"/>
 			<fileset dir="${lib}/jdbc" includes="postgresql-42.2.5.jar"/>
 		</copy>
 		<copy todir="${jboss.home}/standalone/deployments">
 			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
-			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.0.0.jre8.jar"/>
+			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.2.1.jre8.jar"/>
 			<fileset dir="${lib}/jdbc" includes="postgresql-42.2.5.jar"/>
 		</copy>
 	</target>
@@ -202,12 +202,12 @@
 			
 			<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib">
 				<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
-				<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.0.0.jre8.jar"/>
+				<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.2.1.jre8.jar"/>
 				<fileset dir="${lib}/jdbc" includes="postgresql-42.2.5.jar"/>
 			</copy>
 			<copy todir="${jboss.home}/standalone/deployments">
 				<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
-				<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.0.0.jre8.jar"/>
+				<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.2.1.jre8.jar"/>
 				<fileset dir="${lib}/jdbc" includes="postgresql-42.2.5.jar"/>
 			</copy>
 
