@@ -104,7 +104,7 @@ public class OntologyServiceRESTTest extends OntologyAxisAbstract{
 
 		getNameInfoEPR = ontTargetEPR + "getNameInfo";
 		getAllDBlookups = ontTargetEPR + "getAllDblookups";
-		psetDBlookup = ontTargetEPR + "setDblookup";
+		setDBlookup = ontTargetEPR + "setDblookup";
 		getDBlookup = ontTargetEPR + "getDblookup";
 		deleteDBlookup = ontTargetEPR + "deleteDblookup";
 		testFileDir = "test"; //System.getProperty("testfiledir");
