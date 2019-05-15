@@ -75,17 +75,19 @@ public class PdoQueryTest extends CRCAxisAbstract {
 	private static QueryResultInstanceType queryResultInstance = null;
 	private  static String testFileDir = null;
 	//:TODO accept server url as runtime parameter 
-	private static String setfinderTargetEPR = 
-			"http://127.0.0.1:9090/i2b2/services/QueryToolService/request";			
+	private static String setfinderTargetEPR = null;	
 
-	private static String pdoTargetEPR = 
-			"http://127.0.0.1:9090/i2b2/services/QueryToolService/pdorequest";			
-
+	private static String pdoTargetEPR = null;
 	//private static String patientSetId = null;
 
 
 	@BeforeClass
 	public static void setUp() throws Exception {
+		String host = (System.getProperty("testhost") == null ? "http://127.0.0.1:9090/i2b2/services" : System.getProperty("testhost") ) ;
+		setfinderTargetEPR = 
+				host + "/QueryToolService/request";	
+		pdoTargetEPR = 
+				host + "/QueryToolService/pdorequest";	
 		testFileDir = "testfiles"; //System.getProperty("testfiledir");
 		System.out.println("test file dir " + testFileDir);
 

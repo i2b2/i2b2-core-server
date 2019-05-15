@@ -32,8 +32,7 @@ import edu.harvard.i2b2.fr.util.FRUtil;
 public class FRServiceRESTTest extends FRAxisAbstract{
 	private static String testFileDir = "";
 
-	private static String ontologyTargetEPR = 
-			"http://localhost:9090/i2b2/rest/OntologyService/getSchemes";			
+	private static String ontologyTargetEPR =  null;	
 	//	"http://127.0.0.1:8080/i2b2/services/PMService/getServices";			
 
 	public static junit.framework.Test suite() { 
@@ -43,6 +42,9 @@ public class FRServiceRESTTest extends FRAxisAbstract{
 
 	@BeforeClass
 	public static void setUp() throws Exception {
+		String host = (System.getProperty("testhost") == null ? "http://127.0.0.1:9090/i2b2/services" : System.getProperty("testhost") ) ;
+		ontologyTargetEPR = 
+				host + "/OntologyService/getSchemes";	
 		testFileDir = "test"; //System.getProperty("testfiledir");
 		System.out.println("test file dir " + testFileDir);
 

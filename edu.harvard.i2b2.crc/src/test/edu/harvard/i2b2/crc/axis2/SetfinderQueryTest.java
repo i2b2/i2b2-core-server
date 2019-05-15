@@ -66,12 +66,18 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 	private static MasterInstanceResultResponseType masterInstanceResult = null;
 	private static String testFileDir = null;
 
-	private static  String setfinderUrl = "http://127.0.0.1:9090/i2b2/services/QueryToolService/request";	
-	private static  String nameInfoUrl = "http://127.0.0.1:9090/i2b2/services/QueryToolService/getNameInfo";	
+	private static  String setfinderUrl = null;	
+	private static  String nameInfoUrl = null;	
 
 
 	@BeforeClass
 	public static void setUp() throws Exception {
+		String host = (System.getProperty("testhost") == null ? "http://127.0.0.1:9090/i2b2/services" : System.getProperty("testhost") ) ;
+		setfinderUrl = 
+				host + "/QueryToolService/request";	
+		nameInfoUrl = 
+				host + "/QueryToolService/getNameInfo";	
+		
 		testFileDir = "testfiles"; //System.getProperty("testfiledir");
 		System.out.println("test file dir " + testFileDir);
 

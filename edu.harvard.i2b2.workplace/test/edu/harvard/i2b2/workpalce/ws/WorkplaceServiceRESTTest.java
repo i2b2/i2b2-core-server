@@ -38,8 +38,7 @@ import org.junit.runners.MethodSorters;
 public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 	private static String testFileDir = "";
 
-	private static String workplaceTargetEPR = 
-			"http://localhost:9090/i2b2/services/WorkplaceService/";			
+	private static String workplaceTargetEPR = null;	
 
 	private static String getFoldersByProject = "getFoldersByProject";
 	private static String getFoldersByUserId = "getFoldersByUserId";
@@ -67,6 +66,9 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 
 	@BeforeClass
 	public static void setUp() throws Exception {
+		String host = (System.getProperty("testhost") == null ? "http://127.0.0.1:9090/i2b2/services" : System.getProperty("testhost") ) ;
+		workplaceTargetEPR = 
+				host + "/WorkplaceService/";	
 		testFileDir = "test"; //System.getProperty("testfiledir");
 		System.out.println("test file dir " + testFileDir);
 

@@ -44,8 +44,7 @@ import org.junit.runners.MethodSorters;
 public class IMServiceRESTTest extends IMAxisAbstract{
 	private static String testFileDir = "";
 
-	private static String imTargetEPR = 
-			"http://127.0.0.1:9090/i2b2/services/IMService/";			
+	private static String imTargetEPR = null;	
 
 	private static String isKeySet = "isKeySet";
 	private static String pdorequest = "pdorequest";
@@ -66,6 +65,10 @@ public class IMServiceRESTTest extends IMAxisAbstract{
 
 	@BeforeClass
 	public static void setUp() throws Exception {
+		String host = (System.getProperty("testhost") == null ? "http://127.0.0.1:9090/i2b2/services" : System.getProperty("testhost") ) ;
+		imTargetEPR = 
+				host + "/IMService/";	
+		 
 		testFileDir = "test"; //System.getProperty("testfiledir");
 		System.out.println("test file dir " + testFileDir);
 

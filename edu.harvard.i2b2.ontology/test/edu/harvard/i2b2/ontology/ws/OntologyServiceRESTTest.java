@@ -31,12 +31,11 @@ import edu.harvard.i2b2.ontology.util.OntologyJAXBUtil;
 public class OntologyServiceRESTTest extends OntologyAxisAbstract{
 	private static String testFileDir = "";
 
-	private static String ontologyTargetEPR = 
-			"http://localhost:9090/i2b2/services/OntologyService/getSchemes";			
+	private static String ontologyTargetEPR = null;	
 	//	"http://127.0.0.1:8080/i2b2/services/PMService/getServices";			
 
 	//swc20160722 added following DBlookup related
-	private static String ontTargetEPR = "http://localhost:9090/i2b2/services/OntologyService/";
+	private static String ontTargetEPR = null;
 	private static String getNameInfoEPR = ontTargetEPR + "getNameInfo";
 	private static String getAllDBlookups = ontTargetEPR + "getAllDblookups";
 	private static String setDBlookup = ontTargetEPR + "setDblookup";
@@ -96,6 +95,12 @@ public class OntologyServiceRESTTest extends OntologyAxisAbstract{
 	
 	@BeforeClass
 	public static void setUp() throws Exception {
+		
+		String host = (System.getProperty("testhost") == null ? "http://127.0.0.1:9090/i2b2/services" : System.getProperty("testhost") ) ;
+		ontologyTargetEPR = 
+				host + "/OntologyService/getSchemes";	
+		ontTargetEPR = 
+				host + "/OntologyService/";	
 		testFileDir = "test"; //System.getProperty("testfiledir");
 		//if (!java.nio.file.Files.exists(java.nio.file.Paths.get(testFileDir))) {
 		//	throw new Exception("testFileDir '" + testFileDir + "' non-existent!");

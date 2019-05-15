@@ -39,10 +39,9 @@ import org.junit.runners.MethodSorters;
 public class PMServiceRESTTest extends PMAxisAbstract{
 	private static String testFileDir = "";
 
-	private static String pmTargetEPR = 
-			"http://127.0.0.1:9090/i2b2/services/PMService/getServices";	
-	private static String pmGetVersion = 
-			"http://127.0.0.1:9090/i2b2/services/PMService/getVersion";	
+	private static  String pmTargetEPR = null;
+	private static  String pmGetVersion = null;
+	
 	
 	//	"http://127.0.0.1:8080/i2b2/services/PMService/getServices";			
 
@@ -54,6 +53,12 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	@BeforeClass
 	public static void setUp() throws Exception {
 		testFileDir = "test"; //System.getProperty("testfiledir");
+		String host = (System.getProperty("testhost") == null ? "http://127.0.0.1:9090/i2b2/services" : System.getProperty("testhost") ) ;
+		 pmTargetEPR = 
+				host + "/PMService/getServices";	
+		 pmGetVersion = 
+				host + "/PMService/getVersion";	
+
 		System.out.println("test file dir " + testFileDir);
 
 		if (!((testFileDir != null) && (testFileDir.trim().length() > 0))) {
@@ -70,7 +75,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		String masterInstanceResult = null;
 		try { 
 
-			Thread.sleep(60000);
+			Thread.sleep(60);
 
 			assertTrue(true);
 

@@ -89,17 +89,19 @@ public class CRCLoaderTest  extends CRCAxisAbstract {
 	private static QueryInstanceType queryInstance = null;
 	private static String masterInstanceResult = null;
 	private static String testFileDir = null;
-	 private static EndpointReference frUrl = new EndpointReference(
-			 "http://infra6.mgh.harvard.edu:9090/i2b2/services/FRService");
-	private static  String setfinderUrl = 
-			//System.getProperty("testhost") 
-			"http://infra6.mgh.harvard.edu:9090/i2b2/services"
-			+ "/QueryToolService/request";	
+	 private static EndpointReference frUrl = null;
+
 
 	  private static String requestXml = "";
 	  
 	@BeforeClass
 	public static void setUp() throws Exception {
+		
+		String host = (System.getProperty("testhost") == null ? "http://127.0.0.1:9090/i2b2/services" : System.getProperty("testhost") ) ;
+		frUrl = 
+				new EndpointReference(host + "/FRService");	
+;	
+		
 		testFileDir = "testfiles"; //System.getProperty("testfiledir");
 		System.out.println("test file dir " + testFileDir);
 
