@@ -60,6 +60,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 				host + "/PMService/getVersion";	
 
 		System.out.println("test file dir " + testFileDir);
+		System.out.println("host " + host);
 
 		if (!((testFileDir != null) && (testFileDir.trim().length() > 0))) {
 			throw new Exception(
