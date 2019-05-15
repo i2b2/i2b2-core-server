@@ -36,11 +36,11 @@ public class OntologyServiceRESTTest extends OntologyAxisAbstract{
 
 	//swc20160722 added following DBlookup related
 	private static String ontTargetEPR = null;
-	private static String getNameInfoEPR = ontTargetEPR + "getNameInfo";
-	private static String getAllDBlookups = ontTargetEPR + "getAllDblookups";
-	private static String setDBlookup = ontTargetEPR + "setDblookup";
-	private static String getDBlookup = ontTargetEPR + "getDblookup";
-	private static String deleteDBlookup = ontTargetEPR + "deleteDblookup";
+	private static String getNameInfoEPR = null;
+	private static String getAllDBlookups = null;
+	private static String setDBlookup = null;
+	private static String getDBlookup = null;
+	private static String deleteDBlookup = null;
 	private static String ontMsg;
 
 	public static junit.framework.Test suite() { 
@@ -101,6 +101,12 @@ public class OntologyServiceRESTTest extends OntologyAxisAbstract{
 				host + "/OntologyService/getSchemes";	
 		ontTargetEPR = 
 				host + "/OntologyService/";	
+		
+		 ontTargetEPR + "getNameInfo";
+		ontTargetEPR + "getAllDblookups";
+		 ontTargetEPR + "setDblookup";
+		 ontTargetEPR + "getDblookup";
+		 ontTargetEPR + "deleteDblookup";
 		testFileDir = "test"; //System.getProperty("testfiledir");
 		//if (!java.nio.file.Files.exists(java.nio.file.Paths.get(testFileDir))) {
 		//	throw new Exception("testFileDir '" + testFileDir + "' non-existent!");
