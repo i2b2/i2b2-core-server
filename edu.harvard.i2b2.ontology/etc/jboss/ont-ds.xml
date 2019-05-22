@@ -29,6 +29,27 @@
 			<share-prepared-statements>false</share-prepared-statements>
 		</statement>
 	</datasource>
+	<datasource jta="false" jndi-name="java:/OntologyACTDS"
+		pool-name="OntologyACTDS" enabled="true" use-ccm="false">
+		<connection-url>jdbc:oracle:thin:@localhost:1521:xe</connection-url>
+		<driver-class>oracle.jdbc.OracleDriver</driver-class>
+		<driver>ojdbc8.jar</driver>
+		<security>
+			<user-name>i2b2actata</user-name>
+			<password>demouser</password>
+		</security>
+		<validation>
+			<valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+			<validate-on-match>false</validate-on-match>
+			<background-validation>true</background-validation>
+			<background-validation-millis>60000</background-validation-millis>
+			<use-fast-fail>true</use-fast-fail>
+			<check-valid-connection-sql>SELECT 1 FROM DUAL</check-valid-connection-sql>
+		</validation> 
+		<statement>
+			<share-prepared-statements>false</share-prepared-statements>
+		</statement>
+	</datasource>	
 	<datasource jta="false" jndi-name="java:/OntologyBootStrapDS"
 		pool-name="OntologyBootStrapDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:oracle:thin:@localhost:1521:xe</connection-url>
