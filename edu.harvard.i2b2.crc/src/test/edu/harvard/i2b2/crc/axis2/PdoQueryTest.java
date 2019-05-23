@@ -320,7 +320,7 @@ public class PdoQueryTest extends CRCAxisAbstract {
 					count++;
 				}
 			}
-			assertEquals("Checking patient 1000000016 had 2 records", count, 2); 
+			assertEquals("Checking patient 1000000016 had 3 records", count, 3); 
 			assertTrue(found);
 		} catch (Exception e) { 
 			System.out.println("Error in minvalue:" + e.getMessage());
