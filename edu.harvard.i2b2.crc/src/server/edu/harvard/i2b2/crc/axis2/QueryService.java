@@ -25,9 +25,9 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chip.ihl.surveymanager.redcap.RedcapResult;
-import org.chip.ihl.surveymanager.service.RedcapService;
-import org.chip.ihl.surveymanager.service.RedcapWrapper;
+//import org.chip.ihl.surveymanager.redcap.RedcapResult;
+//import org.chip.ihl.surveymanager.service.RedcapService;
+//import org.chip.ihl.surveymanager.service.RedcapWrapper;
 import org.springframework.util.Assert;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -136,7 +136,7 @@ public class QueryService {
 	 * @param omElement
 	 *            request message wrapped in OMElement
 	 * @return response message in wrapped inside OMElement
-	 */
+	
 	public void redcapPush(
 			String record,
 			String recordType,
@@ -154,7 +154,7 @@ public class QueryService {
 		RedcapResult redcapResult = redcapService.pullRecordRequest(redcap_url, recordType, record, instrument, redcap_event_name);
 
 	}
-
+ */
 	/*
 	public OMElement redcapPush(OMElement omElement) {
 		Assert.notNull(omElement, "redcapPush  OMElement must not be null");
