@@ -571,7 +571,7 @@ public class PMDbDao extends JdbcDaoSupport {
 			//sql =  "select * from pm_user_data where user_id = ?  "+  (password!=null?"    and password = ? ":"");
 			
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-					+ " on a.user_id = o.user_id and o.user_role_cd =  'ADMIN' where  a.user_id = ? " +  (password != null ? " and password = ? ":"");
+					+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' where  a.user_id = ? " +  (password != null ? " and password = ? ":"");
 			
 			if (ignoreDeleted)
 				sql += " and a.status_cd<>'D'";
@@ -658,7 +658,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		{
 			//sql =  "select * from pm_user_data where status_cd<>'D'";
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-					+ " on a.user_id = o.user_id and o.user_role_cd =  'ADMIN' where  a.status_cd<>'D'";
+					+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' where  a.status_cd<>'D'";
 
 			queryResult = jt.query(sql,  GetUser(false));
 		}
@@ -905,7 +905,7 @@ public class PMDbDao extends JdbcDaoSupport {
 
 				//sql =  "select * from pm_user_data where user_id = ?  and password = ?";
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-						+ " on a.user_id = o.user_id and o.user_role_cd =  'ADMIN' where  a.user_id = ? and password = ?";
+						+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' where  a.user_id = ? and password = ?";
 		
 				List<UserType> queryResult2 = jt.query(sql,  GetUser(true), caller, hash);
 
