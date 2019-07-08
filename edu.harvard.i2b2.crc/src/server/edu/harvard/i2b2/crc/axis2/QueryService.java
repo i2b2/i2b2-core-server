@@ -491,8 +491,8 @@ public class QueryService {
 			requestHandlerDelegate = new GetNameInfoRequestDelegate();			
 		} else if (requestType.equals(QTBREAKDOWN_REQUEST)) {
 			requestHandlerDelegate = new QTBreakdownRequestDelegate();			
-		} else if (requestType.equals(REDCAP_REQUEST)) {
-			requestHandlerDelegate = new RedCapRequestDelegate();			
+	//	} else if (requestType.equals(REDCAP_REQUEST)) {
+//			requestHandlerDelegate = new RedCapRequestDelegate();			
 		}
 		OMElement returnElement = null;
 		try {
