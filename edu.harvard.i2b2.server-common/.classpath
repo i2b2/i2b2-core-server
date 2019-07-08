@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src/core"/>
 	<classpathentry kind="src" path="gensrc"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring/spring-2.0.jar" sourcepath="/Users/mem61/.m2/repository/org/springframework/spring/2.5.6.SEC03/spring-2.5.6.SEC03-sources.jar"/>
 	<classpathentry kind="lib" path="lib/axis2.war/WEB-INF/lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/axis2.war/WEB-INF/lib/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="lib/axis2.war/WEB-INF/lib/apache-mime4j-core-0.7.2.jar"/>
@@ -73,5 +72,10 @@
 	<classpathentry kind="lib" path="lib/axis2.war/WEB-INF/lib/xml-resolver-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/axis2.war/WEB-INF/lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/axis2.war/WEB-INF/lib/xmlschema-core-2.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-beans-5.1.8.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-context-5.1.8.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-core-5.1.8.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-jdbc-5.1.8.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-tx-5.1.8.RELEASE.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

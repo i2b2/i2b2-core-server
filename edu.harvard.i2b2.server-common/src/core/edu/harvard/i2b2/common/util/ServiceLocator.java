@@ -10,14 +10,6 @@ package edu.harvard.i2b2.common.util;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.access.BeanFactoryLocator;
-import org.springframework.beans.factory.access.BeanFactoryReference;
-import org.springframework.beans.factory.access.SingletonBeanFactoryLocator;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
-import org.springframework.context.access.ContextSingletonBeanFactoryLocator;
-import org.springframework.core.io.ClassPathResource;
-
 import java.io.IOException;
 
 import java.util.Collections;
@@ -43,7 +35,7 @@ public class ServiceLocator {
 
     //default client property file name
     public static final String CLIENT_PROPERTY_CONFIG_LOCATION = "client.properties";
-    private static BeanFactory beanFactory = null;
+ //   private static BeanFactory beanFactory = null;
     private static Properties clientProperties = null;
 
     //to make this class singleton
@@ -78,6 +70,7 @@ public class ServiceLocator {
         return thisInstance;
     }
 
+    /* TODO MM Removed
     public  BeanFactory getSpringFactory() {
         if (beanFactory == null) {
             BeanFactoryLocator beanFactoryLoc = SingletonBeanFactoryLocator.getInstance();
@@ -88,7 +81,7 @@ public class ServiceLocator {
 
         return beanFactory;
     }
-
+	*/
     
 
     
@@ -116,7 +109,7 @@ public class ServiceLocator {
     /**
      * Function to get client's property context.
      * @return PropertyUtil
-     */
+    
     public static Properties getClientProperty() throws I2B2Exception {
         if (clientProperties == null) {
             clientProperties = getProperties(CLIENT_PROPERTY_CONFIG_LOCATION);
@@ -124,13 +117,13 @@ public class ServiceLocator {
 
         return clientProperties;
     }
-
+ */
     /**
      * Return Properties object, for input property file.
      * @param propFileName
      * @return java.util.Properties
      * @throws I2B2Exception
-     */
+    
     public static Properties getProperties(String propFileName)
         throws I2B2Exception {
         PropertiesFactoryBean pfb = new PropertiesFactoryBean();
@@ -147,5 +140,5 @@ public class ServiceLocator {
 
         return props;
     }
-
+ */
 }

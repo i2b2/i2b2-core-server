@@ -49,9 +49,9 @@ public class VisitDAO extends CRCLoaderDAO implements IVisitDAO {
 	@Override
 	public int getRecordCountByUploadId(int uploadId) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(this.getDataSource());
-		int insertCount = jdbcTemplate.queryForInt(
+		int insertCount = jdbcTemplate.queryForObject(
 				"select count(1) from " + this.getDbSchemaName()
-						+ "visit_dimension where upload_id =?",
+						+ "visit_dimension where upload_id =?",Integer.class,
 				new Object[] { uploadId });
 		return insertCount;
 	}

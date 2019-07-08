@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -326,24 +326,7 @@ public class CRCLoaderUtil {
 	 * Load application property file into memory
 	 */
 
-	private ParameterizedRowMapper getHiveCellParam() {
-		ParameterizedRowMapper<ParamType> map = new ParameterizedRowMapper<ParamType>() {
-			public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				DTOFactory factory = new DTOFactory();
 
-
-
-				log.debug("setting name");
-				ParamType param = new ParamType();
-				param.setId(rs.getInt("id"));
-				param.setName(rs.getString("param_name_cd"));
-				param.setValue(rs.getString("value"));
-				param.setDatatype(rs.getString("datatype_cd"));
-				return param;
-			} 
-		};
-		return map;
-	}
 	/**
 	 * Load application property file into memoryß
 	 */
@@ -365,7 +348,7 @@ public class CRCLoaderUtil {
 				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'CRC'";
 
 				log.debug("Start query");
-				appProperties = jt.query(sql, getHiveCellParam());
+				appProperties = jt.query(sql, new getHiveCellParam());
 				log.debug("End query");
 
 
@@ -424,4 +407,18 @@ public class CRCLoaderUtil {
 	}
 */
 }
+
+class getHiveCellParam implements RowMapper<ParamType> {
+	@Override
+	public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+			ParamType param = new ParamType();
+			param.setId(rs.getInt("id"));
+			param.setName(rs.getString("param_name_cd"));
+			param.setValue(rs.getString("value"));
+			param.setDatatype(rs.getString("datatype_cd"));
+			return param;
+		} 
+}
+
 

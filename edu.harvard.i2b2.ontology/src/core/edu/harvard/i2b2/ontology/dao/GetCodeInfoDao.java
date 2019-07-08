@@ -26,8 +26,8 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -62,7 +62,7 @@ public class GetCodeInfoDao extends JdbcDaoSupport {
 			throw e2;
 		} 
 
-		SimpleJdbcTemplate jt = new SimpleJdbcTemplate(ds);
+		 JdbcTemplate jt = new JdbcTemplate(ds);
 
 		// find return parameters
 		String parameters = DEFAULT;		
@@ -94,13 +94,8 @@ public class GetCodeInfoDao extends JdbcDaoSupport {
 		if(tableCd != null) {
 			// table code to table name conversion
 			String tableSql = "select distinct(c_table_name) from "+ metadataSchema + "table_access where c_table_cd = ? ";
-			ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
-				public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-					String name = (rs.getString("c_table_name"));
-					return name;
-				}
-			};
-			tableNames = jt.query(tableSql, map, tableCd);
+
+			tableNames = jt.queryForList(tableSql, String.class, tableCd);
 		}
 		else {  // tableCd is null, so query all tables user has access to
 			String whereClause = "where ";
@@ -118,15 +113,10 @@ public class GetCodeInfoDao extends JdbcDaoSupport {
 			}
 			String tableSql = "select distinct(c_table_name) from "+ metadataSchema + "table_access " + whereClause;
 
-			ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
-				public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-					String name = (rs.getString("c_table_name"));
-					return name;
-				}
-			};
+
 
 			try {
-				tableNames = jt.query(tableSql, map);
+				tableNames = jt.queryForList(tableSql, String.class);
 			} catch (DataAccessException e) {
 				log.error(e.getMessage());
 				throw e;
@@ -162,66 +152,12 @@ public class GetCodeInfoDao extends JdbcDaoSupport {
 		log.debug(codeInfoSql);
 		final  boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated( projectInfo );
 		
-		ParameterizedRowMapper<ExpandedConceptType> mapper = new ParameterizedRowMapper<ExpandedConceptType>() {
-			public ExpandedConceptType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				ExpandedConceptType entry = new ExpandedConceptType();
-				//TODO fix this for all/+blob
 
-				entry.setName(rs.getString("c_name"));
-				entry.setTableCd(rs.getString("tablecd"));
-				if(vocabType.getType().equals("core")) {
-					entry.setKey(rs.getString("c_fullname")); 
-					entry.setBasecode(rs.getString("c_basecode"));
-					entry.setLevel(rs.getInt("c_hlevel"));
-					entry.setSynonymCd(rs.getString("c_synonym_cd"));
-					entry.setVisualattributes(rs.getString("c_visualattributes"));
-					Integer totalNum = rs.getInt("c_totalnum");
-					if (obfuscatedUserFlag == false) { 
-						entry.setTotalnum(totalNum);
-					}
-					entry.setFacttablecolumn(rs.getString("c_facttablecolumn" ));
-					entry.setTablename(rs.getString("c_tablename")); 
-					entry.setColumnname(rs.getString("c_columnname")); 
-					entry.setColumndatatype(rs.getString("c_columndatatype")); 
-					entry.setOperator(rs.getString("c_operator")); 
-					entry.setDimcode(rs.getString("c_dimcode"));
-					entry.setTooltip(rs.getString("c_tooltip"));
-
-				}
-
-				if((vocabType.getType().equals("all"))){
-					DTOFactory factory = new DTOFactory();
-					// make sure date isnt null before converting to XMLGregorianCalendar
-					Date date = rs.getDate("update_date");
-					if (date == null)
-						entry.setUpdateDate(null);
-					else 
-						entry.setUpdateDate(factory.getXMLGregorianCalendar(date.getTime())); 
-
-					date = rs.getDate("download_date");
-					if (date == null)
-						entry.setDownloadDate(null);
-					else 
-						entry.setDownloadDate(factory.getXMLGregorianCalendar(date.getTime())); 
-
-					date = rs.getDate("import_date");
-					if (date == null)
-						entry.setImportDate(null);
-					else 
-						entry.setImportDate(factory.getXMLGregorianCalendar(date.getTime())); 
-
-					entry.setSourcesystemCd(rs.getString("sourcesystem_cd"));
-					entry.setValuetypeCd(rs.getString("valuetype_cd"));
-				}
-
-				return entry;
-			}
-		};
 
 		List queryResult = null;
 		try {
 			if(tableNames != null)
-				queryResult = jt.query(codeInfoSql, mapper);
+				queryResult = jt.query(codeInfoSql, getExpandedConcept(obfuscatedUserFlag,vocabType));
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			throw e;
@@ -249,6 +185,8 @@ public class GetCodeInfoDao extends JdbcDaoSupport {
 					Iterator it = tableNames.iterator();
 					while(it.hasNext()){
 						String clobSql = "select c_metadataxml, c_comment from "+  metadataSchema+(String)it.next() +  " where c_name = ? and " + synonym;
+						//TODO MM is this being used?   7/5/2019
+						/*
 						ParameterizedRowMapper<ConceptType> map = new ParameterizedRowMapper<ConceptType>() {
 							public ConceptType mapRow(ResultSet rs, int rowNum) throws SQLException {
 								ConceptType concept = new ConceptType();
@@ -315,6 +253,7 @@ public class GetCodeInfoDao extends JdbcDaoSupport {
 							child.setMetadataxml(null);
 							child.setComment(null);
 						}
+						*/
 					}
 				}
 			}
@@ -323,4 +262,84 @@ public class GetCodeInfoDao extends JdbcDaoSupport {
 
 	}
 
+
+	private GetExpandedConcept getExpandedConcept(boolean obfuscatedUserFlag, VocabRequestType vocabType) {
+		// TODO Auto-generated method stub
+		GetExpandedConcept mapper = new GetExpandedConcept();
+		mapper.setObfuscatedUserFlag(obfuscatedUserFlag);
+
+		mapper.setObfuscatedUserFlag(obfuscatedUserFlag);
+		return mapper;
+	}
+}
+
+
+class GetExpandedConcept implements RowMapper<ExpandedConceptType> {
+
+	boolean obfuscatedUserFlag;
+	VocabRequestType vocabType;
+	
+	public void setObfuscatedUserFlag(boolean obfuscatedUserFlag) {
+		this.obfuscatedUserFlag = obfuscatedUserFlag;
+	}
+
+	public void setVocabType(VocabRequestType vocabType) {
+		this.vocabType = vocabType;
+	}
+
+
+	@Override
+	public ExpandedConceptType mapRow(ResultSet rs, int rowNum) throws SQLException {
+		ExpandedConceptType entry = new ExpandedConceptType();
+		//TODO fix this for all/+blob
+
+		entry.setName(rs.getString("c_name"));
+		entry.setTableCd(rs.getString("tablecd"));
+		if(vocabType.getType().equals("core")) {
+			entry.setKey(rs.getString("c_fullname")); 
+			entry.setBasecode(rs.getString("c_basecode"));
+			entry.setLevel(rs.getInt("c_hlevel"));
+			entry.setSynonymCd(rs.getString("c_synonym_cd"));
+			entry.setVisualattributes(rs.getString("c_visualattributes"));
+			Integer totalNum = rs.getInt("c_totalnum");
+			if (obfuscatedUserFlag == false) { 
+				entry.setTotalnum(totalNum);
+			}
+			entry.setFacttablecolumn(rs.getString("c_facttablecolumn" ));
+			entry.setTablename(rs.getString("c_tablename")); 
+			entry.setColumnname(rs.getString("c_columnname")); 
+			entry.setColumndatatype(rs.getString("c_columndatatype")); 
+			entry.setOperator(rs.getString("c_operator")); 
+			entry.setDimcode(rs.getString("c_dimcode"));
+			entry.setTooltip(rs.getString("c_tooltip"));
+
+		}
+
+		if((vocabType.getType().equals("all"))){
+			DTOFactory factory = new DTOFactory();
+			// make sure date isnt null before converting to XMLGregorianCalendar
+			Date date = rs.getDate("update_date");
+			if (date == null)
+				entry.setUpdateDate(null);
+			else 
+				entry.setUpdateDate(factory.getXMLGregorianCalendar(date.getTime())); 
+
+			date = rs.getDate("download_date");
+			if (date == null)
+				entry.setDownloadDate(null);
+			else 
+				entry.setDownloadDate(factory.getXMLGregorianCalendar(date.getTime())); 
+
+			date = rs.getDate("import_date");
+			if (date == null)
+				entry.setImportDate(null);
+			else 
+				entry.setImportDate(factory.getXMLGregorianCalendar(date.getTime())); 
+
+			entry.setSourcesystemCd(rs.getString("sourcesystem_cd"));
+			entry.setValuetypeCd(rs.getString("valuetype_cd"));
+		}
+
+		return entry;
+	}
 }

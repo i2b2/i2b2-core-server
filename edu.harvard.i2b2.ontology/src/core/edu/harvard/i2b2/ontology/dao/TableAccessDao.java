@@ -17,11 +17,12 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.ontology.datavo.pm.ParamType;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.ejb.DBInfoType;
 import edu.harvard.i2b2.ontology.ejb.TableAccessType;
@@ -37,7 +38,7 @@ public class TableAccessDao extends JdbcDaoSupport {
 
 	private static Log log = LogFactory.getLog(TableAccessDao.class);
 
-	private SimpleJdbcTemplate jt = null;
+	private JdbcTemplate jt = null;
 
 	private void setDataSource(String dataSource) {
 		DataSource ds = null;
@@ -47,11 +48,11 @@ public class TableAccessDao extends JdbcDaoSupport {
 			log.error(e2.getMessage());
 			;
 		}
-		this.jt = new SimpleJdbcTemplate(ds);
+		this.jt = new JdbcTemplate(ds);
 	}
 
 	public void setDataSourceObject(DataSource dataSource) {
-		this.jt = new SimpleJdbcTemplate(dataSource);
+		this.jt = new JdbcTemplate(dataSource);
 	}
 
 	public List<String> getEditorTableName(ProjectType projectInfo,
@@ -71,19 +72,14 @@ public class TableAccessDao extends JdbcDaoSupport {
 		else if (!protectedAccess) {
 			sql += " where c_protected_access = ? ";
 		}
-		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
-			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-				String name = (rs.getString("c_table_name"));
-				return name;
-			}
-		};
+
 
 		List<String> tableNameList = null;
 		log.debug("Executing sql [" + sql + "]");
 		if (!protectedAccess) {
-			tableNameList = jt.query(sql, map, "N");
+			tableNameList = jt.queryForList(sql, String.class, "N");
 		} else {
-			tableNameList = jt.query(sql, map);
+			tableNameList = jt.queryForList(sql, String.class);
 		}
 		return tableNameList;
 	}
@@ -100,19 +96,14 @@ public class TableAccessDao extends JdbcDaoSupport {
 		if (!protectedAccess) {
 			sql += " where c_protected_access = ? ";
 		}
-		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
-			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-				String name = (rs.getString("c_table_name"));
-				return name;
-			}
-		};
+
 
 		List<String> tableNameList = null;
 		log.debug("Executing sql [" + sql + "]");
 		if (!protectedAccess) {
-			tableNameList = jt.query(sql, map, "N");
+			tableNameList = jt.queryForList(sql, String.class, "N");
 		} else {
-			tableNameList = jt.query(sql, map);
+			tableNameList = jt.queryForList(sql, String.class);
 		}
 		return tableNameList;
 	}
@@ -130,26 +121,14 @@ public class TableAccessDao extends JdbcDaoSupport {
 		if (!protectedAccess) {
 			sql += " where c_protected_access = ? ";
 		}
-		ParameterizedRowMapper<TableAccessType> map = new ParameterizedRowMapper<TableAccessType>() {
-			
-			public TableAccessType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				TableAccessType tableAccessType = new TableAccessType();
-				tableAccessType.setTableName(rs.getString("c_table_name"));
-				tableAccessType.setTableCd(rs.getString("c_table_cd"));
-				tableAccessType.setFullName(rs.getString("c_fullname"));
-				tableAccessType.setSynonymCd(rs.getString("c_synonym_cd"));
-				tableAccessType.setVisualAttributes(rs.getString("c_visualattributes"));
-				tableAccessType.setDimCode(rs.getString("c_dimcode"));
-				return tableAccessType;
-			}
-		};
+
 
 		List<TableAccessType> tableAccessList = null;
 		log.debug("Executing sql [" + sql + "]");
 		if (!protectedAccess) {
-			tableAccessList = jt.query(sql, map, "N");
+			tableAccessList = jt.query(sql, new geTableAccess(), "N");
 		} else {
-			tableAccessList = jt.query(sql, map);
+			tableAccessList = jt.query(sql, new geTableAccess());
 		}
 		return tableAccessList;
 	}
@@ -174,3 +153,18 @@ public class TableAccessDao extends JdbcDaoSupport {
 		return protectedAccess;
 	}
 }
+
+class geTableAccess implements RowMapper<TableAccessType> {
+	@Override
+	
+	public TableAccessType mapRow(ResultSet rs, int rowNum) throws SQLException {
+		TableAccessType tableAccessType = new TableAccessType();
+		tableAccessType.setTableName(rs.getString("c_table_name"));
+		tableAccessType.setTableCd(rs.getString("c_table_cd"));
+		tableAccessType.setFullName(rs.getString("c_fullname"));
+		tableAccessType.setSynonymCd(rs.getString("c_synonym_cd"));
+		tableAccessType.setVisualAttributes(rs.getString("c_visualattributes"));
+		tableAccessType.setDimCode(rs.getString("c_dimcode"));
+		return tableAccessType;
+	}
+};
