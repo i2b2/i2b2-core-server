@@ -568,9 +568,13 @@ public class PMDbDao extends JdbcDaoSupport {
 
 		if (caller == null)
 		{
-			sql =  "select * from pm_user_data where user_id = ?  "+  (password!=null?"    and password = ? ":"");
+			//sql =  "select * from pm_user_data where user_id = ?  "+  (password!=null?"    and password = ? ":"");
+			
+			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
+					+ " on a.user_id = o.user_id and o.user_role_cd =  'ADMIN' where  a.user_id = ? " +  (password != null ? " and password = ? ":"");
+			
 			if (ignoreDeleted)
-				sql += " and status_cd<>'D'";
+				sql += " and a.status_cd<>'D'";
 
 			try {
 				if (password == null) 
@@ -652,7 +656,10 @@ public class PMDbDao extends JdbcDaoSupport {
 
 		if ((validateRole(caller, "admin", null)) || (validateRole(caller, "admin", null)))
 		{
-			sql =  "select * from pm_user_data where status_cd<>'D'";
+			//sql =  "select * from pm_user_data where status_cd<>'D'";
+			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
+					+ " on a.user_id = o.user_id and o.user_role_cd =  'ADMIN' where  a.status_cd<>'D'";
+
 			queryResult = jt.query(sql,  GetUser(false));
 		}
 
@@ -896,8 +903,10 @@ public class PMDbDao extends JdbcDaoSupport {
 				}
 
 
-				sql =  "select * from pm_user_data where user_id = ?  and password = ?";
-
+				//sql =  "select * from pm_user_data where user_id = ?  and password = ?";
+				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
+						+ " on a.user_id = o.user_id and o.user_role_cd =  'ADMIN' where  a.user_id = ? and password = ?";
+		
 				List<UserType> queryResult2 = jt.query(sql,  GetUser(true), caller, hash);
 
 				it = queryResult2.iterator();
@@ -2819,10 +2828,15 @@ class getUser implements RowMapper<UserType> {
 		userData.setUserName(rs.getString("user_id"));
 		try {
 			//TODO MM fix admin
-//			userData.setIsAdmin(validateRole(userData.getUserName(), "ADMIN",null));
+			String isAdmin = rs.getString("user_role_cd");
+			if ((isAdmin != null && isAdmin.equalsIgnoreCase("ADMIN")))
+			userData.setIsAdmin(true);
+			else
+				userData.setIsAdmin(false);
+				
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		if (includePassword) {
 			PasswordType pass = new PasswordType();
@@ -2850,333 +2864,3 @@ class getUserLoginAttempt implements RowMapper<UserLoginType> {
 
 
 
-
-/* ORIG
-	private ParameterizedRowMapper getEnvironmentParams() {
-		ParameterizedRowMapper<HiveParamData> map = new ParameterizedRowMapper<HiveParamData>() {
-			public HiveParamData mapRow(ResultSet rs, int rowNum) throws SQLException {
-				HiveParamData eData = new HiveParamData();
-				eData.setDomain(rs.getString("domain_id"));
-				eData.setName(rs.getString("param_name_cd"));
-				eData.setValue(rs.getString("value"));
-
-				return eData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getProject() {
-		ParameterizedRowMapper<ProjectType> map = new ParameterizedRowMapper<ProjectType>() {
-			public ProjectType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				ProjectType rData = new ProjectType();
-				DTOFactory factory = new DTOFactory();
-				rData.setKey(rs.getString("project_key"));
-				rData.setName(rs.getString("project_name"));
-				rData.setPath(rs.getString("project_path"));
-				rData.setDescription(rs.getString("project_description"));
-				rData.setId(rs.getString("project_id"));
-				rData.setWiki(rs.getString("project_wiki"));
-				return rData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getCell() {
-		ParameterizedRowMapper<CellDataType> map = new ParameterizedRowMapper<CellDataType>() {
-			public CellDataType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				CellDataType rData = new CellDataType();
-				DTOFactory factory = new DTOFactory();
-				rData.setId(rs.getString("cell_id"));
-				rData.setName(rs.getString("name"));
-				rData.setProjectPath(rs.getString("project_path"));
-				rData.setCanOverride(rs.getBoolean("can_override"));
-				rData.setMethod(rs.getString("method_cd"));
-				rData.setUrl(rs.getString("url"));
-				return rData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getProjectRequest() {
-		ParameterizedRowMapper<ProjectRequestType> map = new ParameterizedRowMapper<ProjectRequestType>() {
-			public ProjectRequestType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				ProjectRequestType rData = new ProjectRequestType();
-				DTOFactory factory = new DTOFactory();
-				rData.setId(Integer.toString(rs.getInt("id")));
-				rData.setProjectId(rs.getString("project_id"));
-				rData.setTitle(rs.getString("title"));
-				rData.setSubmitChar(rs.getString("submit_char"));
-				Date date = rs.getDate("entry_date");
-
-				if (date == null)
-					rData.setEntryDate(null);
-				else 
-					rData.setEntryDate(long2Gregorian(date.getTime())); 
-
-				rData.setRequestXml(rs.getString("request_xml"));
-
-				//rData.setRequestXml(rs.getClob("request_xml"));
-				return rData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getApproval() {
-		ParameterizedRowMapper<ApprovalType> map = new ParameterizedRowMapper<ApprovalType>() {
-			public ApprovalType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				ApprovalType rData = new ApprovalType();
-				DTOFactory factory = new DTOFactory();
-				rData.setId(rs.getString("approval_id"));
-				rData.setName(rs.getString("approval_name"));
-				rData.setDescription(rs.getString("approval_description"));
-				rData.setObjectCd(rs.getString("object_cd"));
-				Date date = rs.getDate("approval_activation_date");
-
-				if (date == null)
-					rData.setActivationDate(null);
-				else 
-					rData.setActivationDate(long2Gregorian(date.getTime())); 
-
-				date = rs.getDate("approval_expiration_date");
-				if (date == null)
-					rData.setExpirationDate(null);
-				else 
-					rData.setExpirationDate(long2Gregorian(date.getTime())); 
-
-
-				return rData;
-			} 
-		};
-		return map;
-	}
-	private ParameterizedRowMapper getParam() {
-		ParameterizedRowMapper<ParamType> map = new ParameterizedRowMapper<ParamType>() {
-			public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				ParamType eData = new ParamType();
-				log.debug("setting name");
-				eData.setName(rs.getString("param_name_cd"));
-				eData.setValue(rs.getString("value"));
-				eData.setId(rs.getInt("id"));
-				eData.setDatatype(rs.getString("datatype_cd"));
-				return eData;
-			} 
-		};
-		return map;
-	}
-
-	public static XMLGregorianCalendar long2Gregorian(long date) {
-		DatatypeFactory dataTypeFactory;
-		try {
-			dataTypeFactory = DatatypeFactory.newInstance();
-		} catch (DatatypeConfigurationException e) {
-			throw new RuntimeException(e);
-		}
-		GregorianCalendar gc = new GregorianCalendar();
-		gc.setTimeInMillis(date);
-		return dataTypeFactory.newXMLGregorianCalendar(gc);
-	}
-
-	private ParameterizedRowMapper getGlobal() {
-		ParameterizedRowMapper<GlobalDataType> map = new ParameterizedRowMapper<GlobalDataType>() {
-			public GlobalDataType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				DTOFactory factory = new DTOFactory();
-
-				GlobalDataType eData = new GlobalDataType();
-
-				log.debug("setting name");
-				ParamType param = new ParamType();
-				param.setId(rs.getInt("id"));
-				param.setName(rs.getString("param_name_cd"));
-				param.setValue(rs.getString("value"));
-				param.setDatatype(rs.getString("datatype_cd"));
-				eData.getParam().add(param);
-				eData.setProjectPath(rs.getString("project_path"));
-				eData.setCanOverride(rs.getBoolean("can_override"));
-				return eData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getUserParams() {
-		ParameterizedRowMapper<UserParamData> map = new ParameterizedRowMapper<UserParamData>() {
-			public UserParamData mapRow(ResultSet rs, int rowNum) throws SQLException {
-				UserParamData eData = new UserParamData();
-				eData.setId(rs.getInt("id"));
-				eData.setDatatype(rs.getString("datatype_cd"));
-				eData.setUser(rs.getString("user_id"));
-				eData.setName(rs.getString("param_name_cd"));
-				eData.setValue(rs.getString("value"));
-				log.debug("Found a user/param: " + rs.getString("user_id") + ":" + rs.getString("param_name_cd"));
-				return eData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getProjectUserParams() {
-		ParameterizedRowMapper<ProjectUserParamData> map = new ParameterizedRowMapper<ProjectUserParamData>() {
-			public ProjectUserParamData mapRow(ResultSet rs, int rowNum) throws SQLException {
-				ProjectUserParamData eData = new ProjectUserParamData();
-				eData.setProject(rs.getString("project_path"));
-				eData.setUser(rs.getString("user_id"));
-				eData.setName(rs.getString("param_name"));
-				eData.setValue(rs.getString("value"));
-
-				return eData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getProjectParams() {
-		ParameterizedRowMapper<ParamType> map = new ParameterizedRowMapper<ParamType>() {
-			public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				ParamType eData = new ParamType();
-				//eData.setProject(rs.getString("project_path"));
-				eData.setName(rs.getString("param_name_cd"));
-				eData.setValue(rs.getString("value"));
-
-				return eData;
-			} 
-		};
-		return map;
-	}
-
-
-	private ParameterizedRowMapper getSession() {
-		ParameterizedRowMapper<SessionData> map = new ParameterizedRowMapper<SessionData>() {
-			public SessionData mapRow(ResultSet rs, int rowNum) throws SQLException {
-				SessionData rData = new SessionData();
-				//				DTOFactory factory = new DTOFactory();
-
-				rData.setSessionID(rs.getString("session_id"));
-
-				Date date = rs.getTimestamp("expired_date");
-				if (date == null)
-					rData.setExpiredDate(null);
-				else 
-					rData.setExpiredDate(date); 
-
-				date = rs.getTimestamp("entry_date");
-				if (date == null)
-					rData.setIssuedDate(null);
-				else 
-					rData.setIssuedDate(date); 
-
-
-				return rData;
-			} 
-		};
-		return map;
-	}
-
-
-	private ParameterizedRowMapper getUserLogin() {
-		ParameterizedRowMapper<SessionData> map = new ParameterizedRowMapper<SessionData>() {
-			public SessionData mapRow(ResultSet rs, int rowNum) throws SQLException {
-				SessionData rData = new SessionData();
-				//				DTOFactory factory = new DTOFactory();
-
-				rData.setSessionID(rs.getString("session_id"));
-
-				Date date = rs.getTimestamp("expired_date");
-				if (date == null)
-					rData.setExpiredDate(null);
-				else 
-					rData.setExpiredDate(date); 
-
-				date = rs.getTimestamp("entry_date");
-				if (date == null)
-					rData.setIssuedDate(null);
-				else 
-					rData.setIssuedDate(date); 
-
-
-				return rData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getRole() {
-		ParameterizedRowMapper<RoleType> map = new ParameterizedRowMapper<RoleType>() {
-			public RoleType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				RoleType rData = new RoleType();
-				rData.setProjectId(rs.getString("project_id"));
-				rData.setUserName(rs.getString("user_id"));
-				rData.setRole(rs.getString("user_role_cd"));
-
-				return rData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getEnvironment() {
-		ParameterizedRowMapper<ConfigureType> map = new ParameterizedRowMapper<ConfigureType>() {
-			public ConfigureType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				DTOFactory factory = new DTOFactory();
-				ConfigureType eData = new ConfigureType();
-				eData.setActive(rs.getBoolean("active"));
-				eData.setDomainId(rs.getString("domain_id"));
-				eData.setDomainName(rs.getString("domain_name"));
-				eData.setHelpURL(rs.getString("helpurl"));
-				eData.setEnvironment(rs.getString("environment_cd"));
-
-				return eData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getUser(final boolean includePassword) {
-		ParameterizedRowMapper<UserType> map = new ParameterizedRowMapper<UserType>() {
-			public UserType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				DTOFactory factory = new DTOFactory();
-				UserType userData = new UserType();
-				userData.setFullName(rs.getString("full_name"));
-				userData.setUserName(rs.getString("user_id"));
-				try {
-					userData.setIsAdmin(validateRole(userData.getUserName(), "ADMIN",null));
-				} catch (I2B2DAOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (includePassword) {
-					PasswordType pass = new PasswordType();
-					pass.setValue(rs.getString("password"));
-					userData.setPassword(pass);
-				}
-				userData.setEmail(rs.getString("email"));
-
-				return userData;
-			} 
-		};
-		return map;
-	}
-
-	private ParameterizedRowMapper getUserLoginAttempt() {
-		ParameterizedRowMapper<UserLoginType> map = new ParameterizedRowMapper<UserLoginType>() {
-			public UserLoginType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				DTOFactory factory = new DTOFactory();
-				UserLoginType userData = new UserLoginType();
-				userData.setAttempt(rs.getString("attenpt_cd"));
-				userData.setUserName(rs.getString("user_id"));
-
-				return userData;
-			} 
-		};
-		return map;
-	}
-
-
-
-
-}
-
- */
