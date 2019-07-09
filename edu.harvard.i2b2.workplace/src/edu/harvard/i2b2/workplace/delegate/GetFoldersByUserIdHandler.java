@@ -68,7 +68,8 @@ public class GetFoldersByUserIdHandler extends RequestHandler {
 		try {
 			response = foldersDao.findRootFoldersByUser(getReturnType, userId, projectInfo, this.getDbInfo());
 		} catch (Exception e1) {
-			responseMessageType = MessageFactory.doBuildErrorResponse(getFoldersMsg.getMessageHeaderType(), "Database error");
+			e1.printStackTrace();
+			responseMessageType = MessageFactory.doBuildErrorResponse(getFoldersMsg.getMessageHeaderType(), "Database error in GetFoldersByUserIdHandler");
 		}
 		
 		// no db error, but response is empty

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Date;
 import javax.sql.DataSource;
 
@@ -138,10 +139,10 @@ public class FolderDao extends JdbcDaoSupport {
 
 		//ParameterizedRowMapper<FolderType> mapper = getMapper(returnType.getType(), false, null, dbInfo.getDb_serverType());
 
-		GetFolderMapper mapper = getMapper(returnType.getType(), false, null, dbInfo.getDb_serverType());
+		GetFolderMapper mapper = GetTableMapper(returnType.getType(), false, null, dbInfo.getDb_serverType());
 
 
-		List queryResult = null;		
+		List<FolderType> queryResult = null;		
 		if (!protectedAccess){
 			String tablesSql = "select distinct(c_table_cd), " + parameters + " from " +  metadataSchema +  "workplace_access where c_protected_access = ? and LOWER(c_group_id) = ? order by c_name"; //c_hierarchy";
 
@@ -207,9 +208,9 @@ public class FolderDao extends JdbcDaoSupport {
 		}
 
 
-		GetFolderMapper mapper  = getMapper(returnType.getType(), false, null, dbInfo.getDb_serverType());		
+		GetFolderMapper mapper  = GetTableMapper(returnType.getType(), false, null, dbInfo.getDb_serverType());		
 
-		List queryResult = null;		
+		List<FolderType> queryResult = null;		
 		if (!protectedAccess){
 			String tablesSql = "select distinct(c_table_cd), " + parameters + " from " +  metadataSchema +  "workplace_access where (c_share_id = 'Y' and LOWER(c_group_id) = ?) or (c_protected_access = ? and LOWER(c_user_id) = ? and LOWER(c_group_id) = ?) order by c_name"; //c_hierarchy";
 
@@ -218,16 +219,18 @@ public class FolderDao extends JdbcDaoSupport {
 				queryResult = jt.query(tablesSql, mapper, projectInfo.getId().toLowerCase(), "N",userId.toLowerCase(), projectInfo.getId().toLowerCase());
 			} catch (DataAccessException e) {
 				log.error(e.getMessage());
-				throw new I2B2DAOException("Database error");
+				throw new I2B2DAOException("Database error findRootFoldersByUser");
 			}
 		}
 		else{
 			String tablesSql = "select distinct(c_table_cd), " + parameters + " from " +  metadataSchema +  "workplace_access where (c_share_id = 'Y' and LOWER(c_group_id) = ?) or (LOWER(c_user_id) = ? and LOWER(c_group_id) = ?) order by c_name"; //c_hierarchy";
 			try {
-				queryResult = jt.query(tablesSql, mapper, projectInfo.getId().toLowerCase(), userId.toLowerCase(), projectInfo.getId().toLowerCase());
+				queryResult =  jt.query(tablesSql, 
+						GetTableMapper(returnType.getType(), false, null, dbInfo.getDb_serverType())
+						, projectInfo.getId().toLowerCase(), userId.toLowerCase(), projectInfo.getId().toLowerCase());
 			} catch (DataAccessException e) {
 				log.error(e.getMessage());
-				throw new I2B2DAOException("Database Error");
+				throw new I2B2DAOException("Database Error findRootFoldersByUser 2");
 			}
 		}
 		/* 
@@ -275,7 +278,7 @@ public class FolderDao extends JdbcDaoSupport {
 
 		String map = jt.queryForObject(entriesSql,String.class);
 		 */
-		List queryResult = null;
+		List<String> queryResult = null;
 		try {
 			//queryResult = jt.query(entriesSql, map, userId.toLowerCase(), projectInfo.getId().toLowerCase());
 			queryResult = jt.queryForList(entriesSql, String.class, userId.toLowerCase(), projectInfo.getId().toLowerCase());
@@ -283,7 +286,7 @@ public class FolderDao extends JdbcDaoSupport {
 		} catch (DataAccessException e1) {
 			// TODO Auto-generated catch block
 			log.error(e1.getMessage());
-			throw new I2B2DAOException("Database Error");
+			throw new I2B2DAOException("Database Error check_addRootNode");
 		}
 		//		log.info("check for root node size = " + queryResult.size());
 		if(queryResult.size() > 0)
@@ -321,8 +324,8 @@ public class FolderDao extends JdbcDaoSupport {
 			}
 		};
 		 */
-		queryResult = jt.queryForList(tableSql, new getFolderTableMapper());
-		String tableInfo = (String)queryResult.get(0);
+		String tableInfo = jt.queryForObject(tableSql, new getFolderTableMapper());
+		//String tableInfo = (String)queryResult.get(0);
 
 		//extract table code and table name
 		String tableCd = StringUtil.getTableCd(tableInfo);
@@ -340,7 +343,7 @@ public class FolderDao extends JdbcDaoSupport {
 		} catch (DataAccessException e) {
 			log.error("Dao addChild failed");
 			log.error(e.getMessage());
-			throw new I2B2DAOException("Data access error " , e);
+			throw new I2B2DAOException("Data access error check_addRootNode" , e);
 		}
 
 		//		log.info(addSql +  " " + numRowsAdded);
@@ -388,7 +391,7 @@ public class FolderDao extends JdbcDaoSupport {
 				//	queryResult =XMLUtil.convertDOMElementToString((Element) masterInstanceResultResponseType.getQueryMaster().get(0).getRequestXml().getContent().get(0)); ;  //respoonseType.getQueryResultInstance();
 			} catch (Exception e) {
 				log.error(e.getMessage());
-				throw new I2B2DAOException("Database Error");
+				throw new I2B2DAOException("Database Error exportNode");
 			}
 			//log.debug("result size = " + queryResult.size());
 			// Get the analysis breakdowns
@@ -405,7 +408,7 @@ public class FolderDao extends JdbcDaoSupport {
 				//queryResult = jt.query(sql, mapper, parentIndex );
 			} catch (Exception e) {
 				log.error(e.getMessage());
-				throw new I2B2DAOException("Database Error");
+				throw new I2B2DAOException("Database Error exportNode2");
 			}
 			//log.debug("result size = " + queryResult.size());
 		}
@@ -468,7 +471,7 @@ public class FolderDao extends JdbcDaoSupport {
 				tableName = jt.queryForObject(tableSql,String.class, tableCd, "N");	 
 			} catch (DataAccessException e) {
 				log.error(e.getMessage());
-				throw new I2B2DAOException("Database Error");
+				throw new I2B2DAOException("Database Error findChildrenByParent" );
 			}
 		}else {
 			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "workplace_access where c_table_cd = ?";
@@ -478,7 +481,7 @@ public class FolderDao extends JdbcDaoSupport {
 
 			} catch (DataAccessException e) {
 				log.error(e.getMessage());
-				throw new I2B2DAOException("Database Error");
+				throw new I2B2DAOException("Database Error findChildrenByParent 2");
 			}
 		}
 
@@ -494,14 +497,14 @@ public class FolderDao extends JdbcDaoSupport {
 		log.debug(sql + " " + parentIndex);
 		//		log.info(type + " " + tableCd );
 
-		GetFolderMapper mapper = getMapper(type, childrenType.isBlob(), tableCd, dbInfo.getDb_serverType());
+		GetFolderMapper mapper = GetTableMapper(type, childrenType.isBlob(), tableCd, dbInfo.getDb_serverType());
 
-		List queryResult = null;
+		List<FolderType> queryResult = null;
 		try {
 			queryResult = jt.query(sql, mapper, parentIndex );
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
-			throw new I2B2DAOException("Database Error");
+			throw new I2B2DAOException("Database Error findChildrenByParent 3");
 		}
 		log.debug("result size = " + queryResult.size());
 
@@ -668,7 +671,7 @@ public class FolderDao extends JdbcDaoSupport {
 
 		 */
 		// Getting tablename where the content is saved from table 'WORKPLACE'
-		List queryResult = null;
+		List<String> queryResult = null;
 
 		String resultStr=null;
 		StringBuilder sqlToRetreiveTableNm = new StringBuilder( "select distinct c_table_cd, c_table_name from " + metadataSchema + "workplace_access where LOWER(c_user_id) = ? and LOWER(c_group_id) = ?");
@@ -676,7 +679,7 @@ public class FolderDao extends JdbcDaoSupport {
 
 			sqlToRetreiveTableNm.append(" and c_protected_access = ? ");
 			try {
-				queryResult = jt.queryForList(sqlToRetreiveTableNm.toString(), new getFolderTableMapper(), category.toLowerCase(), projectInfo.getId().toLowerCase(), "N");	
+				queryResult = jt.query(sqlToRetreiveTableNm.toString(), new getFolderTableMapper(), category.toLowerCase(), projectInfo.getId().toLowerCase(), "N");	
 				resultStr = (String)queryResult.get(0);
 			} catch (DataAccessException e) {
 				log.error(e.getMessage());
@@ -684,7 +687,7 @@ public class FolderDao extends JdbcDaoSupport {
 			}
 		}else {
 			try {
-				queryResult = jt.queryForList(sqlToRetreiveTableNm.toString(), new getFolderTableMapper(), category.toLowerCase(), projectInfo.getId().toLowerCase());	
+				queryResult = jt.query(sqlToRetreiveTableNm.toString(), new getFolderTableMapper(), category.toLowerCase(), projectInfo.getId().toLowerCase());	
 				resultStr = (String)queryResult.get(0);
 			} catch (DataAccessException e) {
 				log.error(e.getMessage());
@@ -698,7 +701,7 @@ public class FolderDao extends JdbcDaoSupport {
 		StringBuilder sql = new StringBuilder ("select " + parameters +" from " + metadataSchema+tableName  + " where LOWER(c_user_id) = ? and LOWER(c_group_id) = ? and LOWER(c_name) like ? and (c_status_cd != 'D' or c_status_cd is null) "); 
 		sql.append( hiddenStr + maxString );
 
-		GetFolderMapper mapper = getMapper(type, returnType.isBlob(), tableCd, dbInfo.getDb_serverType());
+		GetFolderMapper mapper = GetTableMapper(type, returnType.isBlob(), tableCd, dbInfo.getDb_serverType());
 
 
 		/*
@@ -712,19 +715,19 @@ public class FolderDao extends JdbcDaoSupport {
 		sql.append( " order by c_name ");
 
 		// Executing the query to find the workplace content with the given name 
-		queryResult=null;
+		List<FolderType> queryResult2;
 
 		try {
-			queryResult = jt.query(sql.toString(), mapper, category.toLowerCase(), projectInfo.getId().toLowerCase(), searchWord );
+			queryResult2 = jt.query(sql.toString(), mapper, category.toLowerCase(), projectInfo.getId().toLowerCase(), searchWord );
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			log.error("findWorkplaceByKeyword(): Database Error while accessing workplace table");
 			throw new I2B2DAOException("findWorkplaceByKeyword(): Database Error while accessing workplace table");
 		}
 
-		log.debug("result size = " + queryResult.size());
+		log.debug("result size = " + queryResult2.size());
 
-		return queryResult;
+		return queryResult2;
 	}
 
 	/**
@@ -828,7 +831,7 @@ public class FolderDao extends JdbcDaoSupport {
 
 				sql.append( hiddenStr + maxString );
 
-				GetFolderMapper mapper = getMapper(type, returnType.isBlob(), tableCd, dbInfo.getDb_serverType());
+				GetFolderMapper mapper = GetTableMapper(type, returnType.isBlob(), tableCd, dbInfo.getDb_serverType());
 
 				/*
 				 * commenting out protectedAcess code from workplace table for now
@@ -841,7 +844,7 @@ public class FolderDao extends JdbcDaoSupport {
 				sql.append( " order by c_name ");
 
 				// Executing the query to find the workplace content with the given name 
-				List workplaceResult=null;
+				List<FolderType> workplaceResult=null;
 
 				try {
 					if(managerRole){
@@ -1670,7 +1673,7 @@ public class FolderDao extends JdbcDaoSupport {
 
 	}
 
-	private GetFolderMapper getMapper(final String type, final boolean isBlob, final String tableCd, final String dbType) {
+	private GetFolderMapper GetTableMapper(final String type, final boolean isBlob, final String tableCd, final String dbType) {
 
 
 		GetFolderMapper folderMapper = new GetFolderMapper();
@@ -1725,7 +1728,8 @@ class mapToFolderXML implements RowMapper<FolderType> {
 class getFolderTableMapper implements RowMapper<String> {
 	@Override
 	public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-		return "\\\\" + rs.getString("c_table_cd") + "\\" + rs.getString("c_table_name");
+		String str =  "\\\\" + rs.getString("c_table_cd") + "\\" + rs.getString("c_table_name");
+		return str;
 	}
 
 }
