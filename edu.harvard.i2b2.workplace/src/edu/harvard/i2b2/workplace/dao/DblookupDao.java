@@ -91,7 +91,7 @@ public class DblookupDao extends JdbcDaoSupport {
 		String sql = "SELECT * FROM " +  dbluTable + " WHERE" + keyOrder;		
 		List<DblookupType> queryResult = null;
 		try {
-			queryResult = (List<DblookupType>) jt.queryForObject(sql, new getMapper(),  domainId, userId);
+			queryResult = jt.query(sql, new getMapper(), domainId, userId);
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			throw e;
@@ -104,7 +104,7 @@ public class DblookupDao extends JdbcDaoSupport {
 		String sql = "SELECT * FROM " +  dbluTable + " WHERE c_project_path=? AND " + keyOrder;		
 		List<DblookupType> queryResult = null;
 		try {
-			queryResult = (List<DblookupType>) jt.queryForObject(sql, new getMapper(), slashEnd(dblookupType.getProjectPath()), dblookupType.getDomainId(), dblookupType.getOwnerId());
+			queryResult = jt.query(sql, new getMapper(), slashEnd(dblookupType.getProjectPath()), dblookupType.getDomainId(), dblookupType.getOwnerId());
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
@@ -120,17 +120,17 @@ public class DblookupDao extends JdbcDaoSupport {
 		try {
 			if (s.equalsIgnoreCase("domain_id")) {
 				sql += keyOrder;
-				queryResult = (List<DblookupType>) jt.queryForObject(sql, new getMapper(), value, userId);
+				queryResult = jt.query(sql, new getMapper(), value, userId);
 			} else if (s.equalsIgnoreCase("owner_id")) {
 				sql += keyOrder;
-				queryResult = (List<DblookupType>) jt.queryForObject(sql, new getMapper(), domainId, value);
+				queryResult = jt.query(sql, new getMapper(), domainId, value);
 			} else {
 				sql += "c_" + column + "=? AND " + keyOrder;
 				if (s.equalsIgnoreCase("project_path")) {
 					v = slashEnd(value);
 				} else {
 				}
-				queryResult = (List<DblookupType>) jt.queryForObject(sql, new getMapper(), v, domainId, userId);
+				queryResult = jt.query(sql, new getMapper(), v, domainId, userId);
 			}
 			log.info(sql + "(c_" + column + "=" + v + ", domainId=" + domainId + ", userId=" + userId + ") -- # of entries found: " + queryResult.size());
 		} catch (DataAccessException e) {
@@ -210,7 +210,6 @@ public class DblookupDao extends JdbcDaoSupport {
 }
 
 
-
 class getMapper implements RowMapper<DblookupType> {
         @Override
 		public DblookupType mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -230,4 +229,3 @@ class getMapper implements RowMapper<DblookupType> {
             return dblu;
         }
  }
-
