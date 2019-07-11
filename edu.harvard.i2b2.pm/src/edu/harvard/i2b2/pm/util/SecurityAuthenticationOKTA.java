@@ -8,17 +8,13 @@
  ******************************************************************************/
 package edu.harvard.i2b2.pm.util;
 
-import java.time.Duration;
 import java.util.Hashtable;
 
-import com.okta.authn.sdk.AuthenticationStateHandler;
 import com.okta.authn.sdk.AuthenticationStateHandlerAdapter;
 import com.okta.authn.sdk.client.AuthenticationClient;
 import com.okta.authn.sdk.client.AuthenticationClients;
 import com.okta.authn.sdk.resource.AuthenticationResponse;
-import com.okta.jwt.AccessTokenVerifier;
-import com.okta.jwt.Jwt;
-import com.okta.jwt.JwtVerifiers;
+
 
 public class SecurityAuthenticationOKTA implements SecurityAuthentication {
 
@@ -35,7 +31,6 @@ public class SecurityAuthenticationOKTA implements SecurityAuthentication {
 		
 		
 		String relayState = "/application/specific";
-		//AuthenticationStateHandler stateHandler = new ExampleAuthenticationStateHandler();
 		
 		char[] c_password = password.toCharArray(); 
 		
