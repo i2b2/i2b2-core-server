@@ -430,7 +430,7 @@ public class QueryProcessorUtil {
 			} catch (Exception e) {
 				log.error(e.getMessage());
 				e.printStackTrace();
-				throw new I2B2DAOException("Database error");
+				throw new I2B2DAOException("Database error reading hive_cell_params");
 			}
 
 		}
