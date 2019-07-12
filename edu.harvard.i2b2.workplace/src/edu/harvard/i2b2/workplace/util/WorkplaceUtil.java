@@ -31,8 +31,8 @@ import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -205,24 +205,6 @@ public class WorkplaceUtil {
     //---------------------
 
 
-	private ParameterizedRowMapper getHiveCellParam() {
-		ParameterizedRowMapper<ParamType> map = new ParameterizedRowMapper<ParamType>() {
-			public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				DTOFactory factory = new DTOFactory();
-
-
-
-				log.debug("setting name");
-				ParamType param = new ParamType();
-				param.setId(rs.getInt("id"));
-				param.setName(rs.getString("param_name_cd"));
-				param.setValue(rs.getString("value"));
-				param.setDatatype(rs.getString("datatype_cd"));
-				return param;
-			} 
-		};
-		return map;
-	}
     /**
      * Load application property file into memory
      */
@@ -239,7 +221,7 @@ public class WorkplaceUtil {
 			try {
 				DataSource   ds = this.getDataSource("java:/WorkplaceBootStrapDS");
 
-				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
+				JdbcTemplate jt = new JdbcTemplate(ds);
 				Connection conn = ds.getConnection();
 				
 				String metadataSchema = conn.getSchema();
@@ -247,7 +229,7 @@ public class WorkplaceUtil {
 				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'WORK'";
 
 				log.debug("Start query");
-				appProperties = jt.query(sql, getHiveCellParam());
+				appProperties =  jt.query(sql, new getHiveCellParam());
 				log.debug("End query");
 
 
@@ -343,4 +325,18 @@ public class WorkplaceUtil {
         return propertyValue;
         */
     }
+}
+
+
+class getHiveCellParam implements RowMapper<ParamType> {
+	@Override
+	public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+			ParamType param = new ParamType();
+			param.setId(rs.getInt("id"));
+			param.setName(rs.getString("param_name_cd"));
+			param.setValue(rs.getString("value"));
+			param.setDatatype(rs.getString("datatype_cd"));
+			return param;
+		} 
 }

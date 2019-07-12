@@ -164,11 +164,7 @@ public class ServicesHandler extends RequestHandler {
 			}
 
 			// Handle all internal classnames.  Also for backward compatibility need to call it NTLM.
-			String classname = "";
-			if (param.get("authentication_method").equals("NTLM"))
-				classname = "edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM";
-			else if (param.get("authentication_method").equals("LDAP"))
-				classname = "edu.harvard.i2b2.pm.util.SecurityAuthenticationLDAP";
+			String classname = "edu.harvard.i2b2.pm.util.SecurityAuthentication" + param.get("authentication_method");
 
 			ClassLoader classLoader = ServicesHandler.class.getClassLoader();
 

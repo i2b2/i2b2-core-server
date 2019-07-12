@@ -31,15 +31,15 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class DblookupDao extends JdbcDaoSupport {
 	
     private static Log log = LogFactory.getLog(DblookupDao.class);
     private static DataSource ds = null;
-    private static SimpleJdbcTemplate jt;
+    private static JdbcTemplate jt;
     private static String dbluTable;
     private static String key = " LOWER(c_domain_id)=LOWER(?) AND (LOWER(c_owner_id)=LOWER(?) OR c_owner_id='@') ";
     private static String keyOrder = " LOWER(c_domain_id)=LOWER(?) AND (LOWER(c_owner_id)=LOWER(?) OR c_owner_id='@') ORDER BY c_project_path ";
@@ -62,7 +62,7 @@ public class DblookupDao extends JdbcDaoSupport {
 		} catch (I2B2Exception e2) {
 			log.error(e2.getMessage());;
 		} 
-		jt = new SimpleJdbcTemplate(ds);
+		jt = new JdbcTemplate(ds);
 		String metadataSchema = "";
 		try {
 			metadataSchema = OntologyUtil.getInstance().getMetaDataSchemaName();
@@ -82,33 +82,13 @@ public class DblookupDao extends JdbcDaoSupport {
 		return sb.toString();
 	}
 	
-	public ParameterizedRowMapper<DblookupType> getMapper() throws DataAccessException, I2B2DAOException{	
-		ParameterizedRowMapper<DblookupType> mapper = new ParameterizedRowMapper<DblookupType>() {
-	        public DblookupType mapRow(ResultSet rs, int rowNum) throws SQLException {
-	        	DblookupType dblu = new DblookupType();
-	        	dblu.setDomainId(rs.getString("c_domain_id"));
-	        	dblu.setProjectPath(rs.getString("c_project_path"));
-	        	dblu.setOwnerId(rs.getString("c_owner_id"));
-	        	dblu.setDbFullschema(rs.getString("c_db_fullschema"));
-	        	dblu.setDbDatasource(rs.getString("c_db_datasource"));
-	        	dblu.setDbServertype(rs.getString("c_db_servertype"));
-	        	dblu.setDbNicename(rs.getString("c_db_nicename"));
-	        	dblu.setDbTooltip(rs.getString("c_db_tooltip"));
-	        	dblu.setComment(rs.getString("c_comment"));
-	        	dblu.setEntryDate(rs.getString("c_entry_date"));
-	        	dblu.setChangeDate(rs.getString("c_change_date"));
-	        	dblu.setStatusCd(rs.getString("c_status_cd"));
-	            return dblu;
-	        }
-	    };
-	    return mapper;
-	}
+
 
 	public List<DblookupType> findDblookups() throws DataAccessException, I2B2DAOException{	
 		String sql = "SELECT * FROM " +  dbluTable + " WHERE" + keyOrder;		
 		List<DblookupType> queryResult = null;
 		try {
-			queryResult = jt.query(sql, getMapper(), domainId, userId);
+			queryResult = jt.query(sql, new getMapper(), domainId, userId);
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			throw e;
@@ -121,7 +101,7 @@ public class DblookupDao extends JdbcDaoSupport {
 		String sql = "SELECT * FROM " +  dbluTable + " WHERE c_project_path=? AND " + keyOrder;		
 		List<DblookupType> queryResult = null;
 		try {
-			queryResult = jt.query(sql, getMapper(), slashEnd(dblookupType.getProjectPath()), dblookupType.getDomainId(), dblookupType.getOwnerId());
+			queryResult = jt.query(sql, new getMapper(), slashEnd(dblookupType.getProjectPath()), dblookupType.getDomainId(), dblookupType.getOwnerId());
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
@@ -137,17 +117,17 @@ public class DblookupDao extends JdbcDaoSupport {
 		try {
 			if (s.equalsIgnoreCase("domain_id")) {
 				sql += keyOrder;
-				queryResult = jt.query(sql, getMapper(), value, userId);
+				queryResult = jt.query(sql, new getMapper(), value, userId);
 			} else if (s.equalsIgnoreCase("owner_id")) {
 				sql += keyOrder;
-				queryResult = jt.query(sql, getMapper(), domainId, value);
+				queryResult = jt.query(sql, new getMapper(), domainId, value);
 			} else {
 				sql += "c_" + column + "=? AND " + keyOrder;
 				if (s.equalsIgnoreCase("project_path")) {
 					v = slashEnd(value);
 				} else {
 				}
-				queryResult = jt.query(sql, getMapper(), v, domainId, userId);
+				queryResult = jt.query(sql, new getMapper(), v, domainId, userId);
 			}
 			log.info(sql + "(c_" + column + "=" + v + ", domainId=" + domainId + ", userId=" + userId + ") -- # of entries found: " + queryResult.size());
 		} catch (DataAccessException e) {
@@ -225,3 +205,26 @@ public class DblookupDao extends JdbcDaoSupport {
 	}
 
 }
+
+
+
+class getMapper implements RowMapper<DblookupType> {
+        @Override
+		public DblookupType mapRow(ResultSet rs, int rowNum) throws SQLException {
+        	DblookupType dblu = new DblookupType();
+        	dblu.setDomainId(rs.getString("c_domain_id"));
+        	dblu.setProjectPath(rs.getString("c_project_path"));
+        	dblu.setOwnerId(rs.getString("c_owner_id"));
+        	dblu.setDbFullschema(rs.getString("c_db_fullschema"));
+        	dblu.setDbDatasource(rs.getString("c_db_datasource"));
+        	dblu.setDbServertype(rs.getString("c_db_servertype"));
+        	dblu.setDbNicename(rs.getString("c_db_nicename"));
+        	dblu.setDbTooltip(rs.getString("c_db_tooltip"));
+        	dblu.setComment(rs.getString("c_comment"));
+        	dblu.setEntryDate(rs.getString("c_entry_date"));
+        	dblu.setChangeDate(rs.getString("c_change_date"));
+        	dblu.setStatusCd(rs.getString("c_status_cd"));
+            return dblu;
+        }
+ }
+

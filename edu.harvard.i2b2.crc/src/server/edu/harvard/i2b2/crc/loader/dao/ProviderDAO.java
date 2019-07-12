@@ -46,9 +46,9 @@ public class ProviderDAO extends CRCLoaderDAO implements IProviderDAO {
 	@Override
 	public int getRecordCountByUploadId(int uploadId) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		int insertCount = jdbcTemplate.queryForInt("select count(1) from "
+		int insertCount = jdbcTemplate.queryForObject("select count(1) from "
 				+ this.getDbSchemaName()
-				+ "provider_dimension where upload_id =?",
+				+ "provider_dimension where upload_id =?",Integer.class,
 				new Object[] { uploadId });
 		return insertCount;
 	}

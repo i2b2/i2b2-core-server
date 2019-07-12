@@ -54,8 +54,8 @@ public class ObservationFactDAO extends CRCLoaderDAO implements
 	@Override
 	public int getRecordCountByUploadId(int uploadId) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		int insertCount = jdbcTemplate.queryForInt("select count(1) from "
-				+ getDbSchemaName() + "observation_fact where upload_id =?",
+		int insertCount = jdbcTemplate.queryForObject("select count(1) from "
+				+ getDbSchemaName() + "observation_fact where upload_id =?",Integer.class,
 				new Object[] { uploadId });
 		return insertCount;
 	}

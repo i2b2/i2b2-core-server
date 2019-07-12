@@ -25,6 +25,9 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+//import org.chip.ihl.surveymanager.redcap.RedcapResult;
+//import org.chip.ihl.surveymanager.service.RedcapService;
+//import org.chip.ihl.surveymanager.service.RedcapWrapper;
 import org.springframework.util.Assert;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -81,8 +84,12 @@ public class QueryService {
 	private final String GETNAMEINFO_REQUEST = "GETNAMEINFO_REQUEST";
 
 	/** get name info request constant used only inside this class **/
+	private final String REDCAP_REQUEST = "REDCAP_REQUEST";
+
+	/** get name info request constant used only inside this class **/
 	private final String QTBREAKDOWN_REQUEST = "QTBREAKDOWN_REQUEST";
 
+	private static final String EAV_RECORD_TYPE = "eav";
 	/**
 	 * Webservice function to handle setfinder request
 	 * 
@@ -122,7 +129,57 @@ public class QueryService {
 		log.debug("Inside pdo request " + omElement);
 		return handleRequest(PDO_REQUEST, omElement);
 	}
+
+	/**
+	 * Webservice function to handle find request
+	 * 
+	 * @param omElement
+	 *            request message wrapped in OMElement
+	 * @return response message in wrapped inside OMElement
 	
+	public void redcapPush(
+			String record,
+			String recordType,
+			//@RequestParam(value = "token", required = true) String projectToken,
+			String redcap_event_name,
+			String redcap_url,
+			String instrument) {
+
+		RedcapService redcapService = new RedcapWrapper();
+		log.debug("Inside getNameInfo request " );
+
+		if (recordType == null || recordType.isEmpty()) 
+			recordType = EAV_RECORD_TYPE;
+
+		RedcapResult redcapResult = redcapService.pullRecordRequest(redcap_url, recordType, record, instrument, redcap_event_name);
+
+	}
+ */
+	/*
+	public OMElement redcapPush(OMElement omElement) {
+		Assert.notNull(omElement, "redcapPush  OMElement must not be null");
+		log.debug("Inside getNameInfo request " + omElement);
+		return handleRequest(REDCAP_REQUEST, omElement);
+	}
+	 */
+
+	//   @RequestMapping(value = TRIGGER_BASE_REQUEST_URI + "/pull", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+	//   @ResponseStatus(value = HttpStatus.OK)
+	//	private static final String EAV_RECORD_TYPE = "eav";
+	/*  
+	  public void pullRedcapRecords(
+	            @RequestParam(value="record", required = false) String recordId,
+	            @RequestParam(value = "recordType", defaultValue = EAV_RECORD_TYPE) String recordType,
+	            //@RequestParam(value = "token", required = true) String projectToken,
+	            @RequestParam(value = "redcap_event_name", required = false) String eventName,
+	            @RequestParam(value = "redcap_url", required = true) String redcapBaseUrl,
+	            @RequestParam(value = "instrument", required = false) String surveyForm) {
+
+
+
+	  }
+	 */
+
 	/**
 	 * Webservice function to handle find request
 	 * 
@@ -164,7 +221,7 @@ public class QueryService {
 		Assert.notNull(request,
 				"bulk load request OMElement must not be null");
 		log.debug("Inside bulk load request " + request);
-		
+
 		//LoaderQueryReqDel handles permissions...
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
 		OMElement responseElement = null;
@@ -183,12 +240,12 @@ public class QueryService {
 		return responseElement;
 
 	}	
-	
+
 	public OMElement getLoadDataStatusRequest(OMElement request) {
 		Assert.notNull(request,
 				"get load Data status request OMElement must not be null");
 		log.debug("Inside load status request " + request);
-		
+
 		//LoaderQueryReqDel handles permissions...
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
 		OMElement responseElement = null;
@@ -207,66 +264,66 @@ public class QueryService {
 		return responseElement;
 
 	}	
-	
-    
-	//swc20160523 copied from edu.harvard.i2b2.im/src/edu/harvard/i2b2/im/ws/IMService.java
-    private OMElement execute(DbLookupReqHandler handler, long waitTime) throws I2B2Exception {
-        //do processing inside thread, so that service could send back message with timeout error.  
-    	OMElement returnElement = null;   	
-        String unknownErrorMessage = "Error message delivered from the remote server \nYou may wish to retry your last action";  
-        ExecutorRunnable er = new ExecutorRunnable();        
-        er.setDbLookupReqHandler(handler);
-        Thread t = new Thread(er);
-        String dataResponse = null;
-        log.info("waiting " + waitTime + "ms for response from remote server processing " + handler.getClass().getName());
-        synchronized (t) {
-        	t.start();
-        	try {
-        		long startTime = System.currentTimeMillis();
-        		long deltaTime = -1;
-        		while((er.isJobCompleteFlag() == false) && (deltaTime < waitTime)) {
-        			if (waitTime > 0) {
-        				t.wait(waitTime - deltaTime);
-        				deltaTime = System.currentTimeMillis() - startTime;
-        			} else {
-       					t.wait();
-       				}
-       			}
-            	dataResponse = er.getOutputString();
-           		if (dataResponse == null) {
-           			ResponseMessageType responseMsgType = null;
-             		if (!er.isJobCompleteFlag()) {
-            			String timeOuterror = "Remote server timed out after waittime of " + waitTime + "ms.";            				
-            			log.error(timeOuterror);
-            		    responseMsgType = MessageFactory.doBuildErrorResponse(null, timeOuterror);
-             		} else {
-             			if (null != er.getJobException()) {
-            			log.error("jobException: " + er.getJobException().getMessage());            		    	
-            			dataResponse = MessageFactory.convertToXMLString(responseMsgType);
-                 		} else {
-                			log.error("CRC data response is null!");
-               				log.info("CRC waited " + deltaTime + "ms for " + handler.getClass().getName());
-                 		}
-            		    log.info("waitTime is " + waitTime);
-            			responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrorMessage);
-           			   	dataResponse = MessageFactory.convertToXMLString(responseMsgType);
-            		}
-        			dataResponse = MessageFactory.convertToXMLString(responseMsgType);
-            	}
-        	} catch (InterruptedException e) {
-        		log.error(e.getMessage());
-       			throw new I2B2Exception("Thread error while running CRC job!");
-       		} finally {
-       			t.interrupt();
-       			er = null;
-       			t = null;
-       		}
-       	}
-        returnElement = MessageFactory.createResponseOMElementFromString(dataResponse);
-        return returnElement;
-    }
 
-	
+
+	//swc20160523 copied from edu.harvard.i2b2.im/src/edu/harvard/i2b2/im/ws/IMService.java
+	private OMElement execute(DbLookupReqHandler handler, long waitTime) throws I2B2Exception {
+		//do processing inside thread, so that service could send back message with timeout error.  
+		OMElement returnElement = null;   	
+		String unknownErrorMessage = "Error message delivered from the remote server \nYou may wish to retry your last action";  
+		ExecutorRunnable er = new ExecutorRunnable();        
+		er.setDbLookupReqHandler(handler);
+		Thread t = new Thread(er);
+		String dataResponse = null;
+		log.info("waiting " + waitTime + "ms for response from remote server processing " + handler.getClass().getName());
+		synchronized (t) {
+			t.start();
+			try {
+				long startTime = System.currentTimeMillis();
+				long deltaTime = -1;
+				while((er.isJobCompleteFlag() == false) && (deltaTime < waitTime)) {
+					if (waitTime > 0) {
+						t.wait(waitTime - deltaTime);
+						deltaTime = System.currentTimeMillis() - startTime;
+					} else {
+						t.wait();
+					}
+				}
+				dataResponse = er.getOutputString();
+				if (dataResponse == null) {
+					ResponseMessageType responseMsgType = null;
+					if (!er.isJobCompleteFlag()) {
+						String timeOuterror = "Remote server timed out after waittime of " + waitTime + "ms.";            				
+						log.error(timeOuterror);
+						responseMsgType = MessageFactory.doBuildErrorResponse(null, timeOuterror);
+					} else {
+						if (null != er.getJobException()) {
+							log.error("jobException: " + er.getJobException().getMessage());            		    	
+							dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+						} else {
+							log.error("CRC data response is null!");
+							log.info("CRC waited " + deltaTime + "ms for " + handler.getClass().getName());
+						}
+						log.info("waitTime is " + waitTime);
+						responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrorMessage);
+						dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+					}
+					dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+				}
+			} catch (InterruptedException e) {
+				log.error(e.getMessage());
+				throw new I2B2Exception("Thread error while running CRC job!");
+			} finally {
+				t.interrupt();
+				er = null;
+				t = null;
+			}
+		}
+		returnElement = MessageFactory.createResponseOMElementFromString(dataResponse);
+		return returnElement;
+	}
+
+
 	/** swc20160523
 	 * This function is main webservice interface to get the I2B2HIVE.CRC_DB_LOOKUP data.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -299,7 +356,7 @@ public class QueryService {
 		// do processing inside thread, so that service could send back message with timeout error.
 		return execute(new GetAllDblookupsHandler(dblookupsDataMsg), waitTime);
 	}
-	
+
 	/** swc20160523
 	 * This function is main webservice interface to get specific I2B2HIVE.CRC_DB_LOOKUP data.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -332,7 +389,7 @@ public class QueryService {
 		// do processing inside thread, so that service could send back message with timeout error.
 		return execute(new GetDblookupHandler(dblookupDataMsg), waitTime);
 	}
-	
+
 	/** swc20160523
 	 * This function is main webservice interface to add a new entry to the I2B2HIVE.CRC_DB_LOOKUP data.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -365,7 +422,7 @@ public class QueryService {
 		// do processing inside thread, so that service could send back message with timeout error.
 		return execute(new SetDblookupHandler(dblookupDataMsg), waitTime);
 	}
-	
+
 	/** swc20160523
 	 * This function is main webservice interface to delete specific I2B2HIVE.CRC_DB_LOOKUP data.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -398,9 +455,9 @@ public class QueryService {
 		// do processing inside thread, so that service could send back message with timeout error.
 		return execute(new DeleteDblookupHandler(dblookupDataMsg), waitTime);
 	}
-	
 
-	
+
+
 	//TODO removed loader   
 	// added back above (lcp5)
 	/*
@@ -434,10 +491,13 @@ public class QueryService {
 			requestHandlerDelegate = new GetNameInfoRequestDelegate();			
 		} else if (requestType.equals(QTBREAKDOWN_REQUEST)) {
 			requestHandlerDelegate = new QTBreakdownRequestDelegate();			
+	//	} else if (requestType.equals(REDCAP_REQUEST)) {
+//			requestHandlerDelegate = new RedCapRequestDelegate();			
 		}
 		OMElement returnElement = null;
 		try {
 			// call delegate's handleRequest function
+			String xmlString= request.toStringWithConsume();
 			String response = requestHandlerDelegate.handleRequest(request
 					.toString());
 			log.debug("Response in service" + response);

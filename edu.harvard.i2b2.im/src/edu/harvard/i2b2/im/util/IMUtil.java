@@ -27,8 +27,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -188,28 +188,7 @@ public class IMUtil {
   
     }
     
-    //---------------------
-    // private methods here
-    //---------------------
 
-	private ParameterizedRowMapper getHiveCellParam() {
-		ParameterizedRowMapper<ParamType> map = new ParameterizedRowMapper<ParamType>() {
-			public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				DTOFactory factory = new DTOFactory();
-
-
-
-				log.debug("setting name");
-				ParamType param = new ParamType();
-				param.setId(rs.getInt("id"));
-				param.setName(rs.getString("param_name_cd"));
-				param.setValue(rs.getString("value"));
-				param.setDatatype(rs.getString("datatype_cd"));
-				return param;
-			} 
-		};
-		return map;
-	}
     /**
      * Load application property file into memory
      */
@@ -224,7 +203,7 @@ public class IMUtil {
 			try {
 				DataSource   ds = this.getDataSource("java:/IMBootStrapDS");
 
-				SimpleJdbcTemplate jt =  new SimpleJdbcTemplate(ds);
+				JdbcTemplate jt =  new JdbcTemplate(ds);
 				Connection conn = ds.getConnection();
 				
 				String metadataSchema = conn.getSchema();
@@ -232,7 +211,7 @@ public class IMUtil {
 				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'IM'";
 
 				log.debug("Start query");
-				appProperties = jt.query(sql, getHiveCellParam());
+				appProperties = jt.query(sql, new getHiveCellParam());
 				log.debug("End query");
 
 
@@ -277,3 +256,19 @@ public class IMUtil {
 		return propertyValue;
 	}
 }
+
+
+
+class getHiveCellParam implements RowMapper<ParamType> {
+	@Override
+	public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+			ParamType param = new ParamType();
+			param.setId(rs.getInt("id"));
+			param.setName(rs.getString("param_name_cd"));
+			param.setValue(rs.getString("value"));
+			param.setDatatype(rs.getString("datatype_cd"));
+			return param;
+		} 
+}
+

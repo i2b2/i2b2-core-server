@@ -456,7 +456,7 @@ IQueryResultInstanceDao {
 				};
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.ORACLE)) {
-				resultInstanceId = jdbc.queryForInt(SEQUENCE_ORACLE);
+				resultInstanceId = jdbc.queryForObject(SEQUENCE_ORACLE, Integer.class);
 				resultInstance.setResultInstanceId(String
 						.valueOf(resultInstanceId));
 				object = new Object[] {
@@ -473,7 +473,7 @@ IQueryResultInstanceDao {
 				};
 			} else  if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.POSTGRESQL)) {
-				resultInstanceId = jdbc.queryForInt(SEQUENCE_POSTGRESQL);
+				resultInstanceId = jdbc.queryForObject(SEQUENCE_POSTGRESQL, Integer.class);
 				resultInstance.setResultInstanceId(String
 						.valueOf(resultInstanceId));
 				object = new Object[] {
@@ -494,7 +494,7 @@ IQueryResultInstanceDao {
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SQLSERVER)) {
 				int resultInstanceIdentityId = jdbc
-						.queryForInt("SELECT @@IDENTITY");
+						.queryForObject("SELECT @@IDENTITY", Integer.class);
 
 				resultInstance.setResultInstanceId(String
 						.valueOf(resultInstanceIdentityId));

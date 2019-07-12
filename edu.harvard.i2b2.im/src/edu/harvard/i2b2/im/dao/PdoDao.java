@@ -26,8 +26,8 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.w3c.dom.Element;
 
@@ -76,9 +76,8 @@ public class PdoDao  extends JdbcDaoSupport {
 
 	private GetPDOFromInputListRequestType getPDOFromInputListRequestType = null;
 
-	private 				 DTOFactory dtoFactory = new DTOFactory();
 
-	private SimpleJdbcTemplate jt;
+	private JdbcTemplate jt;
 
 	private void setDataSource(String dataSource) {
 		DataSource ds = null;
@@ -87,7 +86,7 @@ public class PdoDao  extends JdbcDaoSupport {
 		} catch (I2B2Exception e2) {
 			log.error(e2.getMessage());;
 		} 
-		this.jt = new SimpleJdbcTemplate(ds);
+		this.jt = new JdbcTemplate(ds);
 	}
 
 	private String getMetadataSchema() throws I2B2Exception{
@@ -99,7 +98,7 @@ public class PdoDao  extends JdbcDaoSupport {
 	public String getPDO(PdoQryHeaderType requestType,
 			ProjectType projectInfo, PDORequestMessage getFoldersMsg) throws Exception {
 
-		
+
 		boolean protectedAccess = false;
 		Iterator it = projectInfo.getRole().iterator();
 		while (it.hasNext()){
@@ -113,7 +112,7 @@ public class PdoDao  extends JdbcDaoSupport {
 		if (!protectedAccess)
 			throw new I2B2DAOException("Access Denied");
 
-		
+
 		//Update so sending is from IM cell
 		getFoldersMsg.getMessageHeaderType().getSendingApplication().setApplicationName("Identity Management Cell");
 		getFoldersMsg.getMessageHeaderType().getSendingApplication().setApplicationVersion("1.7");
@@ -167,12 +166,6 @@ public class PdoDao  extends JdbcDaoSupport {
 		setDataSource(dbInfo.getDb_dataSource());
 
 
-		ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
-			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-				String name = (rs.getString("c_table_name"));
-				return name;
-			}
-		};
 
 
 
@@ -201,9 +194,9 @@ public class PdoDao  extends JdbcDaoSupport {
 						"IM_AUDIT (lcl_site, lcl_id, user_id, project_id) values (?,?,?,?)";
 
 				for (PidType pidType : pids.getPid()) {
-				//	numRowsAdded += jt.update(addSql, 
-				//			pidType.getPatientId().getSource(), pidType.getPatientId().getValue(),
-				//			userId, projectInfo);
+					//	numRowsAdded += jt.update(addSql, 
+					//			pidType.getPatientId().getSource(), pidType.getPatientId().getValue(),
+					//			userId, projectInfo);
 					for (PatientMapId pidPatient : pidType.getPatientMapId())
 					{
 						numRowsAdded += jt.update(addSql, 
@@ -263,14 +256,7 @@ public class PdoDao  extends JdbcDaoSupport {
 
 
 
-		ParameterizedRowMapper<PatientMapId> map = new ParameterizedRowMapper<PatientMapId>() {
-			public PatientMapId mapRow(ResultSet rs, int rowNum) throws SQLException {
-				PatientMapId pid = new PatientMapId();
-				pid.setValue(rs.getString("lcl_id"));
-				pid.setSource(rs.getString("lcl_site"));
-				return pid;
-			}
-		};
+
 
 		HighEncryption highEnc = new  HighEncryption(IMKey.getKey(projectInfo));
 		if (highEnc == null)
@@ -294,11 +280,11 @@ public class PdoDao  extends JdbcDaoSupport {
 		{
 
 			// Drop if already exists
-				String sql = "DROP TABLE IF EXISTS "+  tempTable;
-				jt.update(sql);
-			
-			
-			 sql = "CREATE TEMP TABLE " +  tempTable +"  (  "+
+			String sql = "DROP TABLE IF EXISTS "+  tempTable;
+			jt.update(sql);
+
+
+			sql = "CREATE TEMP TABLE " +  tempTable +"  (  "+
 					"LCL_SITE         VARCHAR(50) NULL, "+
 					"LCL_ID           VARCHAR(200) NULL, "+
 					"PROJECT_ID       VARCHAR(50) NULL "+
@@ -367,7 +353,7 @@ public class PdoDao  extends JdbcDaoSupport {
 
 
 			try {
-				queryResult = jt.query(tablesSql, map);	    
+				queryResult = jt.query(tablesSql, new getLCLMapper());	    
 
 				//				queryResult = jt.query(tablesSql, mapper, "N", projectInfo.getId().toLowerCase());
 			} catch (DataAccessException e) {
@@ -391,7 +377,7 @@ public class PdoDao  extends JdbcDaoSupport {
 			} else {
 				String sql = "DELETE FROM " + tempTable;
 				jt.update(sql);
-				
+
 			}
 		}
 		return pidSet;
@@ -429,20 +415,6 @@ public class PdoDao  extends JdbcDaoSupport {
 		if (!protectedAccess)
 			throw new I2B2DAOException("Access Denied");
 
-		ParameterizedRowMapper<AuditType> map = new ParameterizedRowMapper<AuditType>() {
-			public AuditType mapRow(ResultSet rs, int rowNum) throws SQLException {
-				AuditType pid = new AuditType();
-				pid.setPid(rs.getString("lcl_id"));
-				pid.setComment(rs.getString("comments"));
-				pid.setProjectId(rs.getString("project_id"));
-				pid.setSource(rs.getString("lcl_site"));
-				pid.setImportDate(dtoFactory
-						.getXMLGregorianCalendar(rs.getTimestamp(
-								"query_date").getTime()));
-				pid.setUserId(rs.getString("user_id"));
-				return pid;
-			}
-		};
 		List<AuditType> queryResult = null;		
 		String tablesSql = "";
 		int min = 1;
@@ -517,7 +489,7 @@ public class PdoDao  extends JdbcDaoSupport {
 		}
 
 		try {
-			queryResult = jt.query(tablesSql, map);	    
+			queryResult = jt.query(tablesSql, new getAuditMapper());	    
 
 			//				queryResult = jt.query(tablesSql, mapper, "N", projectInfo.getId().toLowerCase());
 		} catch (DataAccessException e) {
@@ -535,3 +507,44 @@ public class PdoDao  extends JdbcDaoSupport {
 	}
 
 }
+
+/*
+ParameterizedRowMapper<String> map = new ParameterizedRowMapper<String>() {
+	public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+		String name = (rs.getString("c_table_name"));
+		return name;
+	}
+};
+ */
+
+class getLCLMapper implements RowMapper<PatientMapId> {
+	@Override
+	public PatientMapId mapRow(ResultSet rs, int rowNum) throws SQLException {
+		PatientMapId pid = new PatientMapId();
+		pid.setValue(rs.getString("lcl_id"));
+		pid.setSource(rs.getString("lcl_site"));
+		return pid;
+	}
+}
+
+
+
+
+class getAuditMapper implements RowMapper<AuditType> {
+	@Override
+	public AuditType mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+		DTOFactory dtoFactory = new DTOFactory();
+
+		AuditType pid = new AuditType();
+		pid.setPid(rs.getString("lcl_id"));
+		pid.setComment(rs.getString("comments"));
+		pid.setProjectId(rs.getString("project_id"));
+		pid.setSource(rs.getString("lcl_site"));
+		pid.setImportDate(dtoFactory
+				.getXMLGregorianCalendar(rs.getTimestamp(
+						"query_date").getTime()));
+		pid.setUserId(rs.getString("user_id"));
+		return pid;
+	}
+};

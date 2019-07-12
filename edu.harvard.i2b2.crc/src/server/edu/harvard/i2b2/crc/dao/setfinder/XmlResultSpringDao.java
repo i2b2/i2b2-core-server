@@ -82,13 +82,13 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 		String SEQUENCE_POSTGRESQL = "SELECT nextval('qt_xml_result_xml_result_id_seq') ";
 		int xmlResultId = 0;
 		if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
-			xmlResultId = jdbcTemplate.queryForInt(SEQUENCE_ORACLE);
+			xmlResultId = jdbcTemplate.queryForObject(SEQUENCE_ORACLE, Integer.class);
 			jdbcTemplate.update(ORACLE_SQL, new Object[]{xmlResultId,resultInstanceId,xmlValue});
 		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER)) { 
 			jdbcTemplate.update(SQLSERVER_SQL, new Object[]{resultInstanceId,xmlValue});
-			xmlResultId = jdbcTemplate.queryForInt("SELECT @@IDENTITY");
+			xmlResultId = jdbcTemplate.queryForObject("SELECT @@IDENTITY", Integer.class);
 		} else 		if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
-			xmlResultId = jdbcTemplate.queryForInt(SEQUENCE_POSTGRESQL);
+			xmlResultId = jdbcTemplate.queryForObject(SEQUENCE_POSTGRESQL, Integer.class);
 			jdbcTemplate.update(POSTGRESQL_SQL, new Object[]{xmlResultId,Integer.parseInt(resultInstanceId),xmlValue});
 
 		}

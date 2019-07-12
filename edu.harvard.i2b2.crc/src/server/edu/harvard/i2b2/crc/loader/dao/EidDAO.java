@@ -48,8 +48,8 @@ public class EidDAO extends CRCLoaderDAO implements IEidDAO {
 	@Override
 	public int getRecordCountByUploadId(int uploadId) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
-		int insertCount = jdbcTemplate.queryForInt("select count(1) from "
-				+ getDbSchemaName() + " encounter_mapping where upload_id =?",
+		int insertCount = jdbcTemplate.queryForObject("select count(1) from "
+				+ getDbSchemaName() + " encounter_mapping where upload_id =?", Integer.class,
 				new Object[] { uploadId });
 		return insertCount;
 	}

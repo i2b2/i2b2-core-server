@@ -22,6 +22,8 @@
 			<pathelement location="${classes}" />
 			<pathelement location="lib/jcifs-1.3.3.jar" />
 			<pathelement location="../${i2b2CommonProject}/dist/i2b2Common-core.jar" />
+			<pathelement location="../${i2b2CommonProject}/lib/smbj-0.9.1.jar" />
+			
 		</path>
 
 		<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">

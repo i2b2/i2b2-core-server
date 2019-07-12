@@ -655,11 +655,11 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 						queryMaster.getDeleteFlag(),
 						queryMaster.getGeneratedSql(), i2b2RequestXml, pmXml };
 				update(object);
-				queryMasterIdentityId = jdbc.queryForInt("SELECT @@IDENTITY");
+				queryMasterIdentityId = jdbc.queryForObject("SELECT @@IDENTITY", Integer.class);
 
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.ORACLE)) {
-				queryMasterIdentityId = jdbc.queryForInt(SEQUENCE_ORACLE);
+				queryMasterIdentityId = jdbc.queryForObject(SEQUENCE_ORACLE, Integer.class);
 				object = new Object[] { queryMasterIdentityId,
 						queryMaster.getName(), queryMaster.getUserId(),
 						queryMaster.getGroupId(),
@@ -673,7 +673,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 
 			}  else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.POSTGRESQL)) {
-				queryMasterIdentityId = jdbc.queryForInt(SEQUENCE_POSTGRESQL);
+				queryMasterIdentityId = jdbc.queryForObject(SEQUENCE_POSTGRESQL, Integer.class);
 				object = new Object[] { queryMasterIdentityId,
 						queryMaster.getName(), queryMaster.getUserId(),
 						queryMaster.getGroupId(),

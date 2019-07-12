@@ -400,7 +400,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.ORACLE)) {
-				queryInstanceId = jdbc.queryForInt(SEQUENCE_ORACLE);
+				queryInstanceId = jdbc.queryForObject(SEQUENCE_ORACLE, Integer.class);
 				queryInstance.setQueryInstanceId(String
 						.valueOf(queryInstanceId));
 				object = new Object[] { queryInstance.getQueryInstanceId(),
@@ -413,7 +413,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 						queryInstance.getDeleteFlag() };
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.POSTGRESQL)) {
-				queryInstanceId = jdbc.queryForInt(SEQUENCE_POSTGRESQL);
+				queryInstanceId = jdbc.queryForObject(SEQUENCE_POSTGRESQL, Integer.class);
 				queryInstance.setQueryInstanceId(String
 						.valueOf(queryInstanceId));
 				object = new Object[] { queryInstance.getQueryInstanceId(),
@@ -430,7 +430,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SQLSERVER)) {
 				int queryInstanceIdentityId = jdbc
-						.queryForInt("SELECT @@IDENTITY");
+						.queryForObject("SELECT @@IDENTITY", Integer.class);
 
 				queryInstance.setQueryInstanceId(String
 						.valueOf(queryInstanceIdentityId));
