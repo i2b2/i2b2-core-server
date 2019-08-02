@@ -672,6 +672,25 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 		return count;
 	}
 
+	public int checkForTableAccessExistence(DBInfoType dbInfo, String tableName, String fullName) throws Exception {
+
+		String metadataSchema = dbInfo.getDb_fullSchema();
+		setDataSource(dbInfo.getDb_dataSource());
+
+		String checkForTableSql = "SELECT count(*) from " + metadataSchema + "table_access  where c_table_name = ? and c_fullname = ?";
+
+		int count = -1;
+		try {
+			count = jt.queryForObject(checkForTableSql, Integer.class, tableName, fullName)	;
+			//			log.info(checkForTableSql + " count " + count);
+		} catch (Exception e) {
+
+			throw e;
+		}
+
+		return count;
+	}
+
 
 
 
@@ -680,21 +699,30 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 		String metadataSchema = dbInfo.getDb_fullSchema();
 		setDataSource(dbInfo.getDb_dataSource());
 
-		String checkForTableSql = "SELECT count(*) from information_schema.tables where table_name = ?";
+		
+		
+		String checkForTableSql = "SELECT count(*) from " + metadataSchema + tableName ;
 
-		if(dbInfo.getDb_serverType().equals("ORACLE"))
-			checkForTableSql = "SELECT count(*) from user_tab_cols where table_name = ?";
+/*		if(dbInfo.getDb_serverType().equals("ORACLE"))
+			checkForTableSql = "SELECT count(*) from user_tab_cols where table_name = " + metadataSchema +"?";
 
 
 		if(dbInfo.getDb_serverType().equals("SQLSERVER"))
 			checkForTableSql = "SELECT count(*) from " + metadataSchema.replace("dbo.", "") + "information_schema.tables where table_name = ?";
 
 		//		log.info(checkForTableSql);
-
-		int count = jt.queryForObject(checkForTableSql, Integer.class, tableName)	;
+*/
+		boolean createTables = false;
+		try {
+		int count = jt.queryForObject(checkForTableSql, Integer.class); //, metadataSchema + tableName)	;
 		//		log.info(checkForTableSql + " count " + count);
 
-		if(count == 0){
+		} catch (Exception e) {
+			createTables = true;
+		}
+		
+ 
+		if (createTables) {
 			String createSql = "CREATE TABLE " + metadataSchema + tableName +
 					"  (	C_HLEVEL INT			NOT NULL, C_FULLNAME VARCHAR(700)	NOT NULL, C_NAME VARCHAR(2000)		NOT NULL, "+
 					" C_SYNONYM_CD CHAR(1)		NOT NULL, C_VISUALATTRIBUTES CHAR(3)	NOT NULL,  C_TOTALNUM INT			NULL, " +
@@ -704,7 +732,7 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 					" C_TOOLTIP VARCHAR(900)	NULL, M_APPLIED_PATH VARCHAR(700)	NOT NULL, UPDATE_DATE DATETIME		NOT NULL, "+
 					" DOWNLOAD_DATE DATETIME	NULL,  IMPORT_DATE DATETIME	NULL, SOURCESYSTEM_CD VARCHAR(50)	NULL, "+
 					" VALUETYPE_CD VARCHAR(50)	NULL, M_EXCLUSION_CD	VARCHAR(25) NULL, C_PATH	VARCHAR(700)   NULL, "+
-					" C_SYMBOL	VARCHAR(50)	NULL, PCORI_BASECODE	VARCHAR(50)	NULL )  ";
+					" C_SYMBOL	VARCHAR(50)	NULL )  ";
 
 
 			if(dbInfo.getDb_serverType().equals("POSTGRESQL"))	{
@@ -717,7 +745,7 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 						" C_TOOLTIP VARCHAR(900)	NULL, M_APPLIED_PATH VARCHAR(700)	NOT NULL, UPDATE_DATE TIMESTAMP		NOT NULL, "+
 						" DOWNLOAD_DATE TIMESTAMP	NULL,  IMPORT_DATE TIMESTAMP	NULL, SOURCESYSTEM_CD VARCHAR(50)	NULL, "+
 						" VALUETYPE_CD VARCHAR(50)	NULL, M_EXCLUSION_CD	VARCHAR(25) NULL, C_PATH	VARCHAR(700)   NULL, "+
-						" C_SYMBOL	VARCHAR(50)	NULL, PCORI_BASECODE	VARCHAR(50)	NULL ) ";
+						" C_SYMBOL	VARCHAR(50)	NULL ) ";
 			}
 			else if(dbInfo.getDb_serverType().equals("ORACLE"))	{
 				createSql = "CREATE TABLE " + metadataSchema + tableName +
@@ -729,17 +757,10 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 						" C_TOOLTIP VARCHAR2(900)	NULL, M_APPLIED_PATH VARCHAR2(700)	NOT NULL, UPDATE_DATE DATE		NOT NULL, "+
 						" DOWNLOAD_DATE DATE	NULL,  IMPORT_DATE DATE	NULL, SOURCESYSTEM_CD VARCHAR2(50)	NULL, "+
 						" VALUETYPE_CD VARCHAR2(50)	NULL, M_EXCLUSION_CD	VARCHAR2(25) NULL, C_PATH	VARCHAR2(700)   NULL, "+
-						" C_SYMBOL	VARCHAR2(50)	NULL, PCORI_BASECODE	VARCHAR2(50)	NULL )  ";
+						" C_SYMBOL	VARCHAR2(50)	NULL )  ";
 			}
 
 
-			DataSource ds = null;
-			try {
-				ds = OntologyUtil.getInstance().getDataSource(dbInfo.getDb_dataSource());
-			} catch (I2B2Exception e2) {
-				log.error(e2.getMessage());;
-			} 
-			JdbcTemplate jt = new JdbcTemplate(ds);
 
 			try {
 				jt.execute(createSql);
@@ -758,15 +779,15 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 				jt.execute(index4Sql);
 				String index5Sql = " CREATE INDEX META_SYNONYM_" + indexTableName + "_IDX ON " +  metadataSchema+tableName +"(C_SYNONYM_CD)";
 				jt.execute(index5Sql);
-			} catch (Exception e) {
+			} catch (Exception ee) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ee.printStackTrace();
 				throw(new I2B2Exception("metadata table or index creation failed"));
 			}
-
+		
 		}
-		else
-			throw new Exception("Metadata Table already exists");
+		//else
+		//	throw new Exception("Metadata Table already exists");
 
 	}
 
@@ -775,6 +796,8 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 
 		String metadataSchema = dbInfo.getDb_fullSchema();
 		setDataSource(dbInfo.getDb_dataSource());
+
+
 
 		String startSql = "insert into " + metadataSchema + "table_access" + 
 				"(c_table_cd, c_table_name, c_protected_access, c_hlevel,c_fullname,c_name,c_synonym_cd,c_visualattributes,c_basecode,c_facttablecolumn," +
@@ -832,11 +855,12 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 			}
 
 
-			parameters.add(new Object[] { concept.getTableCd(), concept.getTableName(), concept.getProtectedAccess(), concept.getLevel(), concept.getFullname(), concept.getName(), concept.getSynonymCd(),
-					concept.getVisualattributes(), concept.getBasecode(), concept.getFacttablecolumn(), concept.getTotalnum(), xml, concept.getDimtablename(),
-					concept.getColumnname(),concept.getColumndatatype(), concept.getOperator(), concept.getDimcode(),  concept.getComment(),
-					concept.getTooltip(),  entryDate, changeDate, concept.getStatusCd(), concept.getValuetypeCd()}
-					);
+			if (checkForTableAccessExistence( dbInfo,  concept.getTableName(), concept.getFullname()) < 1)
+				parameters.add(new Object[] { concept.getTableCd(), concept.getTableName(), concept.getProtectedAccess(), concept.getLevel(), concept.getFullname(), concept.getName(), concept.getSynonymCd(),
+						concept.getVisualattributes(), concept.getBasecode(), concept.getFacttablecolumn(), concept.getTotalnum(), xml, concept.getDimtablename(),
+						concept.getColumnname(),concept.getColumndatatype(), concept.getOperator(), concept.getDimcode(),  concept.getComment(),
+						concept.getTooltip(),  entryDate, changeDate, concept.getStatusCd(), concept.getValuetypeCd()}
+						);
 
 
 		}
@@ -895,15 +919,18 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 		String startSql = "insert into " + metadataSchema + table + 
 				"(c_hlevel,c_fullname,c_name,c_synonym_cd,c_visualattributes,c_basecode,c_facttablecolumn," +
 				"c_totalnum, c_metadataxml, c_tablename,c_columnname,c_columndatatype,c_operator,c_dimcode,c_comment,c_tooltip," +
-				"import_date, download_date, update_date, sourcesystem_cd, valuetype_cd, m_applied_path, m_exclusion_cd, c_path, c_symbol, pcori_basecode) "+
-				"VALUES (?, ?, ?, ?, ?, ?, ?, 	?, ?,?, ?, ?, ?,?, ?, ?,    ?, ?, ?, ?, ?, ?, ?, ?,?, ?)";
+				"import_date, download_date, update_date, sourcesystem_cd, valuetype_cd, m_applied_path, m_exclusion_cd, c_path, c_symbol) "+
+				"VALUES (?, ?, ?, ?, ?, ?, ?, 	?, ?,?, ?, ?, ?,?, ?, ?,    ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
 		log.info(startSql);
 
 
 		List<Object[]> parameters = new ArrayList<Object[]>();
 
+
 		for (OntologyDataType concept : concepts) {
+			// Remove existing if they exist
+
 
 			String xml;
 			// convert XMLGregorianCalendar to Date
@@ -955,7 +982,7 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 					concept.getVisualattributes(), concept.getBasecode(), concept.getFacttablecolumn(), totalnum, xml, concept.getDimtablename(),
 					concept.getColumnname(),concept.getColumndatatype(), concept.getOperator(), concept.getDimcode(),  concept.getComment(),
 					concept.getTooltip(),  importDate, downloadDate,  updateDate, concept.getSourcesystemCd(), 
-					concept.getValuetypeCd(), concept.getAppliedPath(), concept.getExclusionCd(), concept.getPath(), concept.getSymbol(), concept.getPcoriBasecode()}
+					concept.getValuetypeCd(), concept.getAppliedPath(), concept.getExclusionCd(), concept.getPath(), concept.getSymbol()}
 					);
 		}	 
 

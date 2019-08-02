@@ -33,22 +33,20 @@ public class LoadTableAccessHandler extends RequestHandler {
 	private LoadDataMessage  loadMsg = null;
 	private MetadataLoadType categoriesType = null;
 	private ProjectType projectInfo = null;
-	
+
 	public LoadTableAccessHandler(LoadDataMessage requestMsg) throws I2B2Exception{
-		
 		loadMsg = requestMsg;
 		categoriesType = requestMsg.getMetadataLoad();	
 		projectInfo = getRoleInfo(requestMsg.getMessageHeaderType());	
 		setDbInfo(requestMsg.getMessageHeaderType());
-
 	}
-	
+
 	@Override
 	public String execute() throws I2B2Exception{
 		// call ejb and pass input object
 		ConceptPersistDao persistDao = new ConceptPersistDao();
 		ResponseMessageType responseMessageType = null;
-		int[] numAdded = {-1};
+		//int[] numAdded = {-1};
 
 		// check to see if we have projectInfo (if not indicates PM service problem)
 		if(projectInfo == null) {
@@ -64,12 +62,10 @@ public class LoadTableAccessHandler extends RequestHandler {
 			response = MessageFactory.convertToXMLString(responseMessageType);
 			log.debug("INVALID_USER_PRIV");
 			return response;	
-		}
-		
-		else {	
+		} else {	
 			try {
-					persistDao.createMetadataTable(this.getDbInfo(), loadMsg.getMetadataLoad().getMetadata().get(0).getTableName());
-					persistDao.loadTableAccess(this.getDbInfo(), loadMsg.getMetadataLoad().getMetadata());
+				//persistDao.createMetadataTable(this.getDbInfo(), loadMsg.getMetadataLoad().getMetadata().get(0).getTableName());
+				persistDao.loadTableAccess(this.getDbInfo(), loadMsg.getMetadataLoad().getMetadata());
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				log.error("LoadTableAccessHandler received exception");
@@ -78,23 +74,22 @@ public class LoadTableAccessHandler extends RequestHandler {
 		}
 		// no errors found 
 		if(responseMessageType == null) {
-				MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(loadMsg.getMessageHeaderType());          
-				responseMessageType = MessageFactory.createBuildResponse(messageHeader);
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(loadMsg.getMessageHeaderType());          
+			responseMessageType = MessageFactory.createBuildResponse(messageHeader);
 		}
-        String responseVdo = null;
-        responseVdo = MessageFactory.convertToXMLString(responseMessageType);
+		String responseVdo = null;
+		responseVdo = MessageFactory.convertToXMLString(responseMessageType);
 		return responseVdo;
 	}
-	
+
 	private DataSource getDataSource(String dataSourceName) {
 		DataSource ds = null;
 		try {
 			ds = OntologyUtil.getInstance().getDataSource(dataSourceName);
 		} catch (I2B2Exception e2) {
 			log.error(e2.getMessage());
-			;
 		}
 		return ds;
 	}
-    
+
 }

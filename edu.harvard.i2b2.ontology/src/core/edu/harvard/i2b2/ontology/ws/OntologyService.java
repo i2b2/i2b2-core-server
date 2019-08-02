@@ -1082,11 +1082,11 @@ public class OntologyService {
 		// do Ontology query processing inside thread, so that
 		// service could sends back message with timeout error.
 		// ExecutorRunnable er = new ExecutorRunnable();
-		if(loadDataMsg.getMetadataLoad().getTableName().equals("SCHEMES")) {
+		if(loadDataMsg.getMetadataLoad().getTableName().equalsIgnoreCase("SCHEMES")) {
 			log.info(requestElementString);
 			return execute(new LoadSchemesHandler(loadDataMsg), waitTime);
 		}
-		else if(loadDataMsg.getMetadataLoad().getTableName().equals("TABLE_ACCESS")) {
+		else if(loadDataMsg.getMetadataLoad().getTableName().equalsIgnoreCase("TABLE_ACCESS")) {
 			log.info(requestElementString);
 			return execute(new LoadTableAccessHandler(loadDataMsg), waitTime);
 		}

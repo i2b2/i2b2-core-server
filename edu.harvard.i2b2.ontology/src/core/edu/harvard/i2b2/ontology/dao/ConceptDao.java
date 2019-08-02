@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -312,6 +313,92 @@ public class ConceptDao extends JdbcDaoSupport {
 			throw new I2B2DAOException("Database Error");
 		}
 
+
+		// Add parent poaths
+		for (ConceptType cType: queryResult) {
+
+			if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+				sql = "WITH pathnames ";
+				sql += " AS";
+				sql += " (";
+				sql += "    select c_name, c_fullname,";
+				sql += "        substring(c_fullname, 1, len(c_fullname) - charindex('\\', reverse(c_fullname), 2) + 1) as c_path,";
+				sql += "        1 as c_pathorder";
+				sql += "    from " + metadataSchema+tableName  + " where c_fullname =  ?";
+				sql += "    UNION ALL";
+				sql += "    select m.c_name, m.c_fullname,  substring(m.c_fullname, 1, len(m.c_fullname) - charindex('\\', reverse(m.c_fullname), 2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
+				sql += "    from " + metadataSchema+tableName  + "  m";
+				sql += "        inner join pathnames p on m.c_fullname = p.c_path";   
+				sql += " )";
+				sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+				sql += " FROM   pathnames";
+				sql += " order by c_pathorder desc ";
+
+			}
+
+			else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
+
+
+				sql = "WITH pathnames (c_name, c_fullname, c_path, c_pathorder) ";
+				sql += " AS ";
+				sql += " ( ";
+				sql += "   select c_name, c_fullname, ";
+				sql += "        substr(c_fullname, 1, length(c_fullname) - instr(reverse(c_fullname),'\\',  2) + 1) as c_path,";
+				sql += "       1 as c_pathorder";
+				sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
+				sql += "   UNION ALL";
+				sql += "   select m.c_name, m.c_fullname,  substr(m.c_fullname, 1, length(m.c_fullname) - instr(reverse(m.c_fullname), '\\',  2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
+				sql += "  from " + metadataSchema+tableName  + "   m";
+				sql += "       inner join pathnames p on m.c_fullname = p.c_path";
+
+				sql += " )";
+				sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+				sql += " FROM   pathnames";
+				sql += " order by c_pathorder desc ";
+			} 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
+
+				sql  = "WITH RECURSIVE pathnames ";
+				sql += " AS";
+				sql += " (";
+				sql += "    select c_name, c_fullname,";
+				sql += "      substr(c_fullname, 1, length(c_fullname) - strpos(substr(reverse(c_fullname), 2), '\\') ) as c_path,";
+				sql += "      1 as c_pathorder";
+				sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
+				sql += "    UNION ALL";
+				sql += "    select m.c_name, m.c_fullname,  ";
+				sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - strpos(substr(reverse(m.c_fullname), 2), '\\') ) as c_path,   c_pathorder + 1 as c_pathorder";
+
+				sql += "    from " + metadataSchema+tableName  + "  m";
+				sql += "        inner join pathnames p on m.c_fullname = p.c_path";
+
+				sql += " ) ";
+				sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+				sql += " FROM   pathnames";
+				sql += " order by c_pathorder desc";
+			}
+			
+			
+			//List  rows = jt.queryForList(sql, path);
+
+			/*
+			 * 			List<String> names = jt.query(sql,  new RowMapper() {
+			      public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+			        return resultSet.getString(1);
+			      }
+			    }, path);
+			 */
+			List<ConceptType> names = jt.query(sql, new GetConceptParentMapper(), path);
+			
+			cType.setKeyName("");
+			for (int i=0; i< names.size(); i++) {
+				cType.setKeyName(cType.getKeyName() + names.get(i).getName());
+				if ((i + 1) < names.size())
+					cType.setKeyName(cType.getKeyName() + "\\");
+			//+  \\ ");
+			
+			}
+
+		}
 
 		if ((Float.parseFloat(				
 				childrenMsg.getMessageHeaderType().getSendingApplication().getApplicationVersion()) > 1.5) &&
@@ -1991,6 +2078,16 @@ class GetConceptNameMapper implements RowMapper<ConceptType> {
 	}
 }
 
+class GetConceptParentMapper implements RowMapper<ConceptType> {
+	@Override
+	public ConceptType mapRow(ResultSet rs, int rowNum) throws SQLException {
+		ConceptType category = new ConceptType();	 
+
+		//category.setLevel(rs.getInt("c_hevel"));
+		category.setName(rs.getString("c_name"));
+		return category;
+	}
+}
 
 
 class GetConceptFullNameMapper implements RowMapper<ConceptType> {

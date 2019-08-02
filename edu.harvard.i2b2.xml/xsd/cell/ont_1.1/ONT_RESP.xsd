@@ -56,6 +56,7 @@
         <xs:sequence>
             <xs:element name="level" type="xs:int" />
             <xs:element name="key" type="xs:string" />
+            <xs:element name="key_name" type="xs:string" />
             <xs:element name="name" type="xs:string" />
             <xs:element name="synonym_cd" type="xs:string" />
             <xs:element name="visualattributes" type="xs:string" />

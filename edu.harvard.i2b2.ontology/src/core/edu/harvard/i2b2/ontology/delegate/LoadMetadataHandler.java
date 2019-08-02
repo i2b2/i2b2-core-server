@@ -33,16 +33,16 @@ public class LoadMetadataHandler extends RequestHandler {
 	private LoadDataMessage  loadMsg = null;
 	private MetadataLoadType conceptsType = null;
 	private ProjectType projectInfo = null;
-	
+
 	public LoadMetadataHandler(LoadDataMessage requestMsg) throws I2B2Exception{
-		
+
 		loadMsg = requestMsg;
 		conceptsType = requestMsg.getMetadataLoad();	
 		projectInfo = getRoleInfo(requestMsg.getMessageHeaderType());	
 		setDbInfo(requestMsg.getMessageHeaderType());
 
 	}
-	
+
 	@Override
 	public String execute() throws I2B2Exception{
 		// call ejb and pass input object
@@ -65,11 +65,12 @@ public class LoadMetadataHandler extends RequestHandler {
 			log.debug("INVALID_USER_PRIV");
 			return response;	
 		}
-		
+
 		else {	
 			try {
 				//numAdded = 
-						persistDao.loadMetadata(this.getDbInfo(), loadMsg.getMetadataLoad().getTableName(),loadMsg.getMetadataLoad().getMetadata());
+				persistDao.createMetadataTable(this.getDbInfo(), loadMsg.getMetadataLoad().getTableName());
+				persistDao.loadMetadata(this.getDbInfo(), loadMsg.getMetadataLoad().getTableName(),loadMsg.getMetadataLoad().getMetadata());
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				log.error("LoadMetadataHandler received exception");
@@ -79,7 +80,7 @@ public class LoadMetadataHandler extends RequestHandler {
 		// no errors found 
 		if(responseMessageType == null) {
 			// no db error but response is empty
-	/*		if (numAdded == 0) {
+			/*		if (numAdded == 0) {
 				log.error("concept not inserted");
 				responseMessageType = MessageFactory.doBuildErrorResponse(loadMsg.getMessageHeaderType(), "Database insertion error");
 			}
@@ -87,18 +88,18 @@ public class LoadMetadataHandler extends RequestHandler {
 				log.error("database error");
 				responseMessageType = MessageFactory.doBuildErrorResponse(loadMsg.getMessageHeaderType(), "Database error");
 			}
-			*/
-	//		else {
-				MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(loadMsg.getMessageHeaderType());          
-				responseMessageType = MessageFactory.createBuildResponse(messageHeader);
+			 */
+			//		else {
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(loadMsg.getMessageHeaderType());          
+			responseMessageType = MessageFactory.createBuildResponse(messageHeader);
 
-		//	}
+			//	}
 		}
-        String responseVdo = null;
-        responseVdo = MessageFactory.convertToXMLString(responseMessageType);
+		String responseVdo = null;
+		responseVdo = MessageFactory.convertToXMLString(responseMessageType);
 		return responseVdo;
 	}
-	
+
 	private DataSource getDataSource(String dataSourceName) {
 		DataSource ds = null;
 		try {
@@ -109,5 +110,5 @@ public class LoadMetadataHandler extends RequestHandler {
 		}
 		return ds;
 	}
-    
+
 }
