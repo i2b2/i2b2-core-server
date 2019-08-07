@@ -314,92 +314,6 @@ public class ConceptDao extends JdbcDaoSupport {
 		}
 
 
-		// Add parent poaths
-		for (ConceptType cType: queryResult) {
-
-			if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-				sql = "WITH pathnames ";
-				sql += " AS";
-				sql += " (";
-				sql += "    select c_name, c_fullname,";
-				sql += "        substring(c_fullname, 1, len(c_fullname) - charindex('\\', reverse(c_fullname), 2) + 1) as c_path,";
-				sql += "        1 as c_pathorder";
-				sql += "    from " + metadataSchema+tableName  + " where c_fullname =  ?";
-				sql += "    UNION ALL";
-				sql += "    select m.c_name, m.c_fullname,  substring(m.c_fullname, 1, len(m.c_fullname) - charindex('\\', reverse(m.c_fullname), 2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
-				sql += "    from " + metadataSchema+tableName  + "  m";
-				sql += "        inner join pathnames p on m.c_fullname = p.c_path";   
-				sql += " )";
-				sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
-				sql += " FROM   pathnames";
-				sql += " order by c_pathorder desc ";
-
-			}
-
-			else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-
-
-				sql = "WITH pathnames (c_name, c_fullname, c_path, c_pathorder) ";
-				sql += " AS ";
-				sql += " ( ";
-				sql += "   select c_name, c_fullname, ";
-				sql += "        substr(c_fullname, 1, length(c_fullname) - instr(reverse(c_fullname),'\\',  2) + 1) as c_path,";
-				sql += "       1 as c_pathorder";
-				sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
-				sql += "   UNION ALL";
-				sql += "   select m.c_name, m.c_fullname,  substr(m.c_fullname, 1, length(m.c_fullname) - instr(reverse(m.c_fullname), '\\',  2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
-				sql += "  from " + metadataSchema+tableName  + "   m";
-				sql += "       inner join pathnames p on m.c_fullname = p.c_path";
-
-				sql += " )";
-				sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
-				sql += " FROM   pathnames";
-				sql += " order by c_pathorder desc ";
-			} 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-
-				sql  = "WITH RECURSIVE pathnames ";
-				sql += " AS";
-				sql += " (";
-				sql += "    select c_name, c_fullname,";
-				sql += "      substr(c_fullname, 1, length(c_fullname) - strpos(substr(reverse(c_fullname), 2), '\\') ) as c_path,";
-				sql += "      1 as c_pathorder";
-				sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
-				sql += "    UNION ALL";
-				sql += "    select m.c_name, m.c_fullname,  ";
-				sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - strpos(substr(reverse(m.c_fullname), 2), '\\') ) as c_path,   c_pathorder + 1 as c_pathorder";
-
-				sql += "    from " + metadataSchema+tableName  + "  m";
-				sql += "        inner join pathnames p on m.c_fullname = p.c_path";
-
-				sql += " ) ";
-				sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
-				sql += " FROM   pathnames";
-				sql += " order by c_pathorder desc";
-			}
-			
-			
-			//List  rows = jt.queryForList(sql, path);
-
-			/*
-			 * 			List<String> names = jt.query(sql,  new RowMapper() {
-			      public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-			        return resultSet.getString(1);
-			      }
-			    }, path);
-			 */
-			List<ConceptType> names = jt.query(sql, new GetConceptParentMapper(), path);
-			
-			cType.setKeyName("");
-			for (int i=0; i< names.size(); i++) {
-				cType.setKeyName(cType.getKeyName() + names.get(i).getName());
-				if ((i + 1) < names.size())
-					cType.setKeyName(cType.getKeyName() + "\\");
-			//+  \\ ");
-			
-			}
-
-		}
-
 		if ((Float.parseFloat(				
 				childrenMsg.getMessageHeaderType().getSendingApplication().getApplicationVersion()) > 1.5) &&
 				(queryResult.size() > 0)) {
@@ -779,10 +693,116 @@ public class ConceptDao extends JdbcDaoSupport {
 					list = jt.query(nameInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()));
 					//queryResult.addAll(list);
 				}
+				
+				
+				// Add parent poaths
+				
+				String tableName=categoryResult.get(i).getTablename();
+				/*
+				String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
+				try {
+					tableName = jt.queryForObject(tableSql, String.class, tableCd);	    
+				} catch (DataAccessException e) {
+					log.error("Get Children " + e.getMessage());
+					throw new I2B2DAOException("Database Error");
+				}
+				*/
+				
+			
+
+				String sql = "";
+				for (ConceptType cType: list) {
+					//String path = cType.getDimcode(); //StringUtil.getPath(childrenType.getParent());
+					String path = StringUtil.getParentPath(cType.getDimcode());
+					if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+						sql = "WITH pathnames ";
+						sql += " AS";
+						sql += " (";
+						sql += "    select c_name, c_fullname,";
+						sql += "        substring(c_fullname, 1, len(c_fullname) - charindex('\\', reverse(c_fullname), 2) + 1) as c_path,";
+						sql += "        1 as c_pathorder";
+						sql += "    from " + metadataSchema+tableName  + " where c_fullname =  ?";
+						sql += "    UNION ALL";
+						sql += "    select m.c_name, m.c_fullname,  substring(m.c_fullname, 1, len(m.c_fullname) - charindex('\\', reverse(m.c_fullname), 2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
+						sql += "    from " + metadataSchema+tableName  + "  m";
+						sql += "        inner join pathnames p on m.c_fullname = p.c_path";   
+						sql += " )";
+						sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+						sql += " FROM   pathnames";
+						sql += " order by c_pathorder desc ";
+
+					}
+
+					else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
+
+
+						sql = "WITH pathnames (c_name, c_fullname, c_path, c_pathorder) ";
+						sql += " AS ";
+						sql += " ( ";
+						sql += "   select c_name, c_fullname, ";
+						sql += "        substr(c_fullname, 1, length(c_fullname) - instr(reverse(c_fullname),'\\',  2) + 1) as c_path,";
+						sql += "       1 as c_pathorder";
+						sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
+						sql += "   UNION ALL";
+						sql += "   select m.c_name, m.c_fullname,  substr(m.c_fullname, 1, length(m.c_fullname) - instr(reverse(m.c_fullname), '\\',  2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
+						sql += "  from " + metadataSchema+tableName  + "   m";
+						sql += "       inner join pathnames p on m.c_fullname = p.c_path";
+
+						sql += " )";
+						sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+						sql += " FROM   pathnames";
+						sql += " order by c_pathorder desc ";
+					} 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
+
+						sql  = "WITH RECURSIVE pathnames ";
+						sql += " AS";
+						sql += " (";
+						sql += "    select c_name, c_fullname,";
+						sql += "      substr(c_fullname, 1, length(c_fullname) - strpos(substr(reverse(c_fullname), 2), '\\') ) as c_path,";
+						sql += "      1 as c_pathorder";
+						sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
+						sql += "    UNION ALL";
+						sql += "    select m.c_name, m.c_fullname,  ";
+						sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - strpos(substr(reverse(m.c_fullname), 2), '\\') ) as c_path,   c_pathorder + 1 as c_pathorder";
+
+						sql += "    from " + metadataSchema+tableName  + "  m";
+						sql += "        inner join pathnames p on m.c_fullname = p.c_path";
+
+						sql += " ) ";
+						sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+						sql += " FROM   pathnames";
+						sql += " order by c_pathorder desc";
+					}
+					
+					
+					//List  rows = jt.queryForList(sql, path);
+
+					/*
+					 * 			List<String> names = jt.query(sql,  new RowMapper() {
+					      public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+					        return resultSet.getString(1);
+					      }
+					    }, path);
+					 */
+					List<ConceptType> names = jt.query(sql, new GetConceptParentMapper(), path);
+					
+					cType.setKeyName("");
+					for (int y=0; y< names.size(); y++) {
+						cType.setKeyName(cType.getKeyName() + names.get(y).getName());
+						if ((y + 1) < names.size())
+							cType.setKeyName(cType.getKeyName() + "\\");
+					//+  \\ ");
+					
+					}
+
+				}
+				
+				// Add list to results after adding parent list names
 				if (queryResult == null)
 					queryResult = list;
 				else
 					queryResult.addAll(list);
+
 			} catch (DataAccessException e) {
 				log.error("Search by Name " + e.getMessage());
 				throw new I2B2DAOException("Database Error");

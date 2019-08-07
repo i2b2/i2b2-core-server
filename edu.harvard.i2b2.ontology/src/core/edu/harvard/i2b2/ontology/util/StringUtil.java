@@ -132,5 +132,16 @@ public class StringUtil {
     		return symbol;
     }
     
+    public static String getParentPath(String key){
+    	//int beginning = key.indexOf("\\", 3);
+    	if(key.endsWith("\\")){
+    		key = key.substring(0, key.length() - 1).trim();
+    	}
+    		int end = key.lastIndexOf("\\");    	
+    		String cpath = key.substring(0, end+1 ).trim();
+    		
+    		return cpath;
+
+    }
     
 }
