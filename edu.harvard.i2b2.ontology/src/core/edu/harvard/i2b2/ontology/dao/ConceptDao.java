@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +37,7 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
-
+import antlr.StringUtils;
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
@@ -708,94 +708,134 @@ public class ConceptDao extends JdbcDaoSupport {
 				}
 				*/
 				
-			
-
+				//jgk
+				// This does a linear search through fullnames for each previous fullname, O(n^2) :(
+				// BUT it assumes its sorted by hlevel so it only has to search through whats already seen - n(n+1)/2 operations 
+				if (list.size()>0 && vocabType.isReducedResults()!=null && vocabType.isReducedResults()) {
+					ArrayList<String> seen = new ArrayList<String>(); 
+					ArrayList<ConceptType> keep = new ArrayList<ConceptType>();
+					Iterator<ConceptType> it = list.iterator();
+					while (it.hasNext())
+					{
+						ConceptType node = (ConceptType)it.next();
+						String key = node.getKey();
+						boolean bAbort = false;
+						for (String k : seen) {
+							if(key.startsWith(k) && !key.equals(k) /* <-- don't kill the synonyms */ ) {
+								bAbort = true;
+								break;
+							}
+						}
+						if (!bAbort) { 
+							// Add nodes that were not subsumed to the keep list
+							keep.add(node);
+						}
+						// Hidden and inactive should not subsume other nodes - exclude them
+						if (node.getVisualattributes().contains("A")) 
+							seen.add(node.getKey());
+					}
+					log.debug("Reduced find terms from "+list.size()+" to "+keep.size());
+					list = keep;
+				}
+				
+				HashMap<String,String> KeynameCache = new HashMap<String,String>();
+				int skipCount = 0; // for debug, number of cache hits
+				int skipPathCount = category.split("\\\\").length -2; // preamble elements in path, not to be output in key name (everything but final element in category path)
 				String sql = "";
 				for (ConceptType cType: list) {
 					//String path = cType.getDimcode(); //StringUtil.getPath(childrenType.getParent());
-					String path = StringUtil.getParentPath(cType.getDimcode());
-					if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-						sql = "WITH pathnames ";
-						sql += " AS";
-						sql += " (";
-						sql += "    select c_name, c_fullname,";
-						sql += "        substring(c_fullname, 1, len(c_fullname) - charindex('\\', reverse(c_fullname), 2) + 1) as c_path,";
-						sql += "        1 as c_pathorder";
-						sql += "    from " + metadataSchema+tableName  + " where c_fullname =  ?";
-						sql += "    UNION ALL";
-						sql += "    select m.c_name, m.c_fullname,  substring(m.c_fullname, 1, len(m.c_fullname) - charindex('\\', reverse(m.c_fullname), 2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
-						sql += "    from " + metadataSchema+tableName  + "  m";
-						sql += "        inner join pathnames p on m.c_fullname = p.c_path";   
-						sql += " )";
-						sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
-						sql += " FROM   pathnames";
-						sql += " order by c_pathorder desc ";
-
+					String parentPath = StringUtil.getParentPath(cType.getKey().substring(tableCd.length()+2));
+										
+					if (KeynameCache.containsKey(parentPath)) {
+						cType.setKeyName(KeynameCache.get(parentPath));
+						skipCount++;
 					}
-
-					else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-
-
-						sql = "WITH pathnames (c_name, c_fullname, c_path, c_pathorder) ";
-						sql += " AS ";
-						sql += " ( ";
-						sql += "   select c_name, c_fullname, ";
-						sql += "        substr(c_fullname, 1, length(c_fullname) - instr(reverse(c_fullname),'\\',  2) + 1) as c_path,";
-						sql += "       1 as c_pathorder";
-						sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
-						sql += "   UNION ALL";
-						sql += "   select m.c_name, m.c_fullname,  substr(m.c_fullname, 1, length(m.c_fullname) - instr(reverse(m.c_fullname), '\\',  2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
-						sql += "  from " + metadataSchema+tableName  + "   m";
-						sql += "       inner join pathnames p on m.c_fullname = p.c_path";
-
-						sql += " )";
-						sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
-						sql += " FROM   pathnames";
-						sql += " order by c_pathorder desc ";
-					} 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-
-						sql  = "WITH RECURSIVE pathnames ";
-						sql += " AS";
-						sql += " (";
-						sql += "    select c_name, c_fullname,";
-						sql += "      substr(c_fullname, 1, length(c_fullname) - strpos(substr(reverse(c_fullname), 2), '\\') ) as c_path,";
-						sql += "      1 as c_pathorder";
-						sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
-						sql += "    UNION ALL";
-						sql += "    select m.c_name, m.c_fullname,  ";
-						sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - strpos(substr(reverse(m.c_fullname), 2), '\\') ) as c_path,   c_pathorder + 1 as c_pathorder";
-
-						sql += "    from " + metadataSchema+tableName  + "  m";
-						sql += "        inner join pathnames p on m.c_fullname = p.c_path";
-
-						sql += " ) ";
-						sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
-						sql += " FROM   pathnames";
-						sql += " order by c_pathorder desc";
+					else {
+						if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+							sql = "WITH pathnames ";
+							sql += " AS";
+							sql += " (";
+							sql += "    select c_name, c_fullname,";
+							sql += "        substring(c_fullname, 1, len(c_fullname) - charindex('\\', reverse(c_fullname), 2) + 1) as c_path,";
+							sql += "        1 as c_pathorder";
+							sql += "    from " + metadataSchema+tableName  + " where c_fullname =  ?";
+							sql += "    UNION ALL";
+							sql += "    select m.c_name, m.c_fullname,  substring(m.c_fullname, 1, len(m.c_fullname) - charindex('\\', reverse(m.c_fullname), 2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
+							sql += "    from " + metadataSchema+tableName  + "  m";
+							sql += "        inner join pathnames p on m.c_fullname = p.c_path";   
+							sql += " )";
+							sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+							sql += " FROM   pathnames";
+							sql += " order by c_pathorder desc ";
+	
+						}
+	
+						else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
+	
+	
+							sql = "WITH pathnames (c_name, c_fullname, c_path, c_pathorder) ";
+							sql += " AS ";
+							sql += " ( ";
+							sql += "   select c_name, c_fullname, ";
+							sql += "        substr(c_fullname, 1, length(c_fullname) - instr(reverse(c_fullname),'\\',  2) + 1) as c_path,";
+							sql += "       1 as c_pathorder";
+							sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
+							sql += "   UNION ALL";
+							sql += "   select m.c_name, m.c_fullname,  substr(m.c_fullname, 1, length(m.c_fullname) - instr(reverse(m.c_fullname), '\\',  2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
+							sql += "  from " + metadataSchema+tableName  + "   m";
+							sql += "       inner join pathnames p on m.c_fullname = p.c_path";
+	
+							sql += " )";
+							sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+							sql += " FROM   pathnames";
+							sql += " order by c_pathorder desc ";
+						} 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
+	
+							sql  = "WITH RECURSIVE pathnames ";
+							sql += " AS";
+							sql += " (";
+							sql += "    select c_name, c_fullname,";
+							sql += "      substr(c_fullname, 1, length(c_fullname) - strpos(substr(reverse(c_fullname), 2), '\\') ) as c_path,";
+							sql += "      1 as c_pathorder";
+							sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
+							sql += "    UNION ALL";
+							sql += "    select m.c_name, m.c_fullname,  ";
+							sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - strpos(substr(reverse(m.c_fullname), 2), '\\') ) as c_path,   c_pathorder + 1 as c_pathorder";
+	
+							sql += "    from " + metadataSchema+tableName  + "  m";
+							sql += "        inner join pathnames p on m.c_fullname = p.c_path";
+	
+							sql += " ) ";
+							sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+							sql += " FROM   pathnames";
+							sql += " order by c_pathorder desc";
+						}
+						
+						
+						//List  rows = jt.queryForList(sql, path);
+	
+						/*
+						 * 			List<String> names = jt.query(sql,  new RowMapper() {
+						      public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+						        return resultSet.getString(1);
+						      }
+						    }, path);
+						 */
+						List<ConceptType> names = jt.query(sql, new GetConceptParentMapper(), parentPath);
+						
+						cType.setKeyName("\\");
+						for (int y=skipPathCount; y< names.size(); y++) {
+							cType.setKeyName(cType.getKeyName() + names.get(y).getName());
+							if ((y + 1) < names.size())
+								cType.setKeyName(cType.getKeyName() + "\\" );
+						//+  \\ ");
+						
+						}
 					}
-					
-					
-					//List  rows = jt.queryForList(sql, path);
-
-					/*
-					 * 			List<String> names = jt.query(sql,  new RowMapper() {
-					      public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-					        return resultSet.getString(1);
-					      }
-					    }, path);
-					 */
-					List<ConceptType> names = jt.query(sql, new GetConceptParentMapper(), path);
-					
-					cType.setKeyName("");
-					for (int y=0; y< names.size(); y++) {
-						cType.setKeyName(cType.getKeyName() + names.get(y).getName());
-						if ((y + 1) < names.size())
-							cType.setKeyName(cType.getKeyName() + "\\");
-					//+  \\ ");
-					
-					}
-
+					KeynameCache.put(parentPath, cType.getKeyName());
+					cType.setKeyName(cType.getKeyName()+"\\"+cType.getName()+"\\");
 				}
+				if (skipCount>0) log.debug("Skipped keyname lookups due to caching ="+skipCount);
 				
 				// Add list to results after adding parent list names
 				if (queryResult == null)
