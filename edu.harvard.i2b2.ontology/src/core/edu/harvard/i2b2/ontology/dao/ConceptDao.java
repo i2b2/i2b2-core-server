@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -708,43 +707,13 @@ public class ConceptDao extends JdbcDaoSupport {
 					throw new I2B2DAOException("Database Error");
 				}
 				*/
-
-				//jgk
-				// This does a linear search through fullnames for each previous fullname, O(n^2) :(
-				// BUT it assumes its sorted by hlevel so it only has to search through whats already seen - n(n+1)/2 operations 
-				if (list.size()>0 && vocabType.isReducedResults()!=null && vocabType.isReducedResults()) {
-					ArrayList<String> seen = new ArrayList<String>(); 
-					ArrayList<ConceptType> keep = new ArrayList<ConceptType>();
-					Iterator<ConceptType> it = list.iterator();
-					while (it.hasNext())
-					{
-						ConceptType node = (ConceptType)it.next();
-						String key = node.getKey();
-						boolean bAbort = false;
-						for (String k : seen) {
-							if(key.startsWith(k) && !key.equals(k) /* <-- don't kill the synonyms */ ) {
-								bAbort = true;
-								break;
-							}
-						}
-						if (!bAbort) { 
-							// Add nodes that were not subsumed to the keep list
-							keep.add(node);
-						}
-						// Hidden and inactive should not subsume other nodes - exclude them
-						if (node.getVisualattributes().contains("A")) 
-							seen.add(node.getKey());
-					}
-					log.debug("Reduced find terms from "+list.size()+" to "+keep.size());
-					list = keep;
-				}
 				
+			
 
 				String sql = "";
 				for (ConceptType cType: list) {
 					//String path = cType.getDimcode(); //StringUtil.getPath(childrenType.getParent());
 					String path = StringUtil.getParentPath(cType.getDimcode());
-						
 					if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
 						sql = "WITH pathnames ";
 						sql += " AS";
