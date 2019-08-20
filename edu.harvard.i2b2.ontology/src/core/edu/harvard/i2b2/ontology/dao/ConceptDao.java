@@ -742,7 +742,15 @@ public class ConceptDao extends JdbcDaoSupport {
 					// Only do keyname lookups if we haven't exceeded the max				
 					HashMap<String,String> KeynameCache = new HashMap<String,String>();
 					int skipCount = 0; // for debug, number of cache hits
-					int skipPathCount = category.split("\\\\").length -2; // preamble elements in path, not to be output in key name (everything but final element in category path)
+					//int skipPathCount = category.split("\\\\").length -2; // preamble elements in path, not to be output in key name (everything but final element in category path)
+					
+					// A little code to ignore a path in the category name, if there is more than one element.
+					// e.g., \\i2b2_MED\Medications\ will ignore i2b2_MED
+					String[] skipPaths = category.split("\\\\");
+					String skipPath = "";
+					for (int j=1;j<skipPaths.length-1;j++) skipPath=skipPath+"\\"+skipPaths[j];
+					skipPath=skipPath+"\\";
+					
 					String sql = "";
 					for (ConceptType cType: list) {
 						//String path = cType.getDimcode(); //StringUtil.getPath(childrenType.getParent());
@@ -760,13 +768,13 @@ public class ConceptDao extends JdbcDaoSupport {
 								sql += "    select c_name, c_fullname,";
 								sql += "        substring(c_fullname, 1, len(c_fullname) - charindex('\\', reverse(c_fullname), 2) + 1) as c_path,";
 								sql += "        1 as c_pathorder";
-								sql += "    from " + metadataSchema+tableName  + " where c_fullname =  ?";
+								sql += "    from " + metadataSchema+tableName  + " where c_fullname =  ? and c_synonym_cd='N'";
 								sql += "    UNION ALL";
 								sql += "    select m.c_name, m.c_fullname,  substring(m.c_fullname, 1, len(m.c_fullname) - charindex('\\', reverse(m.c_fullname), 2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
 								sql += "    from " + metadataSchema+tableName  + "  m";
-								sql += "        inner join pathnames p on m.c_fullname = p.c_path";   
+								sql += "        inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";   
 								sql += " )";
-								sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+								sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
 								sql += " FROM   pathnames";
 								sql += " order by c_pathorder desc ";
 		
@@ -781,14 +789,14 @@ public class ConceptDao extends JdbcDaoSupport {
 								sql += "   select c_name, c_fullname, ";
 								sql += "        substr(c_fullname, 1, length(c_fullname) - instr(reverse(c_fullname),'\\',  2) + 1) as c_path,";
 								sql += "       1 as c_pathorder";
-								sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
+								sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? and c_synonym_cd='N'";
 								sql += "   UNION ALL";
 								sql += "   select m.c_name, m.c_fullname,  substr(m.c_fullname, 1, length(m.c_fullname) - instr(reverse(m.c_fullname), '\\',  2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
 								sql += "  from " + metadataSchema+tableName  + "   m";
-								sql += "       inner join pathnames p on m.c_fullname = p.c_path";
+								sql += "       inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";
 		
 								sql += " )";
-								sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+								sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
 								sql += " FROM   pathnames";
 								sql += " order by c_pathorder desc ";
 							} 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
@@ -799,16 +807,16 @@ public class ConceptDao extends JdbcDaoSupport {
 								sql += "    select c_name, c_fullname,";
 								sql += "      substr(c_fullname, 1, length(c_fullname) - strpos(substr(reverse(c_fullname), 2), '\\') ) as c_path,";
 								sql += "      1 as c_pathorder";
-								sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? ";
+								sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? and c_synonym_cd='N'";
 								sql += "    UNION ALL";
 								sql += "    select m.c_name, m.c_fullname,  ";
 								sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - strpos(substr(reverse(m.c_fullname), 2), '\\') ) as c_path,   c_pathorder + 1 as c_pathorder";
 		
 								sql += "    from " + metadataSchema+tableName  + "  m";
-								sql += "        inner join pathnames p on m.c_fullname = p.c_path";
+								sql += "        inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";
 		
 								sql += " ) ";
-								sql += " SELECT distinct c_name, c_pathorder as c_hlevel";
+								sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
 								sql += " FROM   pathnames";
 								sql += " order by c_pathorder desc";
 							}
@@ -823,16 +831,29 @@ public class ConceptDao extends JdbcDaoSupport {
 							      }
 							    }, path);
 							 */
-							List<ConceptType> names = jt.query(sql, new GetConceptParentMapper(), parentPath);
+							List<ConceptType> names = jt.query(sql, new RowMapper<ConceptType>() {
+									public ConceptType mapRow(ResultSet rs, int rowNum) throws SQLException {
+										ConceptType category = new ConceptType();	 
+
+										category.setKey(rs.getString("c_fullname"));
+										category.setLevel(rs.getInt("c_hlevel"));
+										category.setName(rs.getString("c_name"));
+										return category;
+									}
+								}/*new GetConceptParentMapper()*/, parentPath);
 							
 							cType.setKeyName("\\");
-							for (int y=skipPathCount; y< names.size(); y++) {
+							for (int y=0; y< names.size(); y++) {
+								if(names.get(y).getKey().equals(skipPath)) continue; // only one path component for the category is ever included
 								cType.setKeyName(cType.getKeyName() + names.get(y).getName());
 								if ((y + 1) < names.size())
 									cType.setKeyName(cType.getKeyName() + "\\" );
 							//+  \\ ");
 							
 							}
+							// In the event that the category does not have a row in the ontology, insert an entry for it manually
+							// TODO: Is the actual category name anywhere? (Currently using the code)
+							if (names.size()+skipPaths.length-2<cType.getLevel()) cType.setKeyName("\\"+vocabType.getCategory()+cType.getKeyName());
 						}
 						KeynameCache.put(parentPath, cType.getKeyName());
 						cType.setKeyName(cType.getKeyName()+"\\"+cType.getName()+"\\");
