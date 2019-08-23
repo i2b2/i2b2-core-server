@@ -534,7 +534,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		List<ConceptType> queryResult = null;
 		if (tableCd.equals("@"))
 		{
-			String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_visualattributes not like '_H%'" ;
+			String tableSql = "select distinct(c_table_name), c_fullname, c_name from " + metadataSchema + "table_access where c_visualattributes not like '_H%'" ;
 			try {
 				categoryResult = jt.query(tableSql, new GetConceptNameMapper());	    
 			} catch (DataAccessException e) {
@@ -543,8 +543,8 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 
 
-		} else {
-			String tableSql = "select distinct(c_table_name), c_fullname from " + metadataSchema + "table_access where c_table_cd = ? " ;
+		} else { 
+			String tableSql = "select distinct(c_table_name), c_fullname, c_name from " + metadataSchema + "table_access where c_table_cd = ? " ;
 			try {
 				categoryResult = jt.query(tableSql, new GetConceptNameMapper(), tableCd);	    
 			} catch (DataAccessException e) {
@@ -698,6 +698,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				// Add parent poaths
 				
 				String tableName=categoryResult.get(i).getTablename();
+				String name = categoryResult.get(i).getName();
 				/*
 				String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
 				try {
@@ -738,7 +739,7 @@ public class ConceptDao extends JdbcDaoSupport {
 					list = keep;
 				}
 				
-				if (list.size() <= vocabType.getMax()) {
+				if (list.size() <= vocabType.getMax() && vocabType.isIncludeParent()!=null && vocabType.isIncludeParent()) {
 					// Only do keyname lookups if we haven't exceeded the max				
 					HashMap<String,String> KeynameCache = new HashMap<String,String>();
 					int skipCount = 0; // for debug, number of cache hits
@@ -853,7 +854,7 @@ public class ConceptDao extends JdbcDaoSupport {
 							}
 							// In the event that the category does not have a row in the ontology, insert an entry for it manually
 							// TODO: Is the actual category name anywhere? (Currently using the code)
-							if (names.size()+skipPaths.length-2<cType.getLevel()) cType.setKeyName("\\"+vocabType.getCategory()+cType.getKeyName());
+							if (names.size()+skipPaths.length-2<cType.getLevel()) cType.setKeyName("\\"+name+cType.getKeyName());
 						}
 						KeynameCache.put(parentPath, cType.getKeyName());
 						cType.setKeyName(cType.getKeyName()+"\\"+cType.getName()+"\\");
@@ -2158,6 +2159,7 @@ class GetConceptNameMapper implements RowMapper<ConceptType> {
 
 		category.setTablename(rs.getString("c_table_name"));
 		category.setKey(rs.getString("c_fullname"));
+		category.setName(rs.getString("c_name"));
 		return category;
 	}
 }

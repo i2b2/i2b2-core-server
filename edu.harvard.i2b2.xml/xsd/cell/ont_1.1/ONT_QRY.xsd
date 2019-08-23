@@ -121,6 +121,7 @@
     	<xs:attribute name="category" type="xs:string" />
     	<xs:attributeGroup ref="ont:return_attributeGroup" />
     	<xs:attribute name="reducedResults" type="xs:boolean"></xs:attribute>
+    	<xs:attribute name="includeParent" type="xs:boolean"></xs:attribute>
     </xs:complexType>
 
     <xs:attributeGroup name="return_attributeGroup">
