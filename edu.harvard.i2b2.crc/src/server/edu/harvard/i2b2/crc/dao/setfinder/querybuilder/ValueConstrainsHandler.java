@@ -128,8 +128,8 @@ public class ValueConstrainsHandler {
 				constraintSql += " valtype_cd = 'B' AND ";
 				// constrainSql = " valtype_cd = 'B' AND " ;
 				if (oracleFlag == true) {
-					constraintSql += " contains(observation_blob,'"
-							+ containsSql + "') ";
+					constraintSql += " contains(observation_blob,'{"
+							+ containsSql + "}') ";
 
 					if (panelAccuracyScale > 0) {
 						constraintSql += " >= " + panelAccuracyScale + " ";
