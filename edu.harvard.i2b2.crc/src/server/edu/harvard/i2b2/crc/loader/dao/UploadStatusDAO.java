@@ -536,7 +536,8 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 
 			String sql = null;
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					LoaderDAOFactoryHelper.SQLSERVER)) {
+					LoaderDAOFactoryHelper.SQLSERVER) || (dataSourceLookup.getServerType().equalsIgnoreCase(
+							LoaderDAOFactoryHelper.POSTGRESQL))) {
 				sql = "INSERT INTO " + schemaName + "upload_status (" +
 
 				" upload_label, " + " user_id, " + " source_cd, "
@@ -561,7 +562,8 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 			this.setDataSource(dataSource);
 
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					LoaderDAOFactoryHelper.ORACLE)) {
+					LoaderDAOFactoryHelper.ORACLE) || dataSourceLookup.getServerType().equalsIgnoreCase(
+							LoaderDAOFactoryHelper.POSTGRESQL)) {
 				declareParameter(new SqlParameter(Types.INTEGER));
 			}
 			declareParameter(new SqlParameter(Types.VARCHAR));
@@ -584,7 +586,8 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 			int uploadId = 0;
 			Object[] objs = null;
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					LoaderDAOFactoryHelper.ORACLE)) {
+					LoaderDAOFactoryHelper.ORACLE) || dataSourceLookup.getServerType().equalsIgnoreCase(
+							LoaderDAOFactoryHelper.POSTGRESQL)) {
 				uploadId = getJdbcTemplate().queryForObject(
 						"select sq_uploadstatus_uploadid.nextval from dual",Integer.class);
 				uploadStatus.setUploadId(uploadId);
