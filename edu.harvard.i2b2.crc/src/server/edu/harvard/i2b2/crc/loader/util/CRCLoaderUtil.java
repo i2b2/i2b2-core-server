@@ -328,7 +328,7 @@ public class CRCLoaderUtil {
 
 
 	/**
-	 * Load application property file into memoryß
+	 * Load application property file into memory
 	 */
 	private String getPropertyValue(String propertyName) throws I2B2Exception {
 		if (appProperties == null) {
