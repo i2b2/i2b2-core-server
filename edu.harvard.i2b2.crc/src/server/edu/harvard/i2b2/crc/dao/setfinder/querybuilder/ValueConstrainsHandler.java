@@ -58,7 +58,7 @@ public class ValueConstrainsHandler {
 	// defined here and included in the appropriate sql statements below. Additionally,
 	// I've maintained the old constructValueConstainClause so 1.6 queries work the same
 	private String defaultModifierConstraint = " modifier_cd = '@' ";
-	
+
 
 	public void setUnitCdConversionFlag(boolean unitCdConverstionFlag,
 			String unitCdInClause, String unitCdSwitchClause) {
@@ -75,12 +75,12 @@ public class ValueConstrainsHandler {
 		return constructValueConstainClause(valueConstrainList, dbServerType, dbSchemaName, panelAccuracyScale, false);
 	}
 
-	
+
 	public String[] constructValueConstainClause(
 			List<ItemType.ConstrainByValue> valueConstrainList,
 			String dbServerType, String dbSchemaName, int panelAccuracyScale,
 			boolean useDefaultModifier)
-			throws I2B2DAOException {
+					throws I2B2DAOException {
 		String fullConstrainSql = "", containsJoinSql = "";
 		System.out.println("panel accuracy scale" + panelAccuracyScale);
 		panelAccuracyScale = 0;
@@ -128,14 +128,19 @@ public class ValueConstrainsHandler {
 				constraintSql += " valtype_cd = 'B' AND ";
 				// constrainSql = " valtype_cd = 'B' AND " ;
 				if (oracleFlag == true) {
-					constraintSql += " contains(observation_blob,'{"
-							+ containsSql + "}') ";
+					constraintSql += " ( ";
+					for (String str: containsSql.split("\\s+")) {
+						constraintSql += " contains(observation_blob,'{"
+								+ str + "}') ";
 
-					if (panelAccuracyScale > 0) {
-						constraintSql += " >= " + panelAccuracyScale + " ";
-					} else {
-						constraintSql += " > 0 ";
+						if (panelAccuracyScale > 0) {
+							constraintSql += " >= " + panelAccuracyScale + " ";
+						} else {
+							constraintSql += " > 0 ";
+						}
+						constraintSql += " OR ";
 					}
+					constraintSql += " 1=0 ) ";
 
 				} else {
 					if (panelAccuracyScale > 0) {
@@ -156,8 +161,8 @@ public class ValueConstrainsHandler {
 							constraintSql += " observation_blob @@  to_tsquery('english', '"
 									+ containsSql + "') ";						
 						else
-						constraintSql += " CONTAINS(observation_blob,'"
-								+ containsSql + "') ";
+							constraintSql += " CONTAINS(observation_blob,'"
+									+ containsSql + "') ";
 					}
 				}
 				log.debug("LARGETEXT where clause " + constraintSql);
@@ -186,16 +191,16 @@ public class ValueConstrainsHandler {
 					String likeValueFormat = "";
 					if (operatorOption.equalsIgnoreCase("[begin]")) {
 						likeValueFormat = "'" + value.replaceAll("'", "''")
-								+ "%'";
+						+ "%'";
 					} else if (operatorOption.equalsIgnoreCase("[end]")) {
 						likeValueFormat = "'%" + value.replaceAll("'", "''")
-								+ "'";
+						+ "'";
 					} else if (operatorOption.equalsIgnoreCase("[contains]")) {
 						likeValueFormat = "'%" + value.replaceAll("'", "''")
-								+ "%'";
+						+ "%'";
 					} else if (operatorOption.equalsIgnoreCase("[exact]")) {
 						likeValueFormat = "'" + value.replaceAll("'", "''")
-								+ "'";
+						+ "'";
 						if (oracleFlag) {
 							constraintSql += " valtype_cd = 'T' AND upper(tval_char) = "
 									+ " upper(" + likeValueFormat + ")";
