@@ -57,7 +57,7 @@ public class I2B2ResponseMessageHelper {
 			QueryResultBean queryResultBean = new QueryResultBean();
 			ResultResponseType responseType1 = queryResultBean
 					.getResultInstanceFromQueryInstanceId(sfDAOFactory
-							.getDataSourceLookup(), userId, queryInstanceId);
+							.getDataSourceLookup(), userId, queryInstanceId, false);
 
 			// set result instance
 			masterInstanceResultType.getQueryResultInstance().addAll(

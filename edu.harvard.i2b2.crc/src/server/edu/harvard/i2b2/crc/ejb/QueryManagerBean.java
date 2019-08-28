@@ -222,7 +222,7 @@ public class QueryManagerBean{ // implements SessionBean {
 			QueryResultBean queryResultBean = new QueryResultBean();
 			ResultResponseType responseType1 = queryResultBean
 					.getResultInstanceFromQueryInstanceId(dataSourceLookup,
-							userId, queryInstanceId);
+							userId, queryInstanceId, false);
 
 			log.debug("Size of result when called thru ejb "
 					+ responseType1.getQueryResultInstance().size());

@@ -14,6 +14,8 @@
  */
 package edu.harvard.i2b2.crc.delegate.setfinder;
 
+import java.util.List;
+
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
@@ -38,14 +40,16 @@ public class GetQueryResultInstanceListFromQueryInstanceIdHandler
     String requestXml = null;
     InstanceRequestType queryInstanceReqType = null;
     PsmQryHeaderType headerType = null;
+    boolean nonObsUser = false;
 
     /**
     * Constuctor which accepts i2b2 request message xml
     * @param requestXml
+     * @param roles 
     * @throws I2B2Exception
     */
     public GetQueryResultInstanceListFromQueryInstanceIdHandler(
-        String requestXml) throws I2B2Exception {
+        String requestXml, List<String> roles) throws I2B2Exception {
         this.requestXml = requestXml;
 
         try {
@@ -54,6 +58,8 @@ public class GetQueryResultInstanceListFromQueryInstanceIdHandler
             queryInstanceReqType = (InstanceRequestType) this.getRequestType(requestXml,
                     edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceRequestType.class);
             this.setDataSourceLookup(requestXml);
+            if (roles.contains("DATA_AGG"))
+            	nonObsUser = true;
         } catch (JAXBUtilException jaxbUtilEx) {
             throw new I2B2Exception("Error ", jaxbUtilEx);
         }
@@ -92,7 +98,7 @@ public class GetQueryResultInstanceListFromQueryInstanceIdHandler
 
             QueryResultBean query = new QueryResultBean();
             resultResponseType = query.getResultInstanceFromQueryInstanceId(this.getDataSourceLookup(),userId,
-                    queryInstanceReqType.getQueryInstanceId());
+                    queryInstanceReqType.getQueryInstanceId(), nonObsUser);
 
             resultResponseType.setStatus(this.buildCRCStausType(RequestHandlerDelegate.DONE_TYPE, "DONE"));
         } catch (Exception e) {

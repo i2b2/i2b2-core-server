@@ -303,7 +303,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 					.equals(
 							PsmRequestTypeType.CRC_QRY_GET_QUERY_RESULT_INSTANCE_LIST_FROM_QUERY_INSTANCE_ID)) {
 				GetQueryResultInstanceListFromQueryInstanceIdHandler handler = new GetQueryResultInstanceListFromQueryInstanceIdHandler(
-						requestXml);
+						requestXml, projectType.getRole());
 				responseBodyType = handler.execute();
 			} else if (headerType
 					.getRequestType()
