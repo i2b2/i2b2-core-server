@@ -58,13 +58,14 @@ public class QueryResultBean { // implements SessionBean {
 	/**
 	 * 
 	 * 
+	 * @param nonObsUser 
 	 * @throws I2B2DAOException 
 	 * @ejb.interface-method view-type="both"
 	 * @ejb.transaction type="Required"
 	 * 
 	 * 
 	 */
-	public ResultResponseType getResultInstanceFromQueryInstanceId(DataSourceLookup dataSourceLookup,String userId, String  queryInstanceId) throws I2B2DAOException {
+	public ResultResponseType getResultInstanceFromQueryInstanceId(DataSourceLookup dataSourceLookup,String userId, String  queryInstanceId, boolean nonObsUser) throws I2B2DAOException {
 		SetFinderDAOFactory sfDaoFactory = this.getSetFinderDaoFactory(dataSourceLookup.getDomainId(), dataSourceLookup.getProjectPath(), dataSourceLookup.getOwnerId());
 		IQueryResultInstanceDao patientSetResultDao = sfDaoFactory.getPatientSetResultDAO();
 		log.debug("got resultinstancesdao" + patientSetResultDao.toString());
@@ -73,7 +74,8 @@ public class QueryResultBean { // implements SessionBean {
 		ResultResponseType resultResponseType = new ResultResponseType();
 		DTOFactory dtoFactory = new DTOFactory(); 
 		for(QtQueryResultInstance resultInstance: queryResultInstanceList) { 
-			
+			if (nonObsUser)
+				resultInstance.setSetSize(resultInstance.getRealSetSize());
 			QueryResultInstanceType queryResultInstanceType = PSMFactory.buildQueryResultInstanceType(resultInstance);
 			//System.out.println("RESULT INSTANCE " + resultInstance.getResultInstanceId() );
 			resultResponseType.getQueryResultInstance().add(queryResultInstanceType);
