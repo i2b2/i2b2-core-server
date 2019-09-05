@@ -739,7 +739,7 @@ public class ConceptDao extends JdbcDaoSupport {
 					list = keep;
 				}
 				
-				if (list.size() <= vocabType.getMax() && vocabType.isKeyname()!=null && vocabType.isKeyname()) {
+				if (list.size() <= vocabType.getMax() && vocabType.isKeyname()!=null && vocabType.isKeyname() && list.size()<400 /* sanity check - no keyname lookup in case of v v large result */) {
 					// Only do keyname lookups if we haven't exceeded the max				
 					HashMap<String,String> KeynameCache = new HashMap<String,String>();
 					int skipCount = 0; // for debug, number of cache hits
