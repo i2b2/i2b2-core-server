@@ -846,7 +846,9 @@ public class ConceptDao extends JdbcDaoSupport {
 							cType.setKeyName("\\");
 							for (int y=0; y< names.size(); y++) {
 								if(names.get(y).getKey().equals(skipPath)) continue; // only one path component for the category is ever included
-								cType.setKeyName(cType.getKeyName() + names.get(y).getName());
+								if(names.get(y).getKey().equals(category)) 
+									cType.setKeyName(cType.getKeyName() + name); // Use the category name instead of the db row name, for clarity
+								else cType.setKeyName(cType.getKeyName() + names.get(y).getName());
 								if ((y + 1) < names.size())
 									cType.setKeyName(cType.getKeyName() + "\\" );
 							//+  \\ ");
