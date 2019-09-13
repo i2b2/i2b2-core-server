@@ -199,31 +199,6 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 				throw new I2B2DAOException("Database Error");
 			}
 		}	
-		//Mark node for deletion  --- change visAttrib to Hidden
-
-		/*			String updateSql = " update " + metadataSchema+tableName  + " set update_date = ?, c_visualattributes = ?  where c_fullname = ? and c_basecode = ?";
-			String updateChildrenSql = null;
-			if(deleteChildType.isIncludeChildren()){
-				if(serverType.equals("ORACLE"))
-					updateChildrenSql = " update " + metadataSchema+tableName  + " set update_date = ?, " +
-						"c_visualattributes = concat(substr(c_visualattributes,1,1) ,'HE' ) where c_fullname like ? ";
-				else 
-					updateChildrenSql = " update " + metadataSchema+tableName  + " set update_date = ?, " +
-					"c_visualattributes = substring(c_visualattributes,1,1) + 'H' + substring(c_visualattributes,3,1) where c_fullname like ? ";
-			}
-
-			String deleteSql = " delete from " + metadataSchema+tableName  + " where c_fullname = ? and c_name = ? and c_synonym_cd = ? and c_basecode = ?";
-			String deleteChildrenSql =  " delete from " + metadataSchema+tableName  + " where c_fullname like ? and c_visualattributes like '%E'";
-			int numRowsDeleted = -1;
-			try {
-		//		log.info(sql + " " + w_index);
-
-				numRowsDeleted = jt.update(updateSql,Calendar.getInstance().getTime(), deleteChildType.getVisualattribute(), StringUtil.getPath(deleteChildType.getKey()),
-							deleteChildType.getBasecode());
-				if(updateChildrenSql != null)
-					numRowsDeleted += jt.update(updateChildrenSql, Calendar.getInstance().getTime(),StringUtil.getPath(deleteChildType.getKey())+"%");
-
-		 */
 
 		String deleteChildrenSql = null;
 		String deleteSql = " delete from " + metadataSchema+tableName  + " where c_fullname = ? and c_basecode = ?";
@@ -691,19 +666,31 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 		return count;
 	}
 
+	public void truncateMetadataTable(DBInfoType dbInfo, String tableName) throws Exception {
 
+		String metadataSchema = dbInfo.getDb_fullSchema();
+		setDataSource(dbInfo.getDb_dataSource());
 
+		String checkForTableSql = "TRUNCATE TABLE " + metadataSchema + tableName ;
+
+		try {
+			jt.update(checkForTableSql);
+
+		} catch (Exception e) {
+
+		}
+	}
 
 	public void createMetadataTable(DBInfoType dbInfo, String tableName) throws Exception {
 
 		String metadataSchema = dbInfo.getDb_fullSchema();
 		setDataSource(dbInfo.getDb_dataSource());
 
-		
-		
+
+
 		String checkForTableSql = "SELECT count(*) from " + metadataSchema + tableName ;
 
-/*		if(dbInfo.getDb_serverType().equals("ORACLE"))
+		/*		if(dbInfo.getDb_serverType().equals("ORACLE"))
 			checkForTableSql = "SELECT count(*) from user_tab_cols where table_name = " + metadataSchema +"?";
 
 
@@ -711,17 +698,17 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 			checkForTableSql = "SELECT count(*) from " + metadataSchema.replace("dbo.", "") + "information_schema.tables where table_name = ?";
 
 		//		log.info(checkForTableSql);
-*/
+		 */
 		boolean createTables = false;
 		try {
-		int count = jt.queryForObject(checkForTableSql, Integer.class); //, metadataSchema + tableName)	;
-		//		log.info(checkForTableSql + " count " + count);
+			int count = jt.queryForObject(checkForTableSql, Integer.class); //, metadataSchema + tableName)	;
+			//		log.info(checkForTableSql + " count " + count);
 
 		} catch (Exception e) {
 			createTables = true;
 		}
-		
- 
+
+
 		if (createTables) {
 			String createSql = "CREATE TABLE " + metadataSchema + tableName +
 					"  (	C_HLEVEL INT			NOT NULL, C_FULLNAME VARCHAR(700)	NOT NULL, C_NAME VARCHAR(2000)		NOT NULL, "+
@@ -784,7 +771,7 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 				ee.printStackTrace();
 				throw(new I2B2Exception("metadata table or index creation failed"));
 			}
-		
+
 		}
 		//else
 		//	throw new Exception("Metadata Table already exists");
@@ -855,12 +842,25 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 			}
 
 
-			if (checkForTableAccessExistence( dbInfo,  concept.getTableName(), concept.getFullname()) < 1)
-				parameters.add(new Object[] { concept.getTableCd(), concept.getTableName(), concept.getProtectedAccess(), concept.getLevel(), concept.getFullname(), concept.getName(), concept.getSynonymCd(),
-						concept.getVisualattributes(), concept.getBasecode(), concept.getFacttablecolumn(), concept.getTotalnum(), xml, concept.getDimtablename(),
-						concept.getColumnname(),concept.getColumndatatype(), concept.getOperator(), concept.getDimcode(),  concept.getComment(),
-						concept.getTooltip(),  entryDate, changeDate, concept.getStatusCd(), concept.getValuetypeCd()}
-						);
+			if (checkForTableAccessExistence( dbInfo,  concept.getTableName(), concept.getFullname()) > 0)
+			{
+				String deleteSql = " delete from " + metadataSchema + "table_access  where c_table_name = ? and c_fullname = ?";
+
+				try {
+					jt.update(deleteSql, concept.getTableName(), concept.getFullname())	;
+					//			log.info(checkForTableSql + " count " + count);
+				} catch (Exception e) {
+
+					//throw e;
+				}
+			}
+
+
+			parameters.add(new Object[] { concept.getTableCd(), concept.getTableName(), concept.getProtectedAccess(), concept.getLevel(), concept.getFullname(), concept.getName(), concept.getSynonymCd(),
+					concept.getVisualattributes(), concept.getBasecode(), concept.getFacttablecolumn(), concept.getTotalnum(), xml, concept.getDimtablename(),
+					concept.getColumnname(),concept.getColumndatatype(), concept.getOperator(), concept.getDimcode(),  concept.getComment(),
+					concept.getTooltip(),  entryDate, changeDate, concept.getStatusCd(), concept.getValuetypeCd()}
+					);
 
 
 		}

@@ -34,7 +34,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.PidType.PatientMapId;
  */
 public class PidDAO extends CRCLoaderDAO implements IPidDAO {
 
-	private int DB_BATCH_INSERT_SIZE = 2000;
+	private int DB_BATCH_INSERT_SIZE = 1;
 
 	private static Log log = LogFactory.getLog(PidDAO.class);
 	private DataSourceLookup dataSourceLookup = null;
@@ -210,7 +210,7 @@ public class PidDAO extends CRCLoaderDAO implements IPidDAO {
 							.getPatientId().getDownloadDate()
 							.toGregorianCalendar().getTime() : null,
 					pid.getPatientId().getSourcesystemCd() };
-			super.update(objs);
+			update(objs);
 		}
 
 	}

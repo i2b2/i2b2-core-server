@@ -211,6 +211,8 @@ public class CallPMUtil {
 						&& (paramType.getValue().equalsIgnoreCase(projectId)))) {
 					projectType = pType;
 
+					// Add user params to porject params
+					projectType.getParam().addAll(userType.getParam());
 					break;
 				}
 			}

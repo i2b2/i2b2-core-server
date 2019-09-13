@@ -34,7 +34,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.EidType.EventMapId;
  */
 public class EidDAO extends CRCLoaderDAO implements IEidDAO {
 
-	private int DB_BATCH_INSERT_SIZE = 2000;
+	private int DB_BATCH_INSERT_SIZE = 1;
 
 	private static Log log = LogFactory.getLog(EidDAO.class);
 	private DataSourceLookup dataSourceLookup = null;

@@ -68,8 +68,10 @@ public class LoadMetadataHandler extends RequestHandler {
 
 		else {	
 			try {
-				//numAdded = 
 				persistDao.createMetadataTable(this.getDbInfo(), loadMsg.getMetadataLoad().getTableName());
+				if (loadMsg.getMetadataLoad().isTruncateTable())
+					persistDao.truncateMetadataTable(this.getDbInfo(), loadMsg.getMetadataLoad().getTableName());
+					
 				persistDao.loadMetadata(this.getDbInfo(), loadMsg.getMetadataLoad().getTableName(),loadMsg.getMetadataLoad().getMetadata());
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -79,17 +81,7 @@ public class LoadMetadataHandler extends RequestHandler {
 		}
 		// no errors found 
 		if(responseMessageType == null) {
-			// no db error but response is empty
-			/*		if (numAdded == 0) {
-				log.error("concept not inserted");
-				responseMessageType = MessageFactory.doBuildErrorResponse(loadMsg.getMessageHeaderType(), "Database insertion error");
-			}
-			else if (numAdded == -1) {
-				log.error("database error");
-				responseMessageType = MessageFactory.doBuildErrorResponse(loadMsg.getMessageHeaderType(), "Database error");
-			}
-			 */
-			//		else {
+
 			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(loadMsg.getMessageHeaderType());          
 			responseMessageType = MessageFactory.createBuildResponse(messageHeader);
 

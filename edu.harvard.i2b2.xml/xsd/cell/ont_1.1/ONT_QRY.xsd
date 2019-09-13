@@ -332,6 +332,7 @@
             <xs:element name="metadata" type="ont:ontologyDataType" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="table_name" type="xs:string"/>
+         <xs:attribute name="truncate_table" type="xs:boolean" default="false"/>
     </xs:complexType> 
        
     <xs:complexType name="ontologyDataType">

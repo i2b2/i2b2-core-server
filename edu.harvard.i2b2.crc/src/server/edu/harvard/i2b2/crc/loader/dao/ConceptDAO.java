@@ -32,7 +32,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.ConceptType;
  */
 public class ConceptDAO extends CRCLoaderDAO implements IConceptDAO {
 
-	private int DB_BATCH_INSERT_SIZE = 2000;
+	private int DB_BATCH_INSERT_SIZE = 1;
 	private DataSourceLookup dataSourceLookup = null;
 
 	private static Log log = LogFactory.getLog(ConceptDAO.class);

@@ -34,5 +34,8 @@
     <operation name="getLoadDataStatusRequest">
         <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
     </operation>
+    <operation name="redcapPush">
+        <messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+    </operation>    
 </service>
 

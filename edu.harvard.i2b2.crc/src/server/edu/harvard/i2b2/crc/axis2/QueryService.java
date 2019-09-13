@@ -25,9 +25,6 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-//import org.chip.ihl.surveymanager.redcap.RedcapResult;
-//import org.chip.ihl.surveymanager.service.RedcapService;
-//import org.chip.ihl.surveymanager.service.RedcapWrapper;
 import org.springframework.util.Assert;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -55,6 +52,9 @@ import edu.harvard.i2b2.crc.axis2.GetAllDblookupsDataMessage;
 import edu.harvard.i2b2.crc.axis2.GetDblookupDataMessage;
 import edu.harvard.i2b2.crc.axis2.MessageFactory;
 import edu.harvard.i2b2.crc.axis2.SetDblookupDataMessage;
+import edu.harvard.i2b2.crc.dao.redcap.RedcapPuller;
+import edu.harvard.i2b2.crc.dao.redcap.APISurveyResponse;
+import edu.harvard.i2b2.crc.dao.redcap.SurveyRecord;
 
 /**
  * <b>Axis2's service class<b>
@@ -130,55 +130,36 @@ public class QueryService {
 		return handleRequest(PDO_REQUEST, omElement);
 	}
 
-	/**
+	/*
 	 * Webservice function to handle find request
 	 * 
 	 * @param omElement
 	 *            request message wrapped in OMElement
 	 * @return response message in wrapped inside OMElement
-	
+	 * */
+
 	public void redcapPush(
 			String record,
 			String recordType,
 			//@RequestParam(value = "token", required = true) String projectToken,
-			String redcap_event_name,
+			String project_id,
 			String redcap_url,
 			String instrument) {
 
-		RedcapService redcapService = new RedcapWrapper();
+		RedcapPuller redcapService = new RedcapPuller();
 		log.debug("Inside getNameInfo request " );
 
 		if (recordType == null || recordType.isEmpty()) 
 			recordType = EAV_RECORD_TYPE;
-
-		RedcapResult redcapResult = redcapService.pullRecordRequest(redcap_url, recordType, record, instrument, redcap_event_name);
-
+		try {
+			redcapService.pullRecordRequest(redcap_url, recordType, record, instrument, project_id);
+		} catch (Exception e) {
+			log.error("i2b2 exception", e);
+		} catch (Throwable e) {
+			log.error("Throwable", e);
+		}
 	}
- */
-	/*
-	public OMElement redcapPush(OMElement omElement) {
-		Assert.notNull(omElement, "redcapPush  OMElement must not be null");
-		log.debug("Inside getNameInfo request " + omElement);
-		return handleRequest(REDCAP_REQUEST, omElement);
-	}
-	 */
 
-	//   @RequestMapping(value = TRIGGER_BASE_REQUEST_URI + "/pull", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-	//   @ResponseStatus(value = HttpStatus.OK)
-	//	private static final String EAV_RECORD_TYPE = "eav";
-	/*  
-	  public void pullRedcapRecords(
-	            @RequestParam(value="record", required = false) String recordId,
-	            @RequestParam(value = "recordType", defaultValue = EAV_RECORD_TYPE) String recordType,
-	            //@RequestParam(value = "token", required = true) String projectToken,
-	            @RequestParam(value = "redcap_event_name", required = false) String eventName,
-	            @RequestParam(value = "redcap_url", required = true) String redcapBaseUrl,
-	            @RequestParam(value = "instrument", required = false) String surveyForm) {
-
-
-
-	  }
-	 */
 
 	/**
 	 * Webservice function to handle find request
@@ -491,8 +472,8 @@ public class QueryService {
 			requestHandlerDelegate = new GetNameInfoRequestDelegate();			
 		} else if (requestType.equals(QTBREAKDOWN_REQUEST)) {
 			requestHandlerDelegate = new QTBreakdownRequestDelegate();			
-	//	} else if (requestType.equals(REDCAP_REQUEST)) {
-//			requestHandlerDelegate = new RedCapRequestDelegate();			
+			//	} else if (requestType.equals(REDCAP_REQUEST)) {
+			//			requestHandlerDelegate = new RedCapRequestDelegate();			
 		}
 		OMElement returnElement = null;
 		try {

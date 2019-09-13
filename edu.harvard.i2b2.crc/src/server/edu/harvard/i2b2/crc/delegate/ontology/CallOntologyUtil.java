@@ -11,8 +11,10 @@ package edu.harvard.i2b2.crc.delegate.ontology;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBElement;
@@ -47,14 +49,17 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptsType;
+import edu.harvard.i2b2.crc.datavo.ontology.DeleteChildType;
 import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
 import edu.harvard.i2b2.crc.datavo.ontology.GetChildrenType;
 import edu.harvard.i2b2.crc.datavo.ontology.GetModifierInfoType;
 import edu.harvard.i2b2.crc.datavo.ontology.GetTermInfoType;
 import edu.harvard.i2b2.crc.datavo.ontology.MatchStrType;
+import edu.harvard.i2b2.crc.datavo.ontology.MetadataLoadType;
 import edu.harvard.i2b2.crc.datavo.ontology.ModifierType;
 import edu.harvard.i2b2.crc.datavo.ontology.ModifiersType;
 import edu.harvard.i2b2.crc.datavo.ontology.ObjectFactory;
+import edu.harvard.i2b2.crc.datavo.ontology.OntologyDataType;
 import edu.harvard.i2b2.crc.datavo.ontology.VocabRequestType;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
@@ -85,6 +90,52 @@ public class CallOntologyUtil {
 		}
 		return conceptType;
 	}
+
+	
+	public static MetadataLoadType callLoadData(String tablename,  List<OntologyDataType> c, SecurityType securityType,  String projectId, String ontologyUrl ) throws XMLStreamException,
+	JAXBUtilException, AxisFault, I2B2Exception {
+		
+		RequestMessageType requestMessageType = getLoadDataI2B2RequestLoadDataMessage(tablename,c, securityType, projectId.replaceAll("/", ""));
+		OMElement requestElement = buildOMElement(requestMessageType);
+		log.debug("CRC Ontology call's request xml from callLoadData:  " + requestElement);
+		log.debug("URL: " + ontologyUrl);
+		MetadataLoadType metadataLoadType = null;
+		try {
+			String response = ServiceClient.sendREST(ontologyUrl, requestElement);
+			metadataLoadType = getLoadDataFromResponse(response);
+		} catch (Exception e)
+		{
+
+		}
+		return metadataLoadType;
+		
+		
+	}
+
+	public static DeleteChildType callDeleteChild( DeleteChildType c, SecurityType securityType,  String projectId, String ontologyUrl ) throws XMLStreamException,
+	JAXBUtilException, AxisFault, I2B2Exception {
+		
+		RequestMessageType requestMessageType = getI2B2RequestDeleteChildMessage(c, securityType, projectId.replaceAll("/", ""));
+		OMElement requestElement = buildOMElement(requestMessageType);
+		log.debug("CRC Ontology call's request xml from callLoadData:  " + requestElement);
+		log.debug("URL: " + ontologyUrl);
+		DeleteChildType metadataLoadType = null;
+		try {
+			String response = ServiceClient.sendREST(ontologyUrl, requestElement);
+			metadataLoadType = getDeleteChildFromResponse(response);
+		} catch (Exception e)
+		{
+
+		}
+		return metadataLoadType;
+		
+		
+	}
+
+
+
+
+
 
 	public static DerivedFactColumnsType callGetFactColumns(String itemKey, SecurityType securityType,  String projectId, String ontologyUrl )
 			throws XMLStreamException, JAXBUtilException, AxisFault,I2B2Exception  {
@@ -224,6 +275,46 @@ public class CallOntologyUtil {
 				.getMessageBody().getAny(), ConceptsType.class);
 		return conceptsType;
 	}
+	
+	
+
+	private static MetadataLoadType getLoadDataFromResponse(String responseXml)
+			throws JAXBUtilException, I2B2DAOException {
+		JAXBElement responseJaxb = 
+				jaxbUtil.unMashallFromString(responseXml); //CRCJAXBUtil.getJAXBUtil()
+		ResponseMessageType r = (ResponseMessageType) responseJaxb.getValue();
+		log.debug("CRC's ontology call response xml from getLoadDataFromResponse: " + responseXml);
+
+		if (r.getResponseHeader() != null && r.getResponseHeader().getResultStatus() !=null) { 
+			if (r.getResponseHeader().getResultStatus().getStatus().getType().equalsIgnoreCase("ERROR")) {
+				throw new I2B2DAOException("Error when getting Metadata Load from ontology [" + r.getResponseHeader().getResultStatus().getStatus().getValue() +"]");
+			}
+		}
+		JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
+		MetadataLoadType metadataLoadType = (MetadataLoadType) helper.getObjectByClass(r
+				.getMessageBody().getAny(), MetadataLoadType.class);
+		return metadataLoadType;
+	}
+
+
+	private static DeleteChildType getDeleteChildFromResponse(String responseXml)
+			throws JAXBUtilException, I2B2DAOException {
+		JAXBElement responseJaxb = 
+				jaxbUtil.unMashallFromString(responseXml); //CRCJAXBUtil.getJAXBUtil()
+		ResponseMessageType r = (ResponseMessageType) responseJaxb.getValue();
+		log.debug("CRC's ontology call response xml from getDeleteChildFromResponse: " + responseXml);
+
+		if (r.getResponseHeader() != null && r.getResponseHeader().getResultStatus() !=null) { 
+			if (r.getResponseHeader().getResultStatus().getStatus().getType().equalsIgnoreCase("ERROR")) {
+				throw new I2B2DAOException("Error when getting Metadata Load from ontology [" + r.getResponseHeader().getResultStatus().getStatus().getValue() +"]");
+			}
+		}
+		JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
+		DeleteChildType metadataLoadType = (DeleteChildType) helper.getObjectByClass(r
+				.getMessageBody().getAny(), DeleteChildType.class);
+		return metadataLoadType;
+	}
+	
 	
 
 	private static DerivedFactColumnsType getFactColumnsFromResponse(String response)
@@ -482,6 +573,69 @@ public class CallOntologyUtil {
 
 	}
 
+	private static RequestMessageType getI2B2RequestDeleteChildMessage( DeleteChildType c, SecurityType securityType, String projectId) {
+		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
+		MessageHeaderType messageHeaderType =  queryUtil.getMessageHeader();
+		messageHeaderType.setSecurity(securityType);
+		messageHeaderType.setProjectId(projectId);
+
+		messageHeaderType.setReceivingApplication(messageHeaderType
+				.getSendingApplication());
+		FacilityType facilityType = new FacilityType();
+		facilityType.setFacilityName("sample");
+		messageHeaderType.setSendingFacility(facilityType);
+		messageHeaderType.setReceivingFacility(facilityType);
+		// build message body
+
+
+		RequestMessageType requestMessageType = new RequestMessageType();
+		ObjectFactory of = new ObjectFactory();
+		BodyType bodyType = new BodyType();
+		bodyType.getAny().add(of.createDeleteChild(c));
+		requestMessageType.setMessageBody(bodyType);
+
+		requestMessageType.setMessageHeader(messageHeaderType);
+
+		RequestHeaderType requestHeader = new RequestHeaderType();
+		requestHeader.setResultWaittimeMs(180000);
+		requestMessageType.setRequestHeader(requestHeader);
+
+		return requestMessageType;
+	}
+
+	private static RequestMessageType getLoadDataI2B2RequestLoadDataMessage(String tablename, List<OntologyDataType> c, SecurityType securityType, String projectId) {
+		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
+		MessageHeaderType messageHeaderType =  queryUtil.getMessageHeader();
+		messageHeaderType.setSecurity(securityType);
+		messageHeaderType.setProjectId(projectId);
+
+		messageHeaderType.setReceivingApplication(messageHeaderType
+				.getSendingApplication());
+		FacilityType facilityType = new FacilityType();
+		facilityType.setFacilityName("sample");
+		messageHeaderType.setSendingFacility(facilityType);
+		messageHeaderType.setReceivingFacility(facilityType);
+		// build message body
+		MetadataLoadType getMetadataLoad = new MetadataLoadType();
+		getMetadataLoad.setTableName(tablename);
+		getMetadataLoad.setTruncateTable(true);
+		getMetadataLoad.getMetadata().addAll(c);
+
+		RequestMessageType requestMessageType = new RequestMessageType();
+		ObjectFactory of = new ObjectFactory();
+		BodyType bodyType = new BodyType();
+		bodyType.getAny().add(of.createLoadMetadata(getMetadataLoad));
+		requestMessageType.setMessageBody(bodyType);
+
+		requestMessageType.setMessageHeader(messageHeaderType);
+
+		RequestHeaderType requestHeader = new RequestHeaderType();
+		requestHeader.setResultWaittimeMs(180000);
+		requestMessageType.setRequestHeader(requestHeader);
+
+		return requestMessageType;
+	}
+	
 	private static RequestMessageType getDerivedFactColumnsI2B2RequestMessage(String conceptPath, SecurityType securityType,  String projectId ) {
 		QueryProcessorUtil queryUtil = QueryProcessorUtil.getInstance();
 		MessageHeaderType messageHeaderType =  queryUtil.getMessageHeader();
