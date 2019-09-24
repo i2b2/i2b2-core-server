@@ -340,6 +340,7 @@
             <xs:element name="table_cd" type="xs:string" />
             <xs:element name="table_name" type="xs:string" />
             <xs:element name="protected_access" type="xs:string" />
+	        <xs:element name="ontology_protection" type="xs:string" />
             <xs:element name="level" type="xs:int" />
             <xs:element name="fullname" type="xs:string" />
             <xs:element name="name" type="xs:string" />

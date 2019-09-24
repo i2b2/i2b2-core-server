@@ -787,10 +787,10 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 
 
 		String startSql = "insert into " + metadataSchema + "table_access" + 
-				"(c_table_cd, c_table_name, c_protected_access, c_hlevel,c_fullname,c_name,c_synonym_cd,c_visualattributes,c_basecode,c_facttablecolumn," +
+				"(c_table_cd, c_table_name, c_protected_access, c_ontology_protection, c_hlevel,c_fullname,c_name,c_synonym_cd,c_visualattributes,c_basecode,c_facttablecolumn," +
 				"c_totalnum, c_metadataxml, c_dimtablename,c_columnname,c_columndatatype,c_operator,c_dimcode,c_comment,c_tooltip," +
 				"c_entry_date,c_change_date, c_status_cd, valuetype_cd) "+
-				"VALUES (?, ?, ?, ?, ?, ?, ?,?, ?,?,   ?, ?, ?, ?, ?, ?, ?, ?, ?,   ?, ?, ?, ?)";
+				"VALUES (?, ?, ?, ?, ?, ?, ?,?, ?,?, ?,  ?, ?, ?, ?, ?, ?, ?, ?, ?,   ?, ?, ?, ?)";
 
 
 		log.info(startSql);
@@ -856,7 +856,7 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 			}
 
 
-			parameters.add(new Object[] { concept.getTableCd(), concept.getTableName(), concept.getProtectedAccess(), concept.getLevel(), concept.getFullname(), concept.getName(), concept.getSynonymCd(),
+			parameters.add(new Object[] { concept.getTableCd(), concept.getTableName(), concept.getProtectedAccess(), concept.getOntologyProtection(), concept.getLevel(), concept.getFullname(), concept.getName(), concept.getSynonymCd(),
 					concept.getVisualattributes(), concept.getBasecode(), concept.getFacttablecolumn(), concept.getTotalnum(), xml, concept.getDimtablename(),
 					concept.getColumnname(),concept.getColumndatatype(), concept.getOperator(), concept.getDimcode(),  concept.getComment(),
 					concept.getTooltip(),  entryDate, changeDate, concept.getStatusCd(), concept.getValuetypeCd()}

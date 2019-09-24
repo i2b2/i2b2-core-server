@@ -629,10 +629,15 @@ public class RedcapPuller  {
 			e.setTableName(surveyForm);
 			e.setLevel(0);
 			if (isPHI)
-
+			{
 				e.setProtectedAccess("Y");
+				e.setOntologyProtection(protectedRole);
+				
+			}
 			else
+			{
 				e.setProtectedAccess("N");
+			}
 			e.setFullname(rootOntology);
 			e.setName(surveyForm);
 			e.setSynonymCd("N");
