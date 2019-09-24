@@ -32,7 +32,9 @@ import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.XMLGregorianCalendarDeserializer;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.ontology.dao.ConceptDao;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.MessageHeaderType;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseHeaderType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptType;
@@ -145,19 +147,22 @@ public class GetNameInfoHandler extends RequestHandler {
 			// No errors, non-empty response received
 			// If max is specified, check that response is not > max
 			else if(vocabType.getMax() != null) {
+				Iterator itr = response.iterator();
+				int i=0;
+				while (itr.hasNext() && i<vocabType.getMax() )
+				{
+					ConceptType node = (ConceptType)itr.next();
+					concepts.getConcept().add(node);
+					i++;
+				}
+				
 				// if max exceeded send error message
 				if(response.size() > vocabType.getMax()){
 					log.debug("Max request size of " + vocabType.getMax() + " exceeded ");
-					responseMessageType = MessageFactory.doBuildErrorResponse(nameInfoMsg.getMessageHeaderType(), "MAX_EXCEEDED");
+					responseMessageType = MessageFactory.doBuildErrorResponse(nameInfoMsg.getMessageHeaderType(), "MAX_EXCEEDED",concepts);
 				}
 				// otherwise send results
 				else {
-					Iterator itr = response.iterator();
-					while (itr.hasNext())
-					{
-						ConceptType node = (ConceptType)itr.next();
-						concepts.getConcept().add(node);
-					}
 					// create ResponseMessageHeader using information from request message header.
 					MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(nameInfoMsg.getMessageHeaderType());          
 					responseMessageType = MessageFactory.createBuildResponse(messageHeader,concepts);

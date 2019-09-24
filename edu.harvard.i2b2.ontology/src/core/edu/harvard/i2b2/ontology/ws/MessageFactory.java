@@ -519,6 +519,31 @@ public class MessageFactory {
 	}
 
 	/**
+	 * Function to create Response with given error message AND some concepts that match the request
+	 * 
+	 * @param messageHeaderType
+	 * @param errorMessage
+	 * @param concepts
+	 *            The set of Ontology concepts that match request
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public static ResponseMessageType doBuildErrorResponse(
+			MessageHeaderType messageHeaderType, String errorMessage, ConceptsType concepts) {
+		ResponseMessageType respMessageType = null;
+
+		MessageHeaderType messageHeader = createResponseMessageHeader(messageHeaderType);
+		ResponseHeaderType respHeader = createResponseHeader("ERROR",
+				errorMessage);
+		BodyType bodyType = createBodyType(concepts);
+		respMessageType = createResponseMessageType(messageHeader, respHeader,
+				bodyType);
+
+		return respMessageType;
+	}
+	
+	/**
 	 * Creates ResponseHeader for the given type and value
 	 * 
 	 * @param type
