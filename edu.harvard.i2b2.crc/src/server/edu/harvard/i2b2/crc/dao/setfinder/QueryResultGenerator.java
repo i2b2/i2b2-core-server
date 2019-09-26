@@ -274,10 +274,10 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		} catch (Exception sqlEx) {
 
 			errorFlag = true;
-			log.error("QueryResultPatientSetGenerator.generateResult:"
+			log.error("QueryResultGenerator.generateResult:"
 					+ sqlEx.getMessage(), sqlEx);
 			throw new I2B2DAOException(
-					"QueryResultPatientSetGenerator.generateResult:"
+					"QueryResultGenerator.generateResult:"
 							+ sqlEx.getMessage(), sqlEx);
 		} finally {
 
