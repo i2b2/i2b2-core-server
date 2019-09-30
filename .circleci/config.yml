@@ -1,7 +1,7 @@
 # Automatically build and place the i2b2.war file into GitHub
 # By Jeff Klann, PhD and Kavi Wagholikar, MBBS, PhD
 # (Uses the new war build file by Mike Mendis)
-#  
+#   
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 # Wanting to do push to github on release, look at https://circleci.com/blog/publishing-to-github-releases-via-circleci/
