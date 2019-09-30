@@ -1,0 +1,72 @@
+# Automatically build and place the i2b2.war file into GitHub
+# By Jeff Klann, PhD and Kavi Wagholikar, MBBS, PhD
+# (Uses the new war build file by Mike Mendis)
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+# Wanting to do push to github on release, look at https://circleci.com/blog/publishing-to-github-releases-via-circleci/
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:8-jdk
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    environment:
+      # Customize the JVM maximum heap limit
+      #MAVEN_OPTS: -Xmx3200m
+
+    steps:
+      #- checkout
+      - run: git clone https://github.com/i2b2/i2b2-core-server.git
+      - run: cd i2b2-core-server/edu.harvard.i2b2.server-common && ant clean dist war
+
+      - persist_to_workspace:
+          root: i2b2-core-server/edu.harvard.i2b2.server-common/dist
+          paths: i2b2.war
+        
+#      - store_artifacts:
+#          path: edu.harvard.i2b2.server-common/dist/i2b2.war.zip
+#          destination: i2b2-war
+
+
+  publish-github-release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace/
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+                   if [[ -v CIRCLE_TAG ]]; then 
+                      VERSION=${CIRCLE_TAG}
+                   else
+                      VERSION=${CIRCLE_BRANCH}-latest
+                   fi
+                   echo "VERSION: ${VERSION}"
+                   cd "/tmp/workspace" 
+                   ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./                           
+  
+workflows:
+  version: 2
+  build-master:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/  #match anything
+              
+      - publish-github-release:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/  #match anything
