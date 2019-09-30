@@ -53,7 +53,7 @@ jobs:
                    fi
                    echo "VERSION: ${VERSION}"
                    cd "/tmp/workspace" 
-                   ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${GITHUB_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./                           
+                   ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${GITHUB_PROJECT_REPONAME} -delete ${VERSION} ./                           
   
 workflows:
   version: 2
