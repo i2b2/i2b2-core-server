@@ -80,7 +80,7 @@ public class StringUtil {
 
     public static String escapePOSTGRESQL(String sql){
         sql=sql.replaceAll("\\\\", "\\\\\\\\");
-        sql=sql.replaceAll("'", "''");
+//        sql=sql.replaceAll("'", "''"); <-- this should only be escaped when the string is going in the query, not if it is a parameter
 //    	sql=sql.replaceAll("\\?", "??");
  //   	sql=sql.replaceAll("_", "?_");    
   //  	sql=sql.replaceAll("%", "?%");
@@ -91,7 +91,7 @@ public class StringUtil {
 	}
     
     public static String escapeSQLSERVER(String sql){
-    
+     	
     	sql=sql.replaceAll("\\?", "??");
     	sql=sql.replaceAll("_", "?_");    
     	sql=sql.replaceAll("%", "?%");
