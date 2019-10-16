@@ -207,7 +207,7 @@ public class CallPMUtil {
 		if (projectTypeList != null && projectTypeList.size() > 0) {
 			for (ProjectType pType : projectTypeList) {
 				for (ParamType paramType : pType.getParam())
-				if ((paramType.getName().equalsIgnoreCase("REDCAP_SURVEY_FORM")
+				if ((paramType.getName().equalsIgnoreCase("REDCAP_SURVEY_PROJECT")
 						&& (paramType.getValue().equalsIgnoreCase(projectId)))) {
 					projectType = pType;
 
