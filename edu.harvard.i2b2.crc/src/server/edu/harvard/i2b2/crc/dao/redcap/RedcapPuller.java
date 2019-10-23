@@ -389,10 +389,10 @@ public class RedcapPuller  {
 					//if (ontologyFormat.equalsIgnoreCase("popup") 
 					//|| metadata.isHasEnumOptions() == true))
 					// (metadata.isHasCheckBoxOptions() == true) 
-					if ((ontologyFormat.equalsIgnoreCase("tree") && ((metadata.isHasEnumOptions() == true) ) || (metadata.isHasCheckBoxOptions() == true)))
+					if ((ontologyFormat.equalsIgnoreCase("tree"))) // && ((metadata.isHasEnumOptions() == true) ) || (metadata.isHasCheckBoxOptions() == true)))
 						ontologyData.setVisualattributes("FAE");
-					else if ((ontologyFormat.equalsIgnoreCase("popup") && (metadata.isHasCheckBoxOptions() == true) ))
-						ontologyData.setVisualattributes("FAE");
+//					else if ((ontologyFormat.equalsIgnoreCase("popup") && (metadata.isHasCheckBoxOptions() == true) ))
+//						ontologyData.setVisualattributes("FAE");
 					else
 						ontologyData.setVisualattributes("LAE");
 
@@ -473,7 +473,7 @@ public class RedcapPuller  {
 					//check what way to save metadata
 					for (int i=0; i < metadata.getChoices().length; i++)
 					{
-						if ((ontologyFormat.equalsIgnoreCase("tree")) || metadata.isHasCheckBoxOptions() == true)
+						if ((ontologyFormat.equalsIgnoreCase("tree")) )//|| metadata.isHasCheckBoxOptions() == true)
 						{
 							ConceptType leafType =  new ConceptType();
 							leafType.setConceptCd(metadata.getFieldName() + ":" + i);
