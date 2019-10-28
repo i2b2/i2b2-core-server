@@ -32,7 +32,7 @@ public class DataCollectionInstrumentMetadata {
 	@SerializedName("select_choices_or_calculations")
 	private String choices;
 
-	private String[] choicesArr;
+//	private String[] choicesArr;
 
 	@SerializedName("identifier")
 	private String isPHI;
@@ -76,10 +76,21 @@ public class DataCollectionInstrumentMetadata {
 	}
 
 	public String getFieldType() {
-		if (fieldContent.equals("date_mdy"))
+		if  ((fieldType.equals("text"))  && ((fieldContent.equals("date_ymd"))  || (fieldContent.equals("date_mdy")) ||  (fieldContent.equals("dmy"))  ||
+				(fieldContent.equals("datetime_ymd"))  ||(fieldContent.equals("datetime_mdy"))  ||(fieldContent.equals("datetime_dmy"))  ||
+				(fieldContent.equals("datetime_seconds_ymd"))  || (fieldContent.equals("datetime_seconds_mdy"))  || (fieldContent.equals("datetime_seconds_dmy"))  
+				))
 			return "date";
 		else 
 			return fieldType;
+	}
+
+	public String getFieldContent() {
+		return fieldContent;
+	}
+
+	public void setFieldContent(String fieldContent) {
+		this.fieldContent = fieldContent;
 	}
 
 	public void setFieldType(String fieldType) {
@@ -94,10 +105,26 @@ public class DataCollectionInstrumentMetadata {
 		else
 			return  false;
 	}
+	
+	public boolean isYesNoOptions() {
+		//yesno, text, radio, descriptive, checkbox, notes, dropdown
+		if (fieldType.equals("yesno") )
+			return true;
+		else
+			return  false;
+	}
+	
+	public boolean isTrueFalseOptions() {
+		//yesno, text, radio, descriptive, checkbox, notes, dropdown
+		if (fieldType.equals("truefalse") )
+			return true;
+		else
+			return  false;
+	}
 
 	public boolean isHasEnumOptions() {
 		//yesno, text, radio, descriptive, checkbox, notes, dropdown
-		if ((fieldType.equals("yesno") || fieldType.equals("radio") ||  fieldType.equals("dropdown")))
+		if ((fieldType.equals("yesno") || fieldType.equals("truefalse") || fieldType.equals("radio") ||  fieldType.equals("dropdown")))
 			return true;
 		else
 			return  false;
@@ -111,36 +138,50 @@ public class DataCollectionInstrumentMetadata {
 			return false;
 	}
 	public boolean isTextOptions() {
-		if ((fieldType.equals("text") && (!getFieldType().equals("date"))))
+		if ((fieldType.equals("text") && (!getFieldType().equals("date_ymd"))))
 			return true;
 		else
 			return false;
 	}
 
+	public boolean isSliderOptions() {
+		if (fieldType.equals("slider"))
+			return true;
+		else
+			return false;
+	}
+
+	
 	public String[] getChoices() {
 		String[] tmpChoices =  new String[0];
 		if (fieldType.equals("yesno"))
 		{
-			choicesArr = new String[] {"Yes", "No"};
-		} else {
+			tmpChoices = new String[] {"Yes", "No"};
+		} else if (fieldType.equals("truefalse"))
+		{
+			tmpChoices = new String[] {"True", "False"};
+		} else if ((fieldType.equals("checkbox")  || fieldType.equals("radio") ||  fieldType.equals("dropdown"))){
 			if ((choices == null || choices.length() == 0))
 				return tmpChoices;
 
 			tmpChoices = choices.split("\\|");
-			this.choicesArr = tmpChoices;
+			//this.tmpChoices = tmpChoices;
 		}
 
-		return choicesArr;
+		return tmpChoices;
 	}
 
-	public String getChoice(int i) {
+	public String[] getChoice(int i) {
 
 		String[] tmpChoices = choices.split("\\|");
 		if (fieldType.equals("yesno"))
-			tmpChoices = new String[] {"1, Yes", "2, No"};
-		int startComma = tmpChoices[i].indexOf(',') + 2;
-		return tmpChoices[i].substring(startComma);
-
+			tmpChoices = new String[] {"1, Yes", "0, No"};
+		else  if (fieldType.equals("truefalse"))
+			tmpChoices = new String[] {"1, True", "0, False"};
+		//int startComma = tmpChoices[i].indexOf(',') + 2;
+		//return tmpChoices[i].substring(startComma);
+		
+		return tmpChoices[i].split(",");
 	}
 
 	public boolean isPHI() {

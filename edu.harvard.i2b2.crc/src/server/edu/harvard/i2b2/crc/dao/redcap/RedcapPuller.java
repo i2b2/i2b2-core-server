@@ -27,6 +27,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.ObservationType.ConceptCd;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationType.EventId;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationType.InstanceNum;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationType.ModifierCd;
+import edu.harvard.i2b2.crc.datavo.pdo.ObservationType.NvalNum;
 import edu.harvard.i2b2.crc.datavo.pdo.ObservationType.ObserverCd;
 import edu.harvard.i2b2.crc.datavo.pdo.PatientIdType;
 import edu.harvard.i2b2.crc.datavo.pdo.PidType;
@@ -85,6 +86,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamException;
 
+import java.math.*; 
+
 
 public class RedcapPuller  {
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -98,7 +101,7 @@ public class RedcapPuller  {
 	String protectedRole = "DATA_PROT";
 	String refreshOntology = "Y";
 	boolean isPHI = false;
-	String ontologyFormat = "tree"; //tree = For Tree format, popup = For popup with selection
+	//String ontologyFormat = "tree"; //tree = For Tree format, popup = For popup with selection
 	String api = null;
 	String redcapApiUrl = null;
 
@@ -113,7 +116,7 @@ public class RedcapPuller  {
 		APISurveyResponse redcapResult = new APISurveyResponse();
 
 		try {
-			 redcapApiUrl = redcapUrl + "api/";
+			redcapApiUrl = redcapUrl + "api/";
 
 			String responseStr =  null;
 			CloseableHttpResponse response = null;
@@ -135,8 +138,8 @@ public class RedcapPuller  {
 						rootOntology =  projectParam.getValue();
 					else if  (projectParam.getName().equalsIgnoreCase("REDCAP_SOURCESYSTEM"))
 						setSourcesystemCd =  projectParam.getValue();	
-					else if  (projectParam.getName().equalsIgnoreCase("REDCAP_ONTOLOGY_FORMAT"))
-						ontologyFormat =  projectParam.getValue();	
+					//		else if  (projectParam.getName().equalsIgnoreCase("REDCAP_ONTOLOGY_FORMAT"))
+					//			ontologyFormat =  projectParam.getValue();	
 					else if  (projectParam.getName().equalsIgnoreCase("REDCAP_PROTECTED_ROLE"))
 						protectedRole =  projectParam.getValue();	
 					else if  (projectParam.getName().equalsIgnoreCase("REDCAP_ONTOLOGY_REFRESH"))
@@ -144,7 +147,7 @@ public class RedcapPuller  {
 				}
 
 				if (api == null)
-					throw new I2B2Exception("Project " + surveyForm + " does not have a param called REDCAP_TOKEN with the token number.");
+					throw new I2B2Exception("Project " + surveyForm + " does not have a param called REDCAP_TOKEN_PID_" + pid + " with the token number.");
 
 				List <NameValuePair> apiCall = new ArrayList <NameValuePair>();
 				apiCall.add(new BasicNameValuePair("token",  api));
@@ -219,7 +222,7 @@ public class RedcapPuller  {
 			}
 			// Create Table_access
 
-			logger.info("Response body: " + responseStr);
+			logger.debug("Response body: " + responseStr);
 
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				SurveyRecord[] records = new Gson().fromJson(responseStr, SurveyRecord[].class);
@@ -340,7 +343,7 @@ public class RedcapPuller  {
 				uploaderDaoFactory.getObservationDAO().removeTempTable(tempEidTableName);
 			}
 
-			//Create root node in metadata
+			//Create root node in metadata in table_access
 			OntologyDataType ontologyData = new OntologyDataType();
 			ontologyData.setLevel(0);
 			ontologyData.setFullname(rootOntology);
@@ -369,8 +372,8 @@ public class RedcapPuller  {
 					// Insert Concept Dimension
 					//	if ((metadata.isHasEnumOptions() || metadata.isTextOptions())) {
 					ConceptType conceptType =  new ConceptType();
-					conceptType.setConceptCd(metadata.getFieldName());
-					conceptType.setNameChar(metadata.getFieldLabel());
+					conceptType.setConceptCd("REDCAP:" + metadata.getFieldName());
+					conceptType.setNameChar("REDCAP:" + metadata.getFieldLabel());
 					conceptType.setConceptPath(rootOntology + metadata.getFieldName()+ "\\");
 
 					conceptType.setSourcesystemCd(setSourcesystemCd);
@@ -389,10 +392,11 @@ public class RedcapPuller  {
 					//if (ontologyFormat.equalsIgnoreCase("popup") 
 					//|| metadata.isHasEnumOptions() == true))
 					// (metadata.isHasCheckBoxOptions() == true) 
-					if ((ontologyFormat.equalsIgnoreCase("tree"))) // && ((metadata.isHasEnumOptions() == true) ) || (metadata.isHasCheckBoxOptions() == true)))
+					//if ((ontologyFormat.equalsIgnoreCase("tree") && ((metadata.isHasEnumOptions() == true)  || (metadata.isHasCheckBoxOptions() == true))))
+					if ((metadata.isHasEnumOptions() == true)  || (metadata.isHasCheckBoxOptions() == true) )
 						ontologyData.setVisualattributes("FAE");
-//					else if ((ontologyFormat.equalsIgnoreCase("popup") && (metadata.isHasCheckBoxOptions() == true) ))
-//						ontologyData.setVisualattributes("FAE");
+					//					else if ((ontologyFormat.equalsIgnoreCase("popup") && (metadata.isHasCheckBoxOptions() == true) ))
+					//						ontologyData.setVisualattributes("FAE");
 					else
 						ontologyData.setVisualattributes("LAE");
 
@@ -409,8 +413,7 @@ public class RedcapPuller  {
 					ontologyData.setUpdateDate(startDate);
 					ontologyData.setImportDate(startDate);
 
-					if ((metadata.isHasEnumOptions() == true) || (metadata.isNoteOptions())
-							|| (metadata.isTextOptions() == true))
+					if ((metadata.isSliderOptions()) || (metadata.isNoteOptions()) || (metadata.isTextOptions() == true) )
 
 					{
 						ValueMetadata metadataxml = new ValueMetadata();
@@ -424,7 +427,12 @@ public class RedcapPuller  {
 
 						}else if (metadata.isNoteOptions()) {
 							metadataxml.setDataType("largestring");
-
+						}else if (metadata.isSliderOptions()) {
+							metadataxml.setDataType("PosInteger");
+							metadataxml.setLowofLowValue("1");
+							metadataxml.setLowofHighValue("100");
+							metadataxml.setHighofHighValue("100");
+							metadataxml.setHighofLowValue("1");
 						}else {
 							metadataxml.setDataType("Enum");
 							EnumValues enumValues = new EnumValues();
@@ -436,7 +444,7 @@ public class RedcapPuller  {
 							for (int i=0; i <  metadata.getChoices().length; i++)
 							{
 								Val val = new Val();
-								val.setDescription(metadata.getChoice(i));
+								val.setDescription(metadata.getChoice(i)[1].trim());
 								val.setValue(Integer.toString(i+1));
 								vals[i] = val;
 
@@ -473,48 +481,54 @@ public class RedcapPuller  {
 					//check what way to save metadata
 					for (int i=0; i < metadata.getChoices().length; i++)
 					{
-						if ((ontologyFormat.equalsIgnoreCase("tree")) )//|| metadata.isHasCheckBoxOptions() == true)
+						//if ((ontologyFormat.equalsIgnoreCase("tree")) )//|| metadata.isHasCheckBoxOptions() == true)
+						//{
+						ConceptType leafType =  new ConceptType();
+						//String endnode = Integer.toString(i);
+
+						leafType.setConceptCd("REDCAP:" + metadata.getFieldName() + ":" + metadata.getChoice(i)[0].trim());
+						try {
+							leafType.setNameChar("REDCAP:" + metadata.getChoice(i)[1].trim());
+						} catch (Exception meta)
 						{
-							ConceptType leafType =  new ConceptType();
-							leafType.setConceptCd(metadata.getFieldName() + ":" + i);
-							try {
-								leafType.setNameChar(metadata.getChoice(i));
-							} catch (Exception meta)
-							{
-								logger.error("Metadata Issue: " + metadata.getFieldName());
+							logger.error("Metadata Issue: " + metadata.getFieldName());
 
-							}
-							leafType.setConceptPath(rootOntology + metadata.getFieldName() + "\\" + i+ "\\");
-
-							leafType.setSourcesystemCd(setSourcesystemCd);
-							leafType.setUploadId(String.valueOf(uploadId));
-							conceptInsertHandle.insertConcept(leafType);
-
-							// Insert meta data
-							OntologyDataType leafData = new OntologyDataType();
-							//ontologyData.setColumnname(surveyForm);
-							//ontologyData.setTableCd(surveyForm);
-							//ontologyData.setTableName(surveyForm);
-							leafData.setLevel(2);
-							leafData.setFullname(rootOntology + metadata.getFieldName()+ "\\" + i+ "\\");
-							leafData.setName(metadata.getChoice(i));
-							leafData.setSynonymCd("N");
-							leafData.setVisualattributes("LAE");
-							leafData.setBasecode(metadata.getFieldName()+ ":" + i);
-							leafData.setFacttablecolumn("concept_cd");
-							leafData.setDimtablename("concept_dimension");
-							leafData.setColumnname("concept_path");
-							leafData.setColumndatatype("T");
-							leafData.setOperator("LIKE");
-							leafData.setDimcode(rootOntology + metadata.getFieldName()+ "\\" + i+ "\\");							
-							leafData.setTooltip(metadata.getFieldNote());
-							leafData.setAppliedPath("@");
-							leafData.setDownloadDate(startDate);
-							leafData.setUpdateDate(startDate);
-							leafData.setImportDate(startDate);
-
-							c.add(leafData);
 						}
+						leafType.setConceptPath(rootOntology + metadata.getFieldName() + "\\" + i+ "\\");
+
+						leafType.setSourcesystemCd(setSourcesystemCd);
+						leafType.setUploadId(String.valueOf(uploadId));
+						conceptInsertHandle.insertConcept(leafType);
+
+						// Insert meta data
+						OntologyDataType leafData = new OntologyDataType();
+						//ontologyData.setColumnname(surveyForm);
+						//ontologyData.setTableCd(surveyForm);
+						//ontologyData.setTableName(surveyForm);
+
+
+
+						leafData.setLevel(2);
+						leafData.setFullname(rootOntology + metadata.getFieldName()+ "\\" + i+ "\\");
+						leafData.setName(metadata.getChoice(i)[1].trim());
+						leafData.setSynonymCd("N");
+						leafData.setVisualattributes("LAE");
+						leafData.setBasecode(leafType.getConceptCd());
+						leafData.setFacttablecolumn("concept_cd");
+						leafData.setDimtablename("concept_dimension");
+						leafData.setColumnname("concept_path");
+						leafData.setColumndatatype("T");
+						leafData.setOperator("LIKE");
+						leafData.setDimcode(rootOntology + metadata.getFieldName()+ "\\" + i+ "\\");							
+						leafData.setTooltip(metadata.getFieldNote());
+						leafData.setAppliedPath("@");
+						leafData.setDownloadDate(startDate);
+						leafData.setUpdateDate(startDate);
+						leafData.setImportDate(startDate);
+
+						c.add(leafData);
+
+						///}
 					}
 
 
@@ -538,17 +552,24 @@ public class RedcapPuller  {
 					patid.setValue(record.getRecordId());
 					observationType.setPatientId(patid);
 					ConceptCd conceptCd = new ConceptCd();
-					conceptCd.setName(record.getFieldName());
-					conceptCd.setValue(record.getFieldName());
+					if  ( (metadata.getFieldType().equals("yesno") || metadata.getFieldType().equals("truefalse")  || metadata.getFieldType().equals("radio")
+							|| metadata.getFieldType().equals("checkbox") || metadata.getFieldType().equals("dropdown")))
+					{
+						conceptCd.setName("REDCAP:" + record.getFieldName() + ":" + record.getValue());
+						conceptCd.setValue("REDCAP:" + record.getFieldName() + ":" + record.getValue());
+					} else {
+						conceptCd.setName("REDCAP:" + record.getFieldName());
+						conceptCd.setValue("REDCAP:" + record.getFieldName());
+					}
 					observationType.setConceptCd(conceptCd);
 
 					observationType.setUploadId(String.valueOf(uploadId));
 
 					String modifierCd = "@";
-					if (metadata.getFieldType().equals("checkbox")) {
-						
-						modifierCd = record.getValue();
-					}
+					//if (metadata.getFieldType().equals("checkbox")) {
+
+					//	modifierCd = record.getValue();
+					//}
 					ModifierCd modifer = new ModifierCd();
 					modifer.setName(modifierCd);
 					modifer.setValue(modifierCd);
@@ -568,12 +589,18 @@ public class RedcapPuller  {
 						{
 							observationType.setValuetypeCd("B");
 							blob += record.getValue();
+						} else if  (metadata.getFieldType().equals("slider") ) {
+							observationType.setValuetypeCd("N");
+							NvalNum value = new NvalNum();
+							value.setValue(new BigDecimal(record.getValue()));
+							observationType.setNvalNum(value); //(record.getValue());
+							observationType.setTvalChar("E");
 						} else if  (metadata.getFieldType().equals("file") ) {
-							
+
 							observationType.setValuetypeCd("B");
 							blob += getFile( metadata.getFieldName(), record.record);
 						}
-						else 
+						else if  (metadata.getFieldType().equals("text"))
 						{
 							observationType.setValuetypeCd("T");
 							observationType.setTvalChar(record.getValue());
@@ -582,8 +609,30 @@ public class RedcapPuller  {
 
 					if (metadata.getFieldType().equals("date")) {
 						try {
+
 							String FORMATER = "yyyy-MM-dd";
 
+							if (metadata.getFieldContent().equals("date_ymd"))
+								FORMATER = "yyyy-MM-dd";
+							else if (metadata.getFieldContent().equals("date_mdy"))
+								FORMATER = "yyyy-MM-dd";
+							else if (metadata.getFieldContent().equals("date_dmy"))
+								FORMATER = "yyyy-MM-dd";
+							else if (metadata.getFieldContent().equals("datetime_ymd"))
+								FORMATER = "yyyy-MM-dd kk:mm";
+							else if (metadata.getFieldContent().equals("datetime_mdy"))
+								FORMATER = "yyyy-MM-dd kk:mm";
+							else if (metadata.getFieldContent().equals("datetime_dmy"))
+								FORMATER = "yyyy-MM-dd kk:mm";
+							else if (metadata.getFieldContent().equals("datetime_seconds_ymd"))
+								FORMATER = "yyyy-MM-dd kk:mm:ss";
+							else if (metadata.getFieldContent().equals("datetime_seconds_mdy"))
+								FORMATER = "yyyy-MM-dd kk:mm:ss";
+							else if (metadata.getFieldContent().equals("datetime_seconds_dmy"))
+								FORMATER = "yyyy-MM-dd kk:mm:ss";							
+							
+							System.out.println(metadata.getFieldContent());
+							System.out.println(record.getValue());
 							DateFormat format = new SimpleDateFormat(FORMATER);
 							Date date = format.parse(record.getValue());
 
@@ -632,7 +681,7 @@ public class RedcapPuller  {
 			{
 				e.setProtectedAccess("Y");
 				e.setOntologyProtection(protectedRole);
-				
+
 			}
 			else
 			{
@@ -686,7 +735,7 @@ public class RedcapPuller  {
 		CloseableHttpResponse response = null;
 		String responseStr = null;
 		Base64.Encoder encoder = Base64.getEncoder();
-		
+
 		try {	
 
 			List <NameValuePair>  apiCall = new ArrayList <NameValuePair>();
@@ -715,7 +764,7 @@ public class RedcapPuller  {
 			InputStream is = entity.getContent();
 			byte[] isByte = IOUtils.toByteArray(is);
 			responseStr = encoder.encodeToString(isByte);
-//			responseStr = EntityUtils.toString(entity, "UTF-8");
+			//			responseStr = EntityUtils.toString(entity, "UTF-8");
 
 
 
@@ -723,8 +772,8 @@ public class RedcapPuller  {
 			//throw new Exception(e);
 		}
 		// Create Table_access
-		
-		
+
+
 		return responseStr;
 	}
 
