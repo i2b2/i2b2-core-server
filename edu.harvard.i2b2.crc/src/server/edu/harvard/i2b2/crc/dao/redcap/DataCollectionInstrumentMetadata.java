@@ -60,7 +60,7 @@ public class DataCollectionInstrumentMetadata {
 	}
 
 	public String getFieldName() {
-		return fieldName;
+		return fieldName.substring(0, 41);
 	}
 
 	public String getValue() {
