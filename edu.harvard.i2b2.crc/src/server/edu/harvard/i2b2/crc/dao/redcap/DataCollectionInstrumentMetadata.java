@@ -25,14 +25,14 @@ public class DataCollectionInstrumentMetadata {
 
 	@SerializedName("field_type")
 	private String fieldType; 
-	
+
 	@SerializedName("text_validation_type_or_show_slider_number")
 	private String fieldContent;
 
 	@SerializedName("select_choices_or_calculations")
 	private String choices;
 
-//	private String[] choicesArr;
+	//	private String[] choicesArr;
 
 	@SerializedName("identifier")
 	private String isPHI;
@@ -60,7 +60,11 @@ public class DataCollectionInstrumentMetadata {
 	}
 
 	public String getFieldName() {
-		return fieldName.substring(0, 41);
+		if (fieldName.length() > 42)
+			return fieldName.substring(0, 41);
+		else
+			return fieldName;
+
 	}
 
 	public String getValue() {
@@ -105,7 +109,7 @@ public class DataCollectionInstrumentMetadata {
 		else
 			return  false;
 	}
-	
+
 	public boolean isYesNoOptions() {
 		//yesno, text, radio, descriptive, checkbox, notes, dropdown
 		if (fieldType.equals("yesno") )
@@ -113,7 +117,7 @@ public class DataCollectionInstrumentMetadata {
 		else
 			return  false;
 	}
-	
+
 	public boolean isTrueFalseOptions() {
 		//yesno, text, radio, descriptive, checkbox, notes, dropdown
 		if (fieldType.equals("truefalse") )
@@ -138,7 +142,7 @@ public class DataCollectionInstrumentMetadata {
 			return false;
 	}
 	public boolean isTextOptions() {
-		if ((fieldType.equals("text") && (!getFieldType().equals("date_ymd"))))
+		if (fieldType.equals("sql") ||    (fieldType.equals("text") && (!getFieldType().equals("date_ymd"))))
 			return true;
 		else
 			return false;
@@ -151,7 +155,7 @@ public class DataCollectionInstrumentMetadata {
 			return false;
 	}
 
-	
+
 	public String[] getChoices() {
 		String[] tmpChoices =  new String[0];
 		if (fieldType.equals("yesno"))
@@ -180,7 +184,7 @@ public class DataCollectionInstrumentMetadata {
 			tmpChoices = new String[] {"1, True", "0, False"};
 		//int startComma = tmpChoices[i].indexOf(',') + 2;
 		//return tmpChoices[i].substring(startComma);
-		
+
 		return tmpChoices[i].split(",");
 	}
 

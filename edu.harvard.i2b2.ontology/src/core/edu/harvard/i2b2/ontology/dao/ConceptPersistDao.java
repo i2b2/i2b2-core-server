@@ -978,12 +978,20 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 				throw e;
 			}
 
-			parameters.add(new Object[] {  concept.getLevel(), concept.getFullname(), concept.getName(), concept.getSynonymCd(),
-					concept.getVisualattributes(), concept.getBasecode(), concept.getFacttablecolumn(), totalnum, xml, concept.getDimtablename(),
-					concept.getColumnname(),concept.getColumndatatype(), concept.getOperator(), concept.getDimcode(),  concept.getComment(),
-					concept.getTooltip(),  importDate, downloadDate,  updateDate, concept.getSourcesystemCd(), 
-					concept.getValuetypeCd(), concept.getAppliedPath(), concept.getExclusionCd(), concept.getPath(), concept.getSymbol()}
-					);
+			if(concept.getTotalnum() != null)
+				parameters.add(new Object[] {  concept.getLevel(), concept.getFullname(), concept.getName(), concept.getSynonymCd(),
+						concept.getVisualattributes(), concept.getBasecode(), concept.getFacttablecolumn(), concept.getTotalnum().intValue(), xml, concept.getDimtablename(),
+						concept.getColumnname(),concept.getColumndatatype(), concept.getOperator(), concept.getDimcode(),  concept.getComment(),
+						concept.getTooltip(),  importDate, downloadDate,  updateDate, concept.getSourcesystemCd(), 
+						concept.getValuetypeCd(), concept.getAppliedPath(), concept.getExclusionCd(), concept.getPath(), concept.getSymbol()}
+						);
+			else
+				parameters.add(new Object[] {  concept.getLevel(), concept.getFullname(), concept.getName(), concept.getSynonymCd(),
+						concept.getVisualattributes(), concept.getBasecode(), concept.getFacttablecolumn(), null, xml, concept.getDimtablename(),
+						concept.getColumnname(),concept.getColumndatatype(), concept.getOperator(), concept.getDimcode(),  concept.getComment(),
+						concept.getTooltip(),  importDate, downloadDate,  updateDate, concept.getSourcesystemCd(), 
+						concept.getValuetypeCd(), concept.getAppliedPath(), concept.getExclusionCd(), concept.getPath(), concept.getSymbol()}
+						);
 		}	 
 
 		int[] inserted = {0}; 

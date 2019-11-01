@@ -355,6 +355,7 @@ public class RedcapPuller  {
 			ontologyData.setColumnname("concept_path");
 			ontologyData.setColumndatatype("T");
 			ontologyData.setOperator("LIKE");
+			ontologyData.setTooltip(rootOntology);
 			ontologyData.setDimcode(rootOntology );							
 			ontologyData.setAppliedPath("@");
 			ontologyData.setDownloadDate(startDate);
@@ -407,7 +408,7 @@ public class RedcapPuller  {
 					ontologyData.setColumndatatype("T");
 					ontologyData.setOperator("LIKE");
 					ontologyData.setDimcode(rootOntology + metadata.getFieldName()+ "\\");							
-					ontologyData.setTooltip(metadata.getFieldNote());
+					ontologyData.setTooltip(metadata.getFieldName());
 					ontologyData.setAppliedPath("@");
 					ontologyData.setDownloadDate(startDate);
 					ontologyData.setUpdateDate(startDate);
@@ -520,7 +521,7 @@ public class RedcapPuller  {
 						leafData.setColumndatatype("T");
 						leafData.setOperator("LIKE");
 						leafData.setDimcode(rootOntology + metadata.getFieldName()+ "\\" + i+ "\\");							
-						leafData.setTooltip(metadata.getFieldNote());
+						leafData.setTooltip(metadata.getFieldName());
 						leafData.setAppliedPath("@");
 						leafData.setDownloadDate(startDate);
 						leafData.setUpdateDate(startDate);
@@ -600,7 +601,7 @@ public class RedcapPuller  {
 							observationType.setValuetypeCd("B");
 							blob += getFile( metadata.getFieldName(), record.record);
 						}
-						else if  (metadata.getFieldType().equals("text"))
+						else if  (metadata.getFieldType().equals("text") || metadata.getFieldType().equals("sql"))
 						{
 							observationType.setValuetypeCd("T");
 							observationType.setTvalChar(record.getValue());
