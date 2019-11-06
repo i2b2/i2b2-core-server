@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import javax.sql.DataSource;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -754,7 +755,16 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 
 				String indexTableName = tableName;
 				if (tableName.length() > 8)
-					indexTableName = tableName.substring(0,7);
+				{
+					Random random = new Random();
+
+					// generate a random integer from 0 to 899, then add 100
+					int x = random.nextInt(900) + 100;
+					
+					indexTableName = tableName.substring(0,7) + x;
+					
+					
+				}
 
 				String index1Sql = " CREATE INDEX META_FULLNAME_" + indexTableName + "_IDX ON " + metadataSchema+tableName +"(C_FULLNAME)";
 				jt.execute(index1Sql);
