@@ -740,7 +740,7 @@ public class ConceptDao extends JdbcDaoSupport {
 					list = keep;
 				}
 				
-				if (list.size() <= vocabType.getMax() && vocabType.isKeyname()!=null && vocabType.isKeyname() && list.size()<400 /* sanity check - no keyname lookup in case of v v large result */) {
+				if (vocabType.isKeyname()!=null && vocabType.isKeyname()) {
 					// Only do keyname lookups if we haven't exceeded the max				
 					HashMap<String,String> KeynameCache = new HashMap<String,String>();
 					int skipCount = 0; // for debug, number of cache hits
@@ -754,10 +754,15 @@ public class ConceptDao extends JdbcDaoSupport {
 					skipPath=skipPath+"\\";
 					
 					String sql = "";
+					int keynameCount = 0;
 					for (ConceptType cType: list) {
 						//String path = cType.getDimcode(); //StringUtil.getPath(childrenType.getParent());
 						String parentPath = StringUtil.getParentPath(cType.getKey().substring(tableCd.length()+2));
 											
+						// Only do keyname lookups up to the max return result size
+						keynameCount++;
+						if (keynameCount>vocabType.getMax()) break;
+							
 						if (KeynameCache.containsKey(parentPath)) {
 							cType.setKeyName(KeynameCache.get(parentPath));
 							skipCount++;
