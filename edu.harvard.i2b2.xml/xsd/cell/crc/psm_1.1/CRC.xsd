@@ -90,6 +90,7 @@
     <xs:simpleType name="queryModeType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="optimize_without_temp_table"/>
+            <xs:enumeration value="count_min_sketch"/>
         </xs:restriction>
     </xs:simpleType>
 

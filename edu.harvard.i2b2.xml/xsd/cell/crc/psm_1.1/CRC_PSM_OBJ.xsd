@@ -161,6 +161,7 @@
             <xs:element name="delete_date" type="crc:delete_dateType"/>
             <xs:element name="request_xml" type="crc:request_xmlType"/>
             <xs:element name="generated_sql" type="crc:generated_sqlType"/>
+            <xs:element name="query_instance_type" type="crc:query_instanceType"/>            
         </xs:sequence>
     </xs:complexType>
 
@@ -182,6 +183,7 @@
             </xs:choice>
             -->
             <xs:element name="query_status_type" type="crc:query_status_typeType"/>
+            <xs:element name="query_result_instance_type" type="crc:query_result_instanceType" maxOccurs="unbounded"/>            
         </xs:sequence>
     </xs:complexType>
 
