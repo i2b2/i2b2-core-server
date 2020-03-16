@@ -14,9 +14,11 @@
  */
 package edu.harvard.i2b2.crc.ejb;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -464,6 +466,35 @@ public class QueryInfoBean { //implements SessionBean {
 			queryMasterType.setGroupId(queryMaster.getGroupId());
 			queryMasterType.setUserId(queryMaster.getUserId());
 			queryMasterType.setMasterTypeCd(queryMaster.getMasterTypeCd());
+			QueryInstanceType queryInstance  =new QueryInstanceType();
+			 Iterator<QtQueryInstance> it = queryMaster.getQtQueryInstances().iterator();
+		     while(it.hasNext()){
+		    	 QtQueryInstance a = it.next();
+		    	 queryInstance.setBatchMode(a.getBatchMode());
+		    	 queryInstance.setEndDate(dtoFactory
+							.getXMLGregorianCalendar(a.getEndDate().getTime()));
+		    	 queryInstance.setStartDate(dtoFactory
+							.getXMLGregorianCalendar(a.getStartDate().getTime()));
+		    	 queryInstance.setQueryInstanceId(a.getQueryInstanceId());
+		    	 
+		    	 
+		    
+		    	 Iterator<QtQueryResultInstance> itResult = a.getQtQueryResultInstances().iterator();
+			     while(itResult.hasNext()){
+			    	 QueryResultInstanceType queryResultInstance  =new QueryResultInstanceType();
+			    	 QtQueryResultInstance b = itResult.next();
+			    	 queryResultInstance.setSetSize(b.getSetSize());
+			    	 queryResultInstance.setDescription(b.getDescription());
+			    	 queryResultInstance.setResultInstanceId(b.getResultInstanceId());
+			    	 queryInstance.getQueryResultInstanceType().add(queryResultInstance);
+
+			     }
+			     //queryInstance.setQueryResultInstanceType(queryResultInstance);
+		     }
+			
+			
+			
+			queryMasterType.setQueryInstanceType(queryInstance);
 			masterResponseType.getQueryMaster().add(queryMasterType);
 		}
 		return masterResponseType;
@@ -493,7 +524,8 @@ public class QueryInfoBean { //implements SessionBean {
 		
 		Map param = new HashMap();
 		log.debug("Creatiung hash map");
-		SetFinderConnection sfConn = new SetFinderConnection(sfDAOFactory.getDataSource().getConnection());
+		Connection manualConnection = sfDAOFactory.getDataSource().getConnection();
+		SetFinderConnection sfConn = new SetFinderConnection(manualConnection);
 		param.put("SetFinderConnection", sfConn);
 		param.put("SetFinderDAOFactory", sfDAOFactory);
 		//param.put("PatientSetId", patientSetId);
@@ -517,7 +549,7 @@ public class QueryInfoBean { //implements SessionBean {
 			if (!resultName.startsWith("ADMIN"))
 				throw new I2B2DAOException ("Only ADMIN breakdowns can be run.");
 			QueryResultTypeSpringDao resultTypeDao = new QueryResultTypeSpringDao(
-					sfDAOFactory.getDataSource(), dataSourceLookup);
+					sfDAOFactory.getDataSource(), sfDAOFactory.getDataSourceLookup());
 			String generatorClassName = resultTypeDao.getQueryResultTypeClassname(resultName);
 					
 					//(String) generatorMap.get(resultName);
@@ -560,6 +592,7 @@ public class QueryInfoBean { //implements SessionBean {
 
 		// TODO Auto-generated method stub
 		response.setCrcXmlResult(xml);
+		manualConnection.close();
 		return response;
 	}
 

@@ -1824,7 +1824,7 @@ class GetFolderMapper implements RowMapper<FolderType> {
 					c_xml = rs.getString("c_work_xml");
 				} else
 				{
-					c_xml = JDBCUtil.getClobString(rs.getClob("c_work_xml"));
+					c_xml = rs.getString("c_work_xml");  //JDBCUtil.getClobString(rs.getClob("c_work_xml"));
 				}
 				if (c_xml != null){
 					//c_xml = JDBCUtil.getClobString(xml_clob);

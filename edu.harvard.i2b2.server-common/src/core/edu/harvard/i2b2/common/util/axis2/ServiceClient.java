@@ -61,99 +61,111 @@ public class ServiceClient {
 
 	//private static org.apache.axis2.client.ServiceClient serviceClient = null;
 
-	
 
+	private static Object LOCK = new Object();
+	 
 	public static String sendREST(String restEPR, String requestString) throws Exception{	
 
 		OMElement request = getPayLoad(requestString);
 		return sendREST(restEPR, request);
 	}
-	
+
 
 
 	public static String sendREST(String restEPR, OMElement request) throws Exception{	
 
 		String response = null;
 		org.apache.axis2.client.ServiceClient serviceClient = null;
-		try {
-			
+		//org.apache.axis2.client.ServiceClient serviceClient_retry = null;
+
+		int retry = 0;
+		boolean done = false;
+		String msg = null;
+		do {
+			try {
+
 				serviceClient = new org.apache.axis2.client.ServiceClient();
 
 
-			ServiceContext context = serviceClient.getServiceContext();
-			MultiThreadedHttpConnectionManager connManager = (MultiThreadedHttpConnectionManager)context.getProperty(HTTPConstants.MULTITHREAD_HTTP_CONNECTION_MANAGER);
+				ServiceContext context = serviceClient.getServiceContext();
+				MultiThreadedHttpConnectionManager connManager = (MultiThreadedHttpConnectionManager)context.getProperty(HTTPConstants.MULTITHREAD_HTTP_CONNECTION_MANAGER);
 
-			
-			if(connManager == null) {
-				connManager = new MultiThreadedHttpConnectionManager();
-				context.setProperty(HTTPConstants.MULTITHREAD_HTTP_CONNECTION_MANAGER, connManager);
-				connManager.getParams().setMaxTotalConnections(100);
-				connManager.getParams().setDefaultMaxConnectionsPerHost(100);
-				connManager.getParams().setMaxConnectionsPerHost(HostConfiguration.ANY_HOST_CONFIGURATION, 100);
-			}
-			HttpClient httpClient = new HttpClient(connManager);
 
-			Options options = new Options();
-			options.setTo(new EndpointReference(restEPR));
-			options.setTransportInProtocol(Constants.TRANSPORT_HTTP);
-			options.setProperty(Constants.Configuration.ENABLE_REST, Constants.VALUE_TRUE);
-			options.setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);	
-			options.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Constants.VALUE_TRUE);
-			serviceClient.setOptions(options);
-			
-			OMElement result = serviceClient.sendReceive(request);
-			if (result != null) {
-				response = result.toString();
-				log.debug(response);
-			}
-		} catch (Exception e) {
-			 log.debug("Cleanup Error .",
-					 e); 
-			e.printStackTrace();
-			throw new I2B2Exception("" + StackTraceUtil.getStackTrace(e));
-		} finally {
-			if (serviceClient != null) {
-				try{
-					serviceClient.cleanupTransport();
-					serviceClient.cleanup();
-				} catch (AxisFault e) {
-					log.debug("Error .", e);
+				if(connManager == null) {
+					connManager = new MultiThreadedHttpConnectionManager();
+					context.setProperty(HTTPConstants.MULTITHREAD_HTTP_CONNECTION_MANAGER, connManager);
+					connManager.getParams().setMaxTotalConnections(100);
+					connManager.getParams().setDefaultMaxConnectionsPerHost(100);
+					connManager.getParams().setMaxConnectionsPerHost(HostConfiguration.ANY_HOST_CONFIGURATION, 100);
 				}
-			}
-		}		
+				HttpClient httpClient = new HttpClient(connManager);
 
+				Options options = new Options();
+				options.setTo(new EndpointReference(restEPR));
+				options.setTransportInProtocol(Constants.TRANSPORT_HTTP);
+				options.setProperty(Constants.Configuration.ENABLE_REST, Constants.VALUE_TRUE);
+				options.setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);	
+				options.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Constants.VALUE_TRUE);
+				serviceClient.setOptions(options);
+
+				OMElement result = serviceClient.sendReceive(request);
+				if (result != null) {
+					response = result.toString();
+					log.debug(response);
+				}
+				done = true;
+			} catch (Exception e) {
+				Thread.sleep(1000);
+				msg = e.getMessage();
+			} finally {
+				if (serviceClient != null) {
+					try{
+						serviceClient.cleanupTransport();
+						serviceClient.cleanup();
+					} catch (AxisFault e) {
+						log.debug("Error .", e);
+					}
+				}
+			}		
+			if (retry == 5)
+				done = true;
+			retry ++;
+		} while (done == false);
 		
+		if (retry ==- 5)
+			throw new I2B2Exception(msg);
+
 		return response;
 	}
-		
-	
+
+
 
 	public static MessageContext getSOAPFile(String frUrl, OMElement requestElement, String frOperationName, String timeout) throws AxisFault
 	{
 
-		 org.apache.axis2.client.ServiceClient serviceClient =  null; 
-			serviceClient = new org.apache.axis2.client.ServiceClient();
+		org.apache.axis2.client.ServiceClient serviceClient =  null; 
+		serviceClient = new org.apache.axis2.client.ServiceClient();
 
-       // OMElement getRequestElmt = getRequestPayLoad();
-        Options options = new Options();
-        options.setTo(new EndpointReference(frUrl));
+		// OMElement getRequestElmt = getRequestPayLoad();
+		Options options = new Options();
+		options.setTo(new EndpointReference(frUrl));
 		options.setSoapVersionURI(SOAP11Constants.SOAP_ENVELOPE_NAMESPACE_URI);
-//		options.setProperty(Constants.Configuration.ENABLE_REST, Constants.VALUE_TRUE);
-        options.setProperty(Constants.Configuration.ENABLE_SWA, Constants.VALUE_TRUE);
-        options.setProperty(Constants.Configuration.ENABLE_MTOM, Constants.VALUE_FALSE);
+		//		options.setProperty(Constants.Configuration.ENABLE_REST, Constants.VALUE_TRUE);
+		options.setProperty(Constants.Configuration.ENABLE_SWA, Constants.VALUE_TRUE);
+		options.setProperty(Constants.Configuration.ENABLE_MTOM, Constants.VALUE_FALSE);
 
 		// Increase the time out to receive large attachments
 		options.setTimeOutInMilliSeconds(Integer.parseInt(timeout));
 
 		options.setProperty(Constants.Configuration.CACHE_ATTACHMENTS,
-                Constants.VALUE_TRUE);
+				Constants.VALUE_TRUE);
 
 		//ServiceClient sender = new ServiceClient();
 
 		serviceClient.setOptions(options);
 		OperationClient mepClient = serviceClient.createClient(org.apache.axis2.client.ServiceClient.ANON_OUT_IN_OP);
 
-//		SOAPFactory sfac = OMAbstractFactory.getSOAP11Factory();
+		//		SOAPFactory sfac = OMAbstractFactory.getSOAP11Factory();
 		SOAPFactory sfac = OMAbstractFactory.getSOAP12Factory();
 		SOAPEnvelope env = sfac.getDefaultEnvelope();
 		env.getBody().addChild(requestElement);
@@ -161,14 +173,14 @@ public class ServiceClient {
 		mc.setEnvelope(env);
 		mc.setDoingMTOM(false);
 		mc.setDoingSwA( true );
-		
+
 		mepClient.addMessageContext(mc);
-		
+
 		mepClient.execute(true);
 		return mepClient
 				.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
 
-		
+
 	}
 
 	public static OMElement getPayLoad(String requestPm) throws Exception {
@@ -186,12 +198,12 @@ public class ServiceClient {
 		}
 		return lineItem;
 	}
-	
+
 	public static String sendSOAP(String soapEPR, String requestString, String action, String operation) throws Exception{	
 
-		 org.apache.axis2.client.ServiceClient serviceClient = null;
+		org.apache.axis2.client.ServiceClient serviceClient = null;
 		serviceClient = new
-				 org.apache.axis2.client.ServiceClient(); 
+				org.apache.axis2.client.ServiceClient(); 
 		OperationClient operationClient = serviceClient
 				.createClient(org.apache.axis2.client.ServiceClient.ANON_OUT_IN_OP);
 
@@ -200,15 +212,15 @@ public class ServiceClient {
 		// assigning message context's option object into instance variable
 		Options opts = outMsgCtx.getOptions();
 		// setting properties into option
-//		log.debug(soapEPR);
+		//		log.debug(soapEPR);
 		opts.setTo(new EndpointReference(soapEPR));
 		opts.setAction(action);
 		opts.setTimeOutInMilliSeconds(180000);
-		
+
 		log.debug(requestString);
 
 		SOAPEnvelope envelope = null;
-		
+
 		try {
 			SOAPFactory fac = OMAbstractFactory.getSOAP11Factory();
 			envelope = fac.getDefaultEnvelope();
@@ -216,7 +228,7 @@ public class ServiceClient {
 					"http://rpdr.partners.org/",                                   
 					"rpdr");
 
-			
+
 			// creating the SOAP payload
 			OMElement method = fac.createOMElement(operation, omNs);
 			OMElement value = fac.createOMElement("RequestXmlString", omNs);
@@ -228,19 +240,19 @@ public class ServiceClient {
 			log.error(e.getMessage());
 			throw new Exception(e);
 		}
- 
+
 		outMsgCtx.setEnvelope(envelope);
-		
-		
+
+
 		operationClient.addMessageContext(outMsgCtx);
 		operationClient.execute(true);
-		
-		
+
+
 		MessageContext inMsgtCtx = operationClient.getMessageContext("In");
 		SOAPEnvelope responseEnv = inMsgtCtx.getEnvelope();
-		
+
 		OMElement soapResponse = responseEnv.getBody().getFirstElement();
-		
+
 		OMElement soapResult = soapResponse.getFirstElement();
 
 		String i2b2Response = soapResult.getText();
@@ -249,7 +261,7 @@ public class ServiceClient {
 		return i2b2Response;		
 	}
 	public static String getContextRoot() throws InstanceNotFoundException, AttributeNotFoundException, MalformedObjectNameException, ReflectionException, MBeanException, AxisFault {
-		
+
 		org.apache.axis2.client.ServiceClient cl = ServiceClient.getServiceClient();
 		Integer port = (Integer) ManagementFactory.getPlatformMBeanServer().getAttribute(new ObjectName("jboss.as:socket-binding-group=standard-sockets,socket-binding=http"), "port"); 
 
@@ -269,8 +281,8 @@ public class ServiceClient {
 	}
 
 	public static  org.apache.axis2.client.ServiceClient getServiceClient() throws AxisFault{
-		 org.apache.axis2.client.ServiceClient serviceClient =
-				 null; 
+		org.apache.axis2.client.ServiceClient serviceClient =
+				null; 
 		if (serviceClient == null) {
 			try {
 				serviceClient = new org.apache.axis2.client.ServiceClient();
