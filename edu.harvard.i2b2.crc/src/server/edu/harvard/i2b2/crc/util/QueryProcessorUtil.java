@@ -148,7 +148,7 @@ public class QueryProcessorUtil {
 					thisInstance = i;
 					serviceLocator = ServiceLocator.getInstance();
 
-					/* 
+					
 					pqMedium = new ProcessQueue(QueryManagerBeanUtil.MEDIUM_QUEUE);
 					pqLarge = new ProcessQueue( QueryManagerBeanUtil.LARGE_QUEUE);
 
@@ -160,7 +160,7 @@ public class QueryProcessorUtil {
 					Thread m2 = new Thread(pqLarge);
 					m2.start();
 					log.info("started LARGE");
-					 */
+					
 				}
 			}
 
