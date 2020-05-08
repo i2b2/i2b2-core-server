@@ -151,9 +151,13 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 			String finalSql = "SELECT "
 					+ selectClause
 					+ " FROM "
-					+ getDbSchemaName()
-					+ "patient_dimension patient WHERE patient.patient_num IN (select distinct char_param1 FROM "
-					+ tempTableName + ") order by patient_num";
+					+ getDbSchemaName();
+			if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+				finalSql += "patient_dimension patient WHERE patient.patient_num IN (select distinct CAST (char_param1 AS INTEGER) FROM ";
+			} else {
+				finalSql += "patient_dimension patient WHERE patient.patient_num IN (select distinct char_param1 FROM ";
+			}
+			finalSql += tempTableName + ") order by patient_num";
 			log.debug("Executing [" + finalSql + "]");
 
 			query = conn.prepareStatement(finalSql);
@@ -492,9 +496,13 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 			String finalSql = "SELECT "
 					+ selectClause
 					+ " FROM "
-					+ getDbSchemaName()
-					+ "patient_dimension patient where patient_num in (select distinct char_param1 from "
-					+ factTempTable + ") order by patient_num";
+					+ getDbSchemaName();
+			if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+				finalSql += "patient_dimension patient where patient_num in (select distinct CAST (char_param1 AS INTEGER) from ";
+			} else {
+				finalSql += "patient_dimension patient where patient_num in (select distinct char_param1 from ";
+			}
+			finalSql += factTempTable + ") order by patient_num";
 			log.debug("Executing SQL [" + finalSql + "]");
 
 
