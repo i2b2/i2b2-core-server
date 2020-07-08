@@ -100,7 +100,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		String sql = "UPDATE "
 				+ getDbSchemaName()
 				+ "QT_QUERY_MASTER set  GENERATED_SQL = ?, MASTER_TYPE_CD = ? where query_master_id = ?";
-		//jdbcTemplate.update(sql, new Object[] { generatedSql, masterType, Integer.parseInt(masterId) });
+		jdbcTemplate.update(sql, new Object[] { generatedSql, masterType, Integer.parseInt(masterId) });
 		// jdbcTemplate.update(sql);
 	}
 
