@@ -77,7 +77,8 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		int recordCount = (Integer) param.get("RecordCount");
 		int transactionTimeout = (Integer) param.get("TransactionTimeout");
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
-
+		String ResultPath = (String) param.get("ResultPath");
+		
 		this
 		.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
 				.getFullSchema());
@@ -98,6 +99,8 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			logTimingUtil.setStartTime();
 			itemKey = getItemKeyFromResultType(sfDAOFactory, resultTypeName, roles);
+			if (ResultPath != null)
+				itemKey = ResultPath;
 
 			log.debug("Result type's " + resultTypeName + " item key value "
 					+ itemKey);
