@@ -15,6 +15,7 @@ import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
@@ -108,7 +109,7 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 			log.debug("Executing sql:\n" + sql);
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			logTimingUtil.setStartTime();
-			PreparedStatement ps = sfConn.prepareStatement(sql);
+			PreparedStatement ps = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(sql));
 			ps.setInt(1, Integer.parseInt(resultInstanceId));
 			loadCount = ps.executeUpdate();
 			ps.close();

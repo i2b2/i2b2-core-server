@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
@@ -144,7 +145,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			while (count < sqls.length - 1)
 			{
 
-				stmt = sfConn.prepareStatement(sqls[count]);
+				stmt = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(sqls[count]));
 				stmt.setQueryTimeout(transactionTimeout);
 				log.debug("Executing count sql [" + sqls[count] + "]");
 
@@ -160,7 +161,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			}
 
 
-			stmt = sfConn.prepareStatement(sqls[count]);
+			stmt = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(sqls[count]));
 			stmt.setQueryTimeout(transactionTimeout);
 			log.debug("Executing count sql [" + sqls[count] + "]");
 

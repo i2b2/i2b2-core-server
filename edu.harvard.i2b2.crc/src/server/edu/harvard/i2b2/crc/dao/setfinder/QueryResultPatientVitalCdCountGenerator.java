@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
@@ -65,7 +66,7 @@ public class QueryResultPatientVitalCdCountGenerator extends CRCDAO implements
 
 			log.debug("Executing[ " + demographics_count_sql + " ]");
 			PreparedStatement stmt = sfConn
-					.prepareStatement(demographics_count_sql);
+					.prepareStatement(JDBCUtil.escapeSingleQuote(demographics_count_sql));
 			ResultSet resultSet = stmt.executeQuery();
 			ResultType resultType = new ResultType();
 			resultType.setName(RESULT_NAME);

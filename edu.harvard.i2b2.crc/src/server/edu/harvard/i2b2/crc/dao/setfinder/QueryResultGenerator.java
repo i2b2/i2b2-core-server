@@ -17,6 +17,7 @@ import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
@@ -190,7 +191,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 						+ " " + conceptType.getOperator() + " "
 						+ dimCode + ")";
 
-				stmt = sfConn.prepareStatement(itemCountSql);
+				stmt = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(itemCountSql));
 				stmt.setQueryTimeout(transactionTimeout);
 				log.debug("Executing count sql [" + itemCountSql + "]");
 

@@ -27,6 +27,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
@@ -1025,7 +1026,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		List queryResult = null;
 		try {
-			queryResult = jt.query(codeInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()));
+			queryResult = jt.query(JDBCUtil.escapeSingleQuote(codeInfoSql), getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()));
 		} catch (DataAccessException e) {
 			log.error("Search by Code " + e.getMessage());
 			throw new I2B2DAOException("Database Error");

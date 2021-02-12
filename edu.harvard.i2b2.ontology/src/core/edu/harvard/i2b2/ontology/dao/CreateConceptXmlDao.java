@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.ejb.DBInfoType;
 import edu.harvard.i2b2.ontology.util.ConceptXMLWriterUtil;
@@ -146,7 +147,7 @@ public class CreateConceptXmlDao extends JdbcDaoSupport {
 						+ emptyStringClause + updateOnlyClause
 						+ "   and lower(c_tablename) = '" + dimensionTableName.toLowerCase() + "'";
 				log.debug("Executing sql [" + selectSql + "]");
-				query = conn.prepareStatement(selectSql);
+				query = conn.prepareStatement(JDBCUtil.escapeSingleQuote(selectSql));
 
 				resultSet = query.executeQuery();
 
