@@ -1,6 +1,5 @@
 *.project
 *.class
 .*
-**/gensrc/**/*.java
 **/dist/*
 **/test-reports/**/*.html
