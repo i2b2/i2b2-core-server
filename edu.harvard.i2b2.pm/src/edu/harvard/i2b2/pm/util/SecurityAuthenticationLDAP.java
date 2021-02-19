@@ -67,11 +67,12 @@ public class SecurityAuthenticationLDAP implements SecurityAuthentication {
 		securityAuthentication = (String) params.get("security_authentication");
 		securityAuthentication = securityAuthentication.toUpperCase();
 		setSSL = (String) params.get("ssl");
-		dn = (String) params.get("distinguished_name");
+		
 		if (searchBase.startsWith("@"))
 		{
-			principalName = dn + username + searchBase;
+			principalName = username + searchBase;
 		} else {
+			dn = (String) params.get("distinguished_name");
 			principalName = dn + username + "," + searchBase;
 		}
 		
