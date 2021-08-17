@@ -1123,7 +1123,7 @@ public class PMDbDao extends JdbcDaoSupport {
 
 		if (database.equalsIgnoreCase("oracle"))
 			addSql = "insert into pm_user_login " + 
-					"(user_id, attempt_cd, changeby_char, entry_date, status_cd) values (?,?,?,systimestamp,'A')";
+					"(user_id, attempt_cd, changeby_char, entry_date, status_cd) values (?,?,?,current_timestamp,'A')";
 		else if (database.equalsIgnoreCase("Microsoft sql server"))
 			addSql = "insert into pm_user_login " + 
 					"(user_id, attempt_cd, changeby_char, entry_date, status_cd) values (?,?,?,getdate(),'A')";
@@ -1147,7 +1147,7 @@ public class PMDbDao extends JdbcDaoSupport {
 
 		if (database.equalsIgnoreCase("oracle"))
 			addSql = "insert into pm_user_session " + 
-					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?, systimestamp, systimestamp+numtodsinterval(" + (timeout / 1000) + ",'SECOND'))";
+					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?, current_timestamp, current_timestamp+numtodsinterval(" + (timeout / 1000) + ",'SECOND'))";
 		else if (database.equalsIgnoreCase("Microsoft sql server"))
 			addSql = "insert into pm_user_session " + 
 					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?, getdate(), DATEADD(ms," + timeout + ",getdate()))";
