@@ -120,28 +120,14 @@ public class ProviderRestService {
 		OMElement _fileNameEle = null;
 		OMElement _imageElement = null;
 
-		System.out.println("server side request element " + element);
 
 		MessageContext inMessageContext = MessageContext
 				.getCurrentMessageContext();
 		OperationContext operationContext = inMessageContext
 				.getOperationContext();
 
-		System.out.println(inMessageContext.isServerSide() + " "
-				+ inMessageContext.isDoingREST() + "  "
-				+ inMessageContext.isDoingSwA());
-		;
 		DataHandler dataHandler = inMessageContext
 				.getAttachment("fileattachment");
-		if (dataHandler == null) {
-			System.out.println("attachement is null");
-		} else {
-			System.out.println("attachement is not null cool");
-		}
-		System.out
-				.println("Attachment length "
-						+ inMessageContext.getAttachmentMap()
-								.getAllContentIDs().length);
 
 		// OMText firstText = (OMText) element.getFirstOMChild();
 		// System.out.println(firstText);
@@ -151,11 +137,9 @@ public class ProviderRestService {
 
 		// OMText binaryNode = firstText;
 		binaryNode.setOptimize(true);
-		System.out.println("server side request element1 ");
 		DataHandler actualDH;
 		// actualDH = (DataHandler) binaryNode.getDataHandler();
 		actualDH = dataHandler;
-		System.out.println("server side request element2 ");
 		ByteArrayInputStream is = (ByteArrayInputStream) actualDH
 				.getDataSource().getInputStream();
 		BufferedReader br = new BufferedReader(new InputStreamReader(is,

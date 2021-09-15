@@ -272,7 +272,7 @@ public class PagingHandler extends CRCDAO {
 			}
 			String minSql = inputOptionListHandler
 					.generateMinIndexSql(panelSql);
-			System.out.println("min sql for panel " + minSql);
+			log.debug("min sql for panel " + minSql);
 			panelMinSqlList.add(minSql);
 
 		}

@@ -50,10 +50,10 @@ public class SecurityAuthenticationOKTA implements SecurityAuthentication {
 		try {
 			Jwt jwt = jwtVerifier.decode(token);
 			
-		       System.out.println(jwt.getTokenValue()); // print the token
-		        System.out.println(jwt.getClaims().get("invalidKey")); // an invalid key just returns null
-		        System.out.println(jwt.getClaims().get("groups")); // handle an array value
-		        System.out.println(jwt.getExpiresAt()); // print the expiration time
+		       log.debug(jwt.getTokenValue()); // print the token
+		        log.debug(jwt.getClaims().get("invalidKey")); // an invalid key just returns null
+		        log.debug(jwt.getClaims().get("groups")); // handle an array value
+		        log.debug(jwt.getExpiresAt()); // print the expiration time
 		//	SmbSession.logon( mydomaincontroller, mycreds );
 		 * */
 			// SUCCESS

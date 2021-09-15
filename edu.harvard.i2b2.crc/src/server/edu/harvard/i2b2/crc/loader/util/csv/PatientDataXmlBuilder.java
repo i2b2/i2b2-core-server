@@ -144,7 +144,6 @@ public class PatientDataXmlBuilder {
 			 }
 			 elementValue = col[elementColumnPosition.intValue()];
 		 } catch (java.lang.ArrayIndexOutOfBoundsException ex) { 
-			System.out.println("ArrayIndexOutOfBoundsException:  For debug first column" + col[0]);
 		 }
 		 return elementValue;
 	 }

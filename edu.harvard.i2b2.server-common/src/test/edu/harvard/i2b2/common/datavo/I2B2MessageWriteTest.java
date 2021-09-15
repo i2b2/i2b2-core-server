@@ -90,8 +90,8 @@ public class I2B2MessageWriteTest extends TestCase {
         edu.harvard.i2b2.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.datavo.i2b2message.ObjectFactory();
         JAXBElement<?> jaxbElement = of.createRequest(reqMsgType);
         String xmlMessage = getXMLString(jaxbElement);
-        System.out.println("Request Message");
-        System.out.println(xmlMessage);
+        log.debug("Request Message");
+        log.debug(xmlMessage);
     }
 
     public void testWritei2b2ResponseMessage() throws Exception {
@@ -102,7 +102,7 @@ public class I2B2MessageWriteTest extends TestCase {
     	edu.harvard.i2b2.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.datavo.i2b2message.ObjectFactory();
         JAXBElement<?> jaxbElement = of.createResponse(resMsgType);
         String xmlMessage = getXMLString(jaxbElement);
-        System.out.println("Response Message");
-        System.out.println(xmlMessage);
+        log.debug("Response Message");
+        log.debug(xmlMessage);
     }
 }

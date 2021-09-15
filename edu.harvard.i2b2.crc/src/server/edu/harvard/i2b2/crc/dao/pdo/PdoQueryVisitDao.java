@@ -440,7 +440,7 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 					+ "visit_dimension visit where encounter_num in (select distinct char_param1 from "
 					+ factTempTable + ") order by encounter_num";
 			log.debug("Executing SQL [" + finalSql + "]");
-			System.out.println("Final Sql " + finalSql);
+			log.debug("Final Sql " + finalSql);
 
 			query = conn.prepareStatement(finalSql);
 
@@ -486,7 +486,7 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 
 		PreparedStatement stmt = conn.prepareStatement(totalSql);
 
-		System.out.println(totalSql + " [ " + sqlParamCount + " ]");
+		log.debug(totalSql + " [ " + sqlParamCount + " ]");
 		if (inputOptionListHandler.isCollectionId()) {
 			for (int i = 1; i <= sqlParamCount; i++) {
 				stmt.setInt(i, Integer.parseInt(inputOptionListHandler

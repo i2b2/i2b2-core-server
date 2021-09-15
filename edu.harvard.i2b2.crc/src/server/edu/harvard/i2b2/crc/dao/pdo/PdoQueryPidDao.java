@@ -614,7 +614,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 			finalSql += "from " 
 					+ tempTable + ") order by patient_num";
 			log.debug("Executing SQL [" + finalSql + "]");
-			System.out.println("Final Sql " + finalSql);
+			log.debug("Final Sql " + finalSql);
 
 			query = conn.prepareStatement(finalSql);
 
@@ -663,7 +663,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 
 		PreparedStatement stmt = conn.prepareStatement(totalSql);
 
-		System.out.println(totalSql + " [ " + sqlParamCount + " ]");
+		log.debug(totalSql + " [ " + sqlParamCount + " ]");
 		if (inputOptionListHandler.isCollectionId()) {
 			for (int i = 1; i <= sqlParamCount; i++) {
 				stmt.setInt(i, Integer.parseInt(inputOptionListHandler

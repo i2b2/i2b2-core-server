@@ -188,7 +188,7 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 		PreparedStatement stmt = conn.prepareStatement(totalSql);
 		ResultSet resultSet = null;
 
-		System.out.println(totalSql + " [ " + sqlParamCount + " ]");
+		log.debug(totalSql + " [ " + sqlParamCount + " ]");
 		if (inputOptionListHandler.isCollectionId()) {
 			for (int i = 1; i <= sqlParamCount; i++) {
 				stmt.setInt(i, Integer.parseInt(inputOptionListHandler

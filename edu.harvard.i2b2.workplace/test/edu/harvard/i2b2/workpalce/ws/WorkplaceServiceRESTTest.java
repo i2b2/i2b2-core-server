@@ -78,7 +78,6 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 		
 		
 		testFileDir = "test"; //System.getProperty("testfiledir");
-		System.out.println("test file dir " + testFileDir);
 
 		if (!((testFileDir != null) && (testFileDir.trim().length() > 0))) {
 			throw new Exception(
@@ -759,7 +758,6 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 			ResponseMessageType r = serviceRequest(getNameInfo, filename1);
 			
 			
-			System.out.println("My Reaponse1:"+ r.toString());
 			checkResponseStatus(r, "DONE");
 			verifyFolder(r, conceptName, true, false, null);
 
@@ -769,7 +767,6 @@ public class WorkplaceServiceRESTTest extends WorkplaceAxisAbstract{
 			// type=all in request
 			// Test all elements of folders were returned in the response including entrydate
 			r = serviceRequest(getNameInfo, filename2);
-			System.out.println("My Reaponse2:"+ r.toString());
 			checkResponseStatus(r, "DONE");
 			verifyFolder(r, conceptName, true, true, null);
 

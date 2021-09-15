@@ -83,8 +83,6 @@ public class CalulatePatientCountMainFromItemKey extends CRCDAO {
 				instanceId = arg.substring(arg.indexOf('=') + 1);
 			}
 		}
-		System.out.println("domainId = " + domainId + " project " + projectId
-				+ " userid" + userId + " instanceId " + instanceId);
 
 		// call the calculation function
 		main1.calculateAndWriteResultXml(projectId, userId, domainId,
@@ -135,7 +133,6 @@ public class CalulatePatientCountMainFromItemKey extends CRCDAO {
 			QtQueryMaster qtQueryMaster = queryMasterDao
 					.getQueryDefinition(masterId);
 			String requestXml = qtQueryMaster.getRequestXml();
-			System.out.println("The request xml " + requestXml);
 
 			String i2b2RequestXml = qtQueryMaster.getI2b2RequestXml();
 			I2B2RequestMessageHelper analysisRequestHelper = new I2B2RequestMessageHelper(

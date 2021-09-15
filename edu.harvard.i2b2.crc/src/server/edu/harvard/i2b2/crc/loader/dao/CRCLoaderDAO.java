@@ -84,7 +84,7 @@ public class CRCLoaderDAO {
 		if (serverType.equalsIgnoreCase(DataSourceLookupDAOFactory.SQLSERVER)) {
 			String errorMsg = callStmt.getString(outParamIndex);
 			if (errorMsg != null) {
-				System.out.println("error codde" + errorMsg);
+				log.debug("error codde" + errorMsg);
 				throw new I2B2Exception("Error from stored procedure ["
 						+ errorMsg + "]");
 			}

@@ -41,8 +41,6 @@ public class StaxParser {
 
      // Jump to the first element in the document, the enclosing BugCollection
      StartElement e = (StartElement) xmlfer.nextEvent();
-     System.out.println(e.getName().getLocalPart());
-     
       
      JAXBContext ctx = JAXBContext.newInstance("edu.harvard.i2b2.crc.datavo.i2b2message");
      Unmarshaller um = ctx.createUnmarshaller();
@@ -52,7 +50,6 @@ public class StaxParser {
          Object o = um.unmarshal(xmler);
          if (o instanceof BodyType) {
         	 BodyType bi = (BodyType) o;
-        	 System.out.println("QueryDefinitionRequestType found....");
              // process the bug instance
              bugs++;
          }

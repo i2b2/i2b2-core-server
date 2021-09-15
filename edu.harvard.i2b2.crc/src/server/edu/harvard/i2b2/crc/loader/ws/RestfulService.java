@@ -66,12 +66,10 @@ public class RestfulService implements Provider<Source> {
 			oprops.put(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			trans.setOutputProperties(oprops);
 			trans.transform(source, sr);
-			System.out.println("**** Response ******" + bos.toString());
 
 			MessageContext mc = wsContext.getMessageContext();
 			String path = (String) mc.get(MessageContext.PATH_INFO);
 			String method = (String) mc.get(MessageContext.HTTP_REQUEST_METHOD);
-			System.out.println("Got HTTP " + method + " request for " + path);
 			if (method.equals("GET"))
 				return get(mc);
 			if (method.equals("POST"))

@@ -43,7 +43,6 @@ public class AnalysisJobStarter {
 
 	public AnalysisJobStarter(String domainId, String projectId, String userId)
 			throws I2B2DAOException {
-		System.out.println("**************" + domainId + projectId + userId);
 		this.projectId = projectId;
 		this.userId = userId;
 		this.domainId = domainId;
