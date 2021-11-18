@@ -134,104 +134,54 @@ public class ServicesHandler extends RequestHandler {
 			throw new Exception ("Password Expired.");
 		}
 
-
-		//if (method.equalsIgnoreCase("NTLM"))
-		if ((param.get("authentication_method") != null) && (!param.get("authentication_method").equals("")))
+		if ((param.get("authentication_method") == null) || (param.get("authentication_method").equals("")))
 		{
-			//String SQL_QUERY ="from UserData where oid='" + username + "'";
-			List response = null;	
-			try {
-				response = pmDb.getUser(username, null);
-			} catch (I2B2DAOException e1) {
-				throw new Exception ( "Database error in getting user data for " + param.get("authentication_method"));
-			} catch (I2B2Exception e1) {
-				throw new Exception ("Database error in getting user data for " + param.get("authentication_method"));
-			}
-
-			Iterator it = response.iterator();
-			UserType user = null;
-			while (it.hasNext())
-			{
-				user = (UserType)it.next();
-			}
-
-			if (user == null)
-			{
-				log.debug("Did not find user: " + username);
-				saveLoginAttempt(pmDb, username, "NONEXIST");
-
-				throw new Exception ("Username does not exist");
-			}
-
-			// Handle all internal classnames.  Also for backward compatibility need to call it NTLM.
-			String classname = "edu.harvard.i2b2.pm.util.SecurityAuthentication" + param.get("authentication_method");
-
-			ClassLoader classLoader = ServicesHandler.class.getClassLoader();
-
-			try {
-				Class securityClass = classLoader.loadClass(classname);
-
-
-				SecurityAuthentication security =  (SecurityAuthentication) securityClass.newInstance();
-
-				security.validateUser(username, password, param);
-
-			} catch (ClassNotFoundException e) {
-				log.equals("Did not find class: " + e.getMessage());
-				throw new Exception ("Error loading class: " + e.getMessage());
-			}
-
-			return user;
-
-		} else
-		{
-			//Check to see if user has authentication set
-
-
-			List response = null;
-
-			try {
-				response = pmDb.getUser(username, null, null, true); //PMUtil.getInstance().getHashedPassword(password));
-			} catch (I2B2DAOException e1) {
-				throw new Exception ( "Database error in getting user data");
-			} catch (I2B2Exception e1) {
-				throw new Exception ("Database error in getting user data");
-			}
-
-			Iterator it = response.iterator();
-			UserType user = null;
-			while (it.hasNext())
-
-			{
-				user = (UserType)it.next();
-
-				//Check the password
-				if (user.getPassword().getValue().startsWith("@"))
-				{
-					if	(!(user.getPassword().getValue().substring(1)).equals(password))
-					{
-						saveLoginAttempt(pmDb, username, "BADPASSWORD");
-						throw new Exception ("Current password is incorrect");
-					}
-				}				
-				else if (!user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword(password)))
-				{
-					saveLoginAttempt(pmDb, username, "BADPASSWORD");
-					throw new Exception ("Current password is incorrect");
-
-				}
-			}
-			if (user == null)
-			{
-				saveLoginAttempt(pmDb, username, "NONEXIST");
-
-				log .debug("Did not find user: " + username + " with password: " + PMUtil.getInstance().getHashedPassword(password) );
-				throw new Exception ("Username does not exist");
-			}
-
-			//passwordManagerService.validateSuppliedPassword(user, rmt.getPassword());
-			return user;
+			param.put("authentication_method",  "BASIC");
 		}
+
+		//String SQL_QUERY ="from UserData where oid='" + username + "'";
+		List response = null;	
+		try {
+			response = pmDb.getUser(username, null);
+		} catch (I2B2DAOException e1) {
+			throw new Exception ( "Database error in getting user data for " + param.get("authentication_method"));
+		} catch (I2B2Exception e1) {
+			throw new Exception ("Database error in getting user data for " + param.get("authentication_method"));
+		}
+
+		Iterator it = response.iterator();
+		UserType user = null;
+		while (it.hasNext())
+		{
+			user = (UserType)it.next();
+		}
+
+		if (user == null)
+		{
+			log.debug("Did not find user: " + username);
+			saveLoginAttempt(pmDb, username, "NONEXIST");
+
+			throw new Exception ("Username does not exist");
+		}
+
+		// Handle all internal classnames.  Also for backward compatibility need to call it NTLM.
+		String classname = "edu.harvard.i2b2.pm.util.SecurityAuthentication" + param.get("authentication_method");
+
+		ClassLoader classLoader = ServicesHandler.class.getClassLoader();
+
+		try {
+			Class securityClass = classLoader.loadClass(classname);
+
+			SecurityAuthentication security =  (SecurityAuthentication) securityClass.newInstance();
+
+			security.validateUser(username, password, param);
+
+		} catch (ClassNotFoundException e) {
+			log.equals("Did not find class: " + e.getMessage());
+			throw new Exception ("Error loading class: " + e.getMessage());
+		}
+
+		return user;
 	}
 
 	private boolean verifySession(PMDbDao pmDb, int timeout, String sessionId, String userId) throws Exception
