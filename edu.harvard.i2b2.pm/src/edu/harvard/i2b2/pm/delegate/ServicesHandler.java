@@ -284,12 +284,16 @@ public class ServicesHandler extends RequestHandler {
 
 				if (hivedata.getName().equalsIgnoreCase("authentication_method"))
 					method  = hivedata.getValue();
-
-
 			}
 
 			Hashtable params = new Hashtable();
-			//First get all the params for the user params
+			//Get params from the environment
+			for( it=pmDb.getEnvironmentData(domainId).iterator();it.hasNext();){
+				HiveParamData hivedata =(HiveParamData)it.next();
+				params.put(hivedata.getName(),  hivedata.getValue());
+			}	
+
+			//Update the params from the user params
 			UserType userType = new UserType();
 			userType.setUserName(rmt.getUsername());
 
@@ -299,14 +303,7 @@ public class ServicesHandler extends RequestHandler {
 
 				if (userdata.getName().equalsIgnoreCase("authentication_method"))
 					method  = userdata.getValue();
-
 			}
-			//Get any remaining params from the environment
-			for( it=pmDb.getEnvironmentData(domainId).iterator();it.hasNext();){
-				HiveParamData hivedata =(HiveParamData)it.next();
-				params.put(hivedata.getName(),  hivedata.getValue());
-
-			}	
 
 			String password = rmt.getPassword().getValue();
 
