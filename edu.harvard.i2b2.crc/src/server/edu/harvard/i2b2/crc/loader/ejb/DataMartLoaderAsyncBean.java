@@ -438,7 +438,7 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 
 			TextMessage inMessage = (TextMessage) receiver.receive(timeout);
 			if (inMessage != null) {
-				System.out.println("Received text message from response queue"
+				log.debug("Received text message from response queue"
 						+ inMessage.getText());
 
 			}

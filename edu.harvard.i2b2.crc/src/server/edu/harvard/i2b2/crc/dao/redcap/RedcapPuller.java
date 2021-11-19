@@ -632,8 +632,6 @@ public class RedcapPuller  {
 							else if (metadata.getFieldContent().equals("datetime_seconds_dmy"))
 								FORMATER = "yyyy-MM-dd kk:mm:ss";							
 							
-							System.out.println(metadata.getFieldContent());
-							System.out.println(record.getValue());
 							DateFormat format = new SimpleDateFormat(FORMATER);
 							Date date = format.parse(record.getValue());
 

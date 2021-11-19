@@ -849,7 +849,7 @@ public class ServicesHandler extends RequestHandler {
 													datasource.setDriverName(f3.get(obj2).toString());
 												else if (f3.getName().equals("jta"))
 													datasource.setJta(Boolean.valueOf(f3.get(obj2).toString()));
-												  System.out.println(f3.getName());
+												  log.debug(f3.getName());
 											}
 										}
 									}

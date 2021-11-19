@@ -82,7 +82,7 @@ public class ValueConstrainsHandler {
 			boolean useDefaultModifier)
 					throws I2B2DAOException {
 		String fullConstrainSql = "", containsJoinSql = "";
-		System.out.println("panel accuracy scale" + panelAccuracyScale);
+		log.debug("panel accuracy scale" + panelAccuracyScale);
 		panelAccuracyScale = 0;
 
 		boolean oracleFlag = false;

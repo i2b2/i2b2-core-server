@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
@@ -99,7 +100,7 @@ public class QueryResultPatientAgeCountGenerator extends CRCDAO implements
 		try {
 
 			log.debug("Executing[ " + ageFinalCountSql + " ]");
-			PreparedStatement stmt = sfConn.prepareStatement(ageFinalCountSql);
+			PreparedStatement stmt = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(ageFinalCountSql));
 			ResultSet resultSet = stmt.executeQuery();
 			ResultType resultType = new ResultType();
 			resultType.setName(RESULT_NAME);

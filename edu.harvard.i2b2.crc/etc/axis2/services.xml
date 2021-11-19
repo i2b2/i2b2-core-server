@@ -14,6 +14,9 @@
     <operation name="pdorequest">
         <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
     </operation>
+    <operation name="breakdownrequest">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
 
     <operation name="getAllDblookups">
         <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>

@@ -74,9 +74,9 @@ public class FRBean  {
 			FileTransferUtil ftUtil = new FileTransferUtil();
 			String localDestinationFolder = "/tmp";
 
-			System.out.println("uploadRemoteFileLocation"
+			log.debug("uploadRemoteFileLocation"
 					+ uploadRemoteFileLocation);
-			System.out.println("fileSystemDefaultStorageResource"
+			log.debug("fileSystemDefaultStorageResource"
 					+ fileSystemDefaultStorageResource);
 			localUploadFile = ftUtil.getFile(uploadRemoteFileLocation,
 					securityType.getPassword(),
@@ -85,9 +85,9 @@ public class FRBean  {
 				&& uploadRemoteFileProtocol.equalsIgnoreCase("srb")) {
 			FileTransferUtil ftUtil = new FileTransferUtil();
 			String localDestinationFolder = "/tmp";
-			System.out.println("uploadRemoteFileLocation"
+			log.debug("uploadRemoteFileLocation"
 					+ uploadRemoteFileLocation);
-			System.out.println("fileSystemDefaultStorageResource"
+			log.debug("fileSystemDefaultStorageResource"
 					+ fileSystemDefaultStorageResource);
 			localUploadFile = ftUtil.getFile(uploadRemoteFileLocation,
 					securityType.getPassword(),

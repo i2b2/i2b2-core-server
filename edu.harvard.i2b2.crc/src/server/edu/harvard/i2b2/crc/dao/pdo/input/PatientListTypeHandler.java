@@ -297,7 +297,7 @@ public class PatientListTypeHandler extends CRCDAO implements
 			this.patientNumList = patientNumArrayList.subList(minIndex,
 					maxIndex);
 		}
-		System.out.println(" MAX INDEX *** " + maxIndex);
+		log.debug(" MAX INDEX *** " + maxIndex);
 		return this.patientNumList;
 	}
 

@@ -573,7 +573,7 @@ public class PdoQueryHandler {
 			if (pidFromFact) {
 				List<String> patientNumFactList = factRelatedQry
 						.getPatientFactList();
-				System.out.println("Patient fact list size"
+				log.debug("Patient fact list size"
 						+ patientNumFactList.size());
 				List<String> panelSqlList = factRelatedQry.getPanelSqlList();
 

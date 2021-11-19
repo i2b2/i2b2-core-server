@@ -60,7 +60,6 @@
         <delete dir="${classes}"/>
         <delete dir="${test.classes}"/>
         <delete dir="${dist}"/> 
-        <delete dir="${gensrc}"/>   
         <delete dir="${genlib}"/>
         <delete dir="${todo}"/>
     </target>

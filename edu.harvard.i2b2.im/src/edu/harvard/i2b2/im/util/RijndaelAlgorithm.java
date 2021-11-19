@@ -51,7 +51,6 @@ public class RijndaelAlgorithm {
 	// / Set the key.
 	public void setKey(byte[] key) {
 		if (key.length == 0) {
-			System.out.println("the key passed to setKey was zero length");
 			return;
 		}
 		// copy the byte key

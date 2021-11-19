@@ -109,8 +109,6 @@ public class GaussianBoxMuller {
 			// Random random = new Random(3);
 			// double gaussianBlur = random.nextGaussian();
 			// double finalObsData = g.getObsecationData(10, 3, 3);
-			System.out.println(" *** value ***" + Math.round(finalVal));
-			System.out.println(""+ g.getNormalizedValueForCount(4,150,3 ));
 		}
 		// System.out.println(" value " + String.valueOf(finalVal));
 		// double finalObsData = g.getObsecationData(10, 3, 3);

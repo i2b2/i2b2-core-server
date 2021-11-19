@@ -69,7 +69,7 @@ public class JDBCUtil {
 	public static String escapeSingleQuote(String value) { 
 		String escapedValue = null;
 		if (value != null) { 
-			escapedValue = value.replaceAll("'", "\\''");
+			escapedValue = value; //.replaceAll("'", "\\''");
 		}
 		return escapedValue;
 	}

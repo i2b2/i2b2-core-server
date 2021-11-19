@@ -26,6 +26,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
@@ -111,7 +112,7 @@ IQueryResultTypeDao {
 			String sql = "select * from " + getDbSchemaName()
 			+ "qt_query_result_type where name = '" + resultName + "' and (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd))";
 			Map myRoles = Collections.singletonMap("roleCd", roles);
-			queryResultType = namedParameterJdbcTemplate.query(sql,
+			queryResultType = namedParameterJdbcTemplate.query(JDBCUtil.escapeSingleQuote(sql),
 					myRoles,
 					queryResultTypeMapper);
 		} else

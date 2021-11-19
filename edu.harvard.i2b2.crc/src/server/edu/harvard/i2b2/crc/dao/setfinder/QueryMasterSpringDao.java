@@ -13,12 +13,14 @@
  *     Rajesh Kuttan
  */
 package edu.harvard.i2b2.crc.dao.setfinder;
- 
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -35,7 +37,9 @@ import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.DateConstrainHandler;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InclusiveType;
@@ -146,12 +150,12 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 					+ getDbSchemaName()
 					+ "qt_query_master where ";
 			if (roles != null && !roles.contains("MANAGER"))
-					sql += "  user_id = ? and ";
+				sql += "  user_id = ? and ";
 			sql += "  LOWER(name) like ? and delete_flag = ? "; //and master_type_cd is NULL";
 			if (findChildType.getCreateDate() != null)
 			{
 				InclusiveType inclusive = InclusiveType.NO;
-				
+
 				DateConstrainHandler dateConstrainHandler = new DateConstrainHandler(
 						dataSourceLookup);
 
@@ -170,18 +174,18 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				sql += " order by create_date  ";
 
 			} else {
-			sql += " order by create_date  ";
+				sql += " order by create_date  ";
 			}
-			
+
 			if (findChildType.isAscending() && findChildType.getCreateDate() != null)
 				sql += "asc";
 			else
 				sql += "desc";
-/*			if (findChildType.isAscending())
+			/*			if (findChildType.isAscending())
 				sql += "desc";
 			else 
 				sql += "asc";
-				*/
+			 */
 		} 
 		if ((findChildType.getCategory().equals("@")))
 		{
@@ -194,7 +198,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 						DAOFactoryHelper.POSTGRESQL)) 
 					sql += " limit " + fetchSize;
 			}
-			
+
 			if (roles != null && roles.contains("MANAGER"))
 				queryMasterList = jdbcTemplate.query(sql,
 						new Object[] { str.toLowerCase(), DELETE_NO_FLAG }, queryMasterMapper);
@@ -223,9 +227,9 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 					+ "qt_query_result_instance qri where "
 					+ "qm.QUERY_MASTER_ID = qi.QUERY_MASTER_ID and "
 					+ "qi.QUERY_INSTANCE_ID = qri.QUERY_INSTANCE_ID and ";
-					if (roles != null && !roles.contains("MANAGER"))
-						sql += "  qm.user_id = ? and";
-					sql+= " LOWER(qri.DESCRIPTION) like ? and qm.delete_flag = ? "; //and qm.master_type_cd is NULL";
+			if (roles != null && !roles.contains("MANAGER"))
+				sql += "  qm.user_id = ? and";
+			sql+= " LOWER(qri.DESCRIPTION) like ? and qm.delete_flag = ? "; //and qm.master_type_cd is NULL";
 			if (findChildType.getCreateDate() != null)
 			{
 				DateConstrainHandler dateConstrainHandler = new DateConstrainHandler(
@@ -247,12 +251,12 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 
 			}
 			else {
-			sql += " order by qm.create_date  ";
+				sql += " order by qm.create_date  ";
 			}
-		//	if (findChildType.isAscending())
-				sql += "desc";
-		//	else 
-		//		sql += "asc";
+			//	if (findChildType.isAscending())
+			sql += "desc";
+			//	else 
+			//		sql += "asc";
 		}  
 		if ((findChildType.getCategory().toLowerCase().equals("@")))
 		{
@@ -267,10 +271,10 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 					sql += " limit " + fetchSize;
 
 			}
-			
+
 			if (roles != null && roles.contains("MANAGER"))
 				queryMasterList.addAll(jdbcTemplate.query(sql,
-					new Object[] { str.toLowerCase(), DELETE_NO_FLAG }, queryMasterMapper));
+						new Object[] { str.toLowerCase(), DELETE_NO_FLAG }, queryMasterMapper));
 			else
 				queryMasterList.addAll(jdbcTemplate.query(sql,
 						new Object[] {  userRequestType.getUsername(),   str.toLowerCase(), DELETE_NO_FLAG }, queryMasterMapper));
@@ -300,12 +304,12 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 					+ "qi.QUERY_INSTANCE_ID = qri.QUERY_INSTANCE_ID and "
 					+ "qri.RESULT_INSTANCE_ID = qp.RESULT_INSTANCE_ID and ";
 			if (roles != null && !roles.contains("MANAGER"))
-					sql += "  qm.user_id = ? and ";
-			 if ( dataSourceLookup.getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) 
-				 sql += " CAST(qp.patient_num AS TEXT) like ? and qm.delete_flag = ? "; 
-			 else 
-				 sql += " qp.patient_num like ? and qm.delete_flag = ? "; 
+				sql += "  qm.user_id = ? and ";
+			if ( dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.POSTGRESQL)) 
+				sql += " CAST(qp.patient_num AS TEXT) like ? and qm.delete_flag = ? "; 
+			else 
+				sql += " qp.patient_num like ? and qm.delete_flag = ? "; 
 
 			if (findChildType.getCreateDate() != null)
 			{
@@ -328,12 +332,12 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				sql += " order by qm.create_date  ";
 			}
 			else {
-			sql += " order by qm.create_date  ";
+				sql += " order by qm.create_date  ";
 			}
-		//	if (findChildType.isAscending())
-				sql += "desc";
-		//	else 
-		//		sql += "asc";
+			//	if (findChildType.isAscending())
+			sql += "desc";
+			//	else 
+			//		sql += "asc";
 		} 
 
 		if (fetchSize > 0) {
@@ -357,8 +361,8 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		String userid = userRequestType.getUsername();
 		if (findChildType.getUserId() != null && roles != null && roles.contains("MANAGER"))
 			userid = findChildType.getUserId();
-	//	else if (findChildType.getUserId() != null)
-	//		throw new I2B2DAOException ("Permisison denied");
+		//	else if (findChildType.getUserId() != null)
+		//		throw new I2B2DAOException ("Permisison denied");
 		//		if (findChildType.getCreateDate() != null)
 		//			 args = new Object[] { userid, str.toLowerCase(), DELETE_NO_FLAG,findChildType.getCreateDate() };
 		//		else
@@ -416,6 +420,29 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		List<QtQueryMaster> queryMasterList = jdbcTemplate.query(sql,
 				new Object[] { userId, DELETE_NO_FLAG }, queryMasterMapper);
 
+		QueryInstanceSpringDao instanceDao = new QueryInstanceSpringDao(dataSource, dataSourceLookup);
+
+		for (QtQueryMaster qtMaster: queryMasterList) {
+			// create an empty set 
+			Set<QtQueryInstance>  set = new HashSet<>(); 
+
+			// Add each element of list into the set 
+			for (QtQueryInstance t : instanceDao.getQueryInstanceByMasterId(qtMaster.getQueryMasterId())) 
+			{
+				QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(dataSource, dataSourceLookup);
+				Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
+				for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(t.getQueryInstanceId()))
+				{
+					
+					setResult.add(r);
+				}
+				t.setQtQueryResultInstances(setResult);
+				set.add(t); 
+
+			}
+
+			qtMaster.setQtQueryInstances(set);
+		}
 		return queryMasterList;
 	}
 

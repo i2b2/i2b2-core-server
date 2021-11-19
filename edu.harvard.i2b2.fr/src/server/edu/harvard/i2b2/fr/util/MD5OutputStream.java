@@ -107,29 +107,7 @@ public class MD5OutputStream extends FilterOutputStream {
     return md5;
   }
 
-  /**
-   * This method is here for testing purposes only - do not rely
-   * on it being here.
-   **/
-  public static void main(String[] arg) {
-    try {
-      MD5OutputStream out = new MD5OutputStream(new NullOutputStream());
-      InputStream in = new BufferedInputStream(new FileInputStream(arg[0]));
-      byte[] buf = new byte[65536];
-      int num_read;
-      long total_read = 0;
-      while ((num_read = in.read(buf)) != -1) {
-	total_read += num_read;
-	out.write(buf, 0, num_read);
-      }
-      System.out.println(MD5.asHex(out.hash())+"  "+arg[0]);
-      in.close();
-      out.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
+ 
 
 }
 

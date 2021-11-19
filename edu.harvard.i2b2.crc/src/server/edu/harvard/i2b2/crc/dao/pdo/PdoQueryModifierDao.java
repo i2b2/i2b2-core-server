@@ -268,7 +268,7 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 					+ "modifier_dimension modifier where modifier_cd in (select distinct char_param1 from "
 					+ tempTable + ") order by modifier_path";
 			log.debug("Executing SQL [" + finalSql + "]");
-			System.out.println("Final Sql " + finalSql);
+			log.debug("Final Sql " + finalSql);
 
 			query = conn.prepareStatement(finalSql);
 
@@ -313,7 +313,7 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 
 		PreparedStatement stmt = conn.prepareStatement(totalSql);
 
-		System.out.println(totalSql + " [ " + sqlParamCount + " ]");
+		log.debug(totalSql + " [ " + sqlParamCount + " ]");
 		if (inputOptionListHandler.isCollectionId()) {
 			for (int i = 1; i <= sqlParamCount; i++) {
 				stmt.setInt(i, Integer.parseInt(inputOptionListHandler

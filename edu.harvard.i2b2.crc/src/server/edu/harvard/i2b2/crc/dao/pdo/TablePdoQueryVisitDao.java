@@ -90,7 +90,7 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 
 		RPDRPdoFactory.EventBuilder eventBuilder = new RPDRPdoFactory.EventBuilder(
 				detailFlag, blobFlag, statusFlag);
-		System.out.println("input encounter list size "
+		log.debug("input encounter list size "
 				+ encounterNumList.size());
 
 		Connection conn = null;

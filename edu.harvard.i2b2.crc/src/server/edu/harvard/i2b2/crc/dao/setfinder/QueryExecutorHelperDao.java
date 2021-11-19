@@ -692,6 +692,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 					param.put("ResultInstanceId", resultInstanceId);
 					param.put("ResultOptionName", resultName);
 					
+					if (resultOutputOption.getPaths() != null)
+						param.put("ResultPath", resultOutputOption.getPaths().getPath());
 					
 					IQueryBreakdownTypeDao queryBreakdownTypeDao = sfDAOFactory
 							.getQueryBreakdownTypeDao();

@@ -848,10 +848,10 @@ public class FolderDao extends JdbcDaoSupport {
 
 				try {
 					if(managerRole){
-						workplaceResult = jt.query(sql.toString(), mapper, searchWord, projectInfo.getId().toLowerCase() );
+						workplaceResult = jt.query(JDBCUtil.escapeSingleQuote(sql.toString()), mapper, searchWord, projectInfo.getId().toLowerCase() );
 					}
 					else {
-						workplaceResult = jt.query(sql.toString(), mapper, searchWord, userId.toLowerCase(), projectInfo.getId().toLowerCase(), projectInfo.getId().toLowerCase() );
+						workplaceResult = jt.query(JDBCUtil.escapeSingleQuote(sql.toString()), mapper, searchWord, userId.toLowerCase(), projectInfo.getId().toLowerCase(), projectInfo.getId().toLowerCase() );
 					}
 				} catch (DataAccessException e) {
 					log.error(e.getMessage());
@@ -1618,7 +1618,7 @@ public class FolderDao extends JdbcDaoSupport {
 		int numRowsSet=-1;
 
 		try {
-			numRowsSet = jt.update(updateSql, protectedAccVal);
+			numRowsSet = jt.update(JDBCUtil.escapeSingleQuote(updateSql), protectedAccVal);
 		} catch (DataAccessException e) {
 			log.error("Dao updateProtectedAccess failed");
 			log.error(e.getMessage());
@@ -1824,7 +1824,7 @@ class GetFolderMapper implements RowMapper<FolderType> {
 					c_xml = rs.getString("c_work_xml");
 				} else
 				{
-					c_xml = JDBCUtil.getClobString(rs.getClob("c_work_xml"));
+					c_xml = rs.getString("c_work_xml");  //JDBCUtil.getClobString(rs.getClob("c_work_xml"));
 				}
 				if (c_xml != null){
 					//c_xml = JDBCUtil.getClobString(xml_clob);

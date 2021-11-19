@@ -156,7 +156,6 @@ public int read (byte bytes[], int offset, int length) throws IOException {
 	while ((num_read = in.read(buf)) != -1) {
 	  digest.update(buf, 0, num_read);
 	}
-	System.out.println(MD5.asHex(digest.digest())+"  "+filename);
 	in.close();
 
 	// Use the optimized MD5 implementation
@@ -173,7 +172,6 @@ public int read (byte bytes[], int offset, int length) throws IOException {
 
 	MD5InputStream in = new MD5InputStream(new BufferedInputStream(new FileInputStream(filename)));
 	while ((num_read = in.read(buf)) != -1);
-	System.out.println(MD5.asHex(in.hash())+"  "+filename);
 	in.close();
       }
     } catch (Exception e) {

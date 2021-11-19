@@ -25,7 +25,7 @@ import javax.xml.bind.JAXBElement;
 public class I2B2MessageReadTest extends TestCase {
     public void testReadI2B2RequestMessage() throws Exception {
         RequestMessageType rmType = unMarshaller();
-        System.out.println("Sending app name: " +
+        log.debug("Sending app name: " +
             rmType.getMessageHeader().getSendingApplication().getApplicationName());
 
         JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
@@ -33,13 +33,13 @@ public class I2B2MessageReadTest extends TestCase {
                                                                                  .getAny(),
                 PatientDataType.class);
         
-        System.out.println("Observation blob " +
+        log.debug("Observation blob " +
             pdType.getObservationFactSet().get(0).getObservationFact().get(0)
                   .getObservationBlob());
 
         JAXBElement je = (JAXBElement) rmType.getMessageBody().getAny().get(0);
         PatientDataType pd = (PatientDataType) je.getValue();
-        System.out.println("Concept cd " +
+        log.debug("Concept cd " +
             pd.getObservationFactSet().get(0).getObservationFact().get(0)
               .getConceptCd());
     }

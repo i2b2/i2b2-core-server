@@ -67,8 +67,6 @@ public class CalulatePatientCountMain {
 				instanceId = arg.substring(arg.indexOf('=') + 1);
 			}
 		}
-		System.out.println("domainId = " + domainId + " project " + projectId
-				+ " userid" + userId + " instanceId " + instanceId + "*");
 
 		// call the calculation function
 		main1.calculateAndWriteResultXml(projectId, userId, domainId,
@@ -159,7 +157,6 @@ public class CalulatePatientCountMain {
 		jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelopeType),
 				strWriter);
 
-		System.out.println("Results marshalled" + strWriter.toString());
 		return strWriter.toString();
 	}
 }

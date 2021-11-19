@@ -40,7 +40,7 @@ public class TemporalPanelConceptItem extends TemporalPanelItem {
 				if (tableName.equalsIgnoreCase("provider_dimension")) {
 					return " /*+ index(observation_fact observation_fact_pk) */ ";
 				} else {
-					return " /*+ index(observation_fact fact_cnpt_pat_enct_idx) */ ";
+					return " /*+ index(f fact_cnpt_pat_enct_idx) */ ";
 				}
 			}
 			return "";

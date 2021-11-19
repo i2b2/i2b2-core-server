@@ -164,7 +164,7 @@ public class OntProcessStatusDao extends JdbcDaoSupport {
 
 			}
 			ontProcessStatusType.setProcessId(String.valueOf(processId));
-			System.out.println("Rows added [" + numRowsAdded + "]");
+			log.debug("Rows added [" + numRowsAdded + "]");
 			return ontProcessStatusType;
 		} catch (DataAccessException e) {
 			e.printStackTrace();
@@ -464,7 +464,7 @@ public class OntProcessStatusDao extends JdbcDaoSupport {
 
 			}
 
-			System.out.println("Rows added [" + numRowsAdded + "]");
+			log.debug("Rows added [" + numRowsAdded + "]");
 			return numRowsAdded;
 		} catch (DataAccessException e) {
 			//		e.printStackTrace();
@@ -558,7 +558,7 @@ public class OntProcessStatusDao extends JdbcDaoSupport {
 
 				ontProcessStatusType.setProcessId(String
 						.valueOf(processIdentityId));
-				System.out.println(processIdentityId);
+				log.debug(processIdentityId);
 			}
 		}
 	}

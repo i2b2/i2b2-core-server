@@ -103,7 +103,7 @@ public class CRCConceptUpdateHandler extends RequestHandler {
 				ontProcessStatusType = ontProcessStatusDao
 						.createOntologyProcessStatus(ontProcessStatusType,
 								securityType.getUsername());
-				System.out.println("process id "
+				log.debug("process id "
 						+ ontProcessStatusType.getProcessId());
 				int processId = Integer.parseInt(ontProcessStatusType
 						.getProcessId());

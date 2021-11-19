@@ -46,7 +46,6 @@ public class MetaDataTypeMapper {
 		if (stringDataList.contains(dbDataType)) { 
 			xmlDataType = "string";
 		} else if (dateDataList.contains(dbDataType)) { 
-			System.out.println("dateTime");
 			xmlDataType = "dateTime";
 		} else if (intDataList.contains(dbDataType) ) { 
 			xmlDataType = "int";

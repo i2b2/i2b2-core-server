@@ -50,7 +50,7 @@ public class ValueConstrainsHandler {
 			List<ItemType.ConstrainByValue> valueConstrainList, String dbServerType,String dbSchemaName,int panelAccuracyScale)
 			throws I2B2Exception {
 		String fullConstrainSql = "",containsJoinSql = "";
-		System.out.println("panel accuracy scale" + panelAccuracyScale );
+		log.debug("panel accuracy scale" + panelAccuracyScale );
 		panelAccuracyScale = 0;
 		
 		boolean oracleFlag = false;

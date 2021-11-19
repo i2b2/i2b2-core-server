@@ -99,7 +99,7 @@ public class PatientDataMessageTest extends TestCase {
         edu.harvard.i2b2.core.datavo.pdo.ObjectFactory of = new edu.harvard.i2b2.core.datavo.pdo.ObjectFactory();
         JAXBElement<?> jaxbElement = of.createPatientData(createPatientDataType());
         String xmlMessage = getXMLString(jaxbElement);
-        System.out.println("Patient Data Message");
-        System.out.println(xmlMessage);
+        log.debug("Patient Data Message");
+        log.debug(xmlMessage);
     }
 }

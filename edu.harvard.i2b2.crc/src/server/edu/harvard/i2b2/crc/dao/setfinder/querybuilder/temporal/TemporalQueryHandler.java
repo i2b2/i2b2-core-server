@@ -107,7 +107,7 @@ public class TemporalQueryHandler extends CRCDAO {
 		this.maxPanelNum = tQuery.getMaxPanelIndex();
 		this.isTemporalQuery = (tQuery.getSubQueryCount()>1?true:false);
 		this.isProtectedQuery = tQuery.isProtectedQuery();
-		System.out.println(tQuerySql);
+		log.debug(tQuerySql);
 		
 		return tQuerySql;
 

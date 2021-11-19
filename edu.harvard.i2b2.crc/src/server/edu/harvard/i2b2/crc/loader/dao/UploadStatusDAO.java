@@ -291,7 +291,7 @@ public class UploadStatusDAO extends CRCLoaderDAO implements UploadStatusDAOI {
 		if (rowCount < 1) {
 			return setUploadStatusList;
 		}
-		System.out.println("ROW COUNT " + rowCount);
+		log.debug("ROW COUNT " + rowCount);
 		Connection conn = null;
 		try {
 			String sql = "select upload_id as upload_id, "

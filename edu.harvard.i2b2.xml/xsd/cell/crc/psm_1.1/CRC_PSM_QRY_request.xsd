@@ -148,14 +148,25 @@
         </xs:complexContent>
     </xs:complexType>
     
-   
+    <xs:complexType name="result_output_pathType">
+                <xs:sequence>
+                    <xs:element name="path" type="xs:string"/>
+                </xs:sequence>
+    </xs:complexType>
+       
    <xs:complexType name="result_output_optionType">
+   
+        <xs:sequence>
+	        <xs:element name="paths" type="crc:result_output_pathType" />
+		</xs:sequence>
+		
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="priority_index" type="xs:int"/>
         <xs:attribute name="display_type" type="xs:string"/>
         <xs:attribute name="full_name" type="xs:string" />
+
     </xs:complexType>
 
     
-    
+
 </xs:schema>

@@ -347,7 +347,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		while (resultSet.next()) {
 			singleEidType = eidBuilder.buildEidSet(resultSet);
 			eidMapId = singleEidType.getEventMapId().get(0);
-			System.out.println("Building  pidMapId " + eidMapId.getValue()
+			log.debug("Building  pidMapId " + eidMapId.getValue()
 					+ "   " + singleEidType.getEventId().getValue() + " "
 					+ eidMapId.getSource());
 			tempSinglePidType = singleEidType.getEventId().getValue();
@@ -553,7 +553,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 					+ " where encounter_num in (select distinct char_param1 from "
 					+ tempTable + ") order by encounter_num";
 			log.debug("Executing SQL [" + finalSql + "]");
-			System.out.println("Final Sql " + finalSql);
+			log.debug("Final Sql " + finalSql);
 
 			query = conn.prepareStatement(finalSql);
 
@@ -603,7 +603,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 
 		PreparedStatement stmt = conn.prepareStatement(totalSql);
 
-		System.out.println(totalSql + " [ " + sqlParamCount + " ]");
+		log.debug(totalSql + " [ " + sqlParamCount + " ]");
 		if (inputOptionListHandler.isCollectionId()) {
 			for (int i = 1; i <= sqlParamCount; i++) {
 				stmt.setInt(i, Integer.parseInt(inputOptionListHandler
@@ -612,7 +612,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		}
 
 		int updatedRow = stmt.executeUpdate();
-		System.out.println("Total encounter num inserted [" + updatedRow + "]");
+		log.debug("Total encounter num inserted [" + updatedRow + "]");
 	}
 
 }

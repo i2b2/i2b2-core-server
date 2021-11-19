@@ -236,7 +236,7 @@ public class DataMartLoaderBeanMDB { //mm removed EJB implements MessageListener
 			localUploadFile = testLocal.createClient(uploadId, dataListType,
 					i2b2SecurityType, projectId,
 					fileSystemDefaultStorageResource);
-			System.out.println("localUploadFile  :" + localUploadFile);
+			log.debug("localUploadFile  :" + localUploadFile);
 
 		} catch (Exception e) {
 			e.printStackTrace();

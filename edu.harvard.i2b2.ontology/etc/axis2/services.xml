@@ -62,4 +62,9 @@
     </operation>
 
     <parameter name="ServiceClass">edu.harvard.i2b2.ontology.ws.OntologyService</parameter>
+    <parameter name="xmlToJsonNamespaceMap">
+    <mappings>
+        <mapping xmlNamespace="http://quickstart.samples/xsd" jsonNamespace=""/>
+    </mappings>
+</parameter>
 </service>

@@ -17,6 +17,7 @@ import java.util.Map;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
@@ -77,7 +78,8 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		int recordCount = (Integer) param.get("RecordCount");
 		int transactionTimeout = (Integer) param.get("TransactionTimeout");
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
-
+		String ResultPath = (String) param.get("ResultPath");
+		
 		this
 		.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
 				.getFullSchema());
@@ -98,6 +100,8 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			logTimingUtil.setStartTime();
 			itemKey = getItemKeyFromResultType(sfDAOFactory, resultTypeName, roles);
+			if (ResultPath != null)
+				itemKey = ResultPath;
 
 			log.debug("Result type's " + resultTypeName + " item key value "
 					+ itemKey);
@@ -187,7 +191,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 						+ " " + conceptType.getOperator() + " "
 						+ dimCode + ")";
 
-				stmt = sfConn.prepareStatement(itemCountSql);
+				stmt = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(itemCountSql));
 				stmt.setQueryTimeout(transactionTimeout);
 				log.debug("Executing count sql [" + itemCountSql + "]");
 

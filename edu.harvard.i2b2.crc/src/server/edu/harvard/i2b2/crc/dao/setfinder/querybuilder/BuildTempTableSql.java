@@ -347,7 +347,7 @@ public class BuildTempTableSql extends CRCDAO {
 					"provider_dimension")) {
 				sqlHintClause = " /*+ index(observation_fact observation_fact_pk) */ ";
 			} else {
-				sqlHintClause = " /*+ index(observation_fact fact_cnpt_pat_enct_idx) */ ";
+				sqlHintClause = " /*+ index(f fact_cnpt_pat_enct_idx) */ ";
 			}
 
 			ModifierType modifierType = this.getModifierMetadataFromOntology(itemType);

@@ -340,7 +340,8 @@ public class ExecRunnable implements Runnable{
 
 		//see if the query will be direct query(no temp table)
 		boolean queryWithoutTempTableFlag = false;
-
+		boolean queryCountMinSketchFlag = false;
+		
 		PsmQryHeaderType psmQryHeaderType = getSetfinderRequestHeaderType(xmlRequest);
 		if (psmQryHeaderType != null && psmQryHeaderType.getQueryMode() != null) {
 			String queryMode = psmQryHeaderType.getQueryMode().value();
@@ -350,12 +351,15 @@ public class ExecRunnable implements Runnable{
 				CheckSkipTempTable checkSkipTempTable = new CheckSkipTempTable(); 
 				queryWithoutTempTableFlag = checkSkipTempTable.getSkipTempTable(qdRequestType, resultOutputList);
 				log.debug("Sefinder query without temp table flag [" + queryWithoutTempTableFlag +"]");
+			} else if (queryMode.equals(QueryModeType.COUNT_MIN_SKETCH.value())) {
+				queryCountMinSketchFlag = true;
 			} else { 
 				log.debug("Setfinder query header doesnt have [<query_mode>optimize_without_temp_table</query_mode>]");
 			}
 		} else { 
 			log.debug("Setfinder query request header <psmheader> is null");
 		}
+		queryExDao.setQueryCountMinSketchFlag(queryCountMinSketchFlag);
 		queryExDao.setQueryWithoutTempTableFlag(queryWithoutTempTableFlag);
 
 		queryExDao.executeSQL( transactionTimeout, dsLookup,

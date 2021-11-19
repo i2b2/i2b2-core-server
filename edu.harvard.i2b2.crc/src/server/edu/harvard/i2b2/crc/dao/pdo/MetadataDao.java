@@ -156,7 +156,6 @@ public class MetadataDao extends CRCDAO implements IMetadataDao {
 				sqlEx.printStackTrace();
 			}
 		}
-		System.out.println();
 		return columnMap;
 	}
 	

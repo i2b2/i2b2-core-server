@@ -83,7 +83,6 @@ public class ContainsUtil {
 		if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
 			starStr = accumStr.replaceAll("(\\*)", "%");	
 		} 
-		System.out.println("start value [" + starStr + "]"); 
 		
 		//7: replace DB_AND with AND
 		String andStr = starStr.replaceAll("\\s(DB_AND)\\s", " AND ");

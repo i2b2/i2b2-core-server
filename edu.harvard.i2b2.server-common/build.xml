@@ -44,8 +44,6 @@
 		<mkdir dir="${classes}" />
 		<javac destdir="${classes}" optimize="${javac.opt}" debug="${javac.debug}">
 			<src path="${src}/core" />
-			<src path="${gensrc}" />
-			<!--	<src path="${src}/test" />  -->
 			<classpath refid="classpath" />
 		</javac>
 	</target>
@@ -183,13 +181,13 @@
 		<echo>Copying to ${jboss.home} directory</echo>
 		<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib">
 			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
-			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.4.1.jre8.jar"/>
-			<fileset dir="${lib}/jdbc" includes="postgresql-42.2.8.jar"/>
+			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
+			<fileset dir="${lib}/jdbc" includes="postgresql-42.2.18.jar"/>
 		</copy>
 		<copy todir="${jboss.home}/standalone/deployments">
 			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
-			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.4.1.jre8.jar"/>
-			<fileset dir="${lib}/jdbc" includes="postgresql-42.2.8.jar"/>
+			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
+			<fileset dir="${lib}/jdbc" includes="postgresql-42.2.18.jar"/>
 		</copy>
 	</target>
 	
@@ -210,13 +208,13 @@
 			
 			<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib">
 				<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
-				<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.4.1.jre8.jar"/>
-				<fileset dir="${lib}/jdbc" includes="postgresql-42.2.8.jar"/>
+				<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
+				<fileset dir="${lib}/jdbc" includes="postgresql-42.2.18.jar"/>
 			</copy>
 			<copy todir="${jboss.home}/standalone/deployments">
 				<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
-				<fileset dir="${lib}/jdbc" includes="mssql-jdbc-7.4.1.jre8.jar"/>
-				<fileset dir="${lib}/jdbc" includes="postgresql-42.2.8.jar"/>
+				<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
+				<fileset dir="${lib}/jdbc" includes="postgresql-42.2.18.jar"/>
 			</copy>
 
 		</target>
