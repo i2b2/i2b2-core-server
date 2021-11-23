@@ -14,7 +14,6 @@
  */
  package edu.harvard.i2b2.ontology.ejb;
 
-import edu.harvard.i2b2.ontology.datavo.vdo.GetAllChildrenType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetChildrenType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetModifierChildrenType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetModifierInfoType;
@@ -62,17 +61,7 @@ public class NodeType {
 	
 	public NodeType() {}
 	
-    public NodeType(GetAllChildrenType allChildrenType) {
-        node = StringUtil.getTableCd(allChildrenType.getParent());
-        if (allChildrenType.getType().equals("default")) {
-            type = "core";
-        } else {
-            type = allChildrenType.getType();
-        }
-        blob = allChildrenType.isBlob();
-        parent = "mhildren";
-    }
-
+	
 	public NodeType(GetChildrenType childrenType) {
 		node = StringUtil.getTableCd(childrenType.getParent());
 		if (childrenType.getType().equals("default")){

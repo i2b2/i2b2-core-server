@@ -11,9 +11,6 @@
     <description>
         Ontology Processing Service
     </description>
-    <operation name="getAllChildren">
-        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
-    </operation>
     <operation name="getChildren">
         <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
     </operation>

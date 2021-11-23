@@ -47,7 +47,6 @@ import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.common.util.xml.XMLUtil;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptType;
-import edu.harvard.i2b2.ontology.datavo.vdo.GetAllChildrenType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetCategoriesType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetChildrenType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetModifierChildrenType;
@@ -63,7 +62,6 @@ import edu.harvard.i2b2.ontology.ejb.NodeType;
 import edu.harvard.i2b2.ontology.util.OntologyUtil;
 import edu.harvard.i2b2.ontology.util.Roles;
 import edu.harvard.i2b2.ontology.util.StringUtil;
-import edu.harvard.i2b2.ontology.ws.GetAllChildrenDataMessage;
 import edu.harvard.i2b2.ontology.ws.GetChildrenDataMessage;
 
 public class ConceptDao extends JdbcDaoSupport {
@@ -207,157 +205,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		return queryResult;
 	}
 
-    public List<ConceptType> findAllChildrenByParent(final GetAllChildrenDataMessage allChildrenMsg, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception, JAXBUtilException {
-        final GetAllChildrenType allChildrenType = allChildrenMsg.getAllChildrenType();
 
-        // find return parameters
-        String parameters = DEFAULT;
-        if (allChildrenType.getType().equals("limited")) {
-            parameters = LIMITED;
-        } else if (allChildrenType.getType().equals("core")) {
-            parameters = CORE;
-        } else if (allChildrenType.getType().equals("all")) {
-            parameters = CORE + ALL;
-        }
-
-        if (allChildrenType.isBlob() == true) {
-            parameters = parameters + BLOB;
-        }
-
-        String metadataSchema = dbInfo.getDb_fullSchema();
-        setDataSource(dbInfo.getDb_dataSource());
-        if (projectInfo.getRole().isEmpty()) {
-            log.error("no role found for this user in project: " + projectInfo.getName());
-            I2B2Exception e = new I2B2Exception("No role found for user");
-            throw e;
-        }
-
-        //extract table code
-        String tableCd = StringUtil.getTableCd(allChildrenType.getParent());
-        String tableName = null;
-        String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
-        try {
-            tableName = jt.queryForObject(tableSql, String.class, tableCd);
-        } catch (DataAccessException e) {
-            log.error("Get Children " + e.getMessage());
-            throw new I2B2DAOException("Database Error");
-        }
-
-        String path = StringUtil.getPath(allChildrenType.getParent());
-        String searchPath = path + "%";
-
-        // Lookup to get chlevel + 1 ---  dont allow synonyms so we only get one result back
-        String levelSql = "select c_hlevel from " + metadataSchema + tableName + " where c_fullname = ?  and c_synonym_cd = 'N'";
-
-        int level = 0;
-        try {
-            level = jt.queryForObject(levelSql, Integer.class, path);
-        } catch (DataAccessException e1) {
-            // should only get 1 result back  (path == c_fullname which should be unique)
-            log.error("Get Children " + e1.getMessage());
-            throw new I2B2DAOException("Database Error");
-        }
-
-        String hidden = "";
-        if (allChildrenType.isHiddens() == false) {
-            hidden = " and c_visualattributes not like '_H%'";
-        }
-
-        String synonym = "";
-        if (allChildrenType.isSynonyms() == false) {
-            synonym = " and c_synonym_cd = 'N'";
-        }
-
-        // get all children if the numLevel is less then zero
-        int numLevel = allChildrenType.getNumLevel();
-        String sql = "select " + parameters + " from " + metadataSchema + tableName + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "");
-        if (numLevel >= 0) {
-            sql += " and c_hlevel <= ? ";
-        }
-        sql = sql + hidden + synonym + " order by c_hlevel,upper(c_name) ";
-
-        boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
-
-        if (dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")) {
-            searchPath = StringUtil.escapeSQLSERVER(path);
-            searchPath += "%";
-            //			log.info("escaped searchPath is " + searchPath);
-        } else if (dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")) {
-            searchPath = StringUtil.escapeORACLE(path);
-            searchPath += "%";
-        } else if (dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")) {
-            searchPath = StringUtil.escapePOSTGRESQL(path);
-            searchPath += "%";
-        }
-
-        List<ConceptType> queryResult = null;
-        try {
-            if (numLevel >= 0) {
-                queryResult = jt.query(sql, getConceptNodeMapper(new NodeType(allChildrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath, (level + numLevel));
-            } else {
-                queryResult = jt.query(sql, getConceptNodeMapper(new NodeType(allChildrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath);
-            }
-        } catch (Exception e) {
-            log.error("Get Children " + e.getMessage());
-            throw new I2B2DAOException("Database Error");
-        }
-
-        if ((Float.parseFloat(
-                allChildrenMsg.getMessageHeaderType().getSendingApplication().getApplicationVersion()) > 1.5)
-                && (queryResult.size() > 0)) {
-            Iterator<ConceptType> it2 = queryResult.iterator();
-            while (it2.hasNext()) {
-                ConceptType concept = it2.next();
-                // if a leaf has modifiers report it with visAttrib == F
-                if (concept.getVisualattributes().startsWith("L")) {
-                    String modPath = StringUtil.getPath(concept.getKey());
-                    // I have to do this the hard way because there are a dynamic number of applied paths to check
-                    //   prevent SQL injection
-                    if (modPath.contains("'")) {
-                        modPath = modPath.replaceAll("'", "''");
-                    }
-                    String sqlCount = "select count(*) from " + metadataSchema + tableName + " where m_exclusion_cd is null and c_fullname in";
-                    int queryCount = 0;
-                    // build m_applied_path sub-query
-                    String m_applied_pathSql = "(m_applied_path = '" + modPath + "'";
-                    while (modPath.length() > 3) {
-                        if (modPath.endsWith("%")) {
-                            modPath = modPath.substring(0, modPath.length() - 2);
-                            modPath = modPath.substring(0, modPath.lastIndexOf("\\") + 1) + "%";
-                        } else {
-                            modPath = modPath + "%";
-                        }
-                        m_applied_pathSql = m_applied_pathSql + " or m_applied_path = '" + modPath + "'";
-                    }
-                    sqlCount = sqlCount + "(select c_fullname from " + metadataSchema + tableName + " where c_hlevel = 1 and m_exclusion_cd is null and " + m_applied_pathSql + " )";
-
-                    if (dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")) {
-                        sqlCount = sqlCount + " MINUS ";
-                    } else {
-                        sqlCount = sqlCount + " EXCEPT ";
-                    }
-
-                    sqlCount = sqlCount + " (select c_fullname from " + metadataSchema + tableName + " where m_exclusion_cd is not null and " + m_applied_pathSql + " )))";
-
-                    try {
-                        queryCount = jt.queryForObject(sqlCount, Integer.class);
-                    } catch (DataAccessException e) {
-                        log.error("Get Children " + e.getMessage());
-                        throw new I2B2DAOException("Database Error");
-                    }
-
-                    if (queryCount > 0) {
-                        concept.setVisualattributes(concept.getVisualattributes().replace('L', 'F'));
-                        log.debug("changed " + concept.getName() + " from leaf to folder: modCount > 0");
-                    }
-                }
-            }
-        }
-
-        log.debug("get_all_children result size = " + queryResult.size());
-
-        return queryResult;
-    }
 
 	public List findChildrenByParent(final GetChildrenDataMessage childrenMsg, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception, JAXBUtilException{
 

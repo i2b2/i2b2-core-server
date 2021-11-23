@@ -57,7 +57,6 @@ import edu.harvard.i2b2.ontology.delegate.GetSchemesHandler;
 import edu.harvard.i2b2.ontology.delegate.GetTermInfoHandler;
 import edu.harvard.i2b2.ontology.delegate.ModifyChildHandler;
 import edu.harvard.i2b2.ontology.delegate.CheckMetadataTableHandler;
-import edu.harvard.i2b2.ontology.delegate.GetAllChildrenHandler;
 import edu.harvard.i2b2.ontology.delegate.LoadMetadataHandler;
 import edu.harvard.i2b2.ontology.delegate.LoadSchemesHandler;
 import edu.harvard.i2b2.ontology.delegate.LoadTableAccessHandler;
@@ -72,38 +71,6 @@ import edu.harvard.i2b2.ontology.delegate.UpdateTotalNumHandler;
  */
 public class OntologyService {
 	private static Log log = LogFactory.getLog(OntologyService.class);
-
-    public OMElement getAllChildren(OMElement getChildrenElement) throws I2B2Exception {
-
-        OMElement returnElement = null;
-        String ontologyDataResponse = null;
-        String unknownErrorMessage = "Error message delivered from the remote server \n"
-                + "You may wish to retry your last action";
-
-        if (getChildrenElement == null) {
-            log.error("Incoming Ontology request is null");
-            ResponseMessageType responseMsgType = MessageFactory
-                    .doBuildErrorResponse(null, unknownErrorMessage);
-            ontologyDataResponse = MessageFactory
-                    .convertToXMLString(responseMsgType);
-            return MessageFactory
-                    .createResponseOMElementFromString(ontologyDataResponse);
-        }
-
-        String requestElementString = getChildrenElement.toString();
-        GetAllChildrenDataMessage childrenDataMsg = new GetAllChildrenDataMessage(requestElementString);
-        long waitTime = 0;
-        if ((childrenDataMsg.getRequestMessageType() != null) && (childrenDataMsg.getRequestMessageType().getRequestHeader() != null)) {
-            waitTime = childrenDataMsg.getRequestMessageType()
-                    .getRequestHeader().getResultWaittimeMs();
-        }
-
-        // do Ontology query processing inside thread, so that
-        // service could sends back message with timeout error.
-        // ExecutorRunnable er = new ExecutorRunnable();
-        return execute(new GetAllChildrenHandler(childrenDataMsg), waitTime);
-
-    }
 
 	/**
 	 * This function is main webservice interface to get vocab data for a query.

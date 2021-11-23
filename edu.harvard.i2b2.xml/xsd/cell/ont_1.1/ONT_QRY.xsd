@@ -25,7 +25,6 @@
         </xs:complexType>
     </xs:element>
 -->
-    <xs:element name="get_all_children" type="ont:get_allChildrenType"/>
     <xs:element name="get_children" type="ont:get_childrenType"/>
     <xs:element name="get_term_info" type="ont:get_termInfoType"/>
     <xs:element name="get_name_info" type="ont:vocab_requestType"/>
@@ -100,14 +99,6 @@
         </xs:attribute>
     </xs:complexType>    
 		
-    <xs:complexType name="get_allChildrenType">
-        <xs:sequence>
-            <xs:element name="parent" type="xs:string"/>
-        </xs:sequence>
-        <xs:attribute name="numLevel" type="xs:int"/>
-        <xs:attributeGroup ref="ont:return_attributeGroup"/>
-    </xs:complexType>
-    
     <xs:complexType name="get_childrenType">
         <xs:sequence>
             <xs:element name="parent" type="xs:string"/>
