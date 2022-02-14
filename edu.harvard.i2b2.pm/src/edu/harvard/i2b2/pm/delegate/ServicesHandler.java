@@ -49,13 +49,6 @@ import org.jboss.as.controller.client.OperationBuilder;
 import org.jboss.as.controller.client.helpers.ClientConstants;
 import org.jboss.dmr.ModelNode;
 
-//import org.jboss.as.connector.subsystems.datasources.WildFlyDataSource;
-//import org.jboss.as.controller.client.ModelControllerClient;
-//import org.jboss.as.controller.client.OperationBuilder;
-//import org.jboss.as.controller.client.helpers.ClientConstants;
-//import org.jboss.dmr.ModelNode;
-//import org.jboss.jca.adapters.jdbc.WrapperDataSource;
-//import org.jboss.jca.adapters.jdbc.jdk7.WrappedConnectionJDK7;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;

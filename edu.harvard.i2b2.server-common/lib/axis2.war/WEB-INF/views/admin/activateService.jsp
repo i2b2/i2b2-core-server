@@ -35,20 +35,20 @@
   </tr>
   <tr>
   <%
-HashMap services = (HashMap)request.getSession().getAttribute(Constants.SERVICE_MAP);
-Collection col = services.values();
 String html = "";
 int count = 0;
-
-for (Iterator iterator = col.iterator(); iterator.hasNext();) {
-	AxisService axisServices = (AxisService) iterator.next();
+%>
+<c:forEach var="service" items="${requestScope.configContext.axisConfiguration.services.values()}">
+<%
+	AxisService axisServices = (AxisService) pageContext.getAttribute("service");
 	if(!axisServices.isActive()){
 		count++;
 		html += "<option value='" + axisServices.getName() + "'>";
 		html += axisServices.getName() + "</option>";
 	}
-}
-request.getSession().setAttribute(Constants.SERVICE_MAP,null);
+%>
+</c:forEach>
+<%
 if (count > 0) {
 %>
   

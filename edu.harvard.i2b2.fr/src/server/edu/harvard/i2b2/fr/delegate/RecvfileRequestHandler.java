@@ -28,9 +28,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.util.axis2.ServiceClient;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 
@@ -61,7 +61,7 @@ public class RecvfileRequestHandler extends RequestHandler {
 					edu.harvard.i2b2.fr.datavo.fr.query.RecvfileRequestType.class);
 			messageHeaderType = getMessageHeaderType(requestXml); 
 
-			requestElement = convertStringToOMElement(requestXml);
+			requestElement = ServiceClient.getPayLoad(requestXml);
 		} catch (Exception jaxbUtilEx) {
 			throw new I2B2Exception("Error ", jaxbUtilEx);
 		}
@@ -154,16 +154,6 @@ public class RecvfileRequestHandler extends RequestHandler {
 		return null;
 	}
 
-	public static OMElement convertStringToOMElement(String requestXmlString) throws Exception { 
-		StringReader strReader = new StringReader(requestXmlString);
-		XMLInputFactory xif = XMLInputFactory.newInstance();
-		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement lineItem = builder.getDocumentElement();
-		return lineItem;
-	}
-	
 	public String getFilename() {
 		return filename;
 	}

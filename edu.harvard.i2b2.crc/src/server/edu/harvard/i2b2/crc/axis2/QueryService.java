@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
@@ -505,8 +505,8 @@ public class QueryService {
 		XMLInputFactory xif = XMLInputFactory.newInstance();
 		StringReader strReader = new StringReader(xmlString);
 		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement element = builder.getDocumentElement();
+		OMElement element = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
 		return element;
 	}
 }

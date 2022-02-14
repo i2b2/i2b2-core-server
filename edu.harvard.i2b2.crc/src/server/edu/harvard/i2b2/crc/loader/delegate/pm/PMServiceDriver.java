@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axis2.AxisFault;
 //import org.apache.axis2.Constants;
 //import org.apache.axis2.addressing.EndpointReference;
@@ -47,36 +47,6 @@ import edu.harvard.i2b2.crc.loader.util.CRCLoaderUtil;
 public class PMServiceDriver {
 	private static Log log = LogFactory.getLog(PMServiceDriver.class);
 
-	/**
-	 * Function to convert pm requestVdo to OMElement
-	 * 
-	 * @param requestPm
-	 *            String request to send to pm web service
-	 * @return An OMElement containing the pm web service requestVdo
-	 */
-	public OMElement getPmPayLoad(String requestPm) throws I2B2Exception {
-		OMElement method = null;
-		try {
-			OMFactory fac = OMAbstractFactory.getOMFactory();
-			// OMNamespace omNs =
-			// fac.createOMNamespace("http://www.i2b2.org/xsd/hive/msg",
-			// "i2b2");
-			// method = fac.createOMElement("request", omNs);
-			StringReader strReader = new StringReader(requestPm);
-			XMLInputFactory xif = XMLInputFactory.newInstance();
-			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-			StAXOMBuilder builder = new StAXOMBuilder(reader);
-			method = builder.getDocumentElement();
-
-		} catch (FactoryConfigurationError e) {
-			log.error(e.getMessage());
-			throw new I2B2Exception("", e.getException());
-		} catch (XMLStreamException e) {
-			log.error(e.getMessage());
-			throw new I2B2Exception("", e);
-		}
-		return method;
-	}
 
 	
 	/**
@@ -127,7 +97,7 @@ public class PMServiceDriver {
 			GetUserConfigurationRequestMessage reqMsg = new GetUserConfigurationRequestMessage();
 			String getRolesRequestString = reqMsg.doBuildXML(
 					new GetUserConfigurationType(), userSec);
-			OMElement getPm = getPmPayLoad(getRolesRequestString);
+			OMElement getPm = ServiceClient.getPayLoad(getRolesRequestString);
 			String pmEPR = "";
 			try {
 				pmEPR = CRCLoaderUtil.getInstance()

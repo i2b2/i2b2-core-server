@@ -144,10 +144,11 @@ public class PMService {
 		String xmlMsg = MessageFactory.convertToXMLString(pmDataResponse);
 
 		try {
-			returnElement = MessageFactory.createResponseOMElementFromString(xmlMsg);
+			returnElement =  edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(xmlMsg);
+
 			log.debug("my pm repsonse is: " + pmDataResponse);
 			log.debug("my return is: " + returnElement);
-		} catch (XMLStreamException e) {
+		} catch (Exception e) {
 			log.error("Error creating OMElement from response string " +
 					pmDataResponse, e);
 		}
@@ -319,10 +320,11 @@ public class PMService {
 			e.printStackTrace();
 		}
 		try {
-			returnElement = MessageFactory.createResponseOMElementFromString(pmDataResponse);
+			returnElement =  edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(pmDataResponse);
+
 			log.debug("my pm repsonse is: " + pmDataResponse);
 			log.debug("my return is: " + returnElement);
-		} catch (XMLStreamException e) {
+		} catch (Exception e) {
 			log.error("Error creating OMElement from response string " +
 					pmDataResponse, e);
 		}

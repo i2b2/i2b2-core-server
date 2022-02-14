@@ -19,7 +19,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
@@ -294,8 +294,8 @@ public class CallCRCUtil {
 		StringReader strReader = new StringReader(strWriter.toString());
 		XMLInputFactory xif = XMLInputFactory.newInstance();
 		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement request = builder.getDocumentElement();
+		OMElement request = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
 		return request;
 	}
 

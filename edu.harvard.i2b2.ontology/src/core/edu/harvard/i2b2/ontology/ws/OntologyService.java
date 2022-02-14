@@ -23,7 +23,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.axiom.om.OMDataSource;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.llom.OMSourcedElementImpl;
-import org.apache.axiom.om.impl.serialize.StreamingOMSerializer;
 import org.apache.axiom.om.util.StAXUtils;
 import org.apache.axis2.json.JSONDataSource;
 import org.apache.axis2.util.StreamWrapper;
@@ -104,30 +103,7 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 
-		String requestElementString  =  null;
-
-
-		try {
-			OMSourcedElementImpl omSourcedElement = (OMSourcedElementImpl) getChildrenElement; //.getFirstElement();
-			JSONDataSource source = (JSONDataSource) omSourcedElement.getDataSource();
-			StreamingOMSerializer ser = new StreamingOMSerializer();
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			XMLStreamWriter writer = StAXUtils.createXMLStreamWriter(byteArrayOutputStream);
-			ser.serialize(
-					new StreamWrapper(source.getReader()),
-					writer);
-			writer.flush();
-			requestElementString =  byteArrayOutputStream.toString();
-
-		} catch (Exception e) {
-			if ( e.getMessage().startsWith("ParseError")) {
-				requestElementString = e.getMessage();
-				requestElementString = requestElementString.substring(requestElementString.indexOf('<'));
-			}
-		}
-
-		if (requestElementString == null )
-			requestElementString = getChildrenElement.toString();
+		String requestElementString  = getChildrenElement.toString();
 
 
 		GetChildrenDataMessage childrenDataMsg = new GetChildrenDataMessage(
@@ -178,33 +154,7 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 
-		String requestElementString  =  null;
-
-
-		try {
-			OMSourcedElementImpl omSourcedElement = (OMSourcedElementImpl) getCategoriesElement; //.getFirstElement();
-			JSONDataSource source = (JSONDataSource) omSourcedElement.getDataSource();
-			StreamingOMSerializer ser = new StreamingOMSerializer();
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			XMLStreamWriter writer = StAXUtils.createXMLStreamWriter(byteArrayOutputStream);
-			ser.serialize(
-					new StreamWrapper(source.getReader()),
-					writer);
-			writer.flush();
-			requestElementString =  byteArrayOutputStream.toString();
-
-		} catch (Exception e) {
-			if ( e.getMessage().startsWith("ParseError")) {
-				requestElementString = e.getMessage();
-				try {
-					requestElementString = java.net.URLDecoder.decode(requestElementString, StandardCharsets.UTF_8.name());
-				} catch (Exception ee) {}		
-				requestElementString = requestElementString.substring(requestElementString.indexOf('<'));
-			}
-		}
-
-		if (requestElementString == null )
-			requestElementString = getCategoriesElement.toString();
+		String requestElementString  =  getCategoriesElement.toString();
 
 
 		GetCategoriesDataMessage categoriesDataMsg = new GetCategoriesDataMessage(
@@ -264,46 +214,7 @@ public class OntologyService {
 
 
 
-		String requestElementString  =  null;
-
-
-		try {
-			OMSourcedElementImpl omSourcedElement = (OMSourcedElementImpl) getSchemesElement; //.getFirstElement();
-			JSONDataSource source = (JSONDataSource) omSourcedElement.getDataSource();
-			StreamingOMSerializer ser = new StreamingOMSerializer();
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			XMLStreamWriter writer = StAXUtils.createXMLStreamWriter(byteArrayOutputStream);
-			ser.serialize(
-					new StreamWrapper(source.getReader()),
-					writer);
-			writer.flush();
-			requestElementString =  byteArrayOutputStream.toString();
-			/*
-        try {
-            char temp = (char)getSchemesElement.getTextAsStream(true)).read();
-            jsonString = "";
-            while ((int)temp != 65535) {
-                jsonString += temp;
-                temp = (char)jsonInputStream.read();
-            }
-			 */
-		} catch (Exception e) {
-			if ( e.getMessage().startsWith("ParseError")) {
-				requestElementString = e.getMessage();
-				requestElementString = requestElementString.substring(requestElementString.indexOf('<'));
-			}
-		}
-
-
-		//if (source instanceof JSONDataSource) {
-		//	jsonString =  ((JSONDataSource)source).getCompleteJOSNString();
-		//}
-
-		//source..getCompleteJOSNString();
-
-		//String a = getSchemesElement.getText(); //.getFirstElement().getText();
-		if (requestElementString == null )
-			requestElementString = getSchemesElement.toString();
+		String requestElementString  =  getSchemesElement.toString();
 		GetSchemesDataMessage schemesDataMsg = new GetSchemesDataMessage(
 				requestElementString);
 
@@ -400,33 +311,7 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 
-		String requestElementString  =  null;
-
-
-		try {
-			OMSourcedElementImpl omSourcedElement = (OMSourcedElementImpl) getNameInfoElement; //.getFirstElement();
-			JSONDataSource source = (JSONDataSource) omSourcedElement.getDataSource();
-			StreamingOMSerializer ser = new StreamingOMSerializer();
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			XMLStreamWriter writer = StAXUtils.createXMLStreamWriter(byteArrayOutputStream);
-			ser.serialize(
-					new StreamWrapper(source.getReader()),
-					writer);
-			writer.flush();
-			requestElementString =  byteArrayOutputStream.toString();
-
-		} catch (Exception e) {
-			if ( e.getMessage().startsWith("ParseError")) {
-				requestElementString = e.getMessage();
-				try {
-					requestElementString = java.net.URLDecoder.decode(requestElementString, StandardCharsets.UTF_8.name());
-				} catch (Exception ee) {}		
-				requestElementString = requestElementString.substring(requestElementString.indexOf('<'));
-			}
-		}
-
-		if (requestElementString == null )
-			requestElementString = getNameInfoElement.toString();
+		String requestElementString  =  getNameInfoElement.toString();
 
 
 		GetNameInfoDataMessage nameInfoDataMsg = new GetNameInfoDataMessage(

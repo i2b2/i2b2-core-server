@@ -23,7 +23,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,29 +35,8 @@ import edu.harvard.i2b2.im.util.IMUtil;
 
 public class PMServiceDriver {
 	private static Log log = LogFactory.getLog(PMServiceDriver.class.getName());
-	//private static ServiceClient serviceClient = null;
-	/**
-	 * Function to convert pm requestVdo to OMElement
-	 * 
-	 * @param requestPm   String request to send to pm web service
-	 * @return An OMElement containing the pm web service requestVdo
-	 */
-	public static OMElement getPmPayLoad(String requestPm) throws Exception {
-		OMElement lineItem = null;
-		try {
-			StringReader strReader = new StringReader(requestPm);
-			XMLInputFactory xif = XMLInputFactory.newInstance();
-			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
 
-			StAXOMBuilder builder = new StAXOMBuilder(reader);
-			lineItem = builder.getDocumentElement();
-		} catch (FactoryConfigurationError e) {
-			log.error(e.getMessage());
-			throw new Exception(e);
-		}
-		return lineItem;
-	}
-
+	
 	/**
 	 * Function to send getRoles request to PM web service
 	 * 

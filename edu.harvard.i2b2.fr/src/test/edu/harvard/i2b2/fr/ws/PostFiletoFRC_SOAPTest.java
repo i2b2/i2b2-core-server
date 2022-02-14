@@ -18,7 +18,6 @@ package edu.harvard.i2b2.fr.ws;
 import org.apache.axiom.attachments.Attachments;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
@@ -53,30 +52,6 @@ public class PostFiletoFRC_SOAPTest {
     private static String requestXml = "/appdev/FRcallToPostFile.xml";
 
     
-    public static OMElement getRequestPayLoad() throws Exception {
-        OMElement method = null;
-
-        try {
-
-            StringReader strReader = new StringReader(getRequestString());
-            XMLInputFactory xif = XMLInputFactory.newInstance();
-            XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-
-            StAXOMBuilder builder = new StAXOMBuilder(reader);
-            method = builder.getDocumentElement();
-
-        } catch (FactoryConfigurationError e) {
-            // TODO Auto-generated catch block
-            // No log because its a thread?
-            e.printStackTrace();
-            throw new Exception(e);
-        }
-        
-        //System.out.println(method.toString());
-
-        return method;
-    }
-
     /**
      * Test code to generate a PFT requestPdo String for a sample PFT report
      * called by main below
@@ -107,7 +82,8 @@ public class PostFiletoFRC_SOAPTest {
      */
     public static void main(String[] args) {
         try {
-            OMElement getRequestElmt = getRequestPayLoad();
+            OMElement getRequestElmt = edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(getRequestString());
+
             Options options = new Options();
             options.setTo(targetEPR);
 

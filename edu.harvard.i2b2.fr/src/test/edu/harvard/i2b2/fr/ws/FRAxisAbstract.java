@@ -26,7 +26,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
@@ -135,15 +134,5 @@ public static ServiceClient getServiceClient(String serviceUrl)
 	return sender;
 }
 
-public static OMElement convertStringToOMElement(String requestXmlString)
-		throws Exception {
-	StringReader strReader = new StringReader(requestXmlString);
-	XMLInputFactory xif = XMLInputFactory.newInstance();
-	XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-
-	StAXOMBuilder builder = new StAXOMBuilder(reader);
-	OMElement lineItem = builder.getDocumentElement();
-	return lineItem;
-}
 
 }

@@ -19,7 +19,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
@@ -99,8 +99,8 @@ public class CallFileRepositoryUtil {
 			StringReader strReader = new StringReader(strWriter.toString());
 			XMLInputFactory xif = XMLInputFactory.newInstance();
 			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-			StAXOMBuilder builder = new StAXOMBuilder(reader);
-			request = builder.getDocumentElement();
+			request = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
 		} catch (XMLStreamException xmlEx) {
 			throw new I2B2Exception("FileRepository request omelement failed ["
 					+ xmlEx.getMessage() + "]");

@@ -18,15 +18,16 @@ import java.net.URL;
 import java.util.Date;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 
+import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
 import edu.harvard.i2b2.pm.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.pm.datavo.i2b2message.FacilityType;
@@ -144,13 +145,18 @@ public abstract class PMAxisAbstract {
 
 	public static OMElement convertStringToOMElement(String requestXmlString)
 			throws Exception {
-		StringReader strReader = new StringReader(requestXmlString);
-		XMLInputFactory xif = XMLInputFactory.newInstance();
-		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
+		OMElement  returnElement = null;
 
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement lineItem = builder.getDocumentElement();
-		return lineItem;
+        try {
+        	returnElement =  edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(requestXmlString);
+
+
+        } catch (XMLStreamException e) {
+            throw new I2B2Exception("XML Stream error ", e);
+        } catch (Exception e) {
+            throw new I2B2Exception("Response OMElement creation error ", e);
+        } 
+        return returnElement;
 	}
 
 }

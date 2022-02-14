@@ -39,9 +39,9 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.ObjectFactory;
 
 //import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 //import org.apache.axiom.om.OMFactory;
 //import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 //import org.apache.axis2.AxisFault;
 
 import org.apache.commons.logging.Log;
@@ -82,8 +82,8 @@ public class MessageFactory {
         	XMLInputFactory xif = XMLInputFactory.newInstance();
         	XMLStreamReader reader = xif.createXMLStreamReader(strReader);
 
-        	StAXOMBuilder builder = new StAXOMBuilder(reader);
-        	returnElement = builder.getDocumentElement();
+        	//StAXOMBuilder builder = new StAXOMBuilder(reader);
+        	returnElement = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
 
         } catch (XMLStreamException e) {
             log.error("xml stream response PDO to OMElement");
