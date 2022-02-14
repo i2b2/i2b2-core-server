@@ -185,7 +185,6 @@ public class ServiceClient {
 	public static OMElement getPayLoad(String requestPm) throws Exception {
 		OMElement lineItem = null;
 		try {
-			System.out.println("here:" + requestPm);
 
 			StringReader strReader = new StringReader(requestPm);
 			XMLInputFactory xif = XMLInputFactory.newInstance();
