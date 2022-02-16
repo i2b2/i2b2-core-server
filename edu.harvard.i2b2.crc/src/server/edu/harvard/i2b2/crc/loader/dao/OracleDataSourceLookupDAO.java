@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.RowMapper;
 
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.crc.loader.datavo.loader.DataSourceLookup;
 
 public class OracleDataSourceLookupDAO extends DataSourceLookupDAO  {
@@ -38,27 +39,20 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO  {
 		String sql =  "select * from crc_db_lookup where LOWER(c_domain_id) = ? and c_project_path = ? and (LOWER(c_owner_id) = ? or c_owner_id ='@') order by c_project_path";
 		String projectId = "@";
 		List<DataSourceLookup> dataSourceLookupList = 
-			this.query(sql, new Object[]{domainId.toLowerCase(),projectId,ownerId.toLowerCase()}, new mapper());
+			this.query(sql, new Object[]{JDBCUtil.escapeSingleQuote(domainId.toLowerCase()),JDBCUtil.escapeSingleQuote(projectId),JDBCUtil.escapeSingleQuote(ownerId.toLowerCase())}, new mapper());
 		return dataSourceLookupList;
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<DataSourceLookup> getDbLookupByHiveProjectOwner(String domainId, String projectId,
 			String ownerId) {
 		String sql = "select * from crc_db_lookup where LOWER(c_domain_id) = ? and c_project_path like  ? and (LOWER(c_owner_id) =? or c_owner_id = '@') order by c_project_path"; 
-		List<DataSourceLookup> dataSourceLookupList = this.query(sql, new Object[]{domainId.toLowerCase(),projectId+"%",ownerId.toLowerCase()},new int[]{Types.VARCHAR,Types.VARCHAR,Types.VARCHAR},new mapper()  );
+		List<DataSourceLookup> dataSourceLookupList = this.query(sql, new Object[]{JDBCUtil.escapeSingleQuote(domainId.toLowerCase()),JDBCUtil.escapeSingleQuote(projectId+"%"),JDBCUtil.escapeSingleQuote(ownerId.toLowerCase())},new int[]{Types.VARCHAR,Types.VARCHAR,Types.VARCHAR},new mapper()  );
 		return dataSourceLookupList;
 	}
 	
 	
-	
-	
-	
-	public static void main(String args[]) { 
-		OracleDataSourceLookupDAO dao = new OracleDataSourceLookupDAO(null,null);
-		
-	}
+
 
 	public class mapper implements RowMapper {
 
