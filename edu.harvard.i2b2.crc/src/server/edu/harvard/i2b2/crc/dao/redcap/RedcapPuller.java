@@ -68,6 +68,7 @@ import org.w3c.dom.Element;
 
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.DateFormat;
@@ -78,6 +79,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -86,7 +88,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamException;
 
-import java.math.*; 
+import java.math.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths; 
 
 
 public class RedcapPuller  {
@@ -104,6 +109,7 @@ public class RedcapPuller  {
 	//String ontologyFormat = "tree"; //tree = For Tree format, popup = For popup with selection
 	String api = null;
 	String redcapApiUrl = null;
+	String startDateName = null;
 
 	public void pullRecordRequest(String redcapUrl, String record, String recordId, String surveyForm, String pid) throws I2B2Exception {
 		if (record == null || record.isEmpty()) {
@@ -144,34 +150,45 @@ public class RedcapPuller  {
 						protectedRole =  projectParam.getValue();	
 					else if  (projectParam.getName().equalsIgnoreCase("REDCAP_ONTOLOGY_REFRESH"))
 						refreshOntology =  projectParam.getValue();
+					else if  (projectParam.getName().equalsIgnoreCase("REDCAP_STARTDATE_NAME"))
+						startDateName =  projectParam.getValue();
+
 				}
 
 				if (api == null)
 					throw new I2B2Exception("Project " + surveyForm + " does not have a param called REDCAP_TOKEN_PID_" + pid + " with the token number.");
 
-				List <NameValuePair> apiCall = new ArrayList <NameValuePair>();
-				apiCall.add(new BasicNameValuePair("token",  api));
-				apiCall.add(new BasicNameValuePair("content", "metadata"));
-				apiCall.add(new BasicNameValuePair("format", FORMAT));
-				HttpPost httpPost = new HttpPost(redcapApiUrl);
-
-				httpPost.setEntity(new UrlEncodedFormEntity(apiCall, HTTP.UTF_8));
-				httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
-
-				CloseableHttpClient client = HttpClientBuilder.create().build();
-				response = client.execute(httpPost);
-				if (response.getStatusLine().getStatusCode() >= 300) {
-					throw new  I2B2Exception(String.format("failure - received a %d for %s.", 
-							response.getStatusLine().getStatusCode(), httpPost.getURI().toString()));
-				}
-
-				HttpEntity entity = response.getEntity();
-				responseStr = EntityUtils.toString(entity, "UTF-8");
-
-				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				if (redcapApiUrl.startsWith("file:")) {
+					responseStr = readLineByLineJava8( redcapApiUrl.substring(7) ) ;
 					metadatas = new Gson().fromJson(responseStr, DataCollectionInstrumentMetadata[].class);
 					if (metadatas != null) {
 						redcapResult.getMetadata().addAll(Arrays.asList(metadatas));
+					}
+				} else {
+					List <NameValuePair> apiCall = new ArrayList <NameValuePair>();
+					apiCall.add(new BasicNameValuePair("token",  api));
+					apiCall.add(new BasicNameValuePair("content", "metadata"));
+					apiCall.add(new BasicNameValuePair("format", FORMAT));
+					HttpPost httpPost = new HttpPost(redcapApiUrl);
+
+					httpPost.setEntity(new UrlEncodedFormEntity(apiCall, HTTP.UTF_8));
+					httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+					CloseableHttpClient client = HttpClientBuilder.create().build();
+					response = client.execute(httpPost);
+					if (response.getStatusLine().getStatusCode() >= 300) {
+						throw new  I2B2Exception(String.format("failure - received a %d for %s.", 
+								response.getStatusLine().getStatusCode(), httpPost.getURI().toString()));
+					}
+
+					HttpEntity entity = response.getEntity();
+					responseStr = EntityUtils.toString(entity, "UTF-8");
+
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						metadatas = new Gson().fromJson(responseStr, DataCollectionInstrumentMetadata[].class);
+						if (metadatas != null) {
+							redcapResult.getMetadata().addAll(Arrays.asList(metadatas));
+						}
 					}
 				}
 
@@ -236,6 +253,21 @@ public class RedcapPuller  {
 		}
 	}
 
+	private static String readLineByLineJava8(String filePath)
+	{
+		StringBuilder contentBuilder = new StringBuilder();
+
+		try (Stream<String> stream = Files.lines( Paths.get(filePath), StandardCharsets.UTF_8))
+		{
+			stream.forEach(s -> contentBuilder.append(s).append("\n"));
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		return contentBuilder.toString();
+	}
 
 	private void insertI2B2(SurveyRecord[] records, APISurveyResponse redcapResult, String surveyForm, ProjectType projectParams
 			, SecurityType securityType, DataCollectionInstrumentMetadata[] metadatas ) throws I2B2Exception, DatatypeConfigurationException, AxisFault, XMLStreamException, JAXBUtilException {
@@ -631,7 +663,7 @@ public class RedcapPuller  {
 								FORMATER = "yyyy-MM-dd kk:mm:ss";
 							else if (metadata.getFieldContent().equals("datetime_seconds_dmy"))
 								FORMATER = "yyyy-MM-dd kk:mm:ss";							
-							
+
 							DateFormat format = new SimpleDateFormat(FORMATER);
 							Date date = format.parse(record.getValue());
 
