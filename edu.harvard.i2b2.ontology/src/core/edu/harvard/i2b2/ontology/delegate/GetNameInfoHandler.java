@@ -95,7 +95,7 @@ public class GetNameInfoHandler extends RequestHandler {
 		//jgk
 		// This does a linear search through fullnames for each previous fullname, O(n^2) :(
 		// BUT it assumes its sorted by hlevel so it only has to search through whats already seen - n(n+1)/2 operations 
-		if (response.size()>0 && vocabType.isReducedResults()!=null && vocabType.isReducedResults()) {
+		if (response != null && response.size()>0 && vocabType.isReducedResults()!=null && vocabType.isReducedResults()) {
 			ArrayList<String> seen = new ArrayList<String>(); 
 			ArrayList<ConceptType> keep = new ArrayList<ConceptType>();
 			Iterator it = response.iterator();
