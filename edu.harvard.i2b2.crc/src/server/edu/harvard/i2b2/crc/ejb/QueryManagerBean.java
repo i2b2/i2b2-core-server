@@ -411,6 +411,10 @@ public class QueryManagerBean{ // implements SessionBean {
 		QueryDefinitionType queryDefType = getQueryDefinition(i2b2RequestMsgType);
 		edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory();
 
+		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+		if (userId.equalsIgnoreCase(qpUtil
+				.getCRCPropertyValue("edu.harvard.i2b2.crc.pm.serviceaccount.user")))
+			throw new Exception("Can not login to servcice account: " + userId);
 		queryMaster.setUserId(userId);
 		
 		//If time not set than set to 12:00
