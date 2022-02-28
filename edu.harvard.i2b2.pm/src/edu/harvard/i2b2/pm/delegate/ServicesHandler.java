@@ -98,18 +98,32 @@ import edu.harvard.i2b2.pm.util.SecurityAuthentication;
 //import edu.harvard.i2b2.pm.util.SessionKey;
 import edu.harvard.i2b2.pm.ws.MessageFactory;
 import edu.harvard.i2b2.pm.ws.ServicesMessage;
+import java.util.Enumeration;
+import javax.servlet.http.HttpServletRequest;
 
 
 public class ServicesHandler extends RequestHandler {
 	private ProjectType projectInfo = null;
 	private ServicesMessage getServicesMsg = null;
 
-	public ServicesHandler(ServicesMessage servicesMsg) throws I2B2Exception{
+        private final HttpServletRequest req;
+
+	public ServicesHandler(ServicesMessage servicesMsg, HttpServletRequest req) throws I2B2Exception{
+                this.req = req;
 		log.debug("Setting the servicesMsg");	
 
 		getServicesMsg = servicesMsg;
 		//setDbInfo(servicesMsg.getRequestMessageType().getMessageHeader());
 	}
+
+        private void addParamsFromHeaders(Hashtable params) {
+            Enumeration<String> enuStr = req.getHeaderNames();
+            while (enuStr.hasMoreElements()) {
+                String key = enuStr.nextElement();
+                Object obj = req.getHeader(key);
+                params.put(key, obj);
+            }
+        }
 
 	private void saveLoginAttempt(PMDbDao pmDb, String username, String attempt)
 	{
@@ -339,6 +353,8 @@ public class ServicesHandler extends RequestHandler {
 			}
 
 			Hashtable params = new Hashtable();
+                        addParamsFromHeaders(params);
+
 			//First get all the params for the user params
 			UserType userType = new UserType();
 			userType.setUserName(rmt.getUsername());
