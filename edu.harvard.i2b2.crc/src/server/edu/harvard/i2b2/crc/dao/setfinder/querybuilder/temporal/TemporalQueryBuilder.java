@@ -17,6 +17,9 @@ package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
 import java.util.List;
 import java.util.Map;
 
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
+
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
@@ -26,6 +29,8 @@ import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.ParamUtil;
 
 public class TemporalQueryBuilder extends CRCDAO {
+
+	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	private StringBuffer sqlBuffer = new StringBuffer();
 	private StringBuffer ignoredItemBuffer = new StringBuffer();
@@ -125,7 +130,7 @@ public class TemporalQueryBuilder extends CRCDAO {
 					.getProcessTimingMessage());
 		}
 
-		log.debug("generated sql " + sql);
+		logesapi.debug(null,"generated sql " + sql);
 		sqlBuffer.append(sql);
 
 		return new String[] { sql, maxPanelNum };

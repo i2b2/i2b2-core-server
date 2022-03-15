@@ -437,7 +437,7 @@ public class PMDbDao extends JdbcDaoSupport {
 						foundUser = approval.getSearch().get(i).getValue().toUpperCase();
 				}
 
-				if ((foundUser != "") && (foundProject != ""))
+				if ((!foundUser.equals("")) && (!foundProject.equals("")))
 				{
 					sqlFrom += ", pm_project_user_params p ";
 					sqlWhere += "and a.STATUS_CD = 'A' and p.STATUS_CD = 'A' and " +
@@ -465,7 +465,7 @@ public class PMDbDao extends JdbcDaoSupport {
 						al.add(approval.getSearch().get(i).getValue().toUpperCase());
 						//	queryResult = jt.query(sql, getApproval(), approval.getActivationDate());				
 
-					} else if ((approval.getSearch() != null) && ((foundUser == "") || (foundProject == "")) && (approval.getSearch().get(i).getBy().equalsIgnoreCase("USER")))
+					} else if ((approval.getSearch() != null) && ((foundUser.equals("")) || (foundProject.equals(""))) && (approval.getSearch().get(i).getBy().equalsIgnoreCase("USER")))
 					{
 						sqlFrom += ", pm_user_params p ";
 						sqlWhere += "and a.STATUS_CD = 'A' and p.STATUS_CD = 'A' and " +
@@ -474,7 +474,7 @@ public class PMDbDao extends JdbcDaoSupport {
 						//sql =  "select a.* from pm_approvals a, pm_user_params p where a.STATUS_CD = 'A' and p.STATUS_CD = 'A' and " +
 						//"p.PARAM_NAME_CD = 'APPROVAL' and p.VALUE = a.OBJECT_CD and p.USER_ID = ? ";
 						//	queryResult = jt.query(sql, getApproval(), approval.getSearch().get(0).getValue());				
-					} else if ((approval.getSearch() != null) && ((foundUser == "") || (foundProject == "")) && (approval.getSearch().get(i).getBy().equalsIgnoreCase("PROJECT")))
+					} else if ((approval.getSearch() != null) && ((foundUser.equals("")) || (foundProject.equals(""))) && (approval.getSearch().get(i).getBy().equalsIgnoreCase("PROJECT")))
 					{
 						sqlFrom += ", pm_project_params p ";
 						sqlWhere += "and a.STATUS_CD = 'A' and p.STATUS_CD = 'A' and " +

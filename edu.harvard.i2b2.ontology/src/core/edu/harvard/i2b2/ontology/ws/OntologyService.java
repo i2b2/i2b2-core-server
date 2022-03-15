@@ -29,6 +29,8 @@ import org.apache.axis2.util.StreamWrapper;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
@@ -70,6 +72,7 @@ import edu.harvard.i2b2.ontology.delegate.UpdateTotalNumHandler;
  */
 public class OntologyService {
 	private static Log log = LogFactory.getLog(OntologyService.class);
+	protected static Logger logesapi = ESAPI.getLogger(OntologyService.class);
 
 	/**
 	 * This function is main webservice interface to get vocab data for a query.
@@ -414,7 +417,7 @@ public class OntologyService {
 		}
 
 		String requestElementString = getDerivedFactColumnsElement.toString();
-		log.debug("ONT derivedFactCol request " + requestElementString);
+		logesapi.debug(null,"ONT derivedFactCol request " + requestElementString);
 		GetTermInfoDataMessage dataMsg = new GetTermInfoDataMessage(
 				requestElementString);
 
@@ -577,7 +580,7 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 		String requestElementString = modifyChildElement.toString();
-		log.debug(requestElementString);
+		logesapi.debug(null,requestElementString);
 		ModifyChildDataMessage childDataMsg = new ModifyChildDataMessage(
 				requestElementString);
 		long waitTime = 0;
@@ -1112,11 +1115,11 @@ public class OntologyService {
 		// service could sends back message with timeout error.
 		// ExecutorRunnable er = new ExecutorRunnable();
 		if(loadDataMsg.getMetadataLoad().getTableName().equalsIgnoreCase("SCHEMES")) {
-			log.info(requestElementString);
+			logesapi.info(null,requestElementString);
 			return execute(new LoadSchemesHandler(loadDataMsg), waitTime);
 		}
 		else if(loadDataMsg.getMetadataLoad().getTableName().equalsIgnoreCase("TABLE_ACCESS")) {
-			log.info(requestElementString);
+			logesapi.info(null,requestElementString);
 			return execute(new LoadTableAccessHandler(loadDataMsg), waitTime);
 		}
 		else

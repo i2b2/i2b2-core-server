@@ -82,7 +82,9 @@
 	                        <fileset dir="${lib}/spring" includes="**/*" />
 	                        <fileset dir="${lib}/jcifs" includes="**/*" />
 	                        <fileset dir="${lib}/jdbc" includes="**/*" />
+                       		<fileset dir="${lib}/okta" includes="**/*" />
 	                        <fileset dir="${lib}/jboss" includes="**/*" />
+	                        <fileset dir="${lib}/esapi" includes="**/*" />
 	                </copy>
 	 
 	                <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/lib">

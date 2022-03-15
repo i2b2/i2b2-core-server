@@ -1026,7 +1026,8 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		List queryResult = null;
 		try {
-			queryResult = jt.query(JDBCUtil.escapeSingleQuote(codeInfoSql), getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()));
+			String sqlFinal = codeInfoSql;
+			queryResult = jt.query(sqlFinal, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()));
 		} catch (DataAccessException e) {
 			log.error("Search by Code " + e.getMessage());
 			throw new I2B2DAOException("Database Error");

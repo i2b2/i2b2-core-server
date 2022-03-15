@@ -26,6 +26,8 @@ import javax.xml.bind.JAXBElement;
 
 import org.apache.axis2.AxisFault;
 //import org.springframework.beans.factory.BeanFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -62,6 +64,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.delegate.ejbpm.EJBPMUtil;
 import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
+import edu.harvard.i2b2.crc.ejb.ExecRunnable;
 import edu.harvard.i2b2.crc.util.I2B2RequestMessageHelper;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.PMServiceAccountUtil;
@@ -72,6 +75,7 @@ import edu.harvard.i2b2.crc.util.SqlClauseUtil;
 public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 
 
+	protected static Logger logesapi = ESAPI.getLogger(ExecRunnable.class);
 
 
 	private DataSourceLookup dataSourceLookup = null,
@@ -511,22 +515,22 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 						}
 						generatedSql = "select count(distinct patient_num) as patient_num_count from ( \n" + generatedSql + " \n ) allitem ";
 
-						log.debug("Setfinder converted sql without temp table " + generatedSql);
+						logesapi.debug(null,"Setfinder converted sql without temp table " + generatedSql);
 
 					} catch (JAXBUtilException e) { 
 						e.printStackTrace();
 					} catch (I2B2Exception e) { 
 						e.printStackTrace();
 					}
-					log.debug("Setfinder skip temp table generated sql " + generatedSql);
-					log.debug("Setfinder skip temp table missing item message " +  missingItemMessage);
-					log.debug("Setfinder skip temp table process timing message " + processTimingMessage);
+					logesapi.debug(null,"Setfinder skip temp table generated sql " + generatedSql);
+					logesapi.debug(null,"Setfinder skip temp table missing item message " +  missingItemMessage);
+					logesapi.debug(null,"Setfinder skip temp table process timing message " + processTimingMessage);
 				}
 				queryMasterDao.updateQueryAfterRun(masterId, generatedSql, queryType);
 
 				if (missingItemMessage != null
 						&& missingItemMessage.trim().length() > 1) {
-					log.debug("Setfinder query missing item message not null" + missingItemMessage);
+					logesapi.debug(null,"Setfinder query missing item message not null" + missingItemMessage);
 					missingItemFlag = true;
 
 					queryInstance.setEndDate(new Date(System

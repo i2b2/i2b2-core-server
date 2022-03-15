@@ -15,6 +15,7 @@
 package edu.harvard.i2b2.crc.delegate;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.crc.dao.DblookupDao;
 import edu.harvard.i2b2.crc.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.crc.loader.delegate.pm.PMResponseMessage;
@@ -24,6 +25,8 @@ import edu.harvard.i2b2.crc.datavo.pm.GetUserConfigurationType;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 /**
  * Top level class to process the request. There will be separate request handler
@@ -33,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class DbLookupReqHandler {
 	protected final Log log = LogFactory.getLog(getClass());
+	protected static Logger logesapi = ESAPI.getLogger(DbLookupReqHandler.class);
 
 	/**
 	 * Function to perform operation on the given request
@@ -46,7 +50,7 @@ public abstract class DbLookupReqHandler {
 			GetUserConfigurationType userConfigType = new GetUserConfigurationType();
 			PMServiceDriver pmSrvDrvr = new PMServiceDriver();
 			String response = pmSrvDrvr.getRoles(userConfigType, header);		
-			log.debug(response);
+			logesapi.debug(null,response);
 			PMResponseMessage msg = new PMResponseMessage();
 			StatusType procStatus = msg.processResult(response);
 			if(procStatus.getType().equals("ERROR")) return false;

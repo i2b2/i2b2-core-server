@@ -128,7 +128,7 @@ public class CreateConceptXmlDao extends JdbcDaoSupport {
 		List<String> tableNameList = tableAccessDao.getEditorTableName(
 				projectInfo, dbInfo, synchronizeAllFlag);
 		// iterate table and
-		String selectSql = "";
+		//String selectSql = "";
 
 		Connection conn = null;
 		ResultSet resultSet = null;
@@ -141,14 +141,16 @@ public class CreateConceptXmlDao extends JdbcDaoSupport {
 			// new FileWriter(pdoFileName));
 			xmlWriterUtil.startSet();
 			for (String singleTableName : tableNameList) {
-				selectSql = " select * from " + metadataSchema
-						+ singleTableName
-						+ " where c_basecode is not null and "
-						+ emptyStringClause + updateOnlyClause
-						+ "   and lower(c_tablename) = '" + dimensionTableName.toLowerCase() + "'";
-				log.debug("Executing sql [" + selectSql + "]");
+				String stageSql = " select * from <from>" 
+						+ " where c_basecode is not null and <clause>"
+						+ "   and lower(c_tablename) = ?";
+				log.debug("Executing sql [" + stageSql + "]");
+				String selectSql = stageSql.replace("<from>", metadataSchema	+ singleTableName);
+				selectSql = stageSql.replace("<clause>", emptyStringClause + updateOnlyClause);
+				
 				query = conn.prepareStatement(JDBCUtil.escapeSingleQuote(selectSql));
 
+				query.setString(1, dimensionTableName.toLowerCase());
 				resultSet = query.executeQuery();
 
 				while (resultSet.next()) {

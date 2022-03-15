@@ -32,11 +32,12 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
-
 import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.CrcXmlResultResponseType;
 import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.MasterRequestType;
 import edu.harvard.i2b2.workplace.datavo.crc.setfinder.query.MasterResponseType;
@@ -63,6 +64,7 @@ public class CallCRCUtil {
 	static WorkplaceUtil workplaceUtil = WorkplaceUtil.getInstance();
 	static ServiceClient serviceClient = null;
 	private static Log log = LogFactory.getLog(CallCRCUtil.class);
+	protected static Logger logesapi = ESAPI.getLogger(CallCRCUtil.class);
 
 	/*
 	public CallCRCUtil(SecurityType securityType, String projectId)
@@ -89,10 +91,10 @@ public class CallCRCUtil {
 			log.debug("begin build element");
 			RequestMessageType requestMessageType = buildResultInstanceRequestXMLRequestMessage(resultInstanceID, securityType, projectId);
 			OMElement requestElement = buildOMElement(requestMessageType);
-			log.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's request xml "
+			logesapi.debug(null,"callCRCQueryRequestXML - CRC setfinder query request XML call's request xml "
 					+ requestElement);
 			response = getServiceClient("/request", requestElement).toString();
-			log.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's response xml " + response.toString());
+			logesapi.debug(null,"callCRCQueryRequestXML - CRC setfinder query request XML call's response xml " + response.toString());
 			//resultResponseType = getResultResponseMessage(response.toString());
 			//masterInstanceResultResponseType = getResponseMessage(response
 			//		.toString());

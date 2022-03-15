@@ -42,6 +42,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
@@ -53,6 +55,7 @@ import edu.harvard.i2b2.ontology.util.OntologyUtil;
 public class PMServiceDriver {
 	private static Log log = LogFactory.getLog(PMServiceDriver.class.getName());
 
+	protected static Logger logesapi = ESAPI.getLogger(PMServiceDriver.class);
 
 
 	/**
@@ -85,7 +88,7 @@ public class PMServiceDriver {
 				response = ServiceClient.sendREST(pmEPR, getRolesRequestString);
 			
 
-			log.debug("PM response = " + response);
+			logesapi.debug(null,"PM response = " + response);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new Exception(e);

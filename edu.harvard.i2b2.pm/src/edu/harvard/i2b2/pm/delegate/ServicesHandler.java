@@ -48,7 +48,8 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.controller.client.OperationBuilder;
 import org.jboss.as.controller.client.helpers.ClientConstants;
 import org.jboss.dmr.ModelNode;
-
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -96,6 +97,8 @@ import edu.harvard.i2b2.pm.ws.ServicesMessage;
 public class ServicesHandler extends RequestHandler {
 	private ProjectType projectInfo = null;
 	private ServicesMessage getServicesMsg = null;
+
+	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	public ServicesHandler(ServicesMessage servicesMsg) throws I2B2Exception{
 		log.debug("Setting the servicesMsg");	
@@ -298,7 +301,7 @@ public class ServicesHandler extends RequestHandler {
 				e1.printStackTrace();
 				throw new Exception ("Database error in getting environment data");
 			}
-			log.debug("Start parsing environment results of: " + response);
+			logesapi.debug(null,"Start parsing environment results of: " + response);
 
 			Iterator it = response.iterator();
 			while (it.hasNext())

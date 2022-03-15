@@ -28,7 +28,8 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -46,6 +47,8 @@ import edu.harvard.i2b2.pm.util.StringUtil;
  */
 public class PMService {
 	private static Log log = LogFactory.getLog(PMService.class);
+
+	protected static Logger logesapi = ESAPI.getLogger(PMService.class);
 
 	private static String msgVersion = "1.1";
 	private static String i2b2Version = "1.7.11";
@@ -70,7 +73,7 @@ public class PMService {
 		p = Pattern.compile(">.+</ns9:set_password>");
 		m = p.matcher(outString);
 		outString = m.replaceAll(">*********</ns9:set_password>");
-		log.debug("Received Request PM Element " + outString);
+		logesapi.debug(null,"Received Request PM Element " + outString);
 
 		OMElement returnElement = null;
 
@@ -229,7 +232,7 @@ public class PMService {
 		p = Pattern.compile(">.+</ns9:set_password>");
 		m = p.matcher(outString);
 		outString = m.replaceAll(">*********</ns9:set_password>");
-		log.debug("Received Request PM Element " + outString);
+		logesapi.debug(null,"Received Request PM Element " + outString);
 
 
 		log.debug("Begin getting servicesMsg");

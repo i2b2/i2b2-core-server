@@ -41,6 +41,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
+
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
@@ -64,6 +67,8 @@ import edu.harvard.i2b2.crc.util.LogTimingUtil;
  * calculates the patient count for each child of the result type.
  */
 public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResultGenerator {
+
+	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	@Override
 	public String getResults() {
@@ -134,20 +139,22 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			Thread csrThread = new Thread(csr);
 			csrThread.start();
 
+			String sqlFinal = "";
+
 			if (itemCountSql.contains("{{{DX}}}"))
-				itemCountSql = itemCountSql.replace("{{{DX}}}", TEMP_DX_TABLE);
+				sqlFinal = itemCountSql.replace("{{{DX}}}", TEMP_DX_TABLE);
 			if (itemCountSql.contains("{{{DATABASE_NAME}}}"))
-				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DATABASE_NAME\\}\\}\\}", this.getDbSchemaName());
+				sqlFinal = itemCountSql.replaceAll("\\{\\{\\{DATABASE_NAME\\}\\}\\}", this.getDbSchemaName());
 
 
-			String[] sqls = itemCountSql.split("<\\*>");
+			String[] sqls = sqlFinal.split("<\\*>");
 			int count = 0;
 			while (count < sqls.length - 1)
 			{
 
 				stmt = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(sqls[count]));
 				stmt.setQueryTimeout(transactionTimeout);
-				log.debug("Executing count sql [" + sqls[count] + "]");
+				logesapi.debug(null,"Executing count sql [" + sqls[count] + "]");
 
 				//
 				subLogTimingUtil.setStartTime();
@@ -163,7 +170,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 
 			stmt = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(sqls[count]));
 			stmt.setQueryTimeout(transactionTimeout);
-			log.debug("Executing count sql [" + sqls[count] + "]");
+			logesapi.debug(null,"Executing count sql [" + sqls[count] + "]");
 
 			//
 			subLogTimingUtil.setStartTime();

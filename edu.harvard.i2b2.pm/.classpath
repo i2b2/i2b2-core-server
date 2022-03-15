@@ -129,5 +129,6 @@
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/jcifs/smbj-0.9.1.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/okta/okta-authn-sdk-examples-shiro-1.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/okta/okta-config-check-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/esapi/esapi-2.2.3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

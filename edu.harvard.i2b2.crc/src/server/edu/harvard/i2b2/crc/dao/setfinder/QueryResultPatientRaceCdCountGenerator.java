@@ -52,10 +52,10 @@ public class QueryResultPatientRaceCdCountGenerator extends CRCDAO implements
 						.getFullSchema());
 
 		String demographics_count_sql = "select count(distinct dx.patient_num) as race_count, case when cl.name_char IS NULL then pd.race_cd else cl.name_char end as pd_race_cd from "
-				+ this.getDbSchemaName()
+				+ " <from> "
 				+ "patient_dimension pd left join code_lookup  cl on pd.race_cd = cl.code_cd"
 				+ " and lower(cl.table_cd) = 'patient_dimension' and upper(cl.column_cd) = 'RACE_CD', "
-				+ TEMP_DX_TABLE
+				+ " <TEMP_DX_TABLE> "
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " group by case when cl.name_char IS NULL then pd.race_cd else cl.name_char end";
 
@@ -64,8 +64,11 @@ public class QueryResultPatientRaceCdCountGenerator extends CRCDAO implements
 		try {
 
 			log.debug("Executing[ " + demographics_count_sql + " ]");
+			String sqlFinal =  demographics_count_sql.replace("<from>",   this.getDbSchemaName()  );
+			sqlFinal = demographics_count_sql.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
+
 			PreparedStatement stmt = sfConn
-					.prepareStatement(JDBCUtil.escapeSingleQuote(demographics_count_sql));
+					.prepareStatement(JDBCUtil.escapeSingleQuote(sqlFinal));
 			ResultSet resultSet = stmt.executeQuery();
 			ResultType resultType = new ResultType();
 			resultType.setName(RESULT_NAME);

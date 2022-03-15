@@ -32,6 +32,8 @@ import org.apache.axis2.AxisFault;
 //import org.apache.axis2.client.Options;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.axis2.ServiceClient;
@@ -46,6 +48,7 @@ import edu.harvard.i2b2.crc.loader.util.CRCLoaderUtil;
 
 public class PMServiceDriver {
 	private static Log log = LogFactory.getLog(PMServiceDriver.class);
+	protected static Logger logesapi = ESAPI.getLogger(PMServiceDriver.class);
 
 
 	
@@ -151,7 +154,7 @@ public class PMServiceDriver {
 			response = getRoles(security);
 			StatusType procStatus = msg.processResult(response);
 			if (procStatus.getType().equalsIgnoreCase("ERROR")) {
-				log.debug("PM response error [" + procStatus.getValue() + "]");
+				logesapi.debug(null,"PM response error [" + procStatus.getValue() + "]");
 				projectType = null;
 			} else {
 				ConfigureType pmResponseUserInfo = msg.readUserInfo();

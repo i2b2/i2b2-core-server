@@ -63,6 +63,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -96,6 +98,7 @@ import java.nio.file.Paths;
 
 public class RedcapPuller  {
 	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	private final String FORMAT = "json";
 	private final String CONTENT = "record";
@@ -239,7 +242,7 @@ public class RedcapPuller  {
 			}
 			// Create Table_access
 
-			logger.debug("Response body: " + responseStr);
+			logesapi.debug(null,"Response body: " + responseStr);
 
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				SurveyRecord[] records = new Gson().fromJson(responseStr, SurveyRecord[].class);
@@ -257,6 +260,8 @@ public class RedcapPuller  {
 	{
 		StringBuilder contentBuilder = new StringBuilder();
 
+		
+		/* TODO
 		try (Stream<String> stream = Files.lines( Paths.get(filePath), StandardCharsets.UTF_8))
 		{
 			stream.forEach(s -> contentBuilder.append(s).append("\n"));
@@ -265,6 +270,7 @@ public class RedcapPuller  {
 		{
 			e.printStackTrace();
 		}
+		*/
 
 		return contentBuilder.toString();
 	}
@@ -639,8 +645,12 @@ public class RedcapPuller  {
 							observationType.setTvalChar(record.getValue());
 						}
 
+					if (startDateName != null && startDateName.equals(record.getFieldName()))
+					{
+						
+					}
 
-					if (metadata.getFieldType().equals("date")) {
+					else if (metadata.getFieldType().equals("date")) {
 						try {
 
 							String FORMATER = "yyyy-MM-dd";

@@ -19,6 +19,8 @@ import javax.xml.bind.JAXBElement;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
@@ -34,6 +36,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.crc.datavo.pm.ParamType;
 import edu.harvard.i2b2.crc.datavo.pm.ProjectType;
 import edu.harvard.i2b2.crc.loader.delegate.pm.PMServiceDriver;
+import edu.harvard.i2b2.crc.util.I2B2RequestMessageHelper;
 
 /**
  * PDO query request delegate class $Id: LoaderQueryRequestDelegate.java,v 1.3
@@ -44,6 +47,7 @@ import edu.harvard.i2b2.crc.loader.delegate.pm.PMServiceDriver;
 public class LoaderQueryRequestDelegate extends RequestHandlerDelegate {
 	/** log **/
 	protected final Log log = LogFactory.getLog(getClass());
+	protected static Logger logesapi = ESAPI.getLogger(LoaderQueryRequestDelegate.class);
 
 	/**
 	 * @see edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate#handleRequest(java.lang.String)
@@ -104,7 +108,7 @@ public class LoaderQueryRequestDelegate extends RequestHandlerDelegate {
 				}
 
 				log.debug("project name from PM " + projectType.getName());
-				log.debug("project id from PM " + projectType.getId());
+				logesapi.debug(null,"project id from PM " + projectType.getId());
 				if (projectType.getRole().get(0) != null) {
 					log.debug("Project role from PM "
 							+ projectType.getRole().get(0));

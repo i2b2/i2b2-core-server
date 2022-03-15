@@ -24,6 +24,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
+
 import oracle.sql.ArrayDescriptor;
 
 //import org.jboss.resource.adapter.jdbc.WrappedConnection;
@@ -54,6 +57,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.PidListType.Pid;
 public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 
 	private DataSourceLookup dataSourceLookup = null;
+	protected static Logger logesapi = ESAPI.getLogger(PdoQueryPidDao.class);
 
 	public PdoQueryPidDao(DataSourceLookup dataSourceLookup,
 			DataSource dataSource) {
@@ -326,9 +330,9 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 					detailFlag, blobFlag, statusFlag);
 			pidSet = buildPidSetFromResultSet(resultSet, pidBuilder);
 			if (pidSet.getPid()!=null) { 
-				log.debug("pid set size " + pidSet.getPid().size());
+				logesapi.debug(null,"pid set size " + pidSet.getPid().size());
 				if (pidSet.getPid().size()>0) {
-					log.debug("pid set size " + pidSet.getPid().get(0).getPatientId().getValue());
+					logesapi.debug(null,"pid set size " + pidSet.getPid().get(0).getPatientId().getValue());
 				}
 			}
 
