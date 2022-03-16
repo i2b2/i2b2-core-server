@@ -51,7 +51,7 @@ public class PMService {
 	protected static Logger logesapi = ESAPI.getLogger(PMService.class);
 
 	private static String msgVersion = "1.1";
-	private static String i2b2Version = "1.7.11";
+	private static String i2b2Version = "1.7.13";
 
 	public String getVersion()
 	{
