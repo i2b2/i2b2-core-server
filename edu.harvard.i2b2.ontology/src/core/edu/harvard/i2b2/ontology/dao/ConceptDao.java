@@ -284,8 +284,11 @@ public class ConceptDao extends JdbcDaoSupport {
 		if(childrenType.isSynonyms() == false)
 			synonym = " and c_synonym_cd = 'N'";
 
-		String sql = "select " + parameters +" from " + metadataSchema+tableName  + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " and c_hlevel = ? "; 
-		sql = sql + hidden + synonym + " order by upper(c_name) ";
+        // get all children if the numLevel is less then zero
+        int numLevel = childrenType.getNumLevel();
+        String sql = "select " + parameters + " from " + metadataSchema + tableName + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "");
+        sql += (numLevel >= 0) ? " and c_hlevel > ? and c_hlevel <= ? " : " and c_hlevel > ? ";
+        sql = sql + hidden + synonym + " order by c_hlevel,upper(c_name) ";
 
 		//log.info(sql + " " + path + " " + level);
 		boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
@@ -308,7 +311,9 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		List<ConceptType> queryResult = null;
 		try {
-			queryResult = jt.query(sql, getConceptNodeMapper(new NodeType(childrenType),obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath, (level + 1) );
+            queryResult = (numLevel >= 0)
+                    ? jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath, level, (level + numLevel))
+                    : jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath, level);
 		} catch (Exception e) {
 			log.error("Get Children " + e.getMessage());
 			throw new I2B2DAOException("Database Error");

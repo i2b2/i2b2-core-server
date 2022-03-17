@@ -103,6 +103,7 @@
         <xs:sequence>
             <xs:element name="parent" type="xs:string"/>
         </xs:sequence>
+        <xs:attribute name="numLevel" type="xs:int" default="1" />
         <xs:attributeGroup ref="ont:return_attributeGroup"/>
     </xs:complexType>
     
