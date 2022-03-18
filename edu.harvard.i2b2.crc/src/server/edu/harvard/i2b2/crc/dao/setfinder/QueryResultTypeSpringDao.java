@@ -117,7 +117,7 @@ IQueryResultTypeDao {
 			String sqlFinal =  sql.replace("<from>",   this.getDbSchemaName()  );
 			sqlFinal = sqlFinal.replace("<resultName>", resultName);
 
-			queryResultType = namedParameterJdbcTemplate.query(JDBCUtil.escapeSingleQuote(sqlFinal),
+			queryResultType = namedParameterJdbcTemplate.query(sqlFinal,
 					myRoles,
 					queryResultTypeMapper);
 		} else

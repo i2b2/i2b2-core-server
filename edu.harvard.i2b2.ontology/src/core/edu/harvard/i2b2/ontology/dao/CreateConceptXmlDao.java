@@ -148,7 +148,7 @@ public class CreateConceptXmlDao extends JdbcDaoSupport {
 				String selectSql = stageSql.replace("<from>", metadataSchema	+ singleTableName);
 				selectSql = stageSql.replace("<clause>", emptyStringClause + updateOnlyClause);
 				
-				query = conn.prepareStatement(JDBCUtil.escapeSingleQuote(selectSql));
+				query = conn.prepareStatement(selectSql);
 
 				query.setString(1, dimensionTableName.toLowerCase());
 				resultSet = query.executeQuery();

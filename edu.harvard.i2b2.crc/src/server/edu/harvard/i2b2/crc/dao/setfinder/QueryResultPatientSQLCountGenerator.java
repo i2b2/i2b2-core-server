@@ -152,7 +152,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			while (count < sqls.length - 1)
 			{
 
-				stmt = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(sqls[count]));
+				stmt = sfConn.prepareStatement(sqls[count]);
 				stmt.setQueryTimeout(transactionTimeout);
 				logesapi.debug(null,"Executing count sql [" + sqls[count] + "]");
 
@@ -168,7 +168,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			}
 
 
-			stmt = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(sqls[count]));
+			stmt = sfConn.prepareStatement(sqls[count]);
 			stmt.setQueryTimeout(transactionTimeout);
 			logesapi.debug(null,"Executing count sql [" + sqls[count] + "]");
 

@@ -73,6 +73,9 @@ public class JDBCUtil {
 	
 
 	 public static String escapeSingleQuote(String x, boolean escapeDoubleQuotes) {
+		 if (x != null)
+		 return x;
+		 
 	        StringBuilder sBuilder = new StringBuilder(x.length() * 11/10);
 
 	        int stringLength = x.length();

@@ -69,7 +69,7 @@ public class QueryResultPatientGenderCountGenerator extends CRCDAO implements
 			sqlFinal = demographics_count_sql.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
 
 			PreparedStatement stmt = sfConn
-					.prepareStatement(JDBCUtil.escapeSingleQuote(sqlFinal));
+					.prepareStatement(sqlFinal);
 			ResultSet resultSet = stmt.executeQuery();
 			ResultType resultType = new ResultType();
 			resultType.setName(RESULT_NAME);

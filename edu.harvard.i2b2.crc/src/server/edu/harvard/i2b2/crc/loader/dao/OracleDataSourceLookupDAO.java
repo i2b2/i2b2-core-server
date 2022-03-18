@@ -39,7 +39,7 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO  {
 		String sql =  "select * from crc_db_lookup where LOWER(c_domain_id) = ? and c_project_path = ? and (LOWER(c_owner_id) = ? or c_owner_id ='@') order by c_project_path";
 		String projectId = "@";
 		List<DataSourceLookup> dataSourceLookupList = 
-			this.query(sql, new Object[]{JDBCUtil.escapeSingleQuote(domainId.toLowerCase(),false),JDBCUtil.escapeSingleQuote(projectId,false),JDBCUtil.escapeSingleQuote(ownerId.toLowerCase(),false)}, new mapper());
+			this.query(sql, new Object[]{domainId.toLowerCase(),projectId,ownerId.toLowerCase()}, new mapper());
 		return dataSourceLookupList;
 	}
 	
@@ -47,7 +47,7 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO  {
 	public List<DataSourceLookup> getDbLookupByHiveProjectOwner(String domainId, String projectId,
 			String ownerId) {
 		String sql = "select * from crc_db_lookup where LOWER(c_domain_id) = ? and c_project_path like  ? and (LOWER(c_owner_id) =? or c_owner_id = '@') order by c_project_path"; 
-		List<DataSourceLookup> dataSourceLookupList = this.query(sql, new Object[]{JDBCUtil.escapeSingleQuote(domainId.toLowerCase(),false),JDBCUtil.escapeSingleQuote(projectId+"%",false),JDBCUtil.escapeSingleQuote(ownerId.toLowerCase(),false)},new int[]{Types.VARCHAR,Types.VARCHAR,Types.VARCHAR},new mapper()  );
+		List<DataSourceLookup> dataSourceLookupList = this.query(sql, new Object[]{domainId.toLowerCase(),projectId+"%",ownerId.toLowerCase()},new int[]{Types.VARCHAR,Types.VARCHAR,Types.VARCHAR},new mapper()  );
 		return dataSourceLookupList;
 	}
 	
