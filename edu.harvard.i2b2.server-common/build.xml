@@ -179,9 +179,9 @@
 		-->
 	</target>
 
-	<target name="copy_development_jdbc_jar">
+	<target name="copy_deployment_jdbc_jar">
 		<echo>Copying to ${jboss.home} deployment directory</echo>
-		<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib">
+		<copy todir="${jboss.home}/standalone/deployments">
 			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
 			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
 			<fileset dir="${lib}/jdbc" includes="postgresql-42.3.2.jar"/>
