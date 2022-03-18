@@ -49,8 +49,6 @@ import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.utils.QName;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
@@ -58,7 +56,6 @@ import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 
 public class ServiceClient {
 	private static Log log = LogFactory.getLog(ServiceClient.class.getName());
-	protected static final Logger logesapi = ESAPI.getLogger(ServiceClient.class);
 
 	//private static org.apache.axis2.client.ServiceClient serviceClient = null;
 
@@ -113,7 +110,7 @@ public class ServiceClient {
 				OMElement result = serviceClient.sendReceive(request);
 				if (result != null) {
 					response = result.toString();
-					logesapi.debug(null,response);
+					//logesapi.debug(null,response);
 				}
 				done = true;
 			} catch (Exception e) {
