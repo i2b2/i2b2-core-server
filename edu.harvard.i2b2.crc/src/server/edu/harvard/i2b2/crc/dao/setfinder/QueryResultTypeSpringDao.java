@@ -109,7 +109,7 @@ IQueryResultTypeDao {
 
 		if (roles != null)
 		{
-			String sql = "select * from <from> "
+			String sql = "select * from <from>"
 			+ "qt_query_result_type where name = '<resultName>' and (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd))";
 			Map myRoles = Collections.singletonMap("roleCd", roles);
 			
