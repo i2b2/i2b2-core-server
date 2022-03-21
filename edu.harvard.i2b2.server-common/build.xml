@@ -238,6 +238,7 @@
 			<fileset dir="${lib}/jdbc" includes="**/*" />			
 			<fileset dir="${lib}/jboss" includes="**/*" />				
 			<fileset dir="${lib}/okta" includes="**/*" />	
+            <fileset dir="${lib}/esapi" includes="**/*" />
 		</copy>
 	</target>
 

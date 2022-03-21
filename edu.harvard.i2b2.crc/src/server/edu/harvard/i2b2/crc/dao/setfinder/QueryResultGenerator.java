@@ -195,7 +195,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 						+ " <getOperato> "
 						+ "<dimCode> )";
 
-				String sqlFinal =  itemCountSql.replace("<from>",   this.getDbSchemaName() + joinTableName );
+				String sqlFinal =  itemCountSql.replaceAll("<from>",   this.getDbSchemaName() + joinTableName );
 				sqlFinal = itemCountSql.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
 				sqlFinal = itemCountSql.replace("<factTableColumn>", factTableColumn);
 				sqlFinal = itemCountSql.replace("<getColumnname>", conceptType.getColumnname());
