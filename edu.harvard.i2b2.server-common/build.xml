@@ -127,7 +127,19 @@
 	                <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/services">
 	                     <fileset dir="../edu.harvard.i2b2.workplace/${dist}" includes="**/*.aar" />
 	                </copy>
-	 
+
+			        <echo message="${Name}: Building IM package!" />
+			            <ant antfile="build.xml"  dir="../edu.harvard.i2b2.im" target="clean"/>
+			            <ant antfile="build.xml"  dir="../edu.harvard.i2b2.im" target="all">
+			                 <property name="Name" value="IM"/>
+			            </ant>
+			        <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/lib">
+			             <fileset dir="../edu.harvard.i2b2.im/${dist}" includes="**/*-core.jar" />
+			        </copy>
+			        <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/services">
+			             <fileset dir="../edu.harvard.i2b2.im/${dist}" includes="**/*.aar" />
+			        </copy>
+	  	
 	                <echo message="${Name}: Building PM package!" />
 	                    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.pm" target="clean"/>
 	                    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.pm" target="all">

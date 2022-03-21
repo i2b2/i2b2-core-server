@@ -27,10 +27,10 @@ public class SessionKey {
 		try
 		{
 			//Build the cipher for storage in the static class and use by encrypt and decrypt
-			KeyGenerator keygen = KeyGenerator.getInstance("DES");
+			KeyGenerator keygen = KeyGenerator.getInstance("AES");
 			desKey = keygen.generateKey();
 			// Create the cipher 
-			desCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+			desCipher = Cipher.getInstance("AES/GCM/NoPadding");
 		}
 		catch(Exception ee)
 		{
