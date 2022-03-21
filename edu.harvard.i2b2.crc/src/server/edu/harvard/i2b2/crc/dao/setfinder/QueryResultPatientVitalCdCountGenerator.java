@@ -67,7 +67,7 @@ public class QueryResultPatientVitalCdCountGenerator extends CRCDAO implements
 			log.debug("Executing[ " + demographics_count_sql + " ]");
 			
 			String sqlFinal =  demographics_count_sql.replace("<from>",   this.getDbSchemaName()  );
-			sqlFinal = demographics_count_sql.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
+			sqlFinal = sqlFinal.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
 
 			PreparedStatement stmt = sfConn
 					.prepareStatement(sqlFinal);

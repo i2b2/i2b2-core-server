@@ -146,7 +146,7 @@ public class CreateConceptXmlDao extends JdbcDaoSupport {
 						+ "   and lower(c_tablename) = ?";
 				log.debug("Executing sql [" + stageSql + "]");
 				String selectSql = stageSql.replace("<from>", metadataSchema	+ singleTableName);
-				selectSql = stageSql.replace("<clause>", emptyStringClause + updateOnlyClause);
+				selectSql = selectSql.replace("<clause>", emptyStringClause + updateOnlyClause);
 				
 				query = conn.prepareStatement(selectSql);
 

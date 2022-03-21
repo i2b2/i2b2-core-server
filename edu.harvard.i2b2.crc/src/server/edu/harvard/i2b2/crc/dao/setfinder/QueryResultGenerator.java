@@ -190,17 +190,18 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 						//+ conceptType.getFacttablecolumn() + " from "
 						+ " )  and <factTableColumn> IN (select "
 						+ "<factTableColumn>" + " from "
-						+ "<from>  "
+						+ "<from2>  "
 						+  " where <getColumnname>" 
-						+ " <getOperato> "
+						+ " <getOperator> "
 						+ "<dimCode> )";
 
 				String sqlFinal =  itemCountSql.replaceAll("<from>",   this.getDbSchemaName() + joinTableName );
-				sqlFinal = itemCountSql.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
-				sqlFinal = itemCountSql.replace("<factTableColumn>", factTableColumn);
-				sqlFinal = itemCountSql.replace("<getColumnname>", conceptType.getColumnname());
-				sqlFinal = itemCountSql.replace("<getOperator>", conceptType.getOperator());
-				sqlFinal = itemCountSql.replace("<TEMP_DX_TABLE>", dimCode);
+				sqlFinal = sqlFinal.replaceAll("<from2>", getDbSchemaName() + conceptType.getTablename());
+				sqlFinal = sqlFinal.replaceAll("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
+				sqlFinal = sqlFinal.replaceAll("<factTableColumn>", factTableColumn);
+				sqlFinal = sqlFinal.replaceAll("<getColumnname>", conceptType.getColumnname());
+				sqlFinal = sqlFinal.replaceAll("<getOperator>", conceptType.getOperator());
+				sqlFinal = sqlFinal.replaceAll("<dimCode>", dimCode);
 				
 				stmt = sfConn.prepareStatement(sqlFinal);
 				stmt.setQueryTimeout(transactionTimeout);

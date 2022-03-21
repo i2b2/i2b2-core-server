@@ -853,7 +853,7 @@ public class FolderDao extends JdbcDaoSupport {
 				try {
 					
 					String sqlFinal = sql.toString().replace("<from>", metadataSchema	+ tableName);
-					sqlFinal = sql.toString().replace("<parameters>", parameters);
+					sqlFinal = sqlFinal.toString().replace("<parameters>", parameters);
 					
 
 					if(managerRole){
@@ -1628,8 +1628,8 @@ public class FolderDao extends JdbcDaoSupport {
 
 		try {
 			String sqlFinal = updateSql.replace("<from>", metadataSchema+tableName);
-			sqlFinal = updateSql.replace("<columnName>", columnName);
-			sqlFinal = updateSql.replace("<indexStr>", indexStr);
+			sqlFinal = sqlFinal.replace("<columnName>", columnName);
+			sqlFinal = sqlFinal.replace("<indexStr>", indexStr);
 			
 			String protectedAccValFinal = protectedAccVal.replace("<indexStr>", indexStr);
 

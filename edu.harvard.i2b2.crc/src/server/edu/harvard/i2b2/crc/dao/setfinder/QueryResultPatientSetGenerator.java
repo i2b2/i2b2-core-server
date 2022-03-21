@@ -95,7 +95,7 @@ public class QueryResultPatientSetGenerator extends CRCDAO implements
 			log.debug("Executing sql:\n" + sql);
 
 			String sqlFinal =  sql.replace("<from>",   this.getDbSchemaName()  );
-			sqlFinal = sql.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
+			sqlFinal = sqlFinal.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
 
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			logTimingUtil.setStartTime();
