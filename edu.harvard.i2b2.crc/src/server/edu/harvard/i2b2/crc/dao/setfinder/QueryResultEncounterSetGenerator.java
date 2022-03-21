@@ -115,7 +115,7 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 			logTimingUtil.setStartTime();
 			
 			String sqlFinal = sql.replace("<dbSchemaName>", dbSchemaName);
-			sqlFinal = sql.replace("<encounterSql>", encounterSql);
+			sqlFinal = sqlFinal.replace("<encounterSql>", encounterSql);
 			
 			PreparedStatement ps = sfConn.prepareStatement(sqlFinal);
 			ps.setInt(1, Integer.parseInt(resultInstanceId));

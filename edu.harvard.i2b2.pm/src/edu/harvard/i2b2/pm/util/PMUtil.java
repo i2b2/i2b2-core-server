@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Properties;
@@ -142,7 +143,9 @@ public class PMUtil {
 	private int getValidAcsiiValue() {
 		int number = 48;
 		while(true) {
-			number = 48+(int) Math.round(Math.random() * 74);
+			SecureRandom random = new SecureRandom();
+
+			number = 48+(int) Math.round(random.nextDouble() * 74);
 			if((number > 47 && number < 58) || (number > 64 && number < 91) 
 				|| (number > 96 && number < 123)) {
 					break;

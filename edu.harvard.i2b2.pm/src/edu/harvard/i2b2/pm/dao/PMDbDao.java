@@ -14,6 +14,7 @@
  */
 package edu.harvard.i2b2.pm.dao;
 
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -1204,7 +1205,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					|| e.getMessage().contains("try restarting transaction")
 					|| e.getMessage().contains(
 							"failed to resume the transaction")) {
-				int tosleep = new Random().nextInt(2000);
+				int tosleep = new SecureRandom().nextInt(2000);
 				log.warn("Transaction rolled back. Restarting transaction.");
 				Thread.sleep(tosleep);
 				numRowsAdded = jt.update(addSql, 
