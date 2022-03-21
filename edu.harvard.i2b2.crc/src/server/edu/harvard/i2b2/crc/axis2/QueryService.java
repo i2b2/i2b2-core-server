@@ -129,7 +129,7 @@ public class QueryService {
 	 */
 	public OMElement pdorequest(OMElement omElement) {
 		Assert.notNull(omElement, "PDO request OMElement must not be null");
-		//logesapi.debug(null,"Inside pdo request " + omElement);
+		logesapi.debug(null,"Inside pdo request " + omElement);
 		return handleRequest(PDO_REQUEST, omElement);
 	}
 
