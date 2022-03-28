@@ -17,6 +17,8 @@ import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
@@ -50,6 +52,7 @@ public class DataMartLoader implements IDataMartLoaderHelper {
 
 	// log
 	private static Log log = LogFactory.getLog(DataMartLoader.class);
+	protected static Logger logesapi = ESAPI.getLogger(DataMartLoader.class);
 
 	/*
 	 * public void load(int uploadId, String inputLoadFile, String
@@ -135,7 +138,7 @@ public class DataMartLoader implements IDataMartLoaderHelper {
 			doNullCheck(uploadFileName, inputLoadFileFormat, sourceSystemCd,
 					userId);
 
-			log.info("Starting to process loadfile :" + uploadFileName
+			logesapi.info(null,"Starting to process loadfile :" + uploadFileName
 					+ "format " + inputLoadFileFormat + " userid " + userId);
 
 			// create Upload Status

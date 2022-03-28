@@ -44,6 +44,8 @@ import org.apache.axiom.om.OMElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 //import javax.xml.stream.XMLStreamException;
 
@@ -55,6 +57,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class WorkplaceService {
 	private static Log log = LogFactory.getLog(WorkplaceService.class);
+	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	/**
 	 * This function is main webservice interface to get vocab data
@@ -73,6 +76,7 @@ public class WorkplaceService {
 	 */
 	public OMElement getChildren(OMElement getChildrenElement) 
 			throws I2B2Exception {
+
 
 		//    	OMElement returnElement = null;
 		String workplaceDataResponse = null;
@@ -232,7 +236,7 @@ public class WorkplaceService {
 
 		GetNameInfoDataMessage foldersDataMsg = new GetNameInfoDataMessage();
 		String requestElementString = requestElement.toString();
-		log.debug(requestElementString);
+		logesapi.debug(null,requestElementString);
 		foldersDataMsg.setRequestMessageType(requestElementString);
 
 		long waitTime = 0;

@@ -20,7 +20,6 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.OMText;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
@@ -67,37 +66,6 @@ public class GetFilefromFRC_SOAPTest {
     }
 
     /**
-     * Test code to generate a PFT requestPdo for a test sample and convert to
-     * OMElement called by main below
-     *
-     * @param requestPdo
-     *            String requestPdo to send to PFT web service
-     * @return An OMElement containing the PFT web service requestPdo
-     */
-    public static OMElement getRequestPayLoad() throws Exception {
-        OMElement method = null;
-
-        try {
-            StringReader strReader = new StringReader(getRequestString());
-            XMLInputFactory xif = XMLInputFactory.newInstance();
-            XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-
-            StAXOMBuilder builder = new StAXOMBuilder(reader);
-            method = builder.getDocumentElement();
-
-        } catch (FactoryConfigurationError e) {
-            // TODO Auto-generated catch block
-            // No log because its a thread?
-            e.printStackTrace();
-            throw new Exception(e);
-        }
-        
-        //System.out.println(method.toString());
-
-        return method;
-    }
-
-    /**
      * Test code to generate a PFT requestPdo String for a sample PFT report
      * called by main below
      *
@@ -121,56 +89,11 @@ public class GetFilefromFRC_SOAPTest {
         return queryStr.toString();
     }
 
-    /**
-     * Test code to generate a PFT requestPdo based on a sample report and make
-     * a PFT web service call PFT Response is printed out to console.
-     *
-     */
-    public static void main2(String[] args) {
-        try {
-            OMElement getRequestElmt = getRequestPayLoad();
-            Options options = new Options();
-            options.setTo(targetEPR);
-
-            options.setTransportInProtocol(Constants.TRANSPORT_HTTP);
-            options.setProperty(Constants.Configuration.ENABLE_REST, Constants.VALUE_TRUE);
-            options.setProperty(Constants.Configuration.ENABLE_SWA, Constants.VALUE_TRUE);
-            options.setTimeOutInMilliSeconds(50000);
-            ServiceClient sender = new ServiceClient();
-            sender.setOptions(options);
-
-             
-            OMElement result = sender.sendReceive(getRequestElmt);
-            
-
-            if (result == null) {
-                System.out.println("result is null");
-            } else {
-                String response = result.toString();
-                System.out.println("response = " + response);
-                OMElement ele = result.getFirstElement();
-                OMText binaryNode = (OMText) ele.getFirstOMChild();
-                
-                // Retrieving the DataHandler & then do whatever the processing to the data
-                DataHandler actualDH;
-                actualDH = (DataHandler) binaryNode.getDataHandler();       
-                
-                File receivedFile = new File("/appdev/received_from_FRC.txt");
-                FileOutputStream outputStream = new FileOutputStream(receivedFile);
-                actualDH.writeTo(outputStream);
-            }
-            System.exit(0);
-        } catch (AxisFault axisFault) {
-            axisFault.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public static void main(String[] args) {
         try {
         	System.out.println(" Happy to be here! ");
-            OMElement getRequestElmt = getRequestPayLoad();
+            OMElement getRequestElmt = edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(getRequestString());
             Options options = new Options();
             options.setTo(targetEPR);
 			options.setSoapVersionURI(SOAP11Constants.SOAP_ENVELOPE_NAMESPACE_URI);

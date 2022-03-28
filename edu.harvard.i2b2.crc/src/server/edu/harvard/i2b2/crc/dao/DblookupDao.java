@@ -21,6 +21,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.DblookupType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.DeleteDblookupType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.SetDblookupType;
+import edu.harvard.i2b2.crc.loader.ejb.DataMartLoaderAsyncBean;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 import java.sql.Connection;
@@ -31,13 +32,16 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class DblookupDao extends JdbcDaoSupport {
-	
+	protected static Logger logesapi = ESAPI.getLogger(DblookupDao.class);
+
     private static Log log = LogFactory.getLog(DblookupDao.class);
     private static DataSource ds = null;
     private static JdbcTemplate jt;
@@ -141,7 +145,7 @@ public class DblookupDao extends JdbcDaoSupport {
 				}
 				queryResult = jt.query(sql, new getMapper(), v, domainId, userId);
 			}
-			log.info(sql + "(c_" + column + "=" + v + ", domainId=" + domainId + ", userId=" + userId + ") -- # of entries found: " + queryResult.size());
+			logesapi.info(null,sql + "(c_" + column + "=" + v + ", domainId=" + domainId + ", userId=" + userId + ") -- # of entries found: " + queryResult.size());
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			e.printStackTrace();

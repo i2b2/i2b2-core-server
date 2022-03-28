@@ -85,7 +85,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			assertTrue(false);
 		}
 	}
-	
+	/*
 	@Test
 	public void A11_GetVersion() throws Exception {
 		String filename = testFileDir + "/pm_get_i2b2_version.xml";
@@ -119,7 +119,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			throw e;
 		}
 	}
-
+*/
 
 	@Test
 	public void A20_CreateUserRoleforCRC() throws Exception {

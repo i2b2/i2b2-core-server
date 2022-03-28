@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
+
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
@@ -27,6 +30,8 @@ import edu.harvard.i2b2.crc.util.LogTimingUtil;
 
 public class QueryResultPatientSetGenerator extends CRCDAO implements
 		IResultGenerator {
+
+	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	@Override
 	public String getResults() {
@@ -76,27 +81,30 @@ public class QueryResultPatientSetGenerator extends CRCDAO implements
 			String sql = null;
 			String dbSchemaName = this.getDbSchemaName();
 			if (sfDAOFactory.getDataSourceLookup().getServerType().equals(DAOFactoryHelper.ORACLE)) {
-				sql = "INSERT INTO " + dbSchemaName + "qt_patient_set_collection"
+				sql = "INSERT INTO <from>qt_patient_set_collection"
 						+ " (patient_set_coll_id, result_instance_id, set_index, patient_num) "
-						+ "SELECT " + dbSchemaName + "QT_SQ_QPR_PCID.nextval AS patient_set_coll_id, ? AS result_instance_id, rownum AS set_index, t.patient_num "
-						+ "FROM (SELECT DISTINCT patient_num FROM " + TEMP_DX_TABLE + ") t";
+						+ "SELECT <from>QT_SQ_QPR_PCID.nextval AS patient_set_coll_id, ? AS result_instance_id, rownum AS set_index, t.patient_num "
+						+ "FROM (SELECT DISTINCT patient_num FROM <TEMP_DX_TABLE>) t";
 			} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
-				sql = "INSERT INTO " + dbSchemaName + "qt_patient_set_collection"
+				sql = "INSERT INTO <from>qt_patient_set_collection"
 						+ " (result_instance_id, set_index, patient_num) "
 						+ "SELECT ? AS result_instance_id, ROW_NUMBER() OVER(ORDER BY patient_num) AS set_index, t.patient_num "
-						+ "FROM (SELECT DISTINCT patient_num FROM " + TEMP_DX_TABLE + ") t";
+						+ "FROM (SELECT DISTINCT patient_num FROM <TEMP_DX_TABLE>) t";
 			}
 			log.debug("Executing sql:\n" + sql);
 
+			String sqlFinal =  sql.replace("<from>",   this.getDbSchemaName()  );
+			sqlFinal = sqlFinal.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
+
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			logTimingUtil.setStartTime();
-			PreparedStatement ps = sfConn.prepareStatement(sql);
+			PreparedStatement ps = sfConn.prepareStatement(sqlFinal);
 			ps.setInt(1, Integer.parseInt(resultInstanceId));
 			loadCount = ps.executeUpdate();
 			ps.close();
 			logTimingUtil.setEndTime();
-			log.debug("Total patients loaded for query instance ="
+			logesapi.debug(null,"Total patients loaded for query instance ="
 					+ queryInstanceId + " is [" + loadCount + "]");
 			////
 			if (processTimingFlag != null) {

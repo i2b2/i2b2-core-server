@@ -24,6 +24,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
+
 import oracle.sql.ArrayDescriptor;
 
 //import org.jboss.resource.adapter.jdbc.WrappedConnection;
@@ -45,6 +48,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.EidListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PatientListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PidListType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PidListType.Pid;
+import edu.harvard.i2b2.crc.loader.delegate.LoaderQueryRequestDelegate;
 
 /**
  * Class to build patient section of plain pdo $Id: PdoQueryPatientDao.java,v
@@ -55,6 +59,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.query.PidListType.Pid;
 public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 
 	private DataSourceLookup dataSourceLookup = null;
+	protected static Logger logesapi = ESAPI.getLogger(PdoQueryEidDao.class);
 
 	public PdoQueryEidDao(DataSourceLookup dataSourceLookup,
 			DataSource dataSource) {
@@ -347,7 +352,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		while (resultSet.next()) {
 			singleEidType = eidBuilder.buildEidSet(resultSet);
 			eidMapId = singleEidType.getEventMapId().get(0);
-			log.debug("Building  pidMapId " + eidMapId.getValue()
+			logesapi.debug(null,"Building  pidMapId " + eidMapId.getValue()
 					+ "   " + singleEidType.getEventId().getValue() + " "
 					+ eidMapId.getSource());
 			tempSinglePidType = singleEidType.getEventId().getValue();

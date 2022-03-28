@@ -25,7 +25,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
@@ -103,13 +103,8 @@ public abstract class CRCAxisAbstract {
 
 	public static OMElement convertStringToOMElement(String requestXmlString)
 			throws Exception {
-		StringReader strReader = new StringReader(requestXmlString);
-		XMLInputFactory xif = XMLInputFactory.newInstance();
-		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
 
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement lineItem = builder.getDocumentElement();
-		return lineItem;
+		return edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(requestXmlString);
 	}
 
 	public static OMElement convertStringToOMElement(InputStream requestXmlString)
@@ -117,8 +112,8 @@ public abstract class CRCAxisAbstract {
 		XMLInputFactory xif = XMLInputFactory.newInstance();
 		XMLStreamReader reader = xif.createXMLStreamReader(requestXmlString);
 
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement lineItem = builder.getDocumentElement();
+		OMElement lineItem = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
 		return lineItem;
 	}
 	

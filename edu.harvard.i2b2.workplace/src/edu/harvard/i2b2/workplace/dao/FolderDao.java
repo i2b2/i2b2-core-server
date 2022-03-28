@@ -29,6 +29,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -64,6 +66,8 @@ import edu.harvard.i2b2.workplace.util.WorkplaceUtil;
 public class FolderDao extends JdbcDaoSupport {
 
 	private static Log log = LogFactory.getLog(FolderDao.class);
+	protected static Logger logesapi = ESAPI.getLogger(FolderDao.class);
+
 	//    final static String CORE = " c_hierarchy, c_hlevel, c_name, c_user_id, c_group_id, c_share_id, c_index, c_parent_index, c_visualattributes, c_tooltip";
 	//	final static String DEFAULT = " c_name, c_hierarchy";
 	final static String CORE = " c_name, c_user_id, c_group_id, c_protected_access, c_share_id, c_index, c_parent_index, c_visualattributes, c_tooltip";
@@ -386,7 +390,7 @@ public class FolderDao extends JdbcDaoSupport {
 				//CallCRCUtil callCRC = new CallCRCUtil(securityType, projectInfo.getId());
 				log.debug("getting Response");
 				queryResult =  CallCRCUtil.callCRCQueryRequestXML(childrenType.getNode(), securityType, projectInfo.getId());
-				log.debug("got response: " + queryResult);
+				logesapi.debug(null,"got response: " + queryResult);
 				//if (masterInstanceResultResponseType != null && masterInstanceResultResponseType.getQueryMaster().size() > 0)
 				//	queryResult =XMLUtil.convertDOMElementToString((Element) masterInstanceResultResponseType.getQueryMaster().get(0).getRequestXml().getContent().get(0)); ;  //respoonseType.getQueryResultInstance();
 			} catch (Exception e) {
@@ -401,7 +405,7 @@ public class FolderDao extends JdbcDaoSupport {
 				//CallCRCUtil callCRC = new CallCRCUtil(securityType, projectInfo.getId());
 				log.debug("getting Response");
 				queryResult =  CallCRCUtil.callCRCResultInstanceXML(childrenType.getNode(), securityType, projectInfo.getId());
-				log.debug("got response: " + queryResult);
+				logesapi.debug(null,"got response: " + queryResult);
 				//if (masterInstanceResultResponseType != null)
 				//	queryResult = (String) masterInstanceResultResponseType.getCrcXmlResult().getXmlValue().getContent().get(0);
 				//XMLUtil.convertDOMElementToString((Element) masterInstanceResultResponseType.getCrcXmlResult().getXmlValue().getContent().get(0));  //respoonseType.getQueryResultInstance();
@@ -412,7 +416,7 @@ public class FolderDao extends JdbcDaoSupport {
 			}
 			//log.debug("result size = " + queryResult.size());
 		}
-		log.debug("result is: " + queryResult);
+		logesapi.debug(null,"result is: " + queryResult);
 		return queryResult;
 
 	}
@@ -820,7 +824,7 @@ public class FolderDao extends JdbcDaoSupport {
 				tableCd = StringUtil.getTableCd(resultStr);
 				tableName = StringUtil.getIndex(resultStr);
 
-				StringBuilder sql = new StringBuilder ("select " + parameters +" from " + metadataSchema+tableName  + " where LOWER(c_name) like ? and (c_status_cd != 'D' or c_status_cd is null) "); 
+				StringBuilder sql = new StringBuilder ("select <parameters> from <from> where LOWER(c_name) like ? and (c_status_cd != 'D' or c_status_cd is null) "); 
 
 				if(managerRole){
 					sql.append("and LOWER(c_group_id) = ? ");
@@ -847,11 +851,16 @@ public class FolderDao extends JdbcDaoSupport {
 				List<FolderType> workplaceResult=null;
 
 				try {
+					
+					String sqlFinal = sql.toString().replace("<from>", metadataSchema	+ tableName);
+					sqlFinal = sqlFinal.toString().replace("<parameters>", parameters);
+					
+
 					if(managerRole){
-						workplaceResult = jt.query(JDBCUtil.escapeSingleQuote(sql.toString()), mapper, searchWord, projectInfo.getId().toLowerCase() );
+						workplaceResult = jt.query(sqlFinal, mapper, searchWord, projectInfo.getId().toLowerCase() );
 					}
 					else {
-						workplaceResult = jt.query(JDBCUtil.escapeSingleQuote(sql.toString()), mapper, searchWord, userId.toLowerCase(), projectInfo.getId().toLowerCase(), projectInfo.getId().toLowerCase() );
+						workplaceResult = jt.query(sqlFinal, mapper, searchWord, userId.toLowerCase(), projectInfo.getId().toLowerCase(), projectInfo.getId().toLowerCase() );
 					}
 				} catch (DataAccessException e) {
 					log.error(e.getMessage());
@@ -1614,11 +1623,17 @@ public class FolderDao extends JdbcDaoSupport {
 	private int updateProtectedAccess(String metadataSchema,String tableName, String columnName, String indexStr, String protectedAccVal)
 			throws I2B2DAOException {
 
-		String updateSql = "update " + metadataSchema+tableName  + " set c_protected_access = ? where " + columnName + " in ( " + indexStr + " )";
+		String updateSql = "update <from> set c_protected_access = ? where <columnName> in ( <indexStr> )";
 		int numRowsSet=-1;
 
 		try {
-			numRowsSet = jt.update(JDBCUtil.escapeSingleQuote(updateSql), protectedAccVal);
+			String sqlFinal = updateSql.replace("<from>", metadataSchema+tableName);
+			sqlFinal = sqlFinal.replace("<columnName>", columnName);
+			sqlFinal = sqlFinal.replace("<indexStr>", indexStr);
+			
+			String protectedAccValFinal = protectedAccVal.replace("<indexStr>", indexStr);
+
+			numRowsSet = jt.update(sqlFinal, protectedAccValFinal);
 		} catch (DataAccessException e) {
 			log.error("Dao updateProtectedAccess failed");
 			log.error(e.getMessage());

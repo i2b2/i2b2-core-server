@@ -30,7 +30,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
@@ -237,8 +237,8 @@ public class TemporalPanelCellQueryItem extends TemporalPanelItem {
 		StringReader strReader = new StringReader(xmlrequest);
 		XMLInputFactory xif = XMLInputFactory.newInstance();
 		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement request = builder.getDocumentElement();
+		OMElement request = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
 		return request;
 	}
 

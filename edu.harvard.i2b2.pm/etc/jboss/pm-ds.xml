@@ -58,7 +58,7 @@
 		pool-name="PMBootStrapDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:sqlserver://localhost:1433</connection-url>
 		<driver-class>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver-class>
-		<driver>mssql-jdbc-9.2.0.jre8.jar</driver>
+		<driver>mssql-jdbc-10.2.0.jre8.jar</driver>
 		<security>
 			<user-name>i2b2pm</user-name>
 			<password>demouser</password>
@@ -83,7 +83,7 @@
 		pool-name="PMBootStrapDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:postgresql://localhost:5432/i2b2</connection-url>
 		<driver-class>org.postgresql.Driver</driver-class>
-		<driver>postgresql-42.2.18.jar</driver>
+		<driver>postgresql-42.3.2.jar</driver>
 		<security>
 			<user-name>i2b2pm</user-name>
 			<password>demouser</password>

@@ -48,14 +48,8 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.controller.client.OperationBuilder;
 import org.jboss.as.controller.client.helpers.ClientConstants;
 import org.jboss.dmr.ModelNode;
-
-//import org.jboss.as.connector.subsystems.datasources.WildFlyDataSource;
-//import org.jboss.as.controller.client.ModelControllerClient;
-//import org.jboss.as.controller.client.OperationBuilder;
-//import org.jboss.as.controller.client.helpers.ClientConstants;
-//import org.jboss.dmr.ModelNode;
-//import org.jboss.jca.adapters.jdbc.WrapperDataSource;
-//import org.jboss.jca.adapters.jdbc.jdk7.WrappedConnectionJDK7;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -105,11 +99,11 @@ import javax.servlet.http.HttpServletRequest;
 public class ServicesHandler extends RequestHandler {
 	private ProjectType projectInfo = null;
 	private ServicesMessage getServicesMsg = null;
-
-        private final HttpServletRequest req;
+  private final HttpServletRequest req;
+	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	public ServicesHandler(ServicesMessage servicesMsg, HttpServletRequest req) throws I2B2Exception{
-                this.req = req;
+   this.req = req;
 		log.debug("Setting the servicesMsg");	
 
 		getServicesMsg = servicesMsg;
@@ -319,7 +313,7 @@ public class ServicesHandler extends RequestHandler {
 				e1.printStackTrace();
 				throw new Exception ("Database error in getting environment data");
 			}
-			log.debug("Start parsing environment results of: " + response);
+			logesapi.debug(null,"Start parsing environment results of: " + response);
 
 			Iterator it = response.iterator();
 			while (it.hasNext())

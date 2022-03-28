@@ -40,7 +40,6 @@ import edu.harvard.i2b2.im.datavo.wdo.IsKeySetType;
 import org.apache.axiom.om.OMElement;
 //import org.apache.axiom.om.OMFactory;
 //import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 //import org.apache.axis2.AxisFault;
 
 import org.apache.commons.logging.Log;
@@ -77,12 +76,8 @@ public class MessageFactory {
         OMElement returnElement = null;
 
         try {
-        	StringReader strReader = new StringReader(xmlString);
-        	XMLInputFactory xif = XMLInputFactory.newInstance();
-        	XMLStreamReader reader = xif.createXMLStreamReader(strReader);
+        	returnElement =  edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(xmlString);
 
-        	StAXOMBuilder builder = new StAXOMBuilder(reader);
-        	returnElement = builder.getDocumentElement();
 
         } catch (XMLStreamException e) {
             log.error("xml stream response WDO to OMElement");

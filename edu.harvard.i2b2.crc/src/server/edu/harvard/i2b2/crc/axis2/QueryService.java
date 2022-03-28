@@ -22,9 +22,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 import org.springframework.util.Assert;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -73,6 +75,7 @@ import edu.harvard.i2b2.crc.dao.redcap.SurveyRecord;
 public class QueryService {
 	/** log **/
 	protected final Log log = LogFactory.getLog(getClass());
+	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	/** set pdo request constant used only inside this class **/
 	private final String PDO_REQUEST = "PDO_REQUEST";
@@ -100,7 +103,7 @@ public class QueryService {
 	public OMElement request(OMElement omElement) {
 		Assert.notNull(omElement,
 				"Setfinder request OMElement must not be null");
-		log.debug("Inside setfinder request " + omElement);
+		logesapi.debug(null,"Inside setfinder request " + omElement);
 		return handleRequest(SETFINDER_REQUEST, omElement);
 	}
 
@@ -114,7 +117,7 @@ public class QueryService {
 	public OMElement breakdownrequest(OMElement omElement) {
 		Assert.notNull(omElement,
 				"Setfinder request OMElement must not be null");
-		log.debug("Inside setfinder request " + omElement);
+		logesapi.debug(null,"Inside setfinder request " + omElement);
 		return handleRequest(QTBREAKDOWN_REQUEST, omElement);
 	}
 	/**
@@ -126,7 +129,7 @@ public class QueryService {
 	 */
 	public OMElement pdorequest(OMElement omElement) {
 		Assert.notNull(omElement, "PDO request OMElement must not be null");
-		log.debug("Inside pdo request " + omElement);
+		logesapi.debug(null,"Inside pdo request " + omElement);
 		return handleRequest(PDO_REQUEST, omElement);
 	}
 
@@ -170,14 +173,14 @@ public class QueryService {
 	 */
 	public OMElement getNameInfo(OMElement omElement) {
 		Assert.notNull(omElement, "getNameInfo  OMElement must not be null");
-		log.debug("Inside getNameInfo request " + omElement);
+		logesapi.debug(null,"Inside getNameInfo request " + omElement);
 		return handleRequest(GETNAMEINFO_REQUEST, omElement);
 	}
 
 	public OMElement publishDataRequest(OMElement request) {
 		Assert.notNull(request,
 				"publish data request OMElement must not be null");
-		log.debug("Inside publish data request " + request);
+		logesapi.debug(null,"Inside publish data request " + request);
 		//TODO removed loader
 		// Added back
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -201,7 +204,7 @@ public class QueryService {
 	public OMElement bulkLoadRequest(OMElement request) {
 		Assert.notNull(request,
 				"bulk load request OMElement must not be null");
-		log.debug("Inside bulk load request " + request);
+		logesapi.debug(null,"Inside bulk load request " + request);
 
 		//LoaderQueryReqDel handles permissions...
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -225,7 +228,7 @@ public class QueryService {
 	public OMElement getLoadDataStatusRequest(OMElement request) {
 		Assert.notNull(request,
 				"get load Data status request OMElement must not be null");
-		log.debug("Inside load status request " + request);
+		logesapi.debug(null,"Inside load status request " + request);
 
 		//LoaderQueryReqDel handles permissions...
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -505,8 +508,8 @@ public class QueryService {
 		XMLInputFactory xif = XMLInputFactory.newInstance();
 		StringReader strReader = new StringReader(xmlString);
 		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement element = builder.getDocumentElement();
+		OMElement element = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
 		return element;
 	}
 }

@@ -8,6 +8,8 @@
  ******************************************************************************/
 package edu.harvard.i2b2.crc.dao.setfinder;
 
+import java.security.SecureRandom;
+
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
@@ -29,8 +31,10 @@ public class GaussianBoxMuller {
 		double w = 0.0, x1 = 0.0, x2 = 0.0, y1 = 0.0, y2 = 0.0, obsData = 0.0;
 		if (iset) {
 			do {
-				x1 = 2.0 * Math.random() - 1.0;
-				x2 = 2.0 * Math.random() - 1.0;
+				SecureRandom random = new SecureRandom();
+
+				x1 = 2.0 * random.nextDouble() - 1.0;
+				x2 = 2.0 * random.nextDouble() - 1.0;
 				w = x1 * x1 + x2 * x2;
 			} while (w >= 1.0);
 

@@ -17,6 +17,7 @@ package edu.harvard.i2b2.pm.ws;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -122,7 +123,9 @@ abstract public class ProjectManagementRequestData {
 	private int getValidAcsiiValue() {
 		int number = 48;
 		while(true) {
-			number = 48+(int) Math.round(Math.random() * 74);
+			SecureRandom random = new SecureRandom();
+
+			number = 48+(int) Math.round(random.nextDouble() * 74);
 			if((number > 47 && number < 58) || (number > 64 && number < 91) 
 				|| (number > 96 && number < 123)) {
 					break;

@@ -19,7 +19,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
@@ -36,6 +36,8 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -61,6 +63,7 @@ public class CallFileRepositoryUtil {
 
 	/** log **/
 	protected static Log log = LogFactory.getLog(CallFileRepositoryUtil.class);
+	protected static Logger logesapi = ESAPI.getLogger(CallFileRepositoryUtil.class);
 
 	//private SecurityType securityType = null;
 	//private String projectId = null;
@@ -99,8 +102,8 @@ public class CallFileRepositoryUtil {
 			StringReader strReader = new StringReader(strWriter.toString());
 			XMLInputFactory xif = XMLInputFactory.newInstance();
 			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-			StAXOMBuilder builder = new StAXOMBuilder(reader);
-			request = builder.getDocumentElement();
+			request = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
 		} catch (XMLStreamException xmlEx) {
 			throw new I2B2Exception("FileRepository request omelement failed ["
 					+ xmlEx.getMessage() + "]");
@@ -201,7 +204,7 @@ public class CallFileRepositoryUtil {
 
 			response = mepClient
 					.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
-			log.debug("File Repository response envelope: "
+			logesapi.debug(null,"File Repository response envelope: "
 					+ response.toString() + "]");
 			OMElement frResponse = (OMElement) response.getEnvelope().getBody()
 					.getFirstOMChild();

@@ -28,7 +28,6 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.wsdl.WSDLConstants;
@@ -39,6 +38,8 @@ import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.fr.delegate.RecvfileRequestHandler;
 import edu.harvard.i2b2.fr.delegate.LoaderQueryRequestDelegate;
 import edu.harvard.i2b2.fr.delegate.SendfileRequestHandler;
+import org.apache.axiom.om.OMXMLBuilderFactory;
+
 
 public class FileRepositoryService {
 	protected final Log log = LogFactory.getLog(getClass());
@@ -131,8 +132,7 @@ public class FileRepositoryService {
 			XMLInputFactory xif = XMLInputFactory.newInstance();
 			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
 
-			StAXOMBuilder builder = new StAXOMBuilder(reader);
-			returnElement = builder.getDocumentElement();
+			returnElement = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
 
 			OMFactory factory = OMAbstractFactory.getOMFactory();
 			OMNamespace omNs = factory.createOMNamespace(
