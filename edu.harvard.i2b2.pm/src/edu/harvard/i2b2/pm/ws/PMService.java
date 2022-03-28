@@ -37,6 +37,9 @@ import edu.harvard.i2b2.pm.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.pm.delegate.ServicesHandler;
 import edu.harvard.i2b2.pm.util.AppVersion;
 import edu.harvard.i2b2.pm.util.StringUtil;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.transport.http.HTTPConstants;
 
 
 /**
@@ -180,6 +183,8 @@ public class PMService {
 	 */
 	public OMElement getServices(OMElement getPMDataElement)
 			throws I2B2Exception {
+            MessageContext messageContext = MessageContext.getCurrentMessageContext();
+            HttpServletRequest req = (HttpServletRequest) messageContext.getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
 
 		/*
 
@@ -256,7 +261,7 @@ public class PMService {
 			//er.setInputString(requestElementString);
 			log.debug("begin setRequestHandler, my servicesMsg: " + servicesMsg);
 
-			er.setRequestHandler(new ServicesHandler(servicesMsg));
+			er.setRequestHandler(new ServicesHandler(servicesMsg, req));
 			log.debug("middle setRequestHandler");
 
 
