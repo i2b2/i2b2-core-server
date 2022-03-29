@@ -23,13 +23,14 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.axiom.om.OMDataSource;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.llom.OMSourcedElementImpl;
-import org.apache.axiom.om.impl.serialize.StreamingOMSerializer;
 import org.apache.axiom.om.util.StAXUtils;
 import org.apache.axis2.json.JSONDataSource;
 import org.apache.axis2.util.StreamWrapper;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
@@ -71,6 +72,7 @@ import edu.harvard.i2b2.ontology.delegate.UpdateTotalNumHandler;
  */
 public class OntologyService {
 	private static Log log = LogFactory.getLog(OntologyService.class);
+	protected static Logger logesapi = ESAPI.getLogger(OntologyService.class);
 
 	/**
 	 * This function is main webservice interface to get vocab data for a query.
@@ -104,30 +106,7 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 
-		String requestElementString  =  null;
-
-
-		try {
-			OMSourcedElementImpl omSourcedElement = (OMSourcedElementImpl) getChildrenElement; //.getFirstElement();
-			JSONDataSource source = (JSONDataSource) omSourcedElement.getDataSource();
-			StreamingOMSerializer ser = new StreamingOMSerializer();
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			XMLStreamWriter writer = StAXUtils.createXMLStreamWriter(byteArrayOutputStream);
-			ser.serialize(
-					new StreamWrapper(source.getReader()),
-					writer);
-			writer.flush();
-			requestElementString =  byteArrayOutputStream.toString();
-
-		} catch (Exception e) {
-			if ( e.getMessage().startsWith("ParseError")) {
-				requestElementString = e.getMessage();
-				requestElementString = requestElementString.substring(requestElementString.indexOf('<'));
-			}
-		}
-
-		if (requestElementString == null )
-			requestElementString = getChildrenElement.toString();
+		String requestElementString  = getChildrenElement.toString();
 
 
 		GetChildrenDataMessage childrenDataMsg = new GetChildrenDataMessage(
@@ -178,33 +157,7 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 
-		String requestElementString  =  null;
-
-
-		try {
-			OMSourcedElementImpl omSourcedElement = (OMSourcedElementImpl) getCategoriesElement; //.getFirstElement();
-			JSONDataSource source = (JSONDataSource) omSourcedElement.getDataSource();
-			StreamingOMSerializer ser = new StreamingOMSerializer();
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			XMLStreamWriter writer = StAXUtils.createXMLStreamWriter(byteArrayOutputStream);
-			ser.serialize(
-					new StreamWrapper(source.getReader()),
-					writer);
-			writer.flush();
-			requestElementString =  byteArrayOutputStream.toString();
-
-		} catch (Exception e) {
-			if ( e.getMessage().startsWith("ParseError")) {
-				requestElementString = e.getMessage();
-				try {
-					requestElementString = java.net.URLDecoder.decode(requestElementString, StandardCharsets.UTF_8.name());
-				} catch (Exception ee) {}		
-				requestElementString = requestElementString.substring(requestElementString.indexOf('<'));
-			}
-		}
-
-		if (requestElementString == null )
-			requestElementString = getCategoriesElement.toString();
+		String requestElementString  =  getCategoriesElement.toString();
 
 
 		GetCategoriesDataMessage categoriesDataMsg = new GetCategoriesDataMessage(
@@ -264,46 +217,7 @@ public class OntologyService {
 
 
 
-		String requestElementString  =  null;
-
-
-		try {
-			OMSourcedElementImpl omSourcedElement = (OMSourcedElementImpl) getSchemesElement; //.getFirstElement();
-			JSONDataSource source = (JSONDataSource) omSourcedElement.getDataSource();
-			StreamingOMSerializer ser = new StreamingOMSerializer();
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			XMLStreamWriter writer = StAXUtils.createXMLStreamWriter(byteArrayOutputStream);
-			ser.serialize(
-					new StreamWrapper(source.getReader()),
-					writer);
-			writer.flush();
-			requestElementString =  byteArrayOutputStream.toString();
-			/*
-        try {
-            char temp = (char)getSchemesElement.getTextAsStream(true)).read();
-            jsonString = "";
-            while ((int)temp != 65535) {
-                jsonString += temp;
-                temp = (char)jsonInputStream.read();
-            }
-			 */
-		} catch (Exception e) {
-			if ( e.getMessage().startsWith("ParseError")) {
-				requestElementString = e.getMessage();
-				requestElementString = requestElementString.substring(requestElementString.indexOf('<'));
-			}
-		}
-
-
-		//if (source instanceof JSONDataSource) {
-		//	jsonString =  ((JSONDataSource)source).getCompleteJOSNString();
-		//}
-
-		//source..getCompleteJOSNString();
-
-		//String a = getSchemesElement.getText(); //.getFirstElement().getText();
-		if (requestElementString == null )
-			requestElementString = getSchemesElement.toString();
+		String requestElementString  =  getSchemesElement.toString();
 		GetSchemesDataMessage schemesDataMsg = new GetSchemesDataMessage(
 				requestElementString);
 
@@ -400,33 +314,7 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 
-		String requestElementString  =  null;
-
-
-		try {
-			OMSourcedElementImpl omSourcedElement = (OMSourcedElementImpl) getNameInfoElement; //.getFirstElement();
-			JSONDataSource source = (JSONDataSource) omSourcedElement.getDataSource();
-			StreamingOMSerializer ser = new StreamingOMSerializer();
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			XMLStreamWriter writer = StAXUtils.createXMLStreamWriter(byteArrayOutputStream);
-			ser.serialize(
-					new StreamWrapper(source.getReader()),
-					writer);
-			writer.flush();
-			requestElementString =  byteArrayOutputStream.toString();
-
-		} catch (Exception e) {
-			if ( e.getMessage().startsWith("ParseError")) {
-				requestElementString = e.getMessage();
-				try {
-					requestElementString = java.net.URLDecoder.decode(requestElementString, StandardCharsets.UTF_8.name());
-				} catch (Exception ee) {}		
-				requestElementString = requestElementString.substring(requestElementString.indexOf('<'));
-			}
-		}
-
-		if (requestElementString == null )
-			requestElementString = getNameInfoElement.toString();
+		String requestElementString  =  getNameInfoElement.toString();
 
 
 		GetNameInfoDataMessage nameInfoDataMsg = new GetNameInfoDataMessage(
@@ -529,7 +417,7 @@ public class OntologyService {
 		}
 
 		String requestElementString = getDerivedFactColumnsElement.toString();
-		log.debug("ONT derivedFactCol request " + requestElementString);
+		logesapi.debug(null,"ONT derivedFactCol request " + requestElementString);
 		GetTermInfoDataMessage dataMsg = new GetTermInfoDataMessage(
 				requestElementString);
 
@@ -692,7 +580,7 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 		String requestElementString = modifyChildElement.toString();
-		log.debug(requestElementString);
+		logesapi.debug(null,requestElementString);
 		ModifyChildDataMessage childDataMsg = new ModifyChildDataMessage(
 				requestElementString);
 		long waitTime = 0;
@@ -1227,11 +1115,11 @@ public class OntologyService {
 		// service could sends back message with timeout error.
 		// ExecutorRunnable er = new ExecutorRunnable();
 		if(loadDataMsg.getMetadataLoad().getTableName().equalsIgnoreCase("SCHEMES")) {
-			log.info(requestElementString);
+			logesapi.info(null,requestElementString);
 			return execute(new LoadSchemesHandler(loadDataMsg), waitTime);
 		}
 		else if(loadDataMsg.getMetadataLoad().getTableName().equalsIgnoreCase("TABLE_ACCESS")) {
-			log.info(requestElementString);
+			logesapi.info(null,requestElementString);
 			return execute(new LoadTableAccessHandler(loadDataMsg), waitTime);
 		}
 		else

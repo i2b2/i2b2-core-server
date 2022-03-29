@@ -17,14 +17,12 @@
   ~ under the License.
   --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page session="false" %>
 <%@ page import="org.apache.axis2.Constants,
                  org.apache.axis2.description.AxisOperation" %>
 <%@ page import="org.apache.axis2.description.AxisService" %>
-<%@ page import="org.apache.axis2.description.Parameter" %>
-<%@ page import="org.apache.axis2.engine.AxisConfiguration" %>
 <%@ page import="org.apache.axis2.util.Utils" %>
-<%@ page import="org.apache.axis2.util.JavaUtils" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Enumeration" %>
 <%@ page import="java.util.HashMap" %>
@@ -46,41 +44,17 @@
 <% String prefix = request.getAttribute("frontendHostUrl") + (String)request.getAttribute(Constants.SERVICE_PATH) + "/";
 %>
 <%
-    HashMap serviceMap = (HashMap) request.getAttribute(Constants.SERVICE_MAP);
     Hashtable errornessservice = (Hashtable) request.getAttribute(Constants.ERROR_SERVICE_MAP);
     boolean status = false;
-    if (serviceMap != null && !serviceMap.isEmpty()) {
-        Iterator opItr;
-        //HashMap operations;
-        String serviceName;
-        Collection servicecol = serviceMap.values();
-        // Collection operationsList;
-        for (Iterator iterator = servicecol.iterator(); iterator.hasNext();) {
-            AxisService axisService = (AxisService) iterator.next();
+%>
+<c:forEach var="service" items="${requestScope.configContext.axisConfiguration.services.values()}">
+<%
+            AxisService axisService = (AxisService) pageContext.getAttribute("service");
             if (!Utils.isHiddenService(axisService)) {
-            opItr = axisService.getOperations();
-            //operationsList = operations.values();
-            serviceName = axisService.getName();
+            Iterator opItr = axisService.getOperations();
+            String serviceName = axisService.getName();
 %><h2><a style="color:blue" href="<%=prefix + axisService.getName()%>?wsdl"><%=serviceName%></a></h2>
 <%
-    boolean disableREST = false;
-    AxisConfiguration axisConfiguration = axisService.getAxisConfiguration();
-
-    Parameter parameter ;
-
-    // do we need to completely disable REST support
-    parameter = axisConfiguration.getParameter(Constants.Configuration.DISABLE_REST);
-    if (parameter != null) {
-        disableREST = !JavaUtils.isFalseExplicitly(parameter.getValue());
-    }
-
-    if (!disableREST ) {
-
-%>
-<%
-    }
-
-
     String serviceDescription = axisService.getDocumentation();
     if (serviceDescription == null || "".equals(serviceDescription)) {
         serviceDescription = "No description available for this service";
@@ -107,8 +81,9 @@
 <%
             status = true;
             }
-        }
-    }
+%>
+</c:forEach>
+<%
     if (errornessservice != null) {
         if (errornessservice.size() > 0) {
             request.setAttribute(Constants.IS_FAULTY, Constants.IS_FAULTY);

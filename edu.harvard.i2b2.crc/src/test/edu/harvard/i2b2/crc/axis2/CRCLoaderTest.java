@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import org.apache.axiom.attachments.Attachments;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
@@ -59,7 +58,6 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.JUnit4TestAdapter;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -143,29 +141,7 @@ public class CRCLoaderTest  extends CRCAxisAbstract {
         return queryStr.toString();
     }
     
-    public static OMElement getRequestPayLoad() throws Exception {
-        OMElement method = null;
 
-        try {
-
-            StringReader strReader = new StringReader(getRequestString());
-            XMLInputFactory xif = XMLInputFactory.newInstance();
-            XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-
-            StAXOMBuilder builder = new StAXOMBuilder(reader);
-            method = builder.getDocumentElement();
-
-        } catch (FactoryConfigurationError e) {
-            // TODO Auto-generated catch block
-            // No log because its a thread?
-            e.printStackTrace();
-            throw new Exception(e);
-        }
-        
-        //System.out.println(method.toString());
-
-        return method;
-    }
 
 	@Test
 	public void UploadPatientSet() throws Exception {
@@ -175,7 +151,7 @@ public class CRCLoaderTest  extends CRCAxisAbstract {
 			
 			
 			
-            OMElement getRequestElmt = getRequestPayLoad();
+            OMElement getRequestElmt = edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(getRequestString());
             Options options = new Options();
             options.setTo(frUrl);
 

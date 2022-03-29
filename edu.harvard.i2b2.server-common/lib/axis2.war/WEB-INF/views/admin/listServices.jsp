@@ -23,9 +23,6 @@
                  org.apache.axis2.description.AxisModule" %>
 <%@ page import="org.apache.axis2.description.AxisOperation" %>
 <%@ page import="org.apache.axis2.description.AxisService" %>
-<%@ page import="org.apache.axis2.description.Parameter" %>
-<%@ page import="org.apache.axis2.engine.AxisConfiguration" %>
-<%@ page import="org.apache.axis2.util.JavaUtils" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Enumeration" %>
 <%@ page import="java.util.HashMap" %>
@@ -39,40 +36,16 @@
 <% String prefix = request.getAttribute("frontendHostUrl") + (String)request.getAttribute(Constants.SERVICE_PATH) + "/";
 %>
 <%
-    HashMap serviceMap = (HashMap) request.getSession().getAttribute(Constants.SERVICE_MAP);
-    request.getSession().setAttribute(Constants.SERVICE_MAP, null);
     Hashtable errornessservice = (Hashtable) request.getSession().getAttribute(Constants.ERROR_SERVICE_MAP);
     boolean status = false;
-    if (serviceMap != null && !serviceMap.isEmpty()) {
-        Iterator operations;
-        String serviceName;
-        Collection servicecol = serviceMap.values();
-        for (Iterator iterator = servicecol.iterator(); iterator.hasNext();) {
-            AxisService axisService = (AxisService) iterator.next();
-            operations = axisService.getOperations();
-            serviceName = axisService.getName();
+%>
+<c:forEach var="service" items="${requestScope.configContext.axisConfiguration.services.values()}">
+<%
+            AxisService axisService = (AxisService) pageContext.getAttribute("service");
+            Iterator operations = axisService.getOperations();
+            String serviceName = axisService.getName();
 %><h2><a style="color:blue" href="<%=prefix + axisService.getName()%>?wsdl"><%=serviceName%></a></h2>
 <%
-    // do we need to enable REST in the main servlet so that it handles both REST and SOAP messages
-    boolean disableREST = false;
-    AxisConfiguration axisConfiguration = axisService.getAxisConfiguration();
-
-    Parameter parameter ;
-
-    // do we need to completely disable REST support
-    parameter = axisConfiguration.getParameter(Constants.Configuration.DISABLE_REST);
-    if (parameter != null) {
-        disableREST = !JavaUtils.isFalseExplicitly(parameter.getValue());
-    }
-    if (!disableREST) {
-%>
-
-<%
-%>
-<%
-    }
-
-
     String serviceDescription = axisService.getDocumentation();
     if (serviceDescription == null || "".equals(serviceDescription)) {
         serviceDescription = "No description available for this service";
@@ -150,8 +123,9 @@ Service Status : <%=axisService.isActive() ? "Active" : "InActive"%>
 </ul>
 <%
             status = true;
-        }
-    }
+%>
+</c:forEach>
+<%
     if (errornessservice != null) {
         if (errornessservice.size() > 0) {
             request.getSession().setAttribute(Constants.IS_FAULTY, Constants.IS_FAULTY);

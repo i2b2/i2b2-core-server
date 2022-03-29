@@ -32,7 +32,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
@@ -46,11 +46,9 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.ServiceContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.utils.QName;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
@@ -88,6 +86,7 @@ public class ServiceClient {
 
 
 				ServiceContext context = serviceClient.getServiceContext();
+				/*
 				MultiThreadedHttpConnectionManager connManager = (MultiThreadedHttpConnectionManager)context.getProperty(HTTPConstants.MULTITHREAD_HTTP_CONNECTION_MANAGER);
 
 
@@ -99,19 +98,19 @@ public class ServiceClient {
 					connManager.getParams().setMaxConnectionsPerHost(HostConfiguration.ANY_HOST_CONFIGURATION, 100);
 				}
 				HttpClient httpClient = new HttpClient(connManager);
-
+				*/
 				Options options = new Options();
 				options.setTo(new EndpointReference(restEPR));
 				options.setTransportInProtocol(Constants.TRANSPORT_HTTP);
 				options.setProperty(Constants.Configuration.ENABLE_REST, Constants.VALUE_TRUE);
-				options.setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);	
+//				options.setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);	
 				options.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Constants.VALUE_TRUE);
 				serviceClient.setOptions(options);
 
 				OMElement result = serviceClient.sendReceive(request);
 				if (result != null) {
 					response = result.toString();
-					log.debug(response);
+					//logesapi.debug(null,response);
 				}
 				done = true;
 			} catch (Exception e) {
@@ -186,17 +185,57 @@ public class ServiceClient {
 	public static OMElement getPayLoad(String requestPm) throws Exception {
 		OMElement lineItem = null;
 		try {
+
 			StringReader strReader = new StringReader(requestPm);
 			XMLInputFactory xif = XMLInputFactory.newInstance();
 			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
 
-			StAXOMBuilder builder = new StAXOMBuilder(reader);
-			lineItem = builder.getDocumentElement();
+			lineItem = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+			lineItem.build();
+			
+			/*
+			   // Create an XMLStreamReader without building the object model
+			StringReader strReader = new StringReader(requestPm);
+			XMLInputFactory xif = XMLInputFactory.newInstance();
+			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
+		    while (reader.hasNext()) {
+		        if (reader.getEventType() == XMLStreamReader.START_ELEMENT &&
+		                reader.getName().equals(new QName("tag"))) {
+		            // A matching START_ELEMENT event was found. Build a corresponding OMElement.
+		        	lineItem = 
+		                OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+		            // Make sure that all events belonging to the element are consumed so
+		            // that the XMLStreamReader points to a well defined location (namely the
+		            // event immediately following the END_ELEMENT event).
+		        	lineItem.build();
+		            // Now process the element.
+		        } else {
+		            reader.next();
+		        }
+		    }
+		    */
 		} catch (FactoryConfigurationError e) {
 			log.error(e.getMessage());
 			throw new Exception(e);
 		}
 		return lineItem;
+	}
+	
+	/**
+	 * Function constructs OMElement for the given String
+	 * 
+	 * @param xmlString
+	 * @return OMElement
+	 * @throws XMLStreamException
+	 */
+	public static OMElement buildOMElementFromString(String xmlString)
+			throws XMLStreamException {
+		XMLInputFactory xif = XMLInputFactory.newInstance();
+		StringReader strReader = new StringReader(xmlString);
+		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
+		OMElement element = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
+		return element;
 	}
 
 	public static String sendSOAP(String soapEPR, String requestString, String action, String operation) throws Exception{	

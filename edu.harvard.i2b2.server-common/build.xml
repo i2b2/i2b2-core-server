@@ -42,7 +42,7 @@
 	<!-- =================================================================== -->
 	<target name="compile" depends="init" description="Compile files without cleaning">
 		<mkdir dir="${classes}" />
-		<javac destdir="${classes}" optimize="${javac.opt}" debug="${javac.debug}">
+		<javac destdir="${classes}" optimize="${javac.opt}" debug="true">
 			<src path="${src}/core" />
 			<classpath refid="classpath" />
 		</javac>
@@ -82,7 +82,9 @@
 	                        <fileset dir="${lib}/spring" includes="**/*" />
 	                        <fileset dir="${lib}/jcifs" includes="**/*" />
 	                        <fileset dir="${lib}/jdbc" includes="**/*" />
+                       		<fileset dir="${lib}/okta" includes="**/*" />
 	                        <fileset dir="${lib}/jboss" includes="**/*" />
+	                        <fileset dir="${lib}/esapi" includes="**/*" />
 	                </copy>
 	 
 	                <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/lib">
@@ -125,7 +127,19 @@
 	                <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/services">
 	                     <fileset dir="../edu.harvard.i2b2.workplace/${dist}" includes="**/*.aar" />
 	                </copy>
-	 
+
+			        <echo message="${Name}: Building IM package!" />
+			            <ant antfile="build.xml"  dir="../edu.harvard.i2b2.im" target="clean"/>
+			            <ant antfile="build.xml"  dir="../edu.harvard.i2b2.im" target="all">
+			                 <property name="Name" value="IM"/>
+			            </ant>
+			        <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/lib">
+			             <fileset dir="../edu.harvard.i2b2.im/${dist}" includes="**/*-core.jar" />
+			        </copy>
+			        <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/services">
+			             <fileset dir="../edu.harvard.i2b2.im/${dist}" includes="**/*.aar" />
+			        </copy>
+	  	
 	                <echo message="${Name}: Building PM package!" />
 	                    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.pm" target="clean"/>
 	                    <ant antfile="build.xml"  dir="../edu.harvard.i2b2.pm" target="all">
@@ -177,17 +191,26 @@
 		-->
 	</target>
 
+	<target name="copy_deployment_jdbc_jar">
+		<echo>Copying to ${jboss.home} deployment directory</echo>
+		<copy todir="${jboss.home}/standalone/deployments">
+			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
+			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
+			<fileset dir="${lib}/jdbc" includes="postgresql-42.3.2.jar"/>
+		</copy>
+	</target>
+		
 	<target name="copy_jdbc_jar">
 		<echo>Copying to ${jboss.home} directory</echo>
 		<copy todir="${jboss.home}/standalone/deployments/${axis2.war.name}/WEB-INF/lib">
 			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
 			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
-			<fileset dir="${lib}/jdbc" includes="postgresql-42.2.18.jar"/>
+			<fileset dir="${lib}/jdbc" includes="postgresql-42.3.2.jar"/>
 		</copy>
 		<copy todir="${jboss.home}/standalone/deployments">
 			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
 			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
-			<fileset dir="${lib}/jdbc" includes="postgresql-42.2.18.jar"/>
+			<fileset dir="${lib}/jdbc" includes="postgresql-42.3.2.jar"/>
 		</copy>
 	</target>
 	
@@ -227,6 +250,7 @@
 			<fileset dir="${lib}/jdbc" includes="**/*" />			
 			<fileset dir="${lib}/jboss" includes="**/*" />				
 			<fileset dir="${lib}/okta" includes="**/*" />	
+            <fileset dir="${lib}/esapi" includes="**/*" />
 		</copy>
 	</target>
 

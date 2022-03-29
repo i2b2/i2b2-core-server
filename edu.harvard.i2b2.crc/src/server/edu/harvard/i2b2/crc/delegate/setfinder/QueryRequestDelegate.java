@@ -22,12 +22,15 @@ import javax.xml.bind.JAXBElement;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
+import edu.harvard.i2b2.crc.dao.setfinder.QueryMasterSpringDao;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.I2B2MessageResponseFactory;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
@@ -55,6 +58,8 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 
 	/** log **/
 	protected final Log log = LogFactory.getLog(getClass());
+
+	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	/**
 	 * @see edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate#handleRequest(java.lang.String)
@@ -123,7 +128,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				}
 
 				log.debug("project name from PM " + projectType.getName());
-				log.debug("project id from PM " + projectType.getId());
+				logesapi.debug(null,"project id from PM " + projectType.getId());
 
 
 				if (projectType.getRole() != null) {
@@ -160,12 +165,12 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 							//this.putPocessTiming(projectId, securityType.getUsername(), securityType.getDomain(), param);
 							LogTimingUtil.putPocessTiming(projectId, securityType.getUsername(), securityType.getDomain(), param);
 							String cacheValue = LogTimingUtil.getPocessTiming(projectId, securityType.getUsername(), securityType.getDomain());
-							log.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.PM_ENABLE_PROCESS_TIMING  + "[" + cacheValue + "]" );
+							logesapi.debug(null,"CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.PM_ENABLE_PROCESS_TIMING  + "[" + cacheValue + "]" );
 
 						} else if (param.getName() != null && param.getName().trim().equalsIgnoreCase(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION))  {
 							paramUtil.putParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION,param);
 							String unitCdCache = paramUtil.getParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
-							log.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
+							logesapi.debug(null,"CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
 						}
 					}
 				}
@@ -323,7 +328,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 					PsmRequestTypeType.CRC_QRY_DELETE_QUERY_MASTER)) {
 				DeleteQueryMasterHandler handler = new DeleteQueryMasterHandler(
 						requestXml);
-				log.info("DELETE QUERY MASTER: " + requestXml);
+				logesapi.info(null,"DELETE QUERY MASTER: " + requestXml);
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_RENAME_QUERY_MASTER)) {

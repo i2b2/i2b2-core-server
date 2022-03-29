@@ -13,6 +13,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
@@ -25,11 +27,14 @@ import edu.harvard.i2b2.crc.datavo.db.StatusEnum;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.UserType;
+import edu.harvard.i2b2.crc.ejb.QueryInfoBean;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 public class QueryInstance {
 
 	private static Log log = LogFactory.getLog(QueryInstance.class);
+
+	protected static Logger logesapi = ESAPI.getLogger(QueryInstance.class);
 
 	SetFinderDAOFactory sfDAOFactory = null;
 
@@ -64,7 +69,7 @@ public class QueryInstance {
 						+ "] for query instance= " + queryInstanceId);
 				patientSetId = patientSetResultDao.createPatientSet(
 						queryInstanceId, resultOption.getName());
-				log.debug("Patient Set ID [" + patientSetId
+				logesapi.debug(null,"Patient Set ID [" + patientSetId
 						+ "] for query instance= " + queryInstanceId);
 			}
 		} else {
@@ -72,7 +77,7 @@ public class QueryInstance {
 			String defaultResultType = "PATIENTSET";
 			patientSetId = patientSetResultDao.createPatientSet(
 					queryInstanceId, defaultResultType);
-			log.debug("Patient Set ID [" + patientSetId
+			logesapi.debug(null,"Patient Set ID [" + patientSetId
 					+ "] for query instance= " + queryInstanceId);
 		}
 		return queryInstanceId;

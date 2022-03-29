@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMText;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.wsdl.WSDLConstants;
@@ -32,6 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.util.axis2.ServiceClient;
 import edu.harvard.i2b2.crc.loader.delegate.GetLoadStatusRequestHandler;
 import edu.harvard.i2b2.crc.loader.delegate.GetMissingTermRequestHandler;
 import edu.harvard.i2b2.crc.loader.delegate.LoaderQueryRequestDelegate;
@@ -61,7 +62,7 @@ public class ProviderRestService {
 			PublishDataRequestHandler handler = new PublishDataRequestHandler(
 					requestXml);
 			String response = queryDelegate.handleRequest(requestXml, handler);
-			responseElement = buildOMElementFromString(response);
+			responseElement = ServiceClient.buildOMElementFromString(response);
 
 		} catch (XMLStreamException e) {
 			log.error("xml stream exception", e);
@@ -81,7 +82,7 @@ public class ProviderRestService {
 			GetLoadStatusRequestHandler handler = new GetLoadStatusRequestHandler(
 					requestXml);
 			String response = queryDelegate.handleRequest(requestXml, handler);
-			responseElement = buildOMElementFromString(response);
+			responseElement = ServiceClient.buildOMElementFromString(response);
 
 		} catch (XMLStreamException e) {
 			log.error("xml stream exception", e);
@@ -104,7 +105,7 @@ public class ProviderRestService {
 			GetMissingTermRequestHandler handler = new GetMissingTermRequestHandler(
 					requestXml);
 			String response = queryDelegate.handleRequest(requestXml, handler);
-			responseElement = buildOMElementFromString(response);
+			responseElement = ServiceClient.buildOMElementFromString(response);
 
 		} catch (XMLStreamException e) {
 			log.error("xml stream exception", e);
@@ -168,21 +169,6 @@ public class ProviderRestService {
 		return element;
 	}
 
-	/**
-	 * Function constructs OMElement for the given String
-	 * 
-	 * @param xmlString
-	 * @return OMElement
-	 * @throws XMLStreamException
-	 */
-	private OMElement buildOMElementFromString(String xmlString)
-			throws XMLStreamException {
-		XMLInputFactory xif = XMLInputFactory.newInstance();
-		StringReader strReader = new StringReader(xmlString);
-		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement element = builder.getDocumentElement();
-		return element;
-	}
+
 
 }

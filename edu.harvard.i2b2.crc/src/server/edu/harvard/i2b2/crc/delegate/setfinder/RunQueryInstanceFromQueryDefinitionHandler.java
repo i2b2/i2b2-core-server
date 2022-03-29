@@ -16,6 +16,9 @@ package edu.harvard.i2b2.crc.delegate.setfinder;
 
 import java.util.List;
 
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
+
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
@@ -45,6 +48,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 	QueryDefinitionRequestType queryDefRequestType = null;
 	String requestXml = null;
 	boolean lockedoutFlag = false,errorFlag = false;
+	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	/**
 	 * Constuctor which accepts i2b2 request message xml
@@ -90,7 +94,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 					+ getDataSourceLookup().getOwnerId();
 
 			//List<String> roles = (List<String>) cache.getRoot().get(rolePath);
-			log.debug("Roles from get " + rolePath);
+			logesapi.debug(null,"Roles from get " + rolePath);
 			List<String> roles = (List<String>) CacheUtil.get(rolePath);
 			if (roles != null) {
 				log.debug("Roles from size " + roles.size());

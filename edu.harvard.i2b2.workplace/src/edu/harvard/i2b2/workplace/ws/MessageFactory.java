@@ -39,7 +39,6 @@ import edu.harvard.i2b2.workplace.util.WorkplaceJAXBUtil;
 import org.apache.axiom.om.OMElement;
 //import org.apache.axiom.om.OMFactory;
 //import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 //import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,25 +66,22 @@ public class MessageFactory {
      */
     public static OMElement createResponseOMElementFromString(String xmlString) 
         throws I2B2Exception {
+
         OMElement returnElement = null;
 
         try {
-        	StringReader strReader = new StringReader(xmlString);
-        	XMLInputFactory xif = XMLInputFactory.newInstance();
-        	XMLStreamReader reader = xif.createXMLStreamReader(strReader);
+        	returnElement =  edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(xmlString);
 
-        	StAXOMBuilder builder = new StAXOMBuilder(reader);
-        	returnElement = builder.getDocumentElement();
 
         } catch (XMLStreamException e) {
             log.error("xml stream response WDO to OMElement");
             throw new I2B2Exception("XML Stream error ", e);
         } catch (Exception e) {
-            log.error("Error while converting Workplace response WDO to OMElement");
+            log.error("Error while converting IM response WDO to OMElement");
             throw new I2B2Exception("Response OMElement creation error ", e);
         } 
         return returnElement;
-    }
+}
 
 
 

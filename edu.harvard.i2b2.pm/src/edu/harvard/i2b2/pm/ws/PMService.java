@@ -28,7 +28,8 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -36,6 +37,9 @@ import edu.harvard.i2b2.pm.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.pm.delegate.ServicesHandler;
 import edu.harvard.i2b2.pm.util.AppVersion;
 import edu.harvard.i2b2.pm.util.StringUtil;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.transport.http.HTTPConstants;
 
 
 /**
@@ -47,8 +51,10 @@ import edu.harvard.i2b2.pm.util.StringUtil;
 public class PMService {
 	private static Log log = LogFactory.getLog(PMService.class);
 
+	protected static Logger logesapi = ESAPI.getLogger(PMService.class);
+
 	private static String msgVersion = "1.1";
-	private static String i2b2Version = "1.7.12a";
+	private static String i2b2Version = "1.7.13";
 
 	public String getVersion()
 	{
@@ -70,7 +76,7 @@ public class PMService {
 		p = Pattern.compile(">.+</ns9:set_password>");
 		m = p.matcher(outString);
 		outString = m.replaceAll(">*********</ns9:set_password>");
-		log.debug("Received Request PM Element " + outString);
+		logesapi.debug(null,"Received Request PM Element " + outString);
 
 		OMElement returnElement = null;
 
@@ -144,10 +150,11 @@ public class PMService {
 		String xmlMsg = MessageFactory.convertToXMLString(pmDataResponse);
 
 		try {
-			returnElement = MessageFactory.createResponseOMElementFromString(xmlMsg);
+			returnElement =  edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(xmlMsg);
+
 			log.debug("my pm repsonse is: " + pmDataResponse);
 			log.debug("my return is: " + returnElement);
-		} catch (XMLStreamException e) {
+		} catch (Exception e) {
 			log.error("Error creating OMElement from response string " +
 					pmDataResponse, e);
 		}
@@ -176,6 +183,8 @@ public class PMService {
 	 */
 	public OMElement getServices(OMElement getPMDataElement)
 			throws I2B2Exception {
+            MessageContext messageContext = MessageContext.getCurrentMessageContext();
+            HttpServletRequest req = (HttpServletRequest) messageContext.getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
 
 		/*
 
@@ -228,7 +237,7 @@ public class PMService {
 		p = Pattern.compile(">.+</ns9:set_password>");
 		m = p.matcher(outString);
 		outString = m.replaceAll(">*********</ns9:set_password>");
-		log.debug("Received Request PM Element " + outString);
+		logesapi.debug(null,"Received Request PM Element " + outString);
 
 
 		log.debug("Begin getting servicesMsg");
@@ -252,7 +261,7 @@ public class PMService {
 			//er.setInputString(requestElementString);
 			log.debug("begin setRequestHandler, my servicesMsg: " + servicesMsg);
 
-			er.setRequestHandler(new ServicesHandler(servicesMsg));
+			er.setRequestHandler(new ServicesHandler(servicesMsg, req));
 			log.debug("middle setRequestHandler");
 
 
@@ -319,10 +328,11 @@ public class PMService {
 			e.printStackTrace();
 		}
 		try {
-			returnElement = MessageFactory.createResponseOMElementFromString(pmDataResponse);
+			returnElement =  edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(pmDataResponse);
+
 			log.debug("my pm repsonse is: " + pmDataResponse);
 			log.debug("my return is: " + returnElement);
-		} catch (XMLStreamException e) {
+		} catch (Exception e) {
 			log.error("Error creating OMElement from response string " +
 					pmDataResponse, e);
 		}

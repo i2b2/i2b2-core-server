@@ -53,41 +53,41 @@ public class QueryResultPatientAgeCountGenerator extends CRCDAO implements
 
 		String age1CountSql = "select count(distinct dx.patient_num) patient_count, '0-20' patient_range"
 				+ " from "
-				+ this.getDbSchemaName()
+				+ " <from> "
 				+ "patient_dimension pd ,"
-				+ TEMP_DX_TABLE
+				+ " <TEMP_DX_TABLE> "
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " and pd.age_in_years_num between 0 and 20";
 
 		String age2CountSql = "select count(dx.patient_num) patient_count, '21-40' patient_range"
 				+ " from "
-				+ this.getDbSchemaName()
+				+ " <from> "
 				+ "patient_dimension pd ,"
-				+ TEMP_DX_TABLE
+				+ " <TEMP_DX_TABLE> "
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " and pd.age_in_years_num between 21 and 40";
 
 		String age3CountSql = "select count(dx.patient_num) patient_count, '41-60' patient_range"
 				+ " from "
-				+ this.getDbSchemaName()
+				+ " <from> "
 				+ "patient_dimension pd ,"
-				+ TEMP_DX_TABLE
+				+ " <TEMP_DX_TABLE> "
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " and pd.age_in_years_num between 41 and 60";
 
 		String age4CountSql = "select count(dx.patient_num) patient_count, '61-80' patient_range"
 				+ " from "
-				+ this.getDbSchemaName()
+				+ " <from> "
 				+ "patient_dimension pd ,"
-				+ TEMP_DX_TABLE
+				+ " <TEMP_DX_TABLE> "
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " and pd.age_in_years_num between 61 and 80";
 
 		String age5CountSql = "select count(dx.patient_num) patient_count, '>80' patient_range"
 				+ " from "
-				+ this.getDbSchemaName()
+				+ " <from> "
 				+ "patient_dimension pd ,"
-				+ TEMP_DX_TABLE
+				+ " <TEMP_DX_TABLE> "
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " and pd.age_in_years_num > 80";
 
@@ -99,8 +99,11 @@ public class QueryResultPatientAgeCountGenerator extends CRCDAO implements
 		int totalCount = 0;
 		try {
 
+			String sqlFinal =  ageFinalCountSql.replace("<from>",   this.getDbSchemaName()  );
+			sqlFinal = ageFinalCountSql.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
+
 			log.debug("Executing[ " + ageFinalCountSql + " ]");
-			PreparedStatement stmt = sfConn.prepareStatement(JDBCUtil.escapeSingleQuote(ageFinalCountSql));
+			PreparedStatement stmt = sfConn.prepareStatement(sqlFinal);
 			ResultSet resultSet = stmt.executeQuery();
 			ResultType resultType = new ResultType();
 			resultType.setName(RESULT_NAME);

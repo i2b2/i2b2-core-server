@@ -13,6 +13,7 @@
  */
 package edu.harvard.i2b2.ontology.dao;
 
+import java.security.SecureRandom;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -756,7 +757,7 @@ public class ConceptPersistDao extends JdbcDaoSupport {
 				String indexTableName = tableName;
 				if (tableName.length() > 8)
 				{
-					Random random = new Random();
+					SecureRandom random = new SecureRandom();
 
 					// generate a random integer from 0 to 899, then add 100
 					int x = random.nextInt(900) + 100;

@@ -14,6 +14,8 @@ import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
@@ -33,10 +35,12 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.UserType;
+import edu.harvard.i2b2.crc.delegate.getnameinfo.GetNameInfoRequestDelegate;
 
 public class I2B2RequestMessageHelper {
 
 	private static Log log = LogFactory.getLog(I2B2RequestMessageHelper.class);
+	protected static Logger logesapi = ESAPI.getLogger(I2B2RequestMessageHelper.class);
 
 	String requestXml = null;
 	JAXBUnWrapHelper unWrapHelper = null;
@@ -57,7 +61,7 @@ public class I2B2RequestMessageHelper {
 			requestMessageType = (RequestMessageType) jaxbElement
 			.getValue();
 		} catch (JAXBUtilException jaxbUtilEx) {
-			log.error("Error processing request xml [" + requestXml + "]",
+			logesapi.error(null,"Error processing request xml [" + requestXml + "]",
 					jaxbUtilEx);
 			throw new I2B2Exception(jaxbUtilEx.getMessage());
 		}

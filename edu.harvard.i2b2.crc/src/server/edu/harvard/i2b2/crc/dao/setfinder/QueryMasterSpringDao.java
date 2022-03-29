@@ -24,6 +24,8 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -44,6 +46,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InclusiveType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MatchStrType;
+import edu.harvard.i2b2.crc.ejb.analysis.QueryMaster;
 import edu.harvard.i2b2.crc.util.CacheUtil;
 
 /**
@@ -54,6 +57,9 @@ import edu.harvard.i2b2.crc.util.CacheUtil;
  * @see QtQueryMaster
  */
 public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
+
+	
+	protected static Logger logesapi = ESAPI.getLogger(QueryMasterSpringDao.class);
 
 	JdbcTemplate jdbcTemplate = null;
 	SaveQueryMaster saveQueryMaster = null;
@@ -122,7 +128,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				+ userRequestType.getUsername();
 
 		//List<String> roles = (List<String>) cache.getRoot().get(rolePath);
-		log.debug("Roles from get " + rolePath);
+		logesapi.debug(null,"Roles from get " + rolePath);
 		List<String> roles = (List<String>) CacheUtil.get(rolePath);
 
 		String sql = "select ";

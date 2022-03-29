@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.RowMapper;
 
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.crc.loader.datavo.loader.DataSourceLookup;
 
 public class OracleDataSourceLookupDAO extends DataSourceLookupDAO  {
@@ -43,7 +44,6 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO  {
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<DataSourceLookup> getDbLookupByHiveProjectOwner(String domainId, String projectId,
 			String ownerId) {
 		String sql = "select * from crc_db_lookup where LOWER(c_domain_id) = ? and c_project_path like  ? and (LOWER(c_owner_id) =? or c_owner_id = '@') order by c_project_path"; 
@@ -52,14 +52,6 @@ public class OracleDataSourceLookupDAO extends DataSourceLookupDAO  {
 	}
 	
 	
-	
-	
-	
-	public static void main(String args[]) { 
-		OracleDataSourceLookupDAO dao = new OracleDataSourceLookupDAO(null,null);
-		
-	}
-
 	public class mapper implements RowMapper {
 
 	    @Override

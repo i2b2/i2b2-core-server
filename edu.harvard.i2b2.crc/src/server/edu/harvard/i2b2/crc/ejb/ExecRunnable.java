@@ -19,6 +19,8 @@ import javax.xml.bind.JAXBElement;
 import org.apache.catalina.tribes.tipis.AbstractReplicatedMap.MapMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -44,12 +46,14 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryModeType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
+import edu.harvard.i2b2.crc.delegate.ejbpm.EJBPMUtil;
 import edu.harvard.i2b2.crc.role.AuthrizationHelper;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 public class ExecRunnable implements Runnable{
 	private static Log log = LogFactory.getLog(ExecRunnable.class);
 //
+	protected static Logger logesapi = ESAPI.getLogger(ExecRunnable.class);
 
 	String sqlString = "";
 	String queryInstanceId = "";
@@ -137,7 +141,7 @@ public class ExecRunnable implements Runnable{
 					SetFinderDAOFactory sfDAOFactory = daoFactory
 							.getSetFinderDAOFactory();
 					DataSourceLookup dsLookup = sfDAOFactory.getDataSourceLookup();
-					log.debug("ORIG domain id"
+					logesapi.debug(null,"ORIG domain id"
 							+ sfDAOFactory.getOriginalDataSourceLookup()
 							.getDomainId()
 							+ " ORIG "

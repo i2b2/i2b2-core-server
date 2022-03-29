@@ -26,6 +26,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameter;
@@ -39,6 +41,7 @@ import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
+import edu.harvard.i2b2.crc.ejb.analysis.QueryInstance;
 import edu.harvard.i2b2.crc.dao.DataSourceLookupDAOFactory;
 
 /**
@@ -59,7 +62,8 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 	/** log **/
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	
+	protected static Logger logesapi = ESAPI.getLogger(QueryInstanceSpringDao.class);
+
 
 	public QueryInstanceSpringDao(DataSource dataSource,
 			DataSourceLookup dataSourceLookup) {
@@ -471,7 +475,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 		if (serverType.equalsIgnoreCase(DataSourceLookupDAOFactory.SQLSERVER)) {
 			String errorMsg = callStmt.getString(outParamIndex);
 			if (errorMsg != null) {
-				log.debug("error codde" + errorMsg);
+				logesapi.debug(null,"error codde" + errorMsg);
 				throw new I2B2Exception("Error from stored procedure ["
 						+ errorMsg + "]");
 			}

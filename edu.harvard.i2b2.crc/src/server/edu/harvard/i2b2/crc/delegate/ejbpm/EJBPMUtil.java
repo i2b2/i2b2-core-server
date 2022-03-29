@@ -20,16 +20,19 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axis2.AxisFault;
 import edu.harvard.i2b2.common.util.axis2.ServiceClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
+import edu.harvard.i2b2.crc.dao.DblookupDao;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.FacilityType;
@@ -55,6 +58,7 @@ public class EJBPMUtil {
 	public static String LOCKEDOUT = "LOCKEDOUT";
 
 	private static Log log = LogFactory.getLog(EJBPMUtil.class);
+	protected static Logger logesapi = ESAPI.getLogger(EJBPMUtil.class);
 
 	public static void setUserLockedParam(String userName,
 			String paramName, String lockDate, SecurityType securityType, String projectId, String ontologyUrl ) throws I2B2Exception {
@@ -202,7 +206,7 @@ public class EJBPMUtil {
 				.unMashallFromString(responseXml);
 		ResponseMessageType pmRespMessageType = (ResponseMessageType) responseJaxb
 				.getValue();
-		log.debug("CRC's PM call response xml" + responseXml);
+		logesapi.debug(null,"CRC's PM call response xml" + responseXml);
 
 		ResponseHeaderType responseHeader = pmRespMessageType
 				.getResponseHeader();
@@ -211,11 +215,11 @@ public class EJBPMUtil {
 		String procMessage = status.getValue();
 
 		if (procStatus.equals("ERROR")) {
-			log.info("PM Error reported by CRC web Service " + procMessage);
+			logesapi.info(null,"PM Error reported by CRC web Service " + procMessage);
 			throw new I2B2Exception("PM Error reported by CRC web Service "
 					+ procMessage);
 		} else if (procStatus.equals("WARNING")) {
-			log.info("PM Warning reported by CRC web Service" + procMessage);
+			logesapi.info(null,"PM Warning reported by CRC web Service" + procMessage);
 			throw new I2B2Exception("PM Warning reported by CRC web Service"
 					+ procMessage);
 		}
@@ -251,7 +255,7 @@ public class EJBPMUtil {
 				.unMashallFromString(responseXml);
 		ResponseMessageType pmRespMessageType = (ResponseMessageType) responseJaxb
 				.getValue();
-		log.debug("CRC's PM call response xml" + responseXml);
+		logesapi.debug(null,"CRC's PM call response xml" + responseXml);
 
 		ResponseHeaderType responseHeader = pmRespMessageType
 				.getResponseHeader();
@@ -260,11 +264,11 @@ public class EJBPMUtil {
 		String procMessage = status.getValue();
 
 		if (procStatus.equals("ERROR")) {
-			log.info("PM Error reported by CRC web Service " + procMessage);
+			logesapi.info(null,"PM Error reported by CRC web Service " + procMessage);
 			throw new I2B2Exception("PM Error reported by CRC web Service "
 					+ procMessage);
 		} else if (procStatus.equals("WARNING")) {
-			log.info("PM Warning reported by CRC web Service" + procMessage);
+			logesapi.info(null,"PM Warning reported by CRC web Service" + procMessage);
 			throw new I2B2Exception("PM Warning reported by CRC web Service"
 					+ procMessage);
 		}
@@ -288,8 +292,8 @@ public class EJBPMUtil {
 		StringReader strReader = new StringReader(strWriter.toString());
 		XMLInputFactory xif = XMLInputFactory.newInstance();
 		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement request = builder.getDocumentElement();
+		OMElement request = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
 		return request;
 	}
 

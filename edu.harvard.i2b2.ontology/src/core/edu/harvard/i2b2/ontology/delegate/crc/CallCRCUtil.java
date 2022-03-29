@@ -19,7 +19,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
@@ -32,6 +32,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
@@ -77,8 +79,9 @@ public class CallCRCUtil {
 	private static String crcUrl = null;
 	static OntologyUtil ontologyUtil = OntologyUtil.getInstance();
 
-	private static Log log = LogFactory.getLog(CallCRCUtil.class);
+	protected static Logger log = ESAPI.getLogger(CallCRCUtil.class);
 
+	
 	public static LoadDataResponseType callCRCUpload(String conceptFileName,
 			String loadLabel, boolean synchronizeAllFlag,  SecurityType securityType,  String projectId) throws I2B2Exception {
 		RequestMessageType requestMessageType = buildUploaderRequestMessage(
@@ -86,10 +89,10 @@ public class CallCRCUtil {
 		LoadDataResponseType loadDataResponseType = null;
 		try {
 			OMElement requestElement = buildOMElement(requestMessageType);
-			log.debug("CRC Ontology call's request xml "
+			log.debug(null,"CRC Ontology call's request xml "
 					+ requestElement);
 			String response = ServiceClient.sendREST(crcUrl + "/publishDataRequest", requestElement);
-			log.debug("CRC Ontology call's reponse xml " + response);
+			log.debug(null,"CRC Ontology call's reponse xml " + response);
 			loadDataResponseType = getGetPublishDataResponseMessage(response
 					);
 		} catch (JAXBUtilException jaxbEx) {
@@ -109,10 +112,10 @@ public class CallCRCUtil {
 		MasterInstanceResultResponseType masterInstanceResultResponseType = null;
 		try {
 			OMElement requestElement = buildOMElement(requestMessageType);
-			log.debug("CRC Ontology call's request xml "
+			log.debug(null,"CRC Ontology call's request xml "
 					+ requestElement);
 			String response = ServiceClient.sendREST(crcUrl + "/request", requestElement);
-			log.debug("CRC Ontology call's reponse xml " + response);
+			log.debug(null,"CRC Ontology call's reponse xml " + response);
 			masterInstanceResultResponseType = getMasterInstanceResultResponseMessage(response
 					);
 		} catch (JAXBUtilException jaxbEx) {
@@ -133,10 +136,10 @@ public class CallCRCUtil {
 		MasterResponseType masterResponseType = null;
 		try {
 			OMElement requestElement = buildOMElement(requestMessageType);
-			log.debug("CRC setfinder query delete call's request xml "
+			log.debug(null,"CRC setfinder query delete call's request xml "
 					+ requestElement);
 			String response = ServiceClient.sendREST(crcUrl + "/request", requestElement);
-			log.debug("CRC setfinder query delete call's request xml " + response);
+			log.debug(null,"CRC setfinder query delete call's request xml " + response);
 			masterResponseType = getMasterResponseMessage(response
 					);
 
@@ -158,10 +161,10 @@ public class CallCRCUtil {
 		ResultResponseType resultResponseType = null;
 		try {
 			OMElement requestElement = buildOMElement(requestMessageType);
-			log.debug("CRC setfinder query status call's request xml "
+			log.debug(null,"CRC setfinder query status call's request xml "
 					+ requestElement);
 			String response = ServiceClient.sendREST(crcUrl + "/request", requestElement);
-			log.debug("CRC setfinder query status call's request xml " + response);
+			log.debug(null,"CRC setfinder query status call's request xml " + response);
 			resultResponseType = getResultResponseMessage(response
 					.toString());
 
@@ -211,10 +214,10 @@ public class CallCRCUtil {
 		LoadDataResponseType loadDataResponseType = null;
 		try {
 			OMElement requestElement = buildOMElement(requestMessageType);
-			log.debug("CRC Ontology call's request xml "
+			log.debug(null,"CRC Ontology call's request xml "
 					+ requestElement);
 			String response = ServiceClient.sendREST(crcUrl + "/getLoadDataStatusRequest", requestElement);
-			log.debug("CRC Ontology call's request xml " + response);
+			log.debug(null,"CRC Ontology call's request xml " + response);
 			loadDataResponseType = getGetPublishDataResponseMessage(response);
 
 		} catch (JAXBUtilException jaxbEx) {
@@ -459,7 +462,7 @@ public class CallCRCUtil {
 		JAXBElement responseJaxb = OntologyJAXBUtil.getJAXBUtil()
 				.unMashallFromString(responseXml);
 		ResponseMessageType r = (ResponseMessageType) responseJaxb.getValue();
-		log.debug("CRC's ontology call response xml" + responseXml);
+		log.debug(null,"CRC's ontology call response xml" + responseXml);
 
 		JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
 		ResultStatusType rt = r.getResponseHeader().getResultStatus();
@@ -478,7 +481,7 @@ public class CallCRCUtil {
 		JAXBElement responseJaxb = OntologyJAXBUtil.getJAXBUtil()
 				.unMashallFromString(responseXml);
 		ResponseMessageType r = (ResponseMessageType) responseJaxb.getValue();
-		log.debug("CRC's ontology call response xml" + responseXml);
+		log.debug(null,"CRC's ontology call response xml" + responseXml);
 
 		JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
 		ResultStatusType rt = r.getResponseHeader().getResultStatus();
@@ -497,7 +500,7 @@ public class CallCRCUtil {
 		JAXBElement responseJaxb = OntologyJAXBUtil.getJAXBUtil()
 				.unMashallFromString(responseXml);
 		ResponseMessageType r = (ResponseMessageType) responseJaxb.getValue();
-		log.debug("CRC's ontology call response xml" + responseXml);
+		log.debug(null,"CRC's ontology call response xml" + responseXml);
 
 		JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
 		ResultStatusType rt = r.getResponseHeader().getResultStatus();
@@ -516,7 +519,7 @@ public class CallCRCUtil {
 		JAXBElement responseJaxb = OntologyJAXBUtil.getJAXBUtil()
 				.unMashallFromString(responseXml);
 		ResponseMessageType r = (ResponseMessageType) responseJaxb.getValue();
-		log.debug("CRC's ontology call response xml" + responseXml);
+		log.debug(null,"CRC's ontology call response xml" + responseXml);
 
 		JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
 		ResultStatusType rt = r.getResponseHeader().getResultStatus();
@@ -542,8 +545,8 @@ public class CallCRCUtil {
 		StringReader strReader = new StringReader(strWriter.toString());
 		XMLInputFactory xif = XMLInputFactory.newInstance();
 		XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-		StAXOMBuilder builder = new StAXOMBuilder(reader);
-		OMElement request = builder.getDocumentElement();
+		OMElement request =OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
 		return request;
 	}
 

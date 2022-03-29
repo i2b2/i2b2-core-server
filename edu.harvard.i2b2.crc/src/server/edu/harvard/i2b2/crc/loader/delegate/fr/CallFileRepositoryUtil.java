@@ -21,10 +21,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import edu.harvard.i2b2.common.util.axis2.ServiceClient;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 
 import org.apache.axiom.attachments.Attachments;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
@@ -118,8 +118,8 @@ public class CallFileRepositoryUtil {
 			StringReader strReader = new StringReader(strWriter.toString());
 			XMLInputFactory xif = XMLInputFactory.newInstance();
 			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-			StAXOMBuilder builder = new StAXOMBuilder(reader);
-			request = builder.getDocumentElement();
+			request = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
+
 		} catch (XMLStreamException xmlEx) {
 			throw new I2B2Exception("FileRepository request omelement failed ["
 					+ xmlEx.getMessage() + "]");

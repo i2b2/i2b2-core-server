@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Built-By: veithen
-Created-By: Apache Maven 3.5.3
-Build-Jdk: 1.8.0_172
+Build-Jdk-Spec: 1.8
+Created-By: Maven WAR Plugin 3.3.1
 

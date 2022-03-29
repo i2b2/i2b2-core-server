@@ -20,6 +20,8 @@ import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Logger;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
@@ -50,7 +52,7 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 	// get this
 	public static final String LOG_REFERENCE_PREFIX = "";
 
-	static final Log log = LogFactory.getLog("DataMartLoaderAsyncBean");
+	protected static Logger log = ESAPI.getLogger(DataMartLoaderAsyncBean.class);
 
 	/*
 	 * (non-Javadoc)
@@ -75,11 +77,11 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 		ILoaderDAOFactory loaderDaoFactory = daoHelper.getDAOFactory();
 		IUploaderDAOFactory uploaderDaoFactory = loaderDaoFactory
 				.getUpLoaderDAOFactory();
-		log.debug("In Load-1");
+		log.debug(null,"In Load-1");
 		try {
 			if (i2b2SecurityType == null) {
 				String errorMsg = "DataMartLoaderAsyncBean.load: input security type is null";
-				log.error(errorMsg);
+				log.error(null,errorMsg);
 				throw new I2B2Exception(errorMsg);
 			} else {
 				userId = i2b2SecurityType.getUsername();
@@ -89,7 +91,7 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 			PublishDataRequestType publishType = null;
 
 			try {
-				log.debug("In Load-2");
+				log.debug(null,"In Load-2");
 
 				JAXBUtil jaxbUtil = edu.harvard.i2b2.crc.loader.datavo.CRCLoaderJAXBUtil
 						.getJAXBUtil();
@@ -105,11 +107,11 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 			}
 
 	//		utx.begin();
-			log.debug("In Load-3");
+			log.debug(null,"In Load-3");
 
 			uploadId = createUploadStatus(uploaderDaoFactory, publishType,
 					userId);
-			log.info("Created Upload Status: uploadId=" + uploadId);
+			log.info(null,"Created Upload Status: uploadId=" + uploadId);
 	//		utx.commit();
 
 	//		utx.begin();
@@ -168,7 +170,7 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 
 				String errorMsg = "LoadDataResponseType.load:Error "
 						+ exception.getMessage();
-				log.error(errorMsg);
+				log.error(null,errorMsg);
 				throw new I2B2Exception(errorMsg, exception);
 
 			}
@@ -197,7 +199,7 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 		try {
 			if (i2b2SecurityType == null) {
 				String errorMsg = "DataMartLoaderAsyncBean.bulkLoad: input security type is null";
-				log.error(errorMsg);
+				log.error(null,errorMsg);
 				throw new I2B2Exception(errorMsg);
 			} else {
 				userId = i2b2SecurityType.getUsername();
@@ -269,7 +271,7 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 
 				String errorMsg = "LoadDataResponseType.bulkLoad:Error "
 						+ exception.getMessage();
-				log.error(errorMsg);
+				log.error(null,errorMsg);
 				throw new I2B2Exception(errorMsg, exception);
 
 			}
@@ -383,7 +385,7 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 
 		} catch (UniqueKeyException unqEx) {
 			unqEx.printStackTrace();
-			log.error("Error while upload status update", unqEx);
+			log.error(null,"Error while upload status update", unqEx);
 		}
 	}
 
@@ -471,20 +473,20 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 	//				fileSystemDefaultStorageResource);
 			
 
-			log.debug("In DatamartLoaderAsync about to run MDB.onMessage");
+			log.debug(null,"In DatamartLoaderAsync about to run MDB.onMessage");
 			
 			
 			DataMartLoaderBeanMDB run = new DataMartLoaderBeanMDB();
 			String results = run.onMessage(message);
 			
-			log.debug("In DatamartLoaderAsync updateUploadStatus :" + results);
+			log.debug(null,"In DatamartLoaderAsync updateUploadStatus :" + results);
 			
 			
 			
 			response = buildResponse(uploaderDaoFactory, uploadId);
 		} catch (Throwable t) {
 			// JMSException could be thrown
-			log.error("DataMartLoaderAsync.sendAndGetQueueResponse: "
+			log.error(null,"DataMartLoaderAsync.sendAndGetQueueResponse: "
 					+ "Exception: " + t.toString());
 			
 			
@@ -631,7 +633,7 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 		//	connection = connectionFactory.createConnection();
 		} catch (Throwable t) {
 			// JMSException could be thrown
-			log.error("DataMartLoaderAsync.makeConnection:" + "Exception: "
+			log.error(null,"DataMartLoaderAsync.makeConnection:" + "Exception: "
 					+ t.toString());
 		}
 	}
