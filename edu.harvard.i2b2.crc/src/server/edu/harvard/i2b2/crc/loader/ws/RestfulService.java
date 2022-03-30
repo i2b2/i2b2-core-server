@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.OutputKeys;
@@ -60,8 +61,11 @@ public class RestfulService implements Provider<Source> {
 
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			StreamResult sr = new StreamResult(bos);
-			Transformer trans = TransformerFactory.newInstance()
-					.newTransformer();
+			TransformerFactory tf = TransformerFactory.newInstance();
+			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+			
+			Transformer trans = tf.newTransformer();
 			Properties oprops = new Properties();
 			oprops.put(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			trans.setOutputProperties(oprops);

@@ -108,6 +108,8 @@ public  class EMPIOpenEMPI  implements EMPI {
 	public void parse(PatientType ptype) throws SAXException, IOException, ParserConfigurationException {
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    factory.setExpandEntityReferences(false);
+	    factory.setXIncludeAware(false);
 
 		DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -176,6 +178,8 @@ public  class EMPIOpenEMPI  implements EMPI {
 
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    factory.setExpandEntityReferences(false);
+	    factory.setXIncludeAware(false);
 
 		DocumentBuilder builder = factory.newDocumentBuilder();
 

@@ -17,6 +17,7 @@ package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -300,7 +301,11 @@ public class TemporalPanelCellQueryItem extends TemporalPanelItem {
 		StringWriter writer = new StringWriter();
 		Transformer transformer;
 		try {
-			transformer = TransformerFactory.newInstance().newTransformer();
+			TransformerFactory tf = TransformerFactory.newInstance();
+			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+			
+			transformer = tf.newTransformer();
 			transformer.transform(new DOMSource(request), new StreamResult(writer));
 		} catch (TransformerConfigurationException e) {
 			// TODO Auto-generated catch block

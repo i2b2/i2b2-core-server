@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -69,7 +70,11 @@ public class XMLUtil {
     	String results =  null;
     	
     	try {
-    	  Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			TransformerFactory tf = TransformerFactory.newInstance();
+			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+			
+			Transformer transformer = tf.newTransformer();
     	  StreamResult result = new StreamResult(new StringWriter());
     	  DOMSource source = new DOMSource(document);
     	  transformer.transform(source, result);
@@ -118,7 +123,12 @@ public class XMLUtil {
     	String results =  null;
 
     	try {
-  	  Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    		
+			TransformerFactory tf = TransformerFactory.newInstance();
+			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+			
+			Transformer transformer = tf.newTransformer();
   	  StreamResult result = new StreamResult(new StringWriter());
   	  DOMSource source = new DOMSource(element);
   	  transformer.transform(source, result);
