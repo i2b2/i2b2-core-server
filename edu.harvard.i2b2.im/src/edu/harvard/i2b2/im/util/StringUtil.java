@@ -15,6 +15,7 @@
 package edu.harvard.i2b2.im.util;
 
 import java.io.StringWriter;
+import java.security.SecureRandom;
 
 /**
  * StringUtil class to perform string parsing tasks
@@ -84,7 +85,9 @@ public class StringUtil {
 	private static int getValidAcsiiValue() {
 		int number = 48;
 		while(true) {
-			number = 48+(int) Math.round(Math.random() * 74);
+			SecureRandom random = new SecureRandom();
+
+			number = 48+(int) Math.round(random.nextDouble() * 74);
 			if((number > 47 && number < 58) || (number > 64 && number < 91) 
 				|| (number > 96 && number < 123)) {
 					break;

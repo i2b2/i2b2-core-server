@@ -27,12 +27,11 @@ public class RijndaelAlgorithm {
 	private Cipher cipherDec = null;
 
 
-	public RijndaelAlgorithm(String password, int ksize) throws Exception {
-		this(password, ksize, "AES", "AES/ECB/NoPadding");
-	}
 
-	public RijndaelAlgorithm(String password, int ksize, String encryptionType,
-			String emethod) throws Exception {
+	public RijndaelAlgorithm(String password, int ksize) throws Exception {
+		String encryptionType = "AES";
+		String emethod = "AES/GCM/NoPadding";
+
 
 		SecretKeySpec skeySpec = new SecretKeySpec(password.getBytes("UTF-8"),
 				encryptionType);

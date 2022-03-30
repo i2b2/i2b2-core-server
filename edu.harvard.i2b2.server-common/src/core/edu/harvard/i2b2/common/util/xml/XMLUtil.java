@@ -44,6 +44,8 @@ public class XMLUtil {
 		    throws org.xml.sax.SAXException, java.io.IOException {
 		    javax.xml.parsers.DocumentBuilderFactory factory =
 		        javax.xml.parsers.DocumentBuilderFactory.newInstance();
+		    factory.setExpandEntityReferences(false);
+		    factory.setXIncludeAware(false);
 		    factory.setNamespaceAware(true);
 		    javax.xml.parsers.DocumentBuilder builder = null;
 		    try {
@@ -164,6 +166,8 @@ public class XMLUtil {
         throws I2B2Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
+	    factory.setExpandEntityReferences(false);
+	    factory.setXIncludeAware(false);
 
         Document document = null;
 
