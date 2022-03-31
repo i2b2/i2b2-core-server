@@ -15,6 +15,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 import java.io.File;
 import java.io.InputStream;
@@ -27,6 +31,10 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
 
 
 public class JAXBUtil {
@@ -267,13 +275,25 @@ public class JAXBUtil {
         JAXBElement unMarshallObject = null;
 
         try {
+        	//Disable XXE
+        	SAXParserFactory spf = SAXParserFactory.newInstance();
+        	spf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        	spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        	spf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+
+        	//Do unmarshall operation
+        	Source xmlSource = new SAXSource(spf.newSAXParser().getXMLReader(),
+        	                                new InputSource(new StringReader(xmlString)));
+
+        	
             JAXBContext jaxbContext = getJAXBContext();
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             unMarshallObject = (JAXBElement) unmarshaller.unmarshal(new StringReader(
                         xmlString));
             log.debug("object.toString()" +
                 unMarshallObject.getDeclaredType().getCanonicalName());
-        } catch (JAXBException jaxbEx) {
+        } catch (JAXBException | SAXException  | ParserConfigurationException jaxbEx) {
             throw new JAXBUtilException("Error during unmarshall ", jaxbEx);
         }
 

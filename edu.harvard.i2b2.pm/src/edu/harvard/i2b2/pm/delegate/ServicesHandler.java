@@ -99,25 +99,25 @@ import javax.servlet.http.HttpServletRequest;
 public class ServicesHandler extends RequestHandler {
 	private ProjectType projectInfo = null;
 	private ServicesMessage getServicesMsg = null;
-  private final HttpServletRequest req;
+	private final HttpServletRequest req;
 	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	public ServicesHandler(ServicesMessage servicesMsg, HttpServletRequest req) throws I2B2Exception{
-   this.req = req;
+		this.req = req;
 		log.debug("Setting the servicesMsg");	
 
 		getServicesMsg = servicesMsg;
 		//setDbInfo(servicesMsg.getRequestMessageType().getMessageHeader());
 	}
 
-        private void addParamsFromHeaders(Hashtable params) {
-            Enumeration<String> enuStr = req.getHeaderNames();
-            while (enuStr.hasMoreElements()) {
-                String key = enuStr.nextElement();
-                Object obj = req.getHeader(key);
-                params.put(key, obj);
-            }
-        }
+	private void addParamsFromHeaders(Hashtable params) {
+		Enumeration<String> enuStr = req.getHeaderNames();
+		while (enuStr.hasMoreElements()) {
+			String key = enuStr.nextElement();
+			Object obj = req.getHeader(key);
+			params.put(key, obj);
+		}
+	}
 
 	private void saveLoginAttempt(PMDbDao pmDb, String username, String attempt)
 	{
@@ -173,12 +173,13 @@ public class ServicesHandler extends RequestHandler {
 		}
 
 		// Handle all internal classnames.  Also for backward compatibility need to call it NTLM.
-		String classname = "edu.harvard.i2b2.pm.util.SecurityAuthentication" + param.get("authentication_method");
+		//String classname = sanitizeClassName("edu.harvard.i2b2.pm.util.SecurityAuthentication" + param.get("authentication_method"), param);
 
 		ClassLoader classLoader = ServicesHandler.class.getClassLoader();
 
 		try {
-			Class securityClass = classLoader.loadClass(classname);
+
+			Class securityClass = classLoader.loadClass(sanitizeClassName("edu.harvard.i2b2.pm.util.SecurityAuthentication" + param.get("authentication_method")));
 
 			SecurityAuthentication security =  (SecurityAuthentication) securityClass.newInstance();
 
@@ -190,6 +191,47 @@ public class ServicesHandler extends RequestHandler {
 		}
 
 		return user;
+	}
+
+
+	public static String sanitizeClassName(final String AssemblyName ) throws Exception {
+
+
+		if (AssemblyName.equals("edu.harvard.i2b2.pm.util.SecurityAuthenticationBASIC")) {
+
+			return "edu.harvard.i2b2.pm.util.SecurityAuthenticationBASIC"; // <-- hardcoded, not coming from outside of application
+
+		}
+
+		else if (AssemblyName.equals("edu.harvard.i2b2.pm.util.SecurityAuthenticationLDAP")) {
+
+			return "edu.harvard.i2b2.pm.util.SecurityAuthenticationLDAP"; // <-- hardcoded, not coming from outside of application
+
+		}
+		else if (AssemblyName.equals("edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM")) {
+
+			return "edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM"; // <-- hardcoded, not coming from outside of application
+
+		}
+		else if (AssemblyName.equals("edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM2")) {
+
+			return "edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM2"; // <-- hardcoded, not coming from outside of application
+
+		}
+		else if (AssemblyName.equals("edu.harvard.i2b2.pm.util.SecurityAuthenticationOKTA")) {
+
+			return "edu.harvard.i2b2.pm.util.SecurityAuthenticationOKTA"; // <-- hardcoded, not coming from outside of application
+
+		}
+		else if (AssemblyName.equals("edu.harvard.i2b2.pm.util.SecurityAuthenticationSAML")) {
+
+			return "edu.harvard.i2b2.pm.util.SecurityAuthenticationSAML"; // <-- hardcoded, not coming from outside of application
+
+		}
+		else
+
+			throw new Exception("Unknown class provided"+ AssemblyName);
+
 	}
 
 	private boolean verifySession(PMDbDao pmDb, int timeout, String sessionId, String userId) throws Exception
@@ -295,7 +337,7 @@ public class ServicesHandler extends RequestHandler {
 			}
 
 			Hashtable params = new Hashtable();
-      addParamsFromHeaders(params); // For SAML auth
+			addParamsFromHeaders(params); // For SAML auth
 
 			//Get params from the environment first
 			for( it=pmDb.getEnvironmentData(domainId).iterator();it.hasNext();){
@@ -821,7 +863,7 @@ public class ServicesHandler extends RequestHandler {
 									datasource.setJndiName(f.get(nameClassPair.getObject()).toString());
 									datasource.setPoolName(datasource.getJndiName().substring(datasource.getJndiName().lastIndexOf("/")+1));     
 									try {
-										
+
 										Connection conn = user.getConnection();
 										datasource.setActive(true);
 									} catch (Exception ee)
@@ -833,7 +875,7 @@ public class ServicesHandler extends RequestHandler {
 								{
 									Object obj = f.get(nameClassPair.getObject());
 									//System.out.println(f.getName());
-									
+
 									for(Field f2 : obj.getClass().getDeclaredFields()) {
 										f2.setAccessible(true);
 
@@ -844,8 +886,8 @@ public class ServicesHandler extends RequestHandler {
 												f3.setAccessible(true);
 												if (f3.getName().equals("user"))
 													datasource.setUserName(f3.get(obj2).toString());
-						//						else  if (f3.getName().equals("password"))
-						//							datasource.setPassword(f3.get(obj2).toString());
+												//						else  if (f3.getName().equals("password"))
+												//							datasource.setPassword(f3.get(obj2).toString());
 											}
 										}
 										if (f2.getName().equals("mcf"))
@@ -853,13 +895,13 @@ public class ServicesHandler extends RequestHandler {
 											Object obj2 = f2.get(obj);
 											for(Field f3 : obj2.getClass().getDeclaredFields()) {
 												f3.setAccessible(true);
-												  if (f3.getName().equals("connectionURL"))
+												if (f3.getName().equals("connectionURL"))
 													datasource.setConnectionUrl(f3.get(obj2).toString());
 												else  if (f3.getName().equals("driverClass"))
 													datasource.setDriverName(f3.get(obj2).toString());
 												else if (f3.getName().equals("jta"))
 													datasource.setJta(Boolean.valueOf(f3.get(obj2).toString()));
-												  log.debug(f3.getName());
+												log.debug(f3.getName());
 											}
 										}
 									}

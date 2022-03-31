@@ -447,25 +447,6 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 			*/
 			
 			
-			Hashtable message = new Hashtable();
-			message.put(DataMartLoaderBeanMDB.UPLOAD_ID, uploadId);
-			message.put(DataMartLoaderBeanMDB.I2B2_USER_ID,
-					securityType.getUsername());
-			message.put(DataMartLoaderBeanMDB.I2B2_PASSWORD,
-					securityType.getPassword().getValue());
-			message.put(DataMartLoaderBeanMDB.I2B2_PASSWORD_ISTOKEN,
-					securityType.getPassword().isIsToken());
-			message.put(
-					DataMartLoaderBeanMDB.I2B2_REQUEST_MSG,
-					publishMessage);
-			message.put(
-					DataMartLoaderBeanMDB.DS_LOOKUP_DOMAIN_ID,
-					uploaderDaoFactory.getDataSourceLookup().getDomainId());
-			message.put(DataMartLoaderBeanMDB.DS_LOOKUP_OWNER_ID,
-					uploaderDaoFactory.getDataSourceLookup().getOwnerId());
-			message.put(
-					DataMartLoaderBeanMDB.DS_LOOKUP_PROJECT_ID,
-					uploaderDaoFactory.getDataSourceLookup().getProjectPath());
 			
 			// no longer needed?
 	//		message.put(
@@ -476,10 +457,6 @@ public class DataMartLoaderAsyncBean implements DataMartLoaderAsyncBeanRemote,
 			log.debug(null,"In DatamartLoaderAsync about to run MDB.onMessage");
 			
 			
-			DataMartLoaderBeanMDB run = new DataMartLoaderBeanMDB();
-			String results = run.onMessage(message);
-			
-			log.debug(null,"In DatamartLoaderAsync updateUploadStatus :" + results);
 			
 			
 			

@@ -1,3 +1,6 @@
+
+
+
 /*******************************************************************************
  * Copyright (c) 2006-2018 Massachusetts General Hospital 
  * All rights reserved. This program and the accompanying materials 
@@ -6,6 +9,10 @@
  * obtain one at http://mozilla.org/MPL/2.0/. I2b2 is also distributed under
  * the terms of the Healthcare Disclaimer.
  ******************************************************************************/
+
+
+
+
 package edu.harvard.i2b2.crc.loader.ejb;
 
 import java.io.PrintWriter;
@@ -38,7 +45,7 @@ import edu.harvard.i2b2.crc.loader.ejb.fr.FRBean;
  * or abstract).
  */
 
-public class DataMartLoaderBeanMDB { //mm removed EJB implements MessageListener {
+public class DataMartLoaderBeanMDB {
 
 	public final static String UPLOAD_ID = "UPLOAD_ID";
 	public final static String DS_LOOKUP_DOMAIN_ID = "DS_LOOKUP_DOMAIN_ID";
@@ -46,8 +53,6 @@ public class DataMartLoaderBeanMDB { //mm removed EJB implements MessageListener
 	public final static String DS_LOOKUP_OWNER_ID = "DS_LOOKUP_OWNER_ID";
 	public final static String I2B2_USER_ID = "I2B2_USER_ID";
 	public final static String I2B2_REQUEST_MSG = "I2B2_REQUEST_MSG";
-	public final static String I2B2_PASSWORD = "I2B2_PASSWORD";
-	public final static String I2B2_PASSWORD_ISTOKEN = "false";
 	public final static String IROD_FILESYSTEM_STORAGE_RESOURCE = "IROD_FILESYSTEM_STORAGE_RESOURCE";
 
 	IDataMartLoaderHelper dmLoader = new DataMartLoader();

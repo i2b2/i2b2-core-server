@@ -40,7 +40,7 @@ public class IMKey {
 		} else {
 			if (projectInfo.getKey() != null)
 			{
-				String key = DigestUtils.md5Hex(requestType.getKey()).substring(0, 3);
+				String key = DigestUtils.sha256Hex(requestType.getKey()).substring(0, 3);
 				if (!key.equals(projectInfo.getKey()))
 					return -1;
 			}

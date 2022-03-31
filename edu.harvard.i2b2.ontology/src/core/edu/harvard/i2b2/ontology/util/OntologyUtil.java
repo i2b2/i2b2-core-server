@@ -84,7 +84,9 @@ public class OntologyUtil {
 
 	/** property name for metadata schema name* */
 	private static final String FRCELL_WS_URL_PROPERTIES = "edu.harvard.i2b2.ontology.ws.fr.url";
+	private static final String STOPWORD_PROPERTIES = "edu.harvard.i2b2.ontology.stopword";
 
+	
 	private static final String CRCCELL_WS_URL_PROPERTIES = "edu.harvard.i2b2.ontology.ws.crc.url";
 
 	private static final String SERVICE_ACCOUNT_USER = "edu.harvard.i2b2.ontology.pm.serviceaccount.user";
@@ -177,6 +179,10 @@ public class OntologyUtil {
 
 	public String getFileRepositoryTempSpace() throws I2B2Exception {
 		return getPropertyValue(FRCELL_WS_TEMPSPACE_PROPERTIES);
+	}
+	
+	public String getStopWord() throws I2B2Exception {
+		return getPropertyValue(STOPWORD_PROPERTIES);
 	}
 
 	public String getFileRepositoryTimeout() throws I2B2Exception {
