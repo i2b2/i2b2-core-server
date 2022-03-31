@@ -656,7 +656,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			assertNotNull("Check exists", ctype);
 			assertEquals("Check exists", ctype.getId(),"BAMBOO");
 			assertEquals("Check exists", ctype.getName(),"Bamboo Test");
-			assertEquals("Check exists", ctype.getKey(), "ca2");
+			assertEquals("Check exists", ctype.getKey(), "321");
 			assertEquals("Check exists", ctype.getWiki(),"http://127.0.0.1/wiki");
 			assertEquals("Check exists", ctype.getDescription(),"This is a message");
 			assertEquals("Check exists", ctype.getPath(),"/bamboo");
@@ -737,7 +737,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			assertEquals("Check exists 2",ctype.getWiki(),"http://127.0.0.1/wiki");
 			assertEquals("Check exists 2",ctype.getDescription(),"This is a message");
 			assertEquals("Check exists 2",ctype.getPath(),"/bamboo");
-			assertEquals("Check exists 2",ctype.getKey(), "ca2");
+			assertEquals("Check exists 2",ctype.getKey(), "321");
 		} catch (Exception e) { 
 			e.printStackTrace();
 			assertTrue(false);
