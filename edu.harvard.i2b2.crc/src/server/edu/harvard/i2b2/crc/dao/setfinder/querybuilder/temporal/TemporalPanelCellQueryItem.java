@@ -301,6 +301,8 @@ public class TemporalPanelCellQueryItem extends TemporalPanelItem {
 		StringWriter writer = new StringWriter();
 		Transformer transformer;
 		try {
+    		System.setProperty("javax.xml.transform.TransformerFactory","com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
+
 			TransformerFactory tf = TransformerFactory.newInstance();
 			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
