@@ -50,7 +50,7 @@
     <message_body>
         <pm:set_project id="BAMBOO">
             <name>Bamboo Test</name>
-            <key>ca2</key>
+            <key>321</key>
             <wiki>http://127.0.0.1/wiki</wiki>
             <description>This is a message</description>
             <path>/bamboo</path>

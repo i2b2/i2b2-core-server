@@ -61,10 +61,12 @@ public class RestfulService implements Provider<Source> {
 
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			StreamResult sr = new StreamResult(bos);
-    		System.setProperty("javax.xml.transform.TransformerFactory","com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
-
 			TransformerFactory tf = TransformerFactory.newInstance();
-			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			try {
+			    tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			} catch (IllegalArgumentException e) {
+			    //jaxp 1.5 feature not supported
+			}
 			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 			
 			Transformer trans = tf.newTransformer();

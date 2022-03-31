@@ -71,7 +71,12 @@ public class XMLUtil {
     	
     	try {
 			TransformerFactory tf = TransformerFactory.newInstance();
-			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			try {
+			    tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			} catch (IllegalArgumentException e) {
+			    //jaxp 1.5 feature not supported
+			}
+
 			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 			
 			Transformer transformer = tf.newTransformer();
@@ -123,9 +128,13 @@ public class XMLUtil {
     	String results =  null;
 
     	try {
-    		System.setProperty("javax.xml.transform.TransformerFactory","com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
 			TransformerFactory tf = TransformerFactory.newInstance();
-			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			
+			try {
+			    tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			} catch (IllegalArgumentException e) {
+			    //jaxp 1.5 feature not supported
+			}
 			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 			
 			Transformer transformer = tf.newTransformer();
