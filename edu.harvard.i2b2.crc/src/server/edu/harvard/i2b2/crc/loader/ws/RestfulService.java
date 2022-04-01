@@ -64,10 +64,10 @@ public class RestfulService implements Provider<Source> {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			try {
 			    tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+				tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 			} catch (IllegalArgumentException e) {
 			    //jaxp 1.5 feature not supported
 			}
-			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 			
 			Transformer trans = tf.newTransformer();
 			Properties oprops = new Properties();

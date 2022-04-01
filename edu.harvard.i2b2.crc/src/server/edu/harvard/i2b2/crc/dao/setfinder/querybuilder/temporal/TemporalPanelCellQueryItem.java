@@ -306,11 +306,11 @@ public class TemporalPanelCellQueryItem extends TemporalPanelItem {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			try {
 			    tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+				tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 			} catch (IllegalArgumentException e) {
 			    //jaxp 1.5 feature not supported
 			}
 
-			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 			
 			transformer = tf.newTransformer();
 			transformer.transform(new DOMSource(request), new StreamResult(writer));
