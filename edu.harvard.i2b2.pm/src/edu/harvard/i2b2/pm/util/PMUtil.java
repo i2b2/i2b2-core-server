@@ -170,9 +170,9 @@ public class PMUtil {
 	      return(passwd.matches(pattern));
 	   }
 	
-	public String getHashedPassword(String pass) {
+	public String getHashedPassword(String method, String pass) {
 		try {
-			MessageDigest md5 = MessageDigest.getInstance("MD5");
+			MessageDigest md5 = MessageDigest.getInstance(method);
 			md5.update(pass.getBytes());
 			return toHex(md5.digest());
 		} catch (NoSuchAlgorithmException e) {

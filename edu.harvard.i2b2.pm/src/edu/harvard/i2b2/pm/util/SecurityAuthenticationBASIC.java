@@ -62,6 +62,12 @@ public class SecurityAuthenticationBASIC implements SecurityAuthentication {
 		{
 			user = (UserType)it.next();
 
+			// Check if MD5 and if so tahn convert to SHA256
+			if (user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword("MD5", password)))
+			{
+				pmDb.setPassword(PMUtil.getInstance().getHashedPassword("SHA-256", password), username);
+			}
+			
 			//Check the password
 			if (user.getPassword().getValue().startsWith("@"))
 			{
@@ -71,12 +77,14 @@ public class SecurityAuthenticationBASIC implements SecurityAuthentication {
 					throw new Exception ("Current password is incorrect");
 				}
 			}				
-			else if (!user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword(password)))
+			else if (!user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword("SHA-256", password)))
 			{
 				pmDb.setLoginAttempt(username, "BADPASSWORD" );
 				throw new Exception ("Current password is incorrect");
 
 			}
+			
+
 		}
 
 		return true;

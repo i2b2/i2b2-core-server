@@ -681,7 +681,7 @@ public class PMDbDao extends JdbcDaoSupport {
 							userdata.getUserName(),
 							userdata.getFullName(),
 							userdata.getEmail(),
-							PMUtil.getInstance().getHashedPassword(userdata.getPassword().getValue()),
+							PMUtil.getInstance().getHashedPassword("SHSA-256", userdata.getPassword().getValue()),
 							Calendar.getInstance().getTime(),
 							Calendar.getInstance().getTime(),				
 							caller,
@@ -695,7 +695,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					numRowsAdded = jt.update(addSql, 
 							userdata.getFullName(),
 							userdata.getEmail(),
-							PMUtil.getInstance().getHashedPassword(userdata.getPassword().getValue()),
+							PMUtil.getInstance().getHashedPassword("SHA-256", userdata.getPassword().getValue()),
 							Calendar.getInstance().getTime(),
 							caller,
 							userdata.getUserName());					
@@ -856,7 +856,9 @@ public class PMDbDao extends JdbcDaoSupport {
 
 	public int setPassword(String password, String caller) throws I2B2DAOException, I2B2Exception{
 		int numRowsAdded = 0;
-		String hash = PMUtil.getInstance().getHashedPassword(password);
+		//String hashMD5 = PMUtil.getInstance().getHashedPassword("ND5", password);
+		String hashSHA256 = PMUtil.getInstance().getHashedPassword("SHA-256", password);
+		
 		try {
 
 
@@ -908,7 +910,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
 						+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' where  a.user_id = ? and password = ?";
 		
-				List<UserType> queryResult2 = jt.query(sql,  GetUser(true), caller, hash);
+				List<UserType> queryResult2 = jt.query(sql,  GetUser(true), caller, hashSHA256);
 
 				it = queryResult2.iterator();
 				if (it.hasNext())
@@ -924,7 +926,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					"set password = ?, change_date = ?, changeby_char = ? where user_id = ?";
 
 			numRowsAdded = jt.update(addSql, 
-					hash,
+					hashSHA256,
 					Calendar.getInstance().getTime(),
 					caller,
 					caller);
