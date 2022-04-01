@@ -681,7 +681,7 @@ public class PMDbDao extends JdbcDaoSupport {
 							userdata.getUserName(),
 							userdata.getFullName(),
 							userdata.getEmail(),
-							PMUtil.getInstance().getHashedPassword("SHSA-256", userdata.getPassword().getValue()),
+							PMUtil.getInstance().getHashedPassword("SHA-256", userdata.getPassword().getValue()),
 							Calendar.getInstance().getTime(),
 							Calendar.getInstance().getTime(),				
 							caller,
