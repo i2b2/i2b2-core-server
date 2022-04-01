@@ -23,6 +23,7 @@ import java.util.List;
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.pm.dao.PMDbDao;
+import edu.harvard.i2b2.pm.datavo.pm.PasswordType;
 import edu.harvard.i2b2.pm.datavo.pm.UserType;
 
 /*
@@ -65,7 +66,10 @@ public class SecurityAuthenticationBASIC implements SecurityAuthentication {
 			// Check if MD5 and if so tahn convert to SHA256
 			if (user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword("MD5", password)))
 			{
-				pmDb.setPassword(PMUtil.getInstance().getHashedPassword("SHA-256", password), username);
+				pmDb.setPassword(password, username);
+				PasswordType pass = user.getPassword();
+				pass.setValue(PMUtil.getInstance().getHashedPassword("SHA-256", password));
+				user.setPassword(pass );
 			}
 			
 			//Check the password
