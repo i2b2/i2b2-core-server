@@ -78,13 +78,13 @@ public class SecurityAuthenticationBASIC implements SecurityAuthentication {
 				if	(!(user.getPassword().getValue().substring(1)).equals(password))
 				{
 					pmDb.setLoginAttempt(username, "BADPASSWORD" );
-					throw new Exception ("Current password is incorrect");
+					throw new Exception ("Invalid username or incorrect password");
 				}
 			}				
 			else if (!user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword("SHA-256", password)))
 			{
 				pmDb.setLoginAttempt(username, "BADPASSWORD" );
-				throw new Exception ("Current password is incorrect");
+				throw new Exception ("Invalid username or incorrect password");
 
 			}
 			
