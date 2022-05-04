@@ -645,6 +645,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 					.getCRCPropertyValue("edu.harvard.i2b2.crc.lockout.setfinderquery.count");
 			if (lockoutQueryCountStr != null) {
 				lockoutQueryCount = Integer.parseInt(lockoutQueryCountStr);
+				if (lockoutQueryCount>0) lockoutQueryCount--;
 			}
 			String lockoutQueryDayStr = qpUtil
 					.getCRCPropertyValue("edu.harvard.i2b2.crc.lockout.setfinderquery.day");
