@@ -421,7 +421,7 @@ public class QueryManagerBean{ // implements SessionBean {
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 		if (userId.equalsIgnoreCase(qpUtil
 				.getCRCPropertyValue("edu.harvard.i2b2.crc.pm.serviceaccount.user")))
-			throw new Exception("Can not login to servcice account: " + userId);
+			throw new Exception("Cannot run queries as servcice account: " + userId);
 		queryMaster.setUserId(userId);
 		
 		//If time not set than set to 12:00
