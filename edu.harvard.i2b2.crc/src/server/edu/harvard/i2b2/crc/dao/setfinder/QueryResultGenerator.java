@@ -15,12 +15,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
-
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
@@ -50,7 +46,6 @@ import edu.harvard.i2b2.crc.util.SqlClauseUtil;
  */
 public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
 
 	@Override
 	public String getResults() {
@@ -82,8 +77,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		int recordCount = (Integer) param.get("RecordCount");
 		int transactionTimeout = (Integer) param.get("TransactionTimeout");
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
-		String ResultPath = (String) param.get("ResultPath");
-		
+
 		this
 		.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
 				.getFullSchema());
@@ -104,10 +98,8 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			logTimingUtil.setStartTime();
 			itemKey = getItemKeyFromResultType(sfDAOFactory, resultTypeName, roles);
-			if (ResultPath != null)
-				itemKey = ResultPath;
 
-			logesapi.debug(null,"Result type's " + resultTypeName + " item key value "
+			log.debug("Result type's " + resultTypeName + " item key value "
 					+ itemKey);
 
 			LogTimingUtil subLogTimingUtil = new LogTimingUtil();
@@ -181,29 +173,21 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
 				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) 
 					dimCode = dimCode.replaceAll("\\\\", "\\\\\\\\");
-				itemCountSql = " select count(distinct PATIENT_NUM) as item_count from <from>"+  
+				itemCountSql = " select count(distinct PATIENT_NUM) as item_count  from " +  this.getDbSchemaName() + joinTableName +  
 						" where " + " patient_num in (select patient_num from "
-						+ "<TEMP_DX_TABLE>"
+						+ TEMP_DX_TABLE
 
 						//OMOP WAS...
 						//+ " )  and "+ conceptType.getFacttablecolumn() + " IN (select "
 						//+ conceptType.getFacttablecolumn() + " from "
-						+ " )  and <factTableColumn> IN (select "
-						+ "<factTableColumn>" + " from "
-						+ "<from2>  "
-						+  " where <getColumnname>" 
-						+ " <getOperator> "
-						+ "<dimCode> )";
+						+ " )  and "+ factTableColumn + " IN (select "
+						+ factTableColumn + " from "
+						+ getDbSchemaName() + conceptType.getTablename() + "  "
+						+  " where " + conceptType.getColumnname()
+						+ " " + conceptType.getOperator() + " "
+						+ dimCode + ")";
 
-				String sqlFinal =  itemCountSql.replaceAll("<from>",   this.getDbSchemaName() + joinTableName );
-				sqlFinal = sqlFinal.replaceAll("<from2>", getDbSchemaName() + conceptType.getTablename());
-				sqlFinal = sqlFinal.replaceAll("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
-				sqlFinal = sqlFinal.replaceAll("<factTableColumn>", factTableColumn);
-				sqlFinal = sqlFinal.replaceAll("<getColumnname>", conceptType.getColumnname());
-				sqlFinal = sqlFinal.replaceAll("<getOperator>", conceptType.getOperator());
-				sqlFinal = sqlFinal.replaceAll("<dimCode>", dimCode);
-				
-				stmt = sfConn.prepareStatement(sqlFinal);
+				stmt = sfConn.prepareStatement(itemCountSql);
 				stmt.setQueryTimeout(transactionTimeout);
 				log.debug("Executing count sql [" + itemCountSql + "]");
 
