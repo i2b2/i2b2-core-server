@@ -139,15 +139,15 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			Thread csrThread = new Thread(csr);
 			csrThread.start();
 
-			String sqlFinal = "";
+			//String sqlFinal = "";
 
 			if (itemCountSql.contains("{{{DX}}}"))
-				sqlFinal = itemCountSql.replaceAll("\\{\\{\\{DX\\}\\}\\}", TEMP_DX_TABLE);
-			if (sqlFinal.contains("{{{DATABASE_NAME}}}"))
-				sqlFinal = sqlFinal.replaceAll("\\{\\{\\{DATABASE_NAME\\}\\}\\}", this.getDbSchemaName());
+				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DX\\}\\}\\}", TEMP_DX_TABLE);
+			if (itemCountSql.contains("{{{DATABASE_NAME}}}"))
+				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DATABASE_NAME\\}\\}\\}", this.getDbSchemaName());
 
 
-			String[] sqls = sqlFinal.split("<\\*>");
+			String[] sqls = itemCountSql.split("<\\*>");
 			int count = 0;
 			while (count < sqls.length - 1)
 			{
