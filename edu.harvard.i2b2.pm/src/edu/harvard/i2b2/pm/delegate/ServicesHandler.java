@@ -183,7 +183,8 @@ public class ServicesHandler extends RequestHandler {
 
 			SecurityAuthentication security =  (SecurityAuthentication) securityClass.newInstance();
 
-			security.validateUser(username, password, param);
+			if (skipValidation == false)
+				security.validateUser(username, password, param);
 
 		} catch (ClassNotFoundException e) {
 			log.equals("Did not find class: " + e.getMessage());
@@ -416,10 +417,11 @@ public class ServicesHandler extends RequestHandler {
 						name  = ((JAXBElement) obj).getName().getLocalPart();
 						if (name.equalsIgnoreCase("set_password"))
 							skipValidation = true;
+						
+						if (rmt.getUsername().equalsIgnoreCase("AGG_SERVICE_ACCOUNT") && 
+								(name.equalsIgnoreCase("get_user") || name.equalsIgnoreCase("set_user") || name.equalsIgnoreCase("set_user_param")) )
+							skipValidation = true;
 					}
-
-					if (rmt.getUsername().equals("AGG_SERVICE_ACCOUNT"))
-						skipValidation = true;
 
 					UserType user = validateSuppliedPassword( rmt.getUsername(), rmt.getPassword().getValue(), params, skipValidation);
 					uType.setFullName(user.getFullName());

@@ -670,7 +670,7 @@ public class PMDbDao extends JdbcDaoSupport {
 	public int setUser(final UserType userdata, String caller) throws I2B2DAOException, I2B2Exception{
 		int numRowsAdded = 0;
 
-		if (validateRole(caller, "admin", null))
+		if (validateRole(caller, "admin", null) || caller.equals("AGG_SERVICE_ACCOUNT"))
 		{
 			try {
 				if ((getUser(userdata.getUserName(), caller, null, false) == null) || (getUser(userdata.getUserName(), caller,null, false).size() == 0))
@@ -1720,7 +1720,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		log.debug("Caller: "+ caller);
 		log.debug("Project: " + project);
 
-		if ((utype instanceof UserType) && (caller.equals(((UserType) utype).getUserName())))
+		if ((utype instanceof UserType) && ((caller.equals(((UserType) utype).getUserName())) || caller.equals("AGG_SERVICE_ACCOUNT")  ))
 		{
 			log.debug("Searching for existing User Param");
 
