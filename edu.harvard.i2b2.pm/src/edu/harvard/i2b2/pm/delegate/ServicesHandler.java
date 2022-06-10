@@ -169,7 +169,7 @@ public class ServicesHandler extends RequestHandler {
 			log.debug("Did not find user: " + username);
 			saveLoginAttempt(pmDb, username, "NONEXIST");
 
-			throw new Exception ("Invalid username or incorrect password");
+			throw new Exception ("Unable to sign in");
 		}
 
 		// Handle all internal classnames.  Also for backward compatibility need to call it NTLM.
@@ -385,7 +385,7 @@ public class ServicesHandler extends RequestHandler {
 				if (user == null)
 				{
 					log.debug("Did not find user: " + rmt.getUsername());
-					throw new Exception ("Invalid username or incorrect password");
+					throw new Exception ("Unable to sign in");
 				}
 				//check the password
 
@@ -1625,7 +1625,7 @@ public class ServicesHandler extends RequestHandler {
 
 			//user = userManagerService.getUserByUserName(k.getUsername());
 			if (user == null)
-				throw new Exception ("Invalid username or incorrect password");
+				throw new Exception ("Unable to sign in");
 
 
 			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());    
