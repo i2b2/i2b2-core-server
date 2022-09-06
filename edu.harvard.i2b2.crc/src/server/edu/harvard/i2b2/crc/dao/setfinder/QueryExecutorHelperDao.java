@@ -30,6 +30,7 @@ import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
 import edu.harvard.i2b2.common.util.ServiceLocator;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
@@ -42,11 +43,16 @@ import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
+import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.pm.ProjectType;
 import edu.harvard.i2b2.crc.datavo.pm.RoleType;
 import edu.harvard.i2b2.crc.datavo.pm.RolesType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.ItemType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.delegate.ejbpm.EJBPMUtil;
@@ -559,6 +565,17 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		// bf.getBean("setFinderResultOntologyKeyMap");
 		Map ontologyKeyMap = new HashMap();
 
+		
+		
+		QueryDefinitionType queryDef = getQueryDefinitionType(requestXml); 
+		String queryTiming = queryDef.getQueryTiming();
+		List<PanelType> panelList = queryDef.getPanel();
+		for (PanelType singlePanel : panelList) { 
+			List<ItemType> itemList = singlePanel.getItem();
+			for (ItemType singleItem : itemList) { 
+				ontologyKeyMap.put(singleItem.getItemName(), singleItem);
+			}
+		}
 		//	CallOntologyUtil callOntologyUtil = null;
 		String ontologyGetChildrenUrl = null;
 		SecurityType securityType = null;
@@ -684,6 +701,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		param.put("ObfuscatedRecordCount", obfuscatedRecordCount);
 		param.put("RecordCount", recordCount);
 		param.put("ObfuscatedRoleFlag", dataObfuscFlag);
+		param.put("panelList", panelList);
+		param.put("queryDef", queryDef);
 
 		if (resultOutputList != null) {
 			if (resultOutputList.getResultOutput() != null
@@ -878,6 +897,28 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		return userLockedDate;
 	}
 
+	private QueryDefinitionType  getQueryDefinitionType(String requestString) throws I2B2DAOException { 
+		QueryDefinitionRequestType queryDefReqType = null;
+		JAXBElement responseJaxb;
+		try {
+			responseJaxb = CRCJAXBUtil.getJAXBUtil()
+			.unMashallFromString(requestString);
+		
+		RequestMessageType r = (RequestMessageType) responseJaxb.getValue();
+		BodyType bodyType = r.getMessageBody();
+		// 	get body and search for analysis definition
+		JAXBUnWrapHelper unWraphHelper = new JAXBUnWrapHelper();
+		
+		
+			queryDefReqType = (QueryDefinitionRequestType) unWraphHelper
+			.getObjectByClass(bodyType.getAny(),
+					QueryDefinitionRequestType.class);
+		} catch (JAXBUtilException e) {
+			throw new I2B2DAOException(e.getMessage());
+		}
+		
+		return queryDefReqType.getQueryDefinition();
+	}
 	/**
 	 * Call PM to get user roles. The security info is taken from the request
 	 * xml

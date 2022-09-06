@@ -85,6 +85,7 @@
                        		<fileset dir="${lib}/okta" includes="**/*" />
 	                        <fileset dir="${lib}/jboss" includes="**/*" />
 	                        <fileset dir="${lib}/esapi" includes="**/*" />
+	                        <fileset dir="${lib}/zip" includes="**/*" />
 	                </copy>
 	 
 	                <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/lib">

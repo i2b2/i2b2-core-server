@@ -122,5 +122,6 @@
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/jdbc/ojdbc8.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/quartz/quartz-all-1.6.5.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/esapi/esapi-2.2.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/zip/zip4j-2.11.1.jar" sourcepath="/Users/mem61/.m2/repository/net/lingala/zip4j/zip4j/2.11.1/zip4j-2.11.1-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
