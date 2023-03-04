@@ -770,7 +770,8 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 		}
 		
 
-		if (this.outputOptionList.getObservationSet().getSelectionfilter()!= null)
+		if (this.outputOptionList!=null && this.outputOptionList.getObservationSet()!=null &&
+			this.outputOptionList.getObservationSet().getSelectionfilter()!= null)
 		{
 			//mainQuerySql = "with main_query as (" + mainQuerySql + ") select * from (select f1.*, " +
 			String newMainQuerySql = "select * from (select f1.*, " +
