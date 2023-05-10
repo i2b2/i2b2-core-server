@@ -108,8 +108,8 @@ public class JAXBUtil {
                     "com.sun.xml.bind.characterEscapeHandler",
                     new XmlCharacterEscapeHandler() );
             
-            marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
-                new NamespacePrefixMapperImpl());
+            //marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+            //    new NamespacePrefixMapperImpl());
 
             // get an Apache XMLSerializer configured to generate CDATA
             marshaller.marshal(jaxbElement, doc);
@@ -129,8 +129,8 @@ public class JAXBUtil {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
                 Boolean.TRUE);
             
-            marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
-                new NamespacePrefixMapperImpl());
+           // marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+           //     new NamespacePrefixMapperImpl());
             
           
             /* TODO mm old
@@ -167,8 +167,8 @@ public class JAXBUtil {
           marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
               Boolean.TRUE);
           
-          marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
-              new NamespacePrefixMapperImpl());
+          // marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+          //   new NamespacePrefixMapperImpl());
           
           
           //character escape
