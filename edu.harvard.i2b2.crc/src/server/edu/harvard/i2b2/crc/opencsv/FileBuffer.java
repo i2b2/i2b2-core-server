@@ -1,6 +1,6 @@
 package edu.harvard.i2b2.crc.opencsv;
 
-import sun.nio.ch.DirectBuffer;
+//import sun.nio.ch.DirectBuffer;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -233,7 +233,7 @@ public class FileBuffer implements Closeable {
 				}
 				channel.close();
 			}
-			if (buffer != null && buffer.isDirect()) ((DirectBuffer) buffer).cleaner().clean();
+			//MM if (buffer != null && buffer.isDirect()) ((DirectBuffer) buffer).cleaner().clean();
 			if (out != null) out.close();
 			channel = null;
 			out = null;

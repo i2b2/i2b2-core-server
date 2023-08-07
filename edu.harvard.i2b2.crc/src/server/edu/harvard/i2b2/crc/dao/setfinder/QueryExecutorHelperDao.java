@@ -7,11 +7,14 @@
  * the terms of the Healthcare Disclaimer.
  ******************************************************************************/
 package edu.harvard.i2b2.crc.dao.setfinder;
- 
+
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -77,17 +80,17 @@ public class QueryExecutorHelperDao extends CRCDAO {
 
 	private DataSourceLookup dataSourceLookup = null,
 			originalDataSourceLookup = null;
-//	private static Map generatorMap = null;
+	//	private static Map generatorMap = null;
 	private static String defaultResultType = "PATIENT_COUNT_XML";
 	private String processTimingFlag = ProcessTimingReportUtil.NONE;
 	private ProcessTimingReportUtil ptrUtil = null;
 	private boolean queryWithoutTempTableFlag = false;
 
 	static {
-//		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-//		BeanFactory bf = qpUtil.getSpringBeanFactory();
-//		generatorMap = (Map) bf.getBean("setFinderResultGeneratorMap");
-//		defaultResultType = (String) bf.getBean("defaultSetfinderResultType");
+		//		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+		//		BeanFactory bf = qpUtil.getSpringBeanFactory();
+		//		generatorMap = (Map) bf.getBean("setFinderResultGeneratorMap");
+		//		defaultResultType = (String) bf.getBean("defaultSetfinderResultType");
 	}
 
 	public QueryExecutorHelperDao(DataSource dataSource,
@@ -149,11 +152,11 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		Connection manualConnection = null;
 		String singleSql = null;
 		int recordCount = 0, obfuscatedRecordCount = 0;
-	// WAS hard coded ... now passed int
-	//	transactionTimeout = 7200;
+		// WAS hard coded ... now passed int
+		//	transactionTimeout = 7200;
 		//TRANSACTION
-	//	log.info("Helper EXEC QUERY:TRANSACTION TIMEOUT IS " + transactionTimeout);
-		
+		//	log.info("Helper EXEC QUERY:TRANSACTION TIMEOUT IS " + transactionTimeout);
+
 		/** Global temp table to store intermediate setfinder results* */
 		String TEMP_TABLE = "#GLOBAL_TEMP_TABLE";
 
@@ -298,10 +301,10 @@ public class QueryExecutorHelperDao extends CRCDAO {
 				sqls = new String[] {generatedSql};
 			}
 
-		
+
 			log.info("Transaction timeout in sec " + transactionTimeout);
-			
-			
+
+
 			long startTime = System.currentTimeMillis();
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			LogTimingUtil outerLogTimingUtil = new LogTimingUtil();
@@ -321,14 +324,14 @@ public class QueryExecutorHelperDao extends CRCDAO {
 						// table statistics speed up the query
 						if (this.dataSourceLookup.getServerType().equalsIgnoreCase(
 								DAOFactoryHelper.SQLSERVER)) {
-							
+
 							log.debug("UPDATE STATISTICS " 
 									+ getDbSchemaName()
 									+ "#global_temp_table ");
-							
+
 							stmt.executeUpdate("UPDATE STATISTICS "
 									+ getDbSchemaName() 
-								+ "#global_temp_table ");
+									+ "#global_temp_table ");
 						}
 					} else { 
 						resultSet = stmt.executeQuery(singleSql);
@@ -443,14 +446,14 @@ public class QueryExecutorHelperDao extends CRCDAO {
 
 		} catch (CRCTimeOutException timeoutEx) {
 			//TRANSACTION timeout  ... do nothing
-//			timeOutErrorFlag = true;
+			//			timeOutErrorFlag = true;
 			throw timeoutEx;
-		
+
 		} catch (SQLException sqlEx) {
 			if (sqlEx.toString().indexOf("ORA-01013") > -1) {
 				log.info("Query timed out");
 				//TRANSACTION	timeout 
-			//	timeOutErrorFlag = true;
+				//	timeOutErrorFlag = true;
 				throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
 			} else 		if (sqlEx.getMessage().indexOf("The query was canceled.") > -1) {
 				log.info("Query timed out");
@@ -460,9 +463,9 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			}
 			else if (sqlEx.getMessage().indexOf("timed out") > -1) {
 				log.info("Query timed out");
-			//TRANSACTION	timeout .
-			
-			//	timeOutErrorFlag = true;
+				//TRANSACTION	timeout .
+
+				//	timeOutErrorFlag = true;
 				throw new CRCTimeOutException(sqlEx.getMessage(),
 						sqlEx);
 			} 
@@ -565,8 +568,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		// bf.getBean("setFinderResultOntologyKeyMap");
 		Map ontologyKeyMap = new HashMap();
 
-		
-		
+
+
 		QueryDefinitionType queryDef = getQueryDefinitionType(requestXml); 
 		String queryTiming = queryDef.getQueryTiming();
 		List<PanelType> panelList = queryDef.getPanel();
@@ -704,6 +707,33 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		param.put("panelList", panelList);
 		param.put("queryDef", queryDef);
 
+		try {
+			//String fileName = "";
+			String fileName = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename");
+
+			if (fileName.contains("{{{RANDOM_")) {
+				int start = fileName.indexOf("{{{RANDOM_");
+				int end = fileName.indexOf("}}}", start);
+				int size = Integer.parseInt(fileName.substring(start+10, end));
+
+				SecureRandom random = new SecureRandom();
+
+				param.put("ResultRandom", String.valueOf(random.nextInt(size)));
+			}
+
+			if (fileName.contains("{{{DATE_")) {
+				int start = fileName.indexOf("{{{DATE_");
+				int end = fileName.indexOf("}}}", start);
+				String date = fileName.substring(start+8, end);
+
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
+				//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
+				param.put("ResultDate", String.valueOf(LocalDate.now().format(formatter)));
+			}
+		} catch (Exception e) {}
+
+
+
 		if (resultOutputList != null) {
 			if (resultOutputList.getResultOutput() != null
 					&& resultOutputList.getResultOutput().size() > 0) {
@@ -716,10 +746,12 @@ public class QueryExecutorHelperDao extends CRCDAO {
 							sfDAOFactory, queryInstanceId, resultName);
 					param.put("ResultInstanceId", resultInstanceId);
 					param.put("ResultOptionName", resultName);
+					param.put("ResultFullName", resultOutputOption.getFullName().trim());
+					param.put("ResultPriority", resultOutputOption.getPriorityIndex());
 					
 					if (resultOutputOption.getPaths() != null)
 						param.put("ResultPath", resultOutputOption.getPaths().getPath());
-					
+
 					IQueryBreakdownTypeDao queryBreakdownTypeDao = sfDAOFactory
 							.getQueryBreakdownTypeDao();
 					QtQueryBreakdownType queryBreakdownType = queryBreakdownTypeDao
@@ -902,21 +934,21 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		JAXBElement responseJaxb;
 		try {
 			responseJaxb = CRCJAXBUtil.getJAXBUtil()
-			.unMashallFromString(requestString);
-		
-		RequestMessageType r = (RequestMessageType) responseJaxb.getValue();
-		BodyType bodyType = r.getMessageBody();
-		// 	get body and search for analysis definition
-		JAXBUnWrapHelper unWraphHelper = new JAXBUnWrapHelper();
-		
-		
+					.unMashallFromString(requestString);
+
+			RequestMessageType r = (RequestMessageType) responseJaxb.getValue();
+			BodyType bodyType = r.getMessageBody();
+			// 	get body and search for analysis definition
+			JAXBUnWrapHelper unWraphHelper = new JAXBUnWrapHelper();
+
+
 			queryDefReqType = (QueryDefinitionRequestType) unWraphHelper
-			.getObjectByClass(bodyType.getAny(),
-					QueryDefinitionRequestType.class);
+					.getObjectByClass(bodyType.getAny(),
+							QueryDefinitionRequestType.class);
 		} catch (JAXBUtilException e) {
 			throw new I2B2DAOException(e.getMessage());
 		}
-		
+
 		return queryDefReqType.getQueryDefinition();
 	}
 	/**

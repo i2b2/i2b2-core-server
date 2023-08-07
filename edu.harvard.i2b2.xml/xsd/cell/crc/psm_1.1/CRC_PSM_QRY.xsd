@@ -254,6 +254,38 @@
                     </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
+            <xs:enumeration value="CRC_QUARTZ_getJob">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>getJob_requestType</requestType>
+                        <responseType>getJob_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>            
+            <xs:enumeration value="CRC_QUARTZ_setJob">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>setJob_requestType</requestType>
+                        <responseType>setJob_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QUARTZ_getAllJob">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>getJob_requestType</requestType>
+                        <responseType>geJob_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QUARTZ_deleteJob">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>deleteJob_requestType</requestType>
+                        <responseType>string</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
 

@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Hashtable;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
+//import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -142,10 +142,11 @@ public class ObservationFactCSV2XmlBuilder {
 					i = 0;
 					StringWriter strWriter = new StringWriter();
 					try {
-						jaxbUtil.marshaller(new JAXBElement(new QName("",
-								"observation_set"), ObservationSet.class,
-								observationSet), strWriter);
-					} catch (JAXBUtilException e) {
+						//MM Changed for Java 11
+						//jaxbUtil.marshaller(new JAXBElement(new QName("",
+						//		"observation_set"), ObservationSet.class,
+						//		observationSet), strWriter);
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					String xml = strWriter.toString();
@@ -159,10 +160,11 @@ public class ObservationFactCSV2XmlBuilder {
 			if (i > 0) {
 				StringWriter strWriter = new StringWriter();
 				try {
-					jaxbUtil.marshaller(new JAXBElement(new QName("",
-							"observation_set"), ObservationSet.class,
-							observationSet), strWriter);
-				} catch (JAXBUtilException e) {
+					//MM Changed for Java 11
+					//jaxbUtil.marshaller(new JAXBElement(new QName("",
+					//		"observation_set"), ObservationSet.class,
+					//		observationSet), strWriter);
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				String xml = strWriter.toString();

@@ -44,6 +44,8 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmRequestTypeType;
 import edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate;
 import edu.harvard.i2b2.crc.delegate.ejbpm.EJBPMUtil;
 import edu.harvard.i2b2.crc.delegate.pm.PMServiceDriver;
+import edu.harvard.i2b2.crc.delegate.quartz.GetQuartzJobHandler;
+import edu.harvard.i2b2.crc.delegate.quartz.SetQuartzJobHandler;
 import edu.harvard.i2b2.crc.util.CacheUtil;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.ParamUtil;
@@ -370,6 +372,26 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_GET_ANALYSIS_PLUGIN_METADATA)) {
+				GetAnalysisPluginMetadataTypeHandler handler = new GetAnalysisPluginMetadataTypeHandler(
+						requestXml);
+				responseBodyType = handler.execute();
+			} else if (headerType.getRequestType().equals(
+					PsmRequestTypeType.CRC_QUARTZ_GET_JOB)) {
+				GetQuartzJobHandler handler = new GetQuartzJobHandler(
+						requestXml);
+				responseBodyType = handler.execute();
+			} else if (headerType.getRequestType().equals(
+					PsmRequestTypeType.CRC_QUARTZ_SET_JOB)) {
+				SetQuartzJobHandler handler = new SetQuartzJobHandler(
+						requestXml);
+				responseBodyType = handler.execute();
+			} else if (headerType.getRequestType().equals(
+					PsmRequestTypeType.CRC_QUARTZ_GET_ALL_JOB)) {
+				GetAnalysisPluginMetadataTypeHandler handler = new GetAnalysisPluginMetadataTypeHandler(
+						requestXml);
+				responseBodyType = handler.execute();
+			} else if (headerType.getRequestType().equals(
+					PsmRequestTypeType.CRC_QUARTZ_DELETE_JOB)) {
 				GetAnalysisPluginMetadataTypeHandler handler = new GetAnalysisPluginMetadataTypeHandler(
 						requestXml);
 				responseBodyType = handler.execute();

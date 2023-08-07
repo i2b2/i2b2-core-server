@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.Hashtable;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
+//import javax.xml.namespace.QName;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
@@ -155,10 +155,11 @@ public class VisitCSV2XmlBuilder {
 					i = 0;
 					StringWriter strWriter = new StringWriter();
 					try {
-						jaxbUtil.marshaller(new JAXBElement(new QName("",
-								"eventset"), EventSet.class, eventSet),
-								strWriter);
-					} catch (JAXBUtilException e) {
+						//MM Changed for Java 11
+						//jaxbUtil.marshaller(new JAXBElement(new QName("",
+						//		"eventset"), EventSet.class, eventSet),
+						//		strWriter);
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					String xml = strWriter.toString();
@@ -173,9 +174,10 @@ public class VisitCSV2XmlBuilder {
 			if (i > 0) {
 				StringWriter strWriter = new StringWriter();
 				try {
-					jaxbUtil.marshaller(new JAXBElement(new QName("",
-							"eventset"), EventSet.class, eventSet), strWriter);
-				} catch (JAXBUtilException e) {
+					//MM Changed for Java 11
+					//jaxbUtil.marshaller(new JAXBElement(new QName("",
+					//		"eventset"), EventSet.class, eventSet), strWriter);
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				String xml = strWriter.toString();

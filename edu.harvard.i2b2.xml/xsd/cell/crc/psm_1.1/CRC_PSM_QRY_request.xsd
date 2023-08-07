@@ -167,6 +167,26 @@
 
     </xs:complexType>
 
+      <xs:complexType name="delete_lob_requestType">
+                <xs:sequence>
+                    <xs:element name="job" type="crc:jobType"/>
+                </xs:sequence>
+    </xs:complexType>
+         
+      <xs:complexType name="set_job_requestType">
+                <xs:sequence>
+                    <xs:element name="job" type="crc:jobType"/>
+                </xs:sequence>
+    </xs:complexType>
     
-
+    <xs:complexType name="get_job_requestType">
+                <xs:sequence>
+                    <xs:element name="job" type="crc:jobType"/>
+                </xs:sequence>
+    </xs:complexType>
+         
+    <xs:complexType name="get_all_jobs_requestType">
+    </xs:complexType>
+         
+         
 </xs:schema>

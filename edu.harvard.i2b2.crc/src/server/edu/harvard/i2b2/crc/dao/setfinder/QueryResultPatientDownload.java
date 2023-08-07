@@ -98,6 +98,10 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 	public void generateResult(Map param) throws CRCTimeOutException,
 	I2B2DAOException {
 
+
+		// mm create a csv in a folder
+
+
 		SetFinderConnection sfConn = (SetFinderConnection) param
 				.get("SetFinderConnection");
 		SetFinderDAOFactory sfDAOFactory = (SetFinderDAOFactory) param
@@ -109,10 +113,13 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		String resultInstanceId = (String) param.get("ResultInstanceId");
 		// String itemKey = (String) param.get("ItemKey");
 		String resultTypeName = (String) param.get("ResultOptionName");
+		String resultFullName = (String) param.get("ResultFullName");
+
 		String processTimingFlag = (String) param.get("ProcessTimingFlag");
 		String projectId = (String) param.get("projectId");
 		int obfuscatedRecordCount = (Integer) param.get("ObfuscatedRecordCount");
 		int recordCount = (Integer) param.get("RecordCount");
+		int resultPriority = (Integer) param.get("ResultPriority");
 		int transactionTimeout = (Integer) param.get("TransactionTimeout");
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
 		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
@@ -137,265 +144,279 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 		int actualTotal = 0, obsfcTotal = 0;
 
-		try {
-			LogTimingUtil logTimingUtil = new LogTimingUtil();
-			logTimingUtil.setStartTime();
 
-			LogTimingUtil subLogTimingUtil = new LogTimingUtil();
-			subLogTimingUtil.setStartTime();
-
-			String itemCountSql = getItemKeyFromResultType(sfDAOFactory, resultTypeName);
-
-			//get break down count sigma from property file 
-
-			ResultType resultType = new ResultType();
-			resultType.setName(resultTypeName);
-			//stmt = sfConn.prepareStatement(itemCountSql);
-
-			CancelStatementRunner csr = new CancelStatementRunner(stmt,
-					transactionTimeout);
-			Thread csrThread = new Thread(csr);
-			csrThread.start();
-
-			//String sqlFinal = "";
-
-			if (itemCountSql.contains("{{{DX}}}"))
-				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DX\\}\\}\\}", TEMP_DX_TABLE);
-			if (itemCountSql.contains("{{{DATABASE_NAME}}}"))
-				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DATABASE_NAME\\}\\}\\}", this.getDbSchemaName());
+		//zip up if priority is 999
+		if (resultPriority == 999)
+		{
 
 
-			//	String[] sqls = itemCountSql.split("<\\*>");
-			//	int count = 0;
-			//	while (count < sqls.length - 1)
-			//	{
+		} else {
+
+			try {
+				LogTimingUtil logTimingUtil = new LogTimingUtil();
+				logTimingUtil.setStartTime();
+
+				LogTimingUtil subLogTimingUtil = new LogTimingUtil();
+				subLogTimingUtil.setStartTime();
+
+				String itemCountSql = getItemKeyFromResultType(sfDAOFactory, resultTypeName);
+
+				//get break down count sigma from property file 
+
+				ResultType resultType = new ResultType();
+				resultType.setName(resultTypeName);
+				//stmt = sfConn.prepareStatement(itemCountSql);
+
+				CancelStatementRunner csr = new CancelStatementRunner(stmt,
+						transactionTimeout);
+				Thread csrThread = new Thread(csr);
+				csrThread.start();
+
+				//String sqlFinal = "";
+
+				if (itemCountSql.contains("{{{DX}}}"))
+					itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DX\\}\\}\\}", TEMP_DX_TABLE);
+				if (itemCountSql.contains("{{{DATABASE_NAME}}}"))
+					itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DATABASE_NAME\\}\\}\\}", this.getDbSchemaName());
 
 
-
-			stmt = sfConn.prepareStatement(itemCountSql);
-			stmt.setQueryTimeout(transactionTimeout);
-			logesapi.debug(null,"Executing count sql [" + itemCountSql + "]");
-
-			//
-			subLogTimingUtil.setStartTime();
-			ResultSet resultSet = stmt.executeQuery();
-
-			//String fileName = "/tmp/"+ projectId +"output"+resultInstanceId + ".csv";
-			//automatically compression if destination file extension is ".zip" or ".gz"
-
-			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-			char separator = ',';
-			char escapechar = '"';
-			char lineEnd = '\n';
-			String userName = "";
-			char quotechar = '"';
-			String fileName = "";
-			int fetchSize = 50000;
-			int maxFetchRows = -1;
-			String separatorStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultseperator");
-			if (separatorStr != null) {
-				separator = getChar(separatorStr);
-			}
-			String quotecharStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultquotechar");
-			if (quotecharStr != null) {
-				quotechar = getChar(quotecharStr);
-			}
-			String escapecharStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultescapecharacter");
-			if (escapecharStr != null) {
-				escapechar = getChar(escapecharStr);
-			}
-			String lineEndStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultlineend");
-			if (lineEndStr != null) {
-				lineEnd = getChar(lineEndStr);
-			}
-			String fileNameStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename");
-			if (fileNameStr != null) {
-				fileName = fileNameStr;
-			}
-			String fetchSizeStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.resultfetchsize");
-			if (fetchSizeStr != null) {
-				fetchSize = Integer.parseInt(fetchSizeStr);
-			}	
-			String maxFetchRowsStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.maxfetchrows");
-			if (maxFetchRowsStr != null) {
-				maxFetchRows =  Integer.parseInt(maxFetchRowsStr);
-			}
-			fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}", userName);
-			fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId.substring(1, projectId.length()-1));
-			fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", resultInstanceId);
-			fileName = fileName.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", sanitizeFilename(queryDef.getQueryName()));
-
-			while (fileName.contains("{{{RANDOM_"))
-			{
-				try {
-					int start = fileName.indexOf("{{{RANDOM_");
-					int end = fileName.indexOf("}}}", start);
-					int size = Integer.parseInt(fileName.substring(start+10, end));
-
-					SecureRandom random = new SecureRandom();
-					fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", String.valueOf(random.nextInt(size)));
-
-				} catch (Exception e) {}
-
-			}
-			// Deal with dates
-			while (fileName.contains("{{{DATE_"))
-			{
-
-				try {
-					int start = fileName.indexOf("{{{DATE_");
-					int end = fileName.indexOf("}}}", start);
-					String date = fileName.substring(start+8, end);
-
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
-					fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
-				} catch (Exception e) {}
-
-			}
+				//	String[] sqls = itemCountSql.split("<\\*>");
+				//	int count = 0;
+				//	while (count < sqls.length - 1)
+				//	{
 
 
 
-			if (skipCSV == false) {
-				boolean async = true;
+				stmt = sfConn.prepareStatement(itemCountSql);
+				stmt.setQueryTimeout(transactionTimeout);
+				logesapi.debug(null,"Executing count sql [" + itemCountSql + "]");
 
-				File file = new File(fileName);
-				file.getParentFile().mkdirs();
-				try (CSVWriter writer = new  CSVWriter(fileName, separator,  quotechar,  escapechar,  Character.toString(lineEnd), recordCount,sfDAOFactory)) {
-					//CSVWriter(fileName)) {
+				//
+				subLogTimingUtil.setStartTime();
+				ResultSet resultSet = stmt.executeQuery();
 
+				//String fileName = "/tmp/"+ projectId +"output"+resultInstanceId + ".csv";
+				//automatically compression if destination file extension is ".zip" or ".gz"
 
-					//Define fetch size(default as 30000 rows), higher to be faster performance but takes more memory
-					ResultSetHelperService.RESULT_FETCH_SIZE=fetchSize;
-					//Define MAX extract rows, -1 means unlimited.
-					ResultSetHelperService.MAX_FETCH_ROWS=maxFetchRows;
+				QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+				char separator = ',';
+				char escapechar = '"';
+				char lineEnd = '\n';
+				String userName = "";
+				char quotechar = '"';
+				String fileName = "";
+				int fetchSize = 50000;
+				int maxFetchRows = -1;
+				String separatorStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultseperator");
+				if (separatorStr != null) {
+					separator = getChar(separatorStr);
+				}
+				String quotecharStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultquotechar");
+				if (quotecharStr != null) {
+					quotechar = getChar(quotecharStr);
+				}
+				String escapecharStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultescapecharacter");
+				if (escapecharStr != null) {
+					escapechar = getChar(escapecharStr);
+				}
+				String lineEndStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultlineend");
+				if (lineEndStr != null) {
+					lineEnd = getChar(lineEndStr);
+				}
+				String fileNameStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename");
+				if (fileNameStr != null) {
+					fileName = fileNameStr;
+				}
+				String fetchSizeStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.resultfetchsize");
+				if (fetchSizeStr != null) {
+					fetchSize = Integer.parseInt(fetchSizeStr);
+				}	
+				String maxFetchRowsStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.maxfetchrows");
+				if (maxFetchRowsStr != null) {
+					maxFetchRows =  Integer.parseInt(maxFetchRowsStr);
+				}
+				fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}", userName);
+				fileName = fileName.replaceAll("\\{\\{\\{FULL_NAME\\}\\}\\}", resultFullName);			
+				fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId.substring(1, projectId.length()-1));
+				//fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", resultInstanceId);
+				fileName = fileName.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", sanitizeFilename(queryDef.getQueryName()));
 
+				while (fileName.contains("{{{RANDOM_"))
+				{
 
+					try {
+						int start = fileName.indexOf("{{{RANDOM_");
+						int end = fileName.indexOf("}}}", start);
+						int size = Integer.parseInt(fileName.substring(start+10, end));
 
-					//String lockoutQueryCountStr = qpUtil
-					//		.getCRCPropertyValue("edu.harvard.i2b2.crc.lockout.setfinderquery.count");
-					writer.setAsyncMode(async);
-					int result = writer.writeAll(resultSet, true);
+						//SecureRandom random = new SecureRandom();
+						//fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", String.valueOf(random.nextInt(size)));
+						fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", (String) param.get("ResultRandom"));
+
+					} catch (Exception e) {}
 
 				}
-				if (csr.getSqlFinishedFlag()) {
-					timeoutFlag = true;
-					throw new CRCTimeOutException("The query was canceled.");
+				// Deal with dates
+				while (fileName.contains("{{{DATE_"))
+				{
+
+					try {
+						int start = fileName.indexOf("{{{DATE_");
+						int end = fileName.indexOf("}}}", start);
+						String date = fileName.substring(start+8, end);
+
+						//DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
+						//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
+						fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", (String) param.get("ResultDate"));
+
+					} catch (Exception e) {}
+
 				}
 
-			}
 
 
-			edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
-			BodyType bodyType = new BodyType();
-			bodyType.getAny().add(of.createResult(resultType));
-			ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
-			resultEnvelop.setBody(bodyType);
+				if (skipCSV == false) {
+					boolean async = true;
 
-			JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+					File file = new File(fileName);
+					file.getParentFile().mkdirs();
+					try (CSVWriter writer = new  CSVWriter(fileName, separator,  quotechar,  escapechar,  Character.toString(lineEnd), recordCount,sfDAOFactory)) {
+						//CSVWriter(fileName)) {
 
-			StringWriter strWriter = new StringWriter();
-			subLogTimingUtil.setStartTime();
-			jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
-					strWriter);
-			subLogTimingUtil.setEndTime();
-			//tm.begin();
-			IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
-			xmlResult = strWriter.toString();
-			if (resultInstanceId != null)
-				xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
-						.toString());
-			//
-			if (processTimingFlag != null) {
-				if (!processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.NONE) ) {
-					ProcessTimingReportUtil ptrUtil = new ProcessTimingReportUtil(sfDAOFactory.getDataSourceLookup());
-					if (processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.DEBUG) ) {
-						ptrUtil.logProcessTimingMessage(queryInstanceId, ptrUtil.buildProcessTiming(subLogTimingUtil, "JAXB - " + resultTypeName , ""));
+
+						//Define fetch size(default as 30000 rows), higher to be faster performance but takes more memory
+						ResultSetHelperService.RESULT_FETCH_SIZE=fetchSize;
+						//Define MAX extract rows, -1 means unlimited.
+						ResultSetHelperService.MAX_FETCH_ROWS=maxFetchRows;
+
+
+
+						//String lockoutQueryCountStr = qpUtil
+						//		.getCRCPropertyValue("edu.harvard.i2b2.crc.lockout.setfinderquery.count");
+						writer.setAsyncMode(async);
+						int result = writer.writeAll(resultSet, true);
+
 					}
-					logTimingUtil.setEndTime();
-					ptrUtil.logProcessTimingMessage(queryInstanceId, ptrUtil.buildProcessTiming(logTimingUtil, "BUILD - " + resultTypeName , ""));
+					if (csr.getSqlFinishedFlag()) {
+						timeoutFlag = true;
+						throw new CRCTimeOutException("The query was canceled.");
+					}
+
 				}
-			}
-			//tm.commit();
 
-		} catch (SQLException sqlEx) {
-			// catch oracle query timeout error ORA-01013
-			if (sqlEx.toString().indexOf("ORA-01013") > -1) {
-				timeoutFlag = true;
-				throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
-			}
-			if (sqlEx.getMessage().indexOf("The query was canceled.") > -1) {
-				timeoutFlag = true;
-				throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
-			}
-			errorFlag = true;
-			log.error("Error while executing sql", sqlEx);
-			throw new I2B2DAOException("Error while executing sql", sqlEx);
-		} catch (Exception sqlEx) {
 
-			errorFlag = true;
-			log.error("QueryResultPatientSetGenerator.generateResult:"
-					+ sqlEx.getMessage(), sqlEx);
-			throw new I2B2DAOException(
-					"QueryResultPatientSetGenerator.generateResult:"
-							+ sqlEx.getMessage(), sqlEx);
-		} finally {
+				edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
+				BodyType bodyType = new BodyType();
+				bodyType.getAny().add(of.createResult(resultType));
+				ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
+				resultEnvelop.setBody(bodyType);
 
-			if (resultInstanceId != null) {
-				IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
-						.getPatientSetResultDAO();
+				JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
 
-				if (errorFlag) {
-					resultInstanceDao.updatePatientSet(resultInstanceId,
-							QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
-				} else {
-					// set the setsize and the description of the result instance if
-					// the user role is obfuscated
-					if (timeoutFlag == false) { // check if the query completed
-						try {
-							//	tm.begin();
+				StringWriter strWriter = new StringWriter();
+				subLogTimingUtil.setStartTime();
+				jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
+						strWriter);
+				subLogTimingUtil.setEndTime();
+				//tm.begin();
+				IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+				xmlResult = strWriter.toString();
+				if (resultInstanceId != null)
+					xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
+							.toString());
+				//
+				if (processTimingFlag != null) {
+					if (!processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.NONE) ) {
+						ProcessTimingReportUtil ptrUtil = new ProcessTimingReportUtil(sfDAOFactory.getDataSourceLookup());
+						if (processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.DEBUG) ) {
+							ptrUtil.logProcessTimingMessage(queryInstanceId, ptrUtil.buildProcessTiming(subLogTimingUtil, "JAXB - " + resultTypeName , ""));
+						}
+						logTimingUtil.setEndTime();
+						ptrUtil.logProcessTimingMessage(queryInstanceId, ptrUtil.buildProcessTiming(logTimingUtil, "BUILD - " + resultTypeName , ""));
+					}
+				}
+				//tm.commit();
 
-							String obfusMethod = "", description = null;
-							if (obfscDataRoleFlag) {
-								obfusMethod = IQueryResultInstanceDao.OBSUBTOTAL;
-								// add () to the result type description
-								// read the description from result type
+			} catch (SQLException sqlEx) {
+				// catch oracle query timeout error ORA-01013
+				if (sqlEx.toString().indexOf("ORA-01013") > -1) {
+					timeoutFlag = true;
+					throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
+				}
+				if (sqlEx.getMessage().indexOf("The query was canceled.") > -1) {
+					timeoutFlag = true;
+					throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
+				}
+				errorFlag = true;
+				log.error("Error while executing sql", sqlEx);
+				throw new I2B2DAOException("Error while executing sql", sqlEx);
+			} catch (Exception sqlEx) {
 
-							} else { 
-								obfuscatedRecordCount = recordCount;
+				errorFlag = true;
+				log.error("QueryResultPatientSetGenerator.generateResult:"
+						+ sqlEx.getMessage(), sqlEx);
+				throw new I2B2DAOException(
+						"QueryResultPatientSetGenerator.generateResult:"
+								+ sqlEx.getMessage(), sqlEx);
+			} finally {
+
+				if (resultInstanceId != null) {
+					IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
+							.getPatientSetResultDAO();
+
+					if (errorFlag) {
+						resultInstanceDao.updatePatientSet(resultInstanceId,
+								QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
+					} else {
+						// set the setsize and the description of the result instance if
+						// the user role is obfuscated
+						if (timeoutFlag == false) { // check if the query completed
+							try {
+								//	tm.begin();
+
+								String obfusMethod = "", description = null;
+								if (obfscDataRoleFlag) {
+									obfusMethod = IQueryResultInstanceDao.OBSUBTOTAL;
+									// add () to the result type description
+									// read the description from result type
+
+								} else { 
+									obfuscatedRecordCount = recordCount;
+								}
+								IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
+								List<QtQueryResultType> resultTypeList = resultTypeDao
+										.getQueryResultTypeByName(resultTypeName, roles);
+
+								// add "(Obfuscated)" in the description
+								//description = resultTypeList.get(0)
+								//		.getDescription()
+								//		+ " (Obfuscated) ";
+								String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
+										sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
+
+
+
+								resultInstanceDao.updatePatientSet(resultInstanceId,
+										QueryStatusTypeId.STATUSTYPE_ID_FINISHED, null,
+										//obsfcTotal, 
+										obfuscatedRecordCount, recordCount, obfusMethod);
+
+								description = resultTypeList.get(0)
+										.getDescription() + " for \"" + queryName +"\"";
+
+								// set the result instance description
+								resultInstanceDao.updateResultInstanceDescription(
+										resultInstanceId, description);
+								//	tm.commit();
+							} catch (SecurityException e) {
+								throw new I2B2DAOException(
+										"Failed to write obfuscated description "
+												+ e.getMessage(), e);
+							} catch (IllegalStateException e) {
+								throw new I2B2DAOException(
+										"Failed to write obfuscated description "
+												+ e.getMessage(), e);
 							}
-							IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
-							List<QtQueryResultType> resultTypeList = resultTypeDao
-									.getQueryResultTypeByName(resultTypeName, roles);
-
-							// add "(Obfuscated)" in the description
-							//description = resultTypeList.get(0)
-							//		.getDescription()
-							//		+ " (Obfuscated) ";
-							String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-									sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
-
-
-
-							resultInstanceDao.updatePatientSet(resultInstanceId,
-									QueryStatusTypeId.STATUSTYPE_ID_FINISHED, null,
-									//obsfcTotal, 
-									obfuscatedRecordCount, recordCount, obfusMethod);
-
-							description = resultTypeList.get(0)
-									.getDescription() + " for \"" + queryName +"\"";
-
-							// set the result instance description
-							resultInstanceDao.updateResultInstanceDescription(
-									resultInstanceId, description);
-							//	tm.commit();
-						} catch (SecurityException e) {
-							throw new I2B2DAOException(
-									"Failed to write obfuscated description "
-											+ e.getMessage(), e);
-						} catch (IllegalStateException e) {
-							throw new I2B2DAOException(
-									"Failed to write obfuscated description "
-											+ e.getMessage(), e);
 						}
 					}
 				}
@@ -406,7 +427,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 	private String sanitizeFilename(String filename)
 	{
-		
+
 		return filename.replaceAll("[^a-zA-Z0-9.-]", "_");
 	}
 	/*
