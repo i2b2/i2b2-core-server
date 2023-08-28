@@ -100,7 +100,23 @@
 		</statement>
 	</datasource>
 	-->
-	
+
+	<!--  SNOWFLAKE EXAMPLE -->
+	<!--
+	<datasource jta="false" jndi-name="java:/CRCBootStrapDS"
+		pool-name="CRCBootStrapDS" enabled="true" use-ccm="false">
+		<connection-url>jdbc:snowflake://<account>.us-east-2.aws.snowflakecomputing.com/?db=I2B2_DEV&schema=I2B2HIVE&warehouse=I2B2_DEV_WH&role=I2B2_DEV_APP_ROLE&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true</connection-url>
+		<driver-class>net.snowflake.client.jdbc.SnowflakeDriver</driver-class>
+		<driver>snowflake-jdbc-3.13.30.jar</driver>
+		<security>
+			<user-name>I2B2HIVE_USER</user-name>
+			<password>demouser</password>
+		</security>
+		<statement>
+			<share-prepared-statements>false</share-prepared-statements>
+		</statement>
+	</datasource>
+	-->
 	<!-- 
 
    _____ ______ _____ _______ _____ ____  _   _    ___      ____  ______    ___  
@@ -192,5 +208,21 @@
 	</datasource>
 	-->
 
+	<!--  SNOWFLAKE EXAMPLE -->
+	<!--
+	<datasource jta="false" jndi-name="java:/QueryToolDemoDS"
+		pool-name="QueryToolDemoDS" enabled="true" use-ccm="false">
+		<connection-url>jdbc:snowflake://<account>.us-east-2.aws.snowflakecomputing.com/?db=I2B2_DEV&schema=I2B2DATA&warehouse=I2B2_DEV_WH&role=I2B2_DEV_APP_ROLE&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true</connection-url>
+		<driver-class>net.snowflake.client.jdbc.SnowflakeDriver</driver-class>
+		<driver>snowflake-jdbc-3.13.30.jar</driver>
+		<security>
+			<user-name>i2b2hive</user-name>
+			<password>demouser</password>
+		</security>
+		<statement>
+			<share-prepared-statements>false</share-prepared-statements>
+		</statement>
+	</datasource>
+	-->
 
 </datasources>

@@ -134,7 +134,8 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 				resultSet = query.executeQuery();
 			} else  if 
 			(dataSourceLookup.getServerType().equalsIgnoreCase(
-					DAOFactoryHelper.POSTGRESQL))
+							DAOFactoryHelper.POSTGRESQL) || dataSourceLookup.getServerType().equalsIgnoreCase(
+							DAOFactoryHelper.SNOWFLAKE) )
 			{
 				// create temp table
 				// load to temp table
@@ -142,7 +143,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
 
-				uploadTempTable(tempStmt, patientNumList,dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL));
+				uploadTempTable(tempStmt, patientNumList,dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE));
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
@@ -290,7 +291,8 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 				DAOFactoryHelper.SQLSERVER)) {
 			tempTableName = this.getDbSchemaName() + SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.POSTGRESQL) || dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
 			tempTableName =  SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
 		}
 		try {
@@ -426,7 +428,8 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 			throws SQLException {
 		String temp_pdo = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 		if (dataSourceLookup.getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.POSTGRESQL))
+				DAOFactoryHelper.POSTGRESQL) || dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE))
 			temp_pdo = temp_pdo.substring(1);
 
 		String createTempInputListTable =  "create "
@@ -436,7 +439,8 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 				+ " ( char_param1 varchar(100) )";
 	
 		if (dataSourceLookup.getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.POSTGRESQL))
+				DAOFactoryHelper.POSTGRESQL) || dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE))
 		 createTempInputListTable = "create temp table "
 				+ temp_pdo
 				+ " ( char_param1 varchar(100) )";
@@ -500,7 +504,8 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 					+ " (set_index int, char_param1 varchar(200), char_param2 varchar(200) )";
 			tempStmt.executeUpdate(createTempInputListTable);
 		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.POSTGRESQL) || dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
 			String createTempInputListTable = "create temp table "
 					+ tempTableName
 					+ " (set_index int, char_param1 varchar(200), char_param2 varchar(200) )";
@@ -559,12 +564,12 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 						+ " ( set_index int, char_param1 varchar(500) )";
 				tempStmt.executeUpdate(createTempInputListTable);
 				log.debug("created temp table" + tempTable);
-			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
 				tempTable = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
 				try {
-					tempStmt.executeUpdate("drop table " + tempTable);
+					tempStmt.executeUpdate("drop table if exists " + tempTable);
 				} catch (SQLException sqlex) {
 					;
 				}
@@ -609,7 +614,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 					+ "patient_mapping pm "
 					+ " where patient_num in (select distinct ";
 
-			if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+			if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
 				finalSql += " CAST(coalesce(char_param1, '0') as integer) ";
 			else
 				finalSql += " char_param1 ";

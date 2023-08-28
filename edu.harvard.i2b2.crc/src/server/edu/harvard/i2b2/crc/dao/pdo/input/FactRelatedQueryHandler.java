@@ -271,6 +271,9 @@ IFactRelatedQueryHandler {
 					if(dataSourceLookup.getServerType().equals("ORACLE")){
 						sql=   "SELECT * FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'TABLE' AND lower(OBJECT_NAME) = 'observation_fact'";
 						sql += " and OWNER = '" + dataSourceLookup.getFullSchema() + "'";
+					} else if (dataSourceLookup.getServerType().equals("SNOWFLAKE")) {
+						sql = "select * from information_schema.tables where lower(table_name) = 'observation_fact'";
+						sql += " and table_schema = '" + dataSourceLookup.getFullSchema() + "'";
 					}
 					//log.info("no Filter sql: " + dataSourceLookup.getServerType() + " " + sql);
 					
@@ -431,6 +434,9 @@ IFactRelatedQueryHandler {
 					if(dataSourceLookup.getServerType().equals("ORACLE")){
 						sql=   "SELECT * FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'TABLE' AND lower(OBJECT_NAME) = 'observation_fact'";
 						sql += " and OWNER = '" + dataSourceLookup.getFullSchema() + "'";
+					} else if (dataSourceLookup.getServerType().equals("SNOWFLAKE")) {
+						sql = "select * from information_schema.tables where lower(table_name) = 'observation_fact'";
+						sql += " and table_schema = '" + dataSourceLookup.getFullSchema() + "'";
 					}
 					//log.info("no Filter sql: " + dataSourceLookup.getServerType() + " " + sql);
 					PreparedStatement stmt1 = conn.prepareStatement(sql);
@@ -727,8 +733,12 @@ IFactRelatedQueryHandler {
 						obsFactSelectClause, tableLookupJoinClause,
 						fullWhereClause);
 					mainQuerySql += factWithoutFilterSql ;
-				}
-				else {
+				} else if (dataSourceLookup.getServerType().equals("SNOWFLAKE")) {
+					factWithoutFilterSql = postgresFactQueryWithoutFilter(
+							obsFactSelectClause, tableLookupJoinClause,
+							fullWhereClause);
+					mainQuerySql += factWithoutFilterSql + ") b \n";
+				} else {
 					factWithoutFilterSql = postgresFactQueryWithoutFilter(
 							obsFactSelectClause, tableLookupJoinClause,
 							fullWhereClause);
@@ -834,12 +844,17 @@ IFactRelatedQueryHandler {
 				dataSourceLookup);
 
 
-
 		if (panel.getName() != null) {
 			panelName = JDBCUtil.escapeSingleQuote(panel.getName());
 		}
 
-		obsFactSelectClause += (", '" + panelName + "' panel_name ");
+		// query "\\'" is valid but "\'" is not valid
+		if (dataSourceLookup.getServerType().equals("SNOWFLAKE") && panelName != null && panelName.endsWith("\\") && !panelName.endsWith("\\\\")) {
+			obsFactSelectClause += (", '" + panelName + "\\" + "' panel_name ");
+		} else {
+			obsFactSelectClause += (", '" + panelName + "' panel_name ");
+		}
+
 		int totalItemOccurance = 0;
 		if (panel.getTotalItemOccurrences() != null) {
 			totalItemOccurance = panel.getTotalItemOccurrences().getValue();

@@ -19,6 +19,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
+import java.sql.SQLException;
+
+import edu.harvard.i2b2.common.exception.I2B2DAOException;
+import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.util.ServiceLocator;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlParameter;
@@ -76,6 +84,8 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 		private String SEQUENCE_ORACLE = "";
 		private String SEQUENCE_POSTGRESQL = "";
 		private String INSERT_POSTGRESQL = "";
+		private String SEQUENCE_SNOWFLAKE = "";
+		private String INSERT_SNOWFLAKE = "";
 
 		private DataSourceLookup dataSourceLookup = null;
 
@@ -114,6 +124,19 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 				setSql(INSERT_POSTGRESQL);
 				SEQUENCE_POSTGRESQL = "select "// + dbSchemaName
 						+ "nextval('qt_pdo_query_master_query_master_id_seq') ";
+				declareParameter(new SqlParameter(Types.INTEGER));
+			} else if ( dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
+				this.setReturnGeneratedKeys(true);
+				INSERT_SNOWFLAKE = "INSERT INTO "
+						+ dbSchemaName
+						+ "QT_PDO_QUERY_MASTER "
+						+ "(QUERY_MASTER_ID,  USER_ID, GROUP_ID,CREATE_DATE,REQUEST_XML,I2B2_REQUEST_XML) "
+						+ "VALUES (?,?,?,?,?,?)";
+				setSql(INSERT_SNOWFLAKE);
+				SEQUENCE_SNOWFLAKE = "select "
+						+ dbSchemaName
+						+ "SEQ_QT_PDO_QUERY_MASTER.nextval";
 				declareParameter(new SqlParameter(Types.INTEGER));
 			}
 			this.dataSourceLookup = dataSourceLookup;
@@ -163,6 +186,37 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 						getRequestXmlNoPass, i2b2RequestXml };
 				update(object);
 
+			} else  if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
+				try {
+					queryMasterIdentityId = jdbc.queryForObject(SEQUENCE_SNOWFLAKE, Integer.class);
+					Connection manualConnection = ServiceLocator.getInstance()
+							.getAppServerDataSource(dataSourceLookup.getDataSource())
+							.getConnection();
+					String sql = getSql();
+					PreparedStatement pstmt = manualConnection.prepareStatement(sql);
+					pstmt.setInt(1, queryMasterIdentityId);
+					pstmt.setString(2, queryMaster.getUserId());
+					pstmt.setString(3, queryMaster.getGroupId());
+
+					pstmt.setString(5, getRequestXmlNoPass);
+					pstmt.setString(6, i2b2RequestXml);
+
+					if (queryMaster.getCreateDate() == null) {
+						pstmt.setNull(4, Types.TIMESTAMP);
+					} else {
+						Timestamp tsCreate = new Timestamp(queryMaster.getCreateDate().getTime());
+						pstmt.setTimestamp(4, tsCreate);
+					}
+					pstmt.executeUpdate();
+				} catch (I2B2Exception ex1) {
+					//TODO:
+					System.out.println(" v- I2B2Exception: " + ex1.getMessage());
+
+				} catch (SQLException ex2) {
+					//TODO:
+					System.out.println("QueryPdoMasterSpringDao- SQLException: " + ex2.getMessage());
+				}
 			}
 
 			queryMaster.setQueryMasterId(String.valueOf(queryMasterIdentityId));

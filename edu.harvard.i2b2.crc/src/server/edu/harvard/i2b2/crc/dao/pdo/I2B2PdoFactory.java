@@ -168,6 +168,15 @@ public class I2B2PdoFactory {
 
 					}
 
+				} else if (dbType.equalsIgnoreCase("SNOWFLAKE")) {
+					String clob = rowSet.getString("obs_observation_blob");
+					if (clob !=null)
+					{
+						BlobType blobType = new BlobType();
+						blobType.getContent().add(clob);
+						observationFactType.setObservationBlob(blobType);
+
+					}
 				} else {
 					Clob observationClob = rowSet.getClob("obs_observation_blob");
 
@@ -277,6 +286,16 @@ public class I2B2PdoFactory {
 
 					}
 
+				} else if (dbType.equalsIgnoreCase("SNOWFLAKE")) {
+					String clob = rowSet.getString("patient_patient_blob");
+					if (clob !=null)
+					{
+						BlobType blobType = new BlobType();
+						blobType.getContent().add(clob);
+						patientDimensionType.setPatientBlob(blobType);
+
+					}
+
 				} else {
 					Clob patientClob = rowSet.getClob("patient_patient_blob");
 
@@ -366,6 +385,16 @@ public class I2B2PdoFactory {
 			if (providerBlobFlag) {
 				if (dbType.equalsIgnoreCase("POSTGRESQL"))
 				{
+					String clob = rowSet.getString("provider_provider_blob");
+					if (clob !=null)
+					{
+						BlobType blobType = new BlobType();
+						blobType.getContent().add(clob);
+						providerDimensionType.setObserverBlob(blobType);
+
+					}
+
+				} else if (dbType.equalsIgnoreCase("SNOWFLAKE")) {
 					String clob = rowSet.getString("provider_provider_blob");
 					if (clob !=null)
 					{
@@ -466,6 +495,16 @@ public class I2B2PdoFactory {
 			if (conceptBlobFlag) {
 				if (dbType.equalsIgnoreCase("POSTGRESQL"))
 				{
+					String clob = rowSet.getString("concept_concept_blob");
+					if (clob !=null)
+					{
+						BlobType blobType = new BlobType();
+						blobType.getContent().add(clob);
+						conceptDimensionType.setConceptBlob(blobType);
+
+					}
+
+				} else if (dbType.equalsIgnoreCase("SNOWFLAKE")) {
 					String clob = rowSet.getString("concept_concept_blob");
 					if (clob !=null)
 					{
@@ -578,6 +617,15 @@ public class I2B2PdoFactory {
 
 					}
 
+				} else if (dbType.equalsIgnoreCase("SNOWFLAKE")) {
+					String clob = rowSet.getString("modifier_modifier_blob");
+					if (clob !=null)
+					{
+						BlobType blobType = new BlobType();
+						blobType.getContent().add(clob);
+						modifierDimensionType.setModifierBlob(blobType);
+
+					}
 				} else {
 
 					Clob modifierClob = rowSet.getClob("modifier_modifier_blob");
@@ -683,6 +731,16 @@ public class I2B2PdoFactory {
 			if (eventBlobFlag) {
 				if (dbType.equalsIgnoreCase("POSTGRESQL"))
 				{
+					String clob = rowSet.getString("visit_visit_blob");
+					if (clob !=null)
+					{
+						BlobType blobType = new BlobType();
+						blobType.getContent().add(clob);
+						visitDimensionType.setEventBlob(blobType);
+
+					}
+
+				} else if (dbType.equalsIgnoreCase("SNOWFLAKE")) {
 					String clob = rowSet.getString("visit_visit_blob");
 					if (clob !=null)
 					{

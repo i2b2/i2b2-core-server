@@ -143,6 +143,14 @@ public class PidListTypeHandler extends CRCDAO implements
 					+ getTempTableName()
 					+ " (set_index int, char_param1 varchar(100), char_param2 varchar(100) )";
 			tempStmt.executeUpdate(createTempInputListTable);
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL) || dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE))
+		{
+			String createTempInputListTable = "create temp table "
+					+ getTempTableName()
+					+ " (set_index int, char_param1 varchar(100), char_param2 varchar(100) )";
+			tempStmt.executeUpdate(createTempInputListTable);
 		}
 		int i = 0, j = 1;
 
@@ -207,6 +215,12 @@ public class PidListTypeHandler extends CRCDAO implements
 				//		"delete  " + getTempTableName());
 				deleteStmt.executeUpdate(
 						"delete  " + getTempTableName());
+			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
+				//conn.createStatement().executeUpdate(
+				//		"drop table " + getTempTableName());
+				deleteStmt.executeUpdate(
+						"drop table if exists " + getTempTableName());
 			}
 		} catch (SQLException sqle) {
 			throw sqle;
@@ -259,7 +273,11 @@ public class PidListTypeHandler extends CRCDAO implements
 				DAOFactoryHelper.ORACLE)) {
 			tempTableName = this.getDbSchemaName()
 					+ FactRelatedQueryHandler.TEMP_PARAM_TABLE;
-		} else {
+		} else if(dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
+			tempTableName = this.getDbSchemaName()
+					+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
+		}else {
 			tempTableName = this.getDbSchemaName()
 					+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 		}

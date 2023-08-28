@@ -24,7 +24,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
-
+import java.sql.Types;
 
 /**
  * Class to manager persistance operation of
@@ -63,7 +63,15 @@ public class QueryStatusTypeSpringDao extends CRCDAO implements IQueryStatusType
     public QtQueryStatusType getQueryStatusTypeById(int statusTypeId) {
     	
         String sql = "select * from " + getDbSchemaName() + "qt_query_status_type where status_type_id = ?" ;
-        QtQueryStatusType queryStatusType = (QtQueryStatusType)jdbcTemplate.queryForObject(sql,new Object[]{statusTypeId},queryStatusTypeMapper );
+
+		// Deprecated
+		//QtQueryStatusType queryStatusType = (QtQueryStatusType)jdbcTemplate.queryForObject(sql,new Object[]{statusTypeId},queryStatusTypeMapper );
+		QtQueryStatusType queryStatusType = (QtQueryStatusType)jdbcTemplate.queryForObject(
+				sql,
+				new Object[]{statusTypeId},
+				new int[]{ Types.INTEGER },
+				queryStatusTypeMapper
+		);
         return queryStatusType;
     }
    
