@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<crc:set_job xmlns:crc="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.i2b2.org/xsd/cell/crc/psm/1.1/ CRC.xsd ">
+  <name>name</name>
+  <group>group</group>
+  <schedule>
+    <repeat>repeat</repeat>
+    <intervalIn>intervalIn</intervalIn>
+    <Interval>0</Interval>
+  </schedule>
+  <start_time>2001-12-31T12:00:00</start_time>
+  <end_time>2001-12-31T12:00:00</end_time>
+  <status>status</status>
+  <message>message</message>
+</crc:set_job>

@@ -32,6 +32,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResultStatusType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PdoRequestTypeType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.JobsType;
 //import edu.harvard.i2b2.crc.datavo.wdo.AuditsType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.DblookupsType;
 //import edu.harvard.i2b2.crc.datavo.wdo.IsKeySetType;
@@ -141,7 +142,7 @@ public class MessageFactory {
 ////MM        bodyType.getAny().add(of.createRequestXML(workplaceData));  //  createFolders(workplaceData));
 //
 //        return bodyType;
-//    }
+//    } 
 
 	
 	/**swc20160520
@@ -160,6 +161,14 @@ public class MessageFactory {
 		return bodyType;
 	}
 
+	public static BodyType createBodyType(JobsType dblookups) {
+//		edu.harvard.i2b2.im.datavo.wdo.ObjectFactory of = new edu.harvard.i2b2.im.datavo.wdo.ObjectFactory();
+		edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory();
+		BodyType bodyType = new BodyType();
+		bodyType.getAny().add(of.createJobs(dblookups));
+
+		return bodyType;
+	}
     
     /**
      * Function to create response  message header based
@@ -350,6 +359,14 @@ public class MessageFactory {
 		ResponseMessageType respMessageType = null;
 		ResponseHeaderType respHeader = createResponseHeader("DONE", "CRC processing completed");
 		BodyType bodyType = createBodyType(dblookups);
+		respMessageType = createResponseMessageType(messageHeaderType, respHeader, bodyType);
+		return respMessageType;
+	}
+	
+	public static ResponseMessageType createBuildResponse(MessageHeaderType messageHeaderType, JobsType dblus) {
+		ResponseMessageType respMessageType = null;
+		ResponseHeaderType respHeader = createResponseHeader("DONE", "CRC processing completed");
+		BodyType bodyType = createBodyType(dblus);
 		respMessageType = createResponseMessageType(messageHeaderType, respHeader, bodyType);
 		return respMessageType;
 	}

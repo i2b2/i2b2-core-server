@@ -182,51 +182,6 @@
         </xs:complexContent>
     </xs:complexType>
     
-    <xs:complexType name="jobType">
-		<xs:sequence>
-			<xs:element name="name" type="xs:string" />
-			<xs:element name="group" type="xs:string" />
-			<xs:element name="schedule" type="crc:scheduleType" />
-            <xs:element name="start_time" type="xs:dateTime"/>
-            <xs:element name="end_time" type="xs:dateTime"/>
-			<xs:element name="status" type="xs:string" />            
-            <xs:element name="message" type="xs:string"/>			
-		</xs:sequence>
-	</xs:complexType>
 
-
-	<xs:complexType name="jobsType">
-		<xs:sequence>
-			<xs:element name="project" type="crc:jobType" minOccurs="0"
-				maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-		
-    <xs:complexType name="scheduleType">
-		<xs:sequence>
-			<xs:element name="repeat" type="xs:string" />
-			<xs:element name="intervalIn" type="xs:string" />
-			<xs:element name="Interval" type="xs:int" />
-		</xs:sequence>
-	</xs:complexType>
-
-      <xs:complexType name="set_job_responseType">
-                <xs:sequence>
-                    <xs:element name="job" type="crc:jobType"/>
-                </xs:sequence>
-    </xs:complexType>
-    
-    <xs:complexType name="get_job_responseType">
-                <xs:sequence>
-                    <xs:element name="job" type="crc:jobType"/>
-                </xs:sequence>
-    </xs:complexType>
-         
-    <xs:complexType name="get_all_jobs_responseType">
-                <xs:sequence>
-                    <xs:element name="jobs" type="crc:jobType"/>
-                </xs:sequence>
-    </xs:complexType>
-         
          
 </xs:schema>

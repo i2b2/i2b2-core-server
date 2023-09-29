@@ -47,8 +47,13 @@ import edu.harvard.i2b2.crc.delegate.DbLookupReqHandler;
 import edu.harvard.i2b2.crc.delegate.DeleteDblookupHandler;
 import edu.harvard.i2b2.crc.delegate.GetAllDblookupsHandler;
 import edu.harvard.i2b2.crc.delegate.GetDblookupHandler;
+import edu.harvard.i2b2.crc.delegate.JobReqHandler;
 import edu.harvard.i2b2.crc.delegate.QTBreakdownRequestDelegate;
+import edu.harvard.i2b2.crc.delegate.RequestHandler;
 import edu.harvard.i2b2.crc.delegate.SetDblookupHandler;
+import edu.harvard.i2b2.crc.delegate.quartz.GetAllJobsHandler;
+import edu.harvard.i2b2.crc.delegate.quartz.SetJobHandler;
+import edu.harvard.i2b2.crc.delegate.quartz.SetJobHandlerMaybe;
 import edu.harvard.i2b2.crc.axis2.DeleteDblookupDataMessage;
 import edu.harvard.i2b2.crc.axis2.GetAllDblookupsDataMessage;
 import edu.harvard.i2b2.crc.axis2.GetDblookupDataMessage;
@@ -224,6 +229,62 @@ public class QueryService {
 		return responseElement;
 
 	}	
+	
+
+	/**  
+	 * This function is main webservice interface to get the I2B2HIVE.CRC_DB_LOOKUP data.
+	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllJobsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement getAllJobs(OMElement getAllJobsElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getAllJobsElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = getAllJobsElement.toString();
+		GetAllJobsDataMessage jobsDataMsg = new GetAllJobsDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != jobsDataMsg.getRequestMessageType()) {
+			if (null != jobsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = jobsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		
+		return executeJobs(new GetAllJobsHandler(requestElementString), waitTime);
+	}
+	
+	public OMElement setJob(OMElement setJobElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == setJobElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = setJobElement.toString();
+		SetJobDataMessage jobsDataMsg = new SetJobDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != jobsDataMsg.getRequestMessageType()) {
+			if (null != jobsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = jobsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		
+		return executeJobs(new SetJobHandler(requestElementString), waitTime);
+	}
 
 	public OMElement getLoadDataStatusRequest(OMElement request) {
 		Assert.notNull(request,
@@ -249,6 +310,62 @@ public class QueryService {
 
 	}	
 
+	
+	private OMElement executeJobs(JobReqHandler getAllJobsHandler, long waitTime) throws I2B2Exception {
+		//do processing inside thread, so that service could send back message with timeout error.  
+		OMElement returnElement = null;   	
+		String unknownErrorMessage = "Error message delivered from the remote server \nYou may wish to retry your last action";  
+		ExecutorRunnable er = new ExecutorRunnable();        
+		er.setJobReqHandler(getAllJobsHandler);
+		Thread t = new Thread(er);
+		String dataResponse = null;
+		log.info("waiting " + waitTime + "ms for response from remote server processing " + getAllJobsHandler.getClass().getName());
+		synchronized (t) {
+			t.start();
+			try {
+				long startTime = System.currentTimeMillis();
+				long deltaTime = -1;
+				while((er.isJobCompleteFlag() == false) && (deltaTime < waitTime)) {
+					if (waitTime > 0) {
+						t.wait(waitTime - deltaTime);
+						deltaTime = System.currentTimeMillis() - startTime;
+					} else {
+						t.wait();
+					}
+				}
+				dataResponse = er.getOutputString();
+				if (dataResponse == null) {
+					ResponseMessageType responseMsgType = null;
+					if (!er.isJobCompleteFlag()) {
+						String timeOuterror = "Remote server timed out after waittime of " + waitTime + "ms.";            				
+						log.error(timeOuterror);
+						responseMsgType = MessageFactory.doBuildErrorResponse(null, timeOuterror);
+					} else {
+						if (null != er.getJobException()) {
+							log.error("jobException: " + er.getJobException().getMessage());            		    	
+							dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+						} else {
+							log.error("CRC data response is null!");
+							log.info("CRC waited " + deltaTime + "ms for " + getAllJobsHandler.getClass().getName());
+						}
+						log.info("waitTime is " + waitTime);
+						responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrorMessage);
+						dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+					}
+					dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+				}
+			} catch (InterruptedException e) {
+				log.error(e.getMessage());
+				throw new I2B2Exception("Thread error while running CRC job!");
+			} finally {
+				t.interrupt();
+				er = null;
+				t = null;
+			}
+		}
+		returnElement = MessageFactory.createResponseOMElementFromString(dataResponse);
+		return returnElement;
+	}
 
 	//swc20160523 copied from edu.harvard.i2b2.im/src/edu/harvard/i2b2/im/ws/IMService.java
 	private OMElement execute(DbLookupReqHandler handler, long waitTime) throws I2B2Exception {

@@ -19,6 +19,7 @@ package edu.harvard.i2b2.crc.axis2;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import edu.harvard.i2b2.crc.delegate.DbLookupReqHandler;
+import edu.harvard.i2b2.crc.delegate.JobReqHandler;
 import edu.harvard.i2b2.crc.delegate.RequestHandler;
 
 /**
@@ -30,6 +31,7 @@ public class ExecutorRunnable implements Runnable {
     private String inputString = null;
     private String outputString = null;
     private RequestHandler reqHandler = null;
+    private JobReqHandler jobHandler = null;
     private DbLookupReqHandler dbluHdlr = null;
     private Exception ex = null;
     private boolean jobCompleteFlag = false;
@@ -74,6 +76,14 @@ public class ExecutorRunnable implements Runnable {
         return this.dbluHdlr;
     }
     
+    public void setJobReqHandler(JobReqHandler handler) {
+        this.jobHandler = handler;
+    }
+
+    public JobReqHandler getJobReqHandler() {
+        return this.jobHandler;
+    }
+    
     public String getOutputString() {
         return outputString;
     }
@@ -91,6 +101,9 @@ public class ExecutorRunnable implements Runnable {
         	} else if (null != reqHandler) {
         		log.debug("about to run RequestHandler");
                 outputString = reqHandler.execute().toString();
+        	}  else if (null != jobHandler) {
+        		log.debug("about to run JobHandler");
+                outputString = jobHandler.execute().toString();
         	}
             setJobCompleteFlag(true);
         }catch (Exception e) {

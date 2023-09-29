@@ -23,7 +23,6 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceRequestType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceResultResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.JobType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.SetJobRequestType;
 import edu.harvard.i2b2.crc.delegate.RequestHandler;
 import edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate;
 import edu.harvard.i2b2.crc.ejb.QueryInfoBean;
@@ -36,7 +35,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
  *
  */
 public class GetQuartzJobHandler extends RequestHandler {
-	private SetJobRequestType setJobRequestType = null;
+	private JobType setJobRequestType = null;
 
 	/**
 	 * Constuctor which accepts i2b2 request message xml
@@ -46,10 +45,10 @@ public class GetQuartzJobHandler extends RequestHandler {
 	 */
 	public GetQuartzJobHandler(String requestXml) throws I2B2Exception {
 		try {
-			setJobRequestType = (SetJobRequestType) this
+			setJobRequestType = (JobType) this
 					.getRequestType(
 							requestXml,
-							edu.harvard.i2b2.crc.datavo.setfinder.query.SetJobRequestType.class);
+							edu.harvard.i2b2.crc.datavo.setfinder.query.JobType.class);
 			this.setDataSourceLookup(requestXml);
 		} catch (JAXBUtilException jaxbUtilEx) {
 			throw new I2B2Exception("Error ", jaxbUtilEx);
@@ -76,7 +75,7 @@ public class GetQuartzJobHandler extends RequestHandler {
 	//		QueryInfoLocalHome queryInfoLocalHome = qpUtil
 	//				.getQueryInfoLocalHome();
 	//		QueryInfoLocal queryInfoLocal = queryInfoLocalHome.create();
-			JobType job = setJobRequestType.getJob();
+			//JobType job = setJobRequestType.getName(); //.getJob();
 
 			QueryInfoBean query = new QueryInfoBean();
 

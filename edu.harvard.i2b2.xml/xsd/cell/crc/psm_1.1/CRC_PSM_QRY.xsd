@@ -254,7 +254,7 @@
                     </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
-            <xs:enumeration value="CRC_QUARTZ_getJob">
+             <xs:enumeration value="CRC_QUARTZ_getJob">
                 <xs:annotation>
                     <xs:appinfo>
                         <requestType>getJob_requestType</requestType>
