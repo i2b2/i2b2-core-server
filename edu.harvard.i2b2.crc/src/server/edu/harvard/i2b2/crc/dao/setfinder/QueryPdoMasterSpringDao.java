@@ -127,7 +127,6 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 				declareParameter(new SqlParameter(Types.INTEGER));
 			} else if ( dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SNOWFLAKE)) {
-				this.setReturnGeneratedKeys(true);
 				INSERT_SNOWFLAKE = "INSERT INTO "
 						+ dbSchemaName
 						+ "QT_PDO_QUERY_MASTER "
@@ -188,35 +187,12 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 
 			} else  if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SNOWFLAKE)) {
-				try {
-					queryMasterIdentityId = jdbc.queryForObject(SEQUENCE_SNOWFLAKE, Integer.class);
-					Connection manualConnection = ServiceLocator.getInstance()
-							.getAppServerDataSource(dataSourceLookup.getDataSource())
-							.getConnection();
-					String sql = getSql();
-					PreparedStatement pstmt = manualConnection.prepareStatement(sql);
-					pstmt.setInt(1, queryMasterIdentityId);
-					pstmt.setString(2, queryMaster.getUserId());
-					pstmt.setString(3, queryMaster.getGroupId());
-
-					pstmt.setString(5, getRequestXmlNoPass);
-					pstmt.setString(6, i2b2RequestXml);
-
-					if (queryMaster.getCreateDate() == null) {
-						pstmt.setNull(4, Types.TIMESTAMP);
-					} else {
-						Timestamp tsCreate = new Timestamp(queryMaster.getCreateDate().getTime());
-						pstmt.setTimestamp(4, tsCreate);
-					}
-					pstmt.executeUpdate();
-				} catch (I2B2Exception ex1) {
-					//TODO:
-					System.out.println(" v- I2B2Exception: " + ex1.getMessage());
-
-				} catch (SQLException ex2) {
-					//TODO:
-					System.out.println("QueryPdoMasterSpringDao- SQLException: " + ex2.getMessage());
-				}
+				queryMasterIdentityId = jdbc.queryForObject(SEQUENCE_SNOWFLAKE, Integer.class);
+				object = new Object[] { queryMasterIdentityId,
+						queryMaster.getUserId(), queryMaster.getGroupId(),
+						queryMaster.getCreateDate(),
+						getRequestXmlNoPass, i2b2RequestXml };
+				update(object);
 			}
 
 			queryMaster.setQueryMasterId(String.valueOf(queryMasterIdentityId));

@@ -713,7 +713,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				declareParameter(new SqlParameter(Types.INTEGER));
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SNOWFLAKE)) {
-				this.setReturnGeneratedKeys(true);
+
 				INSERT_SNOWFLAKE = "INSERT INTO "
 						+ dbSchemaName
 						+ "QT_QUERY_MASTER "
@@ -792,51 +792,16 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 			}	else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SNOWFLAKE)) {
 				queryMasterIdentityId = jdbc.queryForObject(SEQUENCE_SNOWFLAKE, Integer.class);
-				try {
-
-					Connection manualConnection = ServiceLocator.getInstance()
-							.getAppServerDataSource(dataSourceLookup.getDataSource())
-							.getConnection();
-
-					String sql = getSql();
-
-					PreparedStatement pstmt = manualConnection.prepareStatement(sql);
-					pstmt.setInt(1, queryMasterIdentityId);
-					pstmt.setString(2, queryMaster.getName());
-					pstmt.setString(3, queryMaster.getUserId());
-					pstmt.setString(4, queryMaster.getGroupId());
-					pstmt.setString(5, queryMaster.getMasterTypeCd());
-					pstmt.setString(9, queryMaster.getRequestXml());
-					pstmt.setString(10, queryMaster.getDeleteFlag());
-					pstmt.setString(11, queryMaster.getGeneratedSql());
-					pstmt.setString(12, i2b2RequestXml);
-					pstmt.setString(13, pmXml);
-					if (queryMaster.getPluginId() == null) {
-						pstmt.setNull(6, Types.INTEGER);
-					} else {
-						pstmt.setInt(6, Integer.parseInt(queryMaster.getPluginId()));
-					}
-					if (queryMaster.getCreateDate() == null) {
-						pstmt.setNull(7, Types.TIMESTAMP);
-					} else {
-						Timestamp tsCreate = new Timestamp(queryMaster.getCreateDate().getTime());
-						pstmt.setTimestamp(7, tsCreate);
-					}
-					if (queryMaster.getDeleteDate() == null) {
-						pstmt.setNull(8, Types.TIMESTAMP);
-					} else {
-						Timestamp tsDelete = new Timestamp(queryMaster.getDeleteDate().getTime());
-						pstmt.setTimestamp(8, tsDelete);
-					}
-
-					pstmt.executeUpdate();
-
-				} catch (I2B2Exception ex1) {
-					//TODO:
-
-				} catch (SQLException ex2) {
-					//TODO:
-				}
+				object = new Object[] { queryMasterIdentityId,
+						queryMaster.getName(), queryMaster.getUserId(),
+						queryMaster.getGroupId(),
+						queryMaster.getMasterTypeCd(),
+						queryMaster.getPluginId(), queryMaster.getCreateDate(),
+						queryMaster.getDeleteDate(),
+						queryMaster.getRequestXml(),
+						queryMaster.getDeleteFlag(),
+						queryMaster.getGeneratedSql(), i2b2RequestXml, pmXml };
+				update(object);
 
 			}
 

@@ -467,44 +467,15 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 				queryInstanceId = jdbc.queryForObject(SEQUENCE_SNOWFLAKE, Integer.class);
 				queryInstance.setQueryInstanceId(String
 						.valueOf(queryInstanceId));
-				try {
-
-					Connection manualConnection = ServiceLocator.getInstance()
-							.getAppServerDataSource(dataSourceLookup.getDataSource())
-							.getConnection();
-
-					String sql = getSql();
-					PreparedStatement pstmt = manualConnection.prepareStatement(sql);
-					pstmt.setInt(1, Integer.parseInt(queryInstance.getQueryInstanceId()));
-					pstmt.setInt(2, Integer.parseInt(queryInstance.getQtQueryMaster().getQueryMasterId()));
-					pstmt.setString(3, queryInstance.getUserId());
-					pstmt.setString(4, queryInstance.getGroupId());
-					pstmt.setString(5, queryInstance.getBatchMode());
-					pstmt.setInt(8, queryInstance.getQtQueryStatusType().getStatusTypeId());
-					pstmt.setString(9, queryInstance.getDeleteFlag());
-
-					if (queryInstance.getStartDate() == null) {
-						pstmt.setNull(6, Types.TIMESTAMP);
-					} else {
-						Timestamp tsCreate = new Timestamp(queryInstance.getStartDate().getTime());
-						pstmt.setTimestamp(6, tsCreate);
-					}
-					if (queryInstance.getEndDate() == null) {
-						pstmt.setNull(7, Types.TIMESTAMP);
-					} else {
-						Timestamp tsDelete = new Timestamp(queryInstance.getEndDate().getTime());
-						pstmt.setTimestamp(7, tsDelete);
-					}
-					pstmt.executeUpdate();
-
-				} catch (I2B2Exception ex1) {
-					//TODO:
-					System.out.println(" v- I2B2Exception: " + ex1.getMessage());
-
-				} catch (SQLException ex2) {
-					//TODO:
-					System.out.println("QueryInstanceSpringDao- SQLException: " + ex2.getMessage());
-				}
+				object = new Object[] { queryInstance.getQueryInstanceId(),
+						queryInstance.getQtQueryMaster().getQueryMasterId(),
+						queryInstance.getUserId(), queryInstance.getGroupId(),
+						queryInstance.getBatchMode(),
+						queryInstance.getStartDate(),
+						queryInstance.getEndDate(),
+						queryInstance.getQtQueryStatusType().getStatusTypeId(),
+						queryInstance.getDeleteFlag() };
+				update(object);
 
 			}
 
