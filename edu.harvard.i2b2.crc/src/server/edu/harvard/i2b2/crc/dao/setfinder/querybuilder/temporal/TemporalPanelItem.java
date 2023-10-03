@@ -365,7 +365,7 @@ public abstract class TemporalPanelItem {
 
 		if ((this.operator!=null)&& 
 				(this.operator.toUpperCase().equals("LIKE"))&&
-				(this.dimCode!=null)  && (parent.getServerType().equalsIgnoreCase("POSTGRESQL")))
+				(this.dimCode!=null)  && (parent.getServerType().equalsIgnoreCase("POSTGRESQL") || parent.getServerType().equalsIgnoreCase("SNOWFLAKE")))
 		{
 			this.dimCode = this.dimCode.replaceAll("\\\\", "\\\\\\\\");
 
@@ -380,8 +380,9 @@ public abstract class TemporalPanelItem {
 				(this.operator.toUpperCase().equals("LIKE"))&&
 				(this.dimCode!=null)&&
 				(this.dimCode.contains("?")))
-		{			
-			dimensionSql +=  (!parent.getDataSourceLookup().getServerType().toUpperCase().equals("POSTGRESQL") ? " {ESCAPE '?'} " : "" ) ;
+		{
+			dimensionSql +=  (!(parent.getDataSourceLookup().getServerType().toUpperCase().equals("POSTGRESQL")
+					|| parent.getDataSourceLookup().getServerType().toUpperCase().equals("SNOWFLAKE")) ? " {ESCAPE '?'} " : "" ) ;
 		}
 		dimensionSql += ")";
 		return dimensionSql;
@@ -588,8 +589,9 @@ public abstract class TemporalPanelItem {
 
 		dimPath.replaceAll("'", "''");
 
-		if ((dimOperator != null) && (dimOperator.toUpperCase().equals("LIKE") 
-				&& (parent.getDataSourceLookup().getServerType().toUpperCase().equals("POSTGRESQL"))))
+		if ((dimOperator != null) && (dimOperator.toUpperCase().equals("LIKE")
+				&& (parent.getDataSourceLookup().getServerType().toUpperCase().equals("POSTGRESQL") ||
+				parent.getDataSourceLookup().getServerType().toUpperCase().equals("SNOWFLAKE"))))
 			dimCode = dimCode.replaceAll("\\\\", "\\\\\\\\");
 
 				
@@ -601,7 +603,8 @@ public abstract class TemporalPanelItem {
 
 		if ((dimOperator != null) && (dimOperator.toUpperCase().equals("LIKE"))
 				&& (dimCode != null) && (dimCode.contains("?"))) {
-			itemModifierConstrainSql +=  (!parent.getDataSourceLookup().getServerType().toUpperCase().equals("POSTGRESQL") ? " {ESCAPE '?'} " : "" ) ;
+			itemModifierConstrainSql +=  (!(parent.getDataSourceLookup().getServerType().toUpperCase().equals("POSTGRESQL") ||
+					parent.getDataSourceLookup().getServerType().toUpperCase().equals("SNOWFLAKE")) ? " {ESCAPE '?'} " : "" ) ;
 		}
 		itemModifierConstrainSql += ")) ";
 
@@ -674,7 +677,8 @@ public abstract class TemporalPanelItem {
 							+ " " + tableAlias + "provider_id + '|' + cast(" + tableAlias + "start_date as varchar) + '|' + cast(" + tableAlias + "instance_num as varchar) + '|' + " + tableAlias + "concept_cd";
 				} else if (parent.getServerType().equalsIgnoreCase(
 						DAOFactoryHelper.ORACLE) || parent.getServerType().equalsIgnoreCase(
-								DAOFactoryHelper.POSTGRESQL)) {
+						DAOFactoryHelper.POSTGRESQL) || parent.getServerType().equalsIgnoreCase(
+						DAOFactoryHelper.SNOWFLAKE)) {
 					countDistinct = " distinct " + tableAlias + "patient_num || '|' || " + tableAlias + "encounter_num || '|' || " 
 							+ tableAlias + "provider_id || '|' || " + tableAlias + "instance_num || '|' ||" + tableAlias + "concept_cd || '|' ||cast(" + tableAlias + "start_date as varchar(50))";
 				}
@@ -716,7 +720,8 @@ public abstract class TemporalPanelItem {
 							+ " " + tableAlias + "provider_id + '|' + cast(" + tableAlias + "start_date as varchar) + '|' + cast(" + tableAlias + "instance_num as varchar) + '|' + " + tableAlias + "concept_cd";
 				} else if (parent.getServerType().equalsIgnoreCase(
 						DAOFactoryHelper.ORACLE) || parent.getServerType().equalsIgnoreCase(
-								DAOFactoryHelper.POSTGRESQL)) {
+						DAOFactoryHelper.POSTGRESQL) || parent.getServerType().equalsIgnoreCase(
+						DAOFactoryHelper.SNOWFLAKE)) {
 					countDistinct = " distinct " + tableAlias + "patient_num || '|' || " + tableAlias + "encounter_num || '|' || " 
 							+ tableAlias + "provider_id || '|' || " + tableAlias + "instance_num || '|' ||" + tableAlias + "concept_cd || '|' ||cast(" + tableAlias + "start_date as varchar(50))";
 				} 

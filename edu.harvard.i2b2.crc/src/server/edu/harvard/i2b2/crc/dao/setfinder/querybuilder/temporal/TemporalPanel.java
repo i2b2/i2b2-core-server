@@ -703,7 +703,8 @@ public class TemporalPanel implements Comparable<Object> {
 
 			if (parent.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.ORACLE) || parent.getServerType()
-					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType()
+					.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				firstPanelItemSql = "insert into "
 						+ parent.getTempTableName() + " ("
 						+ insertValuesClause + ")" + "\n"
@@ -1024,7 +1025,8 @@ public class TemporalPanel implements Comparable<Object> {
 
 			if (parent.getServerType()
 					.equalsIgnoreCase(DAOFactoryHelper.ORACLE) || parent.getServerType()
-					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType()
+					.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				invertSql = "insert into " + parent.getTempTableName() + " ("
 						+ insertValuesClause + ")" + "\n"
 						+ tSelect;
@@ -1068,7 +1070,8 @@ public class TemporalPanel implements Comparable<Object> {
 	
 			if (parent.getServerType()
 					.equalsIgnoreCase(DAOFactoryHelper.ORACLE) || parent.getServerType()
-					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType()
+					.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				invertSql = "insert into " + parent.getTempTableName() + " ("
 						+ insertValuesClause + ")" + "\n"
 						+ withItemSql.toString() + tSelect;
@@ -1260,7 +1263,8 @@ public class TemporalPanel implements Comparable<Object> {
 		}
 
 		if (parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE) || parent.getServerType()
-				.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+				.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType()
+				.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 			firstPanelItemSql = "insert into " + parent.getTempTableName()
 					+ " (" + insertValuesClause + ")" + "\n" + withItemSql
 					+ tSelect;
@@ -1468,7 +1472,8 @@ public class TemporalPanel implements Comparable<Object> {
 				+ " ) \n";
 
 		if (parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE) || parent.getServerType()
-				.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+				.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType()
+				.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 			nonFirstPanelItemSql += "update "
 					+ tempTableName
 					+ " set panel_count ="

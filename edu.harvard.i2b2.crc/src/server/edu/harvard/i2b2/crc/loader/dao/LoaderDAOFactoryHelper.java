@@ -18,6 +18,7 @@ public  class LoaderDAOFactoryHelper {
 	public static final String ORACLE = "ORACLE";
 	public static final String SQLSERVER = "SQLSERVER";
 	public static final String POSTGRESQL = "POSTGRESQL";
+	public static final String SNOWFLAKE = "SNOWFLAKE";
 	DataSourceLookup dataSourceLookup = null;
 
 	public LoaderDAOFactoryHelper(String hiveId, String projectId, String ownerId) throws I2B2DAOException {
@@ -50,6 +51,8 @@ public  class LoaderDAOFactoryHelper {
 		} else if (dataSourceName.equalsIgnoreCase(SQLSERVER)) {
 			return new OracleLoaderDAOFactory(dataSourceLookup);
 		} else if (dataSourceName.equalsIgnoreCase(POSTGRESQL)) {
+			return new OracleLoaderDAOFactory(dataSourceLookup);
+		} else if (dataSourceName.equalsIgnoreCase(SNOWFLAKE)) {
 			return new OracleLoaderDAOFactory(dataSourceLookup);
 		} else {
 			return null;

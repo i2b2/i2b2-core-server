@@ -198,6 +198,8 @@
 			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
 			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
 			<fileset dir="${lib}/jdbc" includes="postgresql-42.3.2.jar"/>
+			<fileset dir="${lib}/jdbc" includes="snowflake-jdbc-3.13.30.jar"/>
+
 		</copy>
 	</target>
 		
@@ -207,11 +209,13 @@
 			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
 			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
 			<fileset dir="${lib}/jdbc" includes="postgresql-42.3.2.jar"/>
+			<fileset dir="${lib}/jdbc" includes="snowflake-jdbc-3.13.30.jar"/>
 		</copy>
 		<copy todir="${jboss.home}/standalone/deployments">
 			<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
 			<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
 			<fileset dir="${lib}/jdbc" includes="postgresql-42.3.2.jar"/>
+			<fileset dir="${lib}/jdbc" includes="snowflake-jdbc-3.13.30.jar"/>
 		</copy>
 	</target>
 	
@@ -234,11 +238,13 @@
 				<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
 				<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
 				<fileset dir="${lib}/jdbc" includes="postgresql-42.2.18.jar"/>
+				<fileset dir="${lib}/jdbc" includes="snowflake-jdbc-3.13.30.jar"/>
 			</copy>
 			<copy todir="${jboss.home}/standalone/deployments">
 				<fileset dir="${lib}/jdbc" includes="ojdbc8.jar" />
 				<fileset dir="${lib}/jdbc" includes="mssql-jdbc-9.2.0.jre8.jar"/>
 				<fileset dir="${lib}/jdbc" includes="postgresql-42.2.18.jar"/>
+				<fileset dir="${lib}/jdbc" includes="snowflake-jdbc-3.13.30.jar"/>
 			</copy>
 
 		</target>

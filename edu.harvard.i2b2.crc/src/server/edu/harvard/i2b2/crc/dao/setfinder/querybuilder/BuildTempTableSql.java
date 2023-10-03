@@ -220,7 +220,7 @@ public class BuildTempTableSql extends CRCDAO {
 		if ((conceptType.getOperator() != null) && (conceptType.getOperator().toUpperCase().equals("LIKE")))
 		{
 			
-			dimensionSql +=  (!dataSourceLookup.getServerType().toUpperCase().equals("POSTGRESQL") ? " {ESCAPE '?'} " : "" ) ;
+			dimensionSql +=  (!(dataSourceLookup.getServerType().toUpperCase().equals("POSTGRESQL") || dataSourceLookup.getServerType().toUpperCase().equals("SNOWFLAKE")) ? " {ESCAPE '?'} " : "" ) ;
 		}
 		dimensionSql += ")";
 

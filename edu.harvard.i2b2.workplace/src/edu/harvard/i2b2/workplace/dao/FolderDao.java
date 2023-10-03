@@ -1880,9 +1880,18 @@ class GetFolderMapper implements RowMapper<FolderType> {
 			} 
 
 			try {
-				Clob xml_schema_clob = rs.getClob("c_work_xml_schema");
-				if (xml_schema_clob != null){
-					c_xml = JDBCUtil.getClobString(xml_schema_clob);
+				String xml_schema_string = null;
+				//column definition clob is in only oracle
+				if (dbType.equals("ORACLE")) {
+					Clob xml_schema_clob = rs.getClob("c_work_xml_schema");
+					if (xml_schema_clob != null)
+						xml_schema_string = JDBCUtil.getClobString(xml_schema_clob);
+
+				} else {
+					xml_schema_string = rs.getString("c_work_xml_schema");
+				}
+				if (xml_schema_string != null){
+					c_xml = xml_schema_string;
 					if ((c_xml!=null)&&(c_xml.trim().length()>0)&&(!c_xml.equals("(null)")))
 					{
 						Element rootElement = null;

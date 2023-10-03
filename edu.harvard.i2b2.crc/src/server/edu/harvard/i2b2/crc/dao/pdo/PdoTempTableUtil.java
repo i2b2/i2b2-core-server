@@ -18,7 +18,8 @@ public class PdoTempTableUtil {
 
 	public void clearTempTable(String serverType, Connection conn, String tableName) { 
 		if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
-				serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) { 
+				serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+				serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 			this.deleteTempTableSqlServer(conn, tableName);
 		} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) { 
 			this.deleteTempTableOracle(conn, tableName);

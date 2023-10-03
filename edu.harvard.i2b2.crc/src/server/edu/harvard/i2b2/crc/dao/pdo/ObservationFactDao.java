@@ -120,6 +120,12 @@ public class ObservationFactDao extends CRCDAO implements IObservationFactDao {
 						"yyyy-MM-dd'T'HH:mm:ss");
 				sqlFormatedStartDate = dateFormat.format(gc.getTime());
 				sql += (" AND obs.start_date = '" + sqlFormatedStartDate + "'");
+			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
+				SimpleDateFormat dateFormat = new SimpleDateFormat(
+						"yyyy-MM-dd'T'HH:mm:ss");
+				sqlFormatedStartDate = dateFormat.format(gc.getTime());
+				sql += (" AND obs.start_date = '" + sqlFormatedStartDate + "'");
 			}
 		}
 

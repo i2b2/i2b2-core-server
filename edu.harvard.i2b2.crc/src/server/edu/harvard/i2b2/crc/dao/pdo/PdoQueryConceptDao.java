@@ -111,21 +111,30 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 				oracle.sql.ARRAY paramArray = new oracle.sql.ARRAY(desc, conn1,
 						conceptCdList.toArray(new String[] {}));
 				query.setArray(1, paramArray);
-			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) || 
-					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
+					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+					serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
 				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
+				else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
+					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
 				else
 					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 				try {
-					tempStmt.executeUpdate("drop table " + tempTableName);
+					if (serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
+						tempStmt.executeUpdate("drop table if exists " + tempTableName);
+					} else {
+						tempStmt.executeUpdate("drop table " + tempTableName);
+					}
+
 				} catch (SQLException sqlex) {
 					;
 				}
 
-				uploadTempTable(tempStmt, tempTableName, conceptCdList, serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL));
+				uploadTempTable(tempStmt, tempTableName, conceptCdList, serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+						serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE));
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
@@ -225,6 +234,14 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 						+ getDbSchemaName()
 						+ "concept_dimension concept WHERE concept_path LIKE ? order by concept_path) ";
 				itemKey = itemKey.replaceAll("\\\\", "\\\\\\\\");
+			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
+				finalSql = "Select * from ( SELECT "
+						+ selectClause
+						+ " ROW_NUMBER() OVER (ORDER BY concept_path) AS RowNum"
+						+ "  FROM "
+						+ getDbSchemaName()
+						+ "concept_dimension concept WHERE concept_path LIKE ? order by concept_path) ";
+				itemKey = itemKey.replaceAll("\\\\", "\\\\\\\\");
 			}
 			log.debug("Pdo Concept sql [" + finalSql + "]");
 			query = conn.prepareStatement(finalSql);
@@ -307,20 +324,25 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
 				tempTable = FactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
-					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+					serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
-				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
 					tempTable = SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE.substring(1);
 				else
 					tempTable = SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 				try {
-					tempStmt.executeUpdate("drop table " + tempTable);
+					if (serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
+						tempStmt.executeUpdate("drop table if exists " + tempTable);
+					} else {
+						tempStmt.executeUpdate("drop table " + tempTable);
+					}
 				} catch (SQLException sqlex) {
 					;
 				}
-				String createTempInputListTable = "create " 
-						 + (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ? " temp ": "" )
+				String createTempInputListTable = "create "
+						+ (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE) ? " temp ": "" )
 						+ " table "
 						+ tempTable
 						+ " ( set_index int, char_param1 varchar(500) )";

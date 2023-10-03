@@ -125,7 +125,8 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 						encounterNumList.toArray(new String[] {}));
 				query.setArray(1, paramArray);
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
-					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+					serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
 				tempTableName = getDbSchemaName()
@@ -483,7 +484,8 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 				factTempTable = getDbSchemaName()
 						+ FactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
-					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+					serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
 				factTempTable = getDbSchemaName()

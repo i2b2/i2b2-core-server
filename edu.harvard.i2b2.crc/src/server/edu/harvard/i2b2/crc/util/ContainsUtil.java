@@ -101,7 +101,7 @@ public class ContainsUtil {
 			StringTokenizer accumTokenizer = new StringTokenizer(finalStr);
 			while(accumTokenizer.hasMoreTokens()) {
 				singleToken = accumTokenizer.nextToken();
-				if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.ORACLE) || dbServerType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+				if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.ORACLE) || dbServerType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || dbServerType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 					defaultAccumStr += singleToken;
 				} else if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER)) { 
 					defaultAccumStr += "\"" + singleToken + "\"";
@@ -114,6 +114,8 @@ public class ContainsUtil {
 						defaultAccumStr += " OR ";
 					} else if  (dbServerType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 						defaultAccumStr += " | ";
+					} else if  (dbServerType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
+						defaultAccumStr += " OR ";
 					}
 				}
 			}

@@ -152,7 +152,16 @@ public class EidListTypeHandler extends CRCDAO implements
 					+ " (set_index int, char_param1 varchar(100), char_param2 varchar(100) )";
 			deleteTempFlag = true;
 			tempStmt.executeUpdate(createTempInputListTable);
-			
+
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE))
+		{
+			String createTempInputListTable = "create temp table "
+					+ getTempTableName()
+					+ " (set_index int, char_param1 varchar(100), char_param2 varchar(100) )";
+			deleteTempFlag = true;
+			tempStmt.executeUpdate(createTempInputListTable);
+
 		}
 		int i = 0, j = 1;
 
@@ -217,6 +226,10 @@ public class EidListTypeHandler extends CRCDAO implements
 		//				"delete  " + getTempTableName());
 				deleteStmt.executeUpdate(
 						"delete  " + getTempTableName());
+			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
+				deleteStmt.executeUpdate(
+						"drop table if exists " + getTempTableName());
 			}
 		} catch (SQLException sqle) {
 			throw sqle;
@@ -269,6 +282,10 @@ public class EidListTypeHandler extends CRCDAO implements
 				DAOFactoryHelper.ORACLE)) {
 			tempTableName = this.getDbSchemaName()
 					+ FactRelatedQueryHandler.TEMP_PARAM_TABLE;
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
+			tempTableName = this.getDbSchemaName()
+					+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 		} else {
 			tempTableName = this.getDbSchemaName()
 					+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;

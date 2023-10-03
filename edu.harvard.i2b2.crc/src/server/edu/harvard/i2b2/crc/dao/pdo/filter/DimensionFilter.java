@@ -79,7 +79,8 @@ public class DimensionFilter {
 					} else {
 						dimCode = dimCode + "\\%";
 					}
-					if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+					if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+							dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
 						dimCode = dimCode.replaceAll("\\\\", "\\\\\\\\");
 
 				}

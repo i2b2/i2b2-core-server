@@ -86,7 +86,8 @@ public class QueryResultPatientSetGenerator extends CRCDAO implements
 						+ "SELECT <from>QT_SQ_QPR_PCID.nextval AS patient_set_coll_id, ? AS result_instance_id, rownum AS set_index, t.patient_num "
 						+ "FROM (SELECT DISTINCT patient_num FROM <TEMP_DX_TABLE>) t";
 			} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
-					sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+					sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				sql = "INSERT INTO <from>qt_patient_set_collection"
 						+ " (result_instance_id, set_index, patient_num) "
 						+ "SELECT ? AS result_instance_id, ROW_NUMBER() OVER(ORDER BY patient_num) AS set_index, t.patient_num "

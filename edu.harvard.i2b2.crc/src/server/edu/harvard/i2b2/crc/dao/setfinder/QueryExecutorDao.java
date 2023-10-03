@@ -151,7 +151,8 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 
 		} else if (dsLookup.getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.ORACLE) || dsLookup.getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.POSTGRESQL) || dsLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
 			TEMP_TABLE = getDbSchemaName() + "QUERY_GLOBAL_TEMP";
 			TEMP_DX_TABLE = getDbSchemaName() + "DX";
 		}
@@ -366,7 +367,8 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 								}
 								
 								key = key.substring(key.indexOf('\\', 3)).toLowerCase();
-								if (dsLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+								if (dsLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+										dsLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
 									key = key.replace("\\", "\\\\");
 								
 								generatedSql += " ( concept_path LIKE '" + key + "%'";

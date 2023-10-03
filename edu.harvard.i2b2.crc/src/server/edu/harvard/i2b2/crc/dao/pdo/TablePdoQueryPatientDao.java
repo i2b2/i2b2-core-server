@@ -126,7 +126,8 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 				query.setArray(1, paramArray);
 
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
-					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+					serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				// create temp table
 				// load to temp table
 				// execute sql
@@ -550,7 +551,8 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 				factTempTable = this.getDbSchemaName()
 						+ FactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
-					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+					serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				log.debug("creating temp table");
 				java.sql.Statement tempStmt = conn.createStatement();
 				factTempTable = this.getDbSchemaName()

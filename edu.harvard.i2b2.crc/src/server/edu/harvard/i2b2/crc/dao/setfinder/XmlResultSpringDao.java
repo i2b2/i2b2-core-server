@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.sql.DataSource;
+import java.sql.Types;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -80,6 +81,8 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 		String SQLSERVER_SQL = "INSERT INTO " + getDbSchemaName() + "QT_XML_RESULT(result_instance_id,xml_value) VALUES(?,?)";
 		String SEQUENCE_ORACLE = "SELECT "+ dbSchemaName +"QT_SQ_QXR_XRID.nextval from dual";
 		String SEQUENCE_POSTGRESQL = "SELECT nextval('qt_xml_result_xml_result_id_seq') ";
+		String SNOWFLAKE_SQL = "INSERT INTO " + getDbSchemaName() + "QT_XML_RESULT(xml_result_id,result_instance_id,xml_value) VALUES(?,?,?)";
+		String SEQUENCE_SNOWFLAKE = "SELECT " + getDbSchemaName() + "SEQ_QT_XML_RESULT.nextval";
 		int xmlResultId = 0;
 		if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
 			xmlResultId = jdbcTemplate.queryForObject(SEQUENCE_ORACLE, Integer.class);
@@ -90,6 +93,10 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 		} else 		if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 			xmlResultId = jdbcTemplate.queryForObject(SEQUENCE_POSTGRESQL, Integer.class);
 			jdbcTemplate.update(POSTGRESQL_SQL, new Object[]{xmlResultId,Integer.parseInt(resultInstanceId),xmlValue});
+
+		}	else if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
+			xmlResultId = jdbcTemplate.queryForObject(SEQUENCE_SNOWFLAKE, Integer.class);
+			jdbcTemplate.update(SNOWFLAKE_SQL, new Object[]{xmlResultId,Integer.parseInt(resultInstanceId),xmlValue});
 
 		}
 		return String.valueOf(xmlResultId);
@@ -106,8 +113,11 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 	public QtXmlResult getXmlResultByResultInstanceId(String resultInstanceId) throws I2B2DAOException {
 		String sql = "select *  from " + getDbSchemaName()
 		+ "qt_xml_result where result_instance_id = ?";
-		List<QtXmlResult> queryXmlResult = jdbcTemplate.query(sql,
-				new Object[] { Integer.parseInt(resultInstanceId) }, xmlResultMapper);
+		List<QtXmlResult> queryXmlResult = jdbcTemplate.query(
+				sql,
+				new Object[] { Integer.parseInt(resultInstanceId) },
+				new int[] { Types.INTEGER },
+				xmlResultMapper);
 		if (queryXmlResult != null && queryXmlResult.size()>0) { 
 			return queryXmlResult.get(0);
 		} else { 
