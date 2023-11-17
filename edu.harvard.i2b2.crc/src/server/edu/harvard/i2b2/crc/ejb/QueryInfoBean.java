@@ -475,7 +475,8 @@ public class QueryInfoBean { //implements SessionBean {
 		     while(it.hasNext()){
 		    	 QtQueryInstance a = it.next();
 		    	 queryInstance.setBatchMode(a.getBatchMode());
-		    	 queryInstance.setEndDate(dtoFactory
+		    	 if (a.getEndDate() != null)
+		    		 queryInstance.setEndDate(dtoFactory
 							.getXMLGregorianCalendar(a.getEndDate().getTime()));
 		    	 queryInstance.setStartDate(dtoFactory
 							.getXMLGregorianCalendar(a.getStartDate().getTime()));
