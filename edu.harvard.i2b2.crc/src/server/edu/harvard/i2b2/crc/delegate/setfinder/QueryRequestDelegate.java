@@ -45,7 +45,8 @@ import edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate;
 import edu.harvard.i2b2.crc.delegate.ejbpm.EJBPMUtil;
 import edu.harvard.i2b2.crc.delegate.pm.PMServiceDriver;
 import edu.harvard.i2b2.crc.delegate.quartz.GetQuartzJobHandler;
-import edu.harvard.i2b2.crc.delegate.quartz.SetQuartzJobHandler;
+import edu.harvard.i2b2.crc.delegate.quartz.GetAllJobsHandler;
+import edu.harvard.i2b2.crc.delegate.quartz.SetJobHandlerMaybe;
 import edu.harvard.i2b2.crc.util.CacheUtil;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.ParamUtil;
@@ -375,6 +376,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				GetAnalysisPluginMetadataTypeHandler handler = new GetAnalysisPluginMetadataTypeHandler(
 						requestXml);
 				responseBodyType = handler.execute();
+		
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QUARTZ_GET_JOB)) {
 				GetQuartzJobHandler handler = new GetQuartzJobHandler(
@@ -382,21 +384,21 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QUARTZ_SET_JOB)) {
-				SetQuartzJobHandler handler = new SetQuartzJobHandler(
+				SetJobHandlerMaybe handler = new SetJobHandlerMaybe(
 						requestXml);
 				responseBodyType = handler.execute();
-			} else if (headerType.getRequestType().equals(
-					PsmRequestTypeType.CRC_QUARTZ_GET_ALL_JOB)) {
-				GetAnalysisPluginMetadataTypeHandler handler = new GetAnalysisPluginMetadataTypeHandler(
-						requestXml);
-				responseBodyType = handler.execute();
+		//	} else if (headerType.getRequestType().equals(
+		//			PsmRequestTypeType.CRC_QUARTZ_GET_ALL_JOB)) {
+		//		GetAllJobsHandler handler = new GetAllJobsHandler(
+		//				requestXml);
+		//		responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QUARTZ_DELETE_JOB)) {
 				GetAnalysisPluginMetadataTypeHandler handler = new GetAnalysisPluginMetadataTypeHandler(
 						requestXml);
 				responseBodyType = handler.execute();
 			}
-
+		
 			procStatus = new StatusType();
 			if (errorFlag == false) { 
 				procStatus.setType("DONE");
