@@ -36,7 +36,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
  */
 public class GetQuartzJobHandler extends RequestHandler {
 	private JobType setJobRequestType = null;
-
+ 
 	/**
 	 * Constuctor which accepts i2b2 request message xml
 	 * 
