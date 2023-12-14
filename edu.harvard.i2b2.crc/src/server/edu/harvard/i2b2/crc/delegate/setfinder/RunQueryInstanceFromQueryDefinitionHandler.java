@@ -27,6 +27,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterInstanceResultResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryInstanceType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryResultInstanceType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryStatusTypeType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.StatusType;
 import edu.harvard.i2b2.crc.delegate.RequestHandler;
@@ -170,14 +171,27 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 			 masterInstanceResponse.setStatus(this.buildCRCStausType(
 			 RequestHandlerDelegate.DONE_TYPE, "DONE"));
 			}
-			//If Batchmode is equal to PROCESSING then set to finished
-			if (masterInstanceResponse.getQueryInstance().getBatchMode().equals(QueryManagerBeanUtil.PROCESSING))
+			
+			//Check to see if any queryinstance are stil processing
+			boolean isProcessing = false;
+			boolean isError = false;
+			for (QueryResultInstanceType queryIntance: masterInstanceResponse.getQueryResultInstance())
+			{
+				if (queryIntance.getQueryStatusType().getName().equals("QUEUED")
+						|| queryIntance.getQueryStatusType().getName().equals("PROCESSING"))
+					isProcessing = true;
+				if (queryIntance.getQueryStatusType().getName().equals("ERROR")
+						|| queryIntance.getQueryStatusType().getName().equals("TIMEDOUT"))
+					isError = true;
+			}
+			
+			//If Batchmode is equal to PROCESSING then set to finished			
+			if (isProcessing || isError)
 			{
 				masterInstanceResponse.setStatus(this.buildCRCStausType(
 						 RequestHandlerDelegate.DONE_TYPE, "DONE"));
 				
-				if (masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("QUEUED")
-						|| masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("TIMEDOUT"))
+				if (isProcessing)
 				{
 					
 					masterInstanceResponse.getStatus().getCondition().get(0).setType("RUNNING");
@@ -190,7 +204,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 					newStatusType.setDescription("MEDIUM_QUEUE");
 					newStatusType.setStatusTypeId("7");
 					masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
-				} else 	if (masterInstanceResponse.getQueryResultInstance().get(0).getQueryStatusType().getName().equals("ERROR"))
+				} else 	if (isError)
 				{
 					masterInstanceResponse.getStatus().getCondition().get(0).setType("ERROR");
 					masterInstanceResponse.getStatus().getCondition().get(0).setValue("ERROR");
@@ -200,9 +214,10 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 					newStatusType.setDescription("ERROR");
 					newStatusType.setStatusTypeId("4");
 					masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
-				} else {
-					masterInstanceResponse.getQueryInstance().setBatchMode(masterInstanceResponse.getQueryInstance().getQueryStatusType().getName());
 				}
+				//else {
+				//	masterInstanceResponse.getQueryInstance().setBatchMode(masterInstanceResponse.getQueryInstance().getQueryStatusType().getName());
+				//}
 			}
 			 response = this.buildResponseMessage(requestXml, bodyType);
 		} catch (Exception ee) {
