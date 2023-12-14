@@ -15,13 +15,24 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+
+import org.apache.axis2.AxisFault;
+
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.common.exception.StackTraceUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
+import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ConceptNotFoundException;
+import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.OntologyException;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
+import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalPanelCellQueryItem;
+import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalPanelConceptItem;
+import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal.TemporalPanelItem;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
@@ -33,9 +44,12 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptsType;
 import edu.harvard.i2b2.crc.delegate.ontology.CallOntologyUtil;
+import edu.harvard.i2b2.crc.util.ItemKeyUtil;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 import edu.harvard.i2b2.crc.util.SqlClauseUtil;
+import edu.harvard.i2b2.crc.datavo.ontology.DerivedFactColumnsType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.ItemType;
 
 /**
  * Setfinder's result genertor class. This class calculates patient break down
@@ -52,6 +66,51 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		return xmlResult;
 	}
 
+
+	protected DerivedFactColumnsType getFactColumnsFromOntologyCell(String itemKey,
+			SecurityType securityType, String projectId)
+					throws ConceptNotFoundException, OntologyException {
+		DerivedFactColumnsType factColumns = new DerivedFactColumnsType();
+		try {
+
+			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+			String ontologyUrl = qpUtil
+					.getCRCPropertyValue(QueryProcessorUtil.ONTOLOGYCELL_ROOT_WS_URL_PROPERTIES);
+
+			factColumns = CallOntologyUtil.callGetFactColumns(itemKey,
+					securityType, projectId,
+					ontologyUrl +"/getDerivedFactColumns");
+		} catch (JAXBUtilException e) {
+
+			log.error("Error while fetching metadata [" + itemKey
+					+ "] from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (I2B2Exception e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (AxisFault e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		} catch (XMLStreamException e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology "
+					+ StackTraceUtil.getStackTrace(e));
+		}
+
+		//		if (factColumns.isEmpty()) {
+		//			throw new ConceptNotFoundException("[" + itemKey + "] ");
+
+		//		} 
+
+		return factColumns;
+	}
 	private String xmlResult = null;
 	/**
 	 * Function accepts parameter in Map. The patient count will be obfuscated
@@ -92,7 +151,6 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		boolean errorFlag = false, timeoutFlag = false;
 		String itemKey = "";
 
-		int actualTotal = 0, obsfcTotal = 0;
 
 		try {
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
@@ -133,22 +191,66 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
 			ResultType resultType = new ResultType();
 			resultType.setName(resultTypeName);
+			/*
 			stmt = sfConn.prepareStatement(itemCountSql);
 
 			CancelStatementRunner csr = new CancelStatementRunner(stmt,
 					transactionTimeout);
 			Thread csrThread = new Thread(csr);
 			csrThread.start();
+			 */
 
 			for (ConceptType conceptType : conceptsType.getConcept()) {
 
 				// OMOP WAS...	
 				// String joinTableName = "observation_fact";
-				String factColumnName = conceptType.getFacttablecolumn();
-				String factTableColumn = factColumnName;
 				String factTable = "observation_fact";
+				DerivedFactColumnsType columns = new DerivedFactColumnsType();
+				columns.getDerivedFactTableColumn().add(conceptType.getFacttablecolumn());
 				if( QueryProcessorUtil.getInstance().getDerivedFactTable() == true) {
 
+					String baseItemFactColumn = conceptType.getFacttablecolumn();
+					columns = getFactColumnsFromOntologyCell(conceptType.getKey(), (SecurityType) param.get("securityType"), (String) param.get("projectId"));
+
+					if(columns.getDerivedFactTableColumn().size() > 1) {
+						for (String column : columns.getDerivedFactTableColumn()) {
+							// look for non-null fact table columns that are not equal to the base item's column
+							if((column != null) && !(column.equals(baseItemFactColumn))){
+								if(!column.contains(".")){
+									columns.getDerivedFactTableColumn().remove(column);
+									/*
+									 TemporalPanelItem	derivedPanelItem = new TemporalPanelConceptItem(this, itemType);
+									 //if(conceptType == null)
+									//	 derivedPanelItem.getConceptType();
+
+									 if (derivedPanelItem != null
+											 && conceptType != null
+											 && conceptType.getDimcode() != null
+											 && conceptType.getDimcode()
+											 .toLowerCase().trim()
+											 .startsWith(ItemKeyUtil.ITEM_KEY_CELLID)) {
+										 derivedPanelItem = new TemporalPanelCellQueryItem(this, itemType,
+												 conceptType);
+									 }
+									 */
+									log.debug("setting a new fact column: " + column);
+									///									 derivedPanelItem.parseFactColumn(column);
+									//								 panelItemList.add(derivedPanelItem);
+								}
+							}
+						}
+					}
+
+
+
+				}
+				int conceptWithCount = 0;
+				int actualTotal = 0; //, obsfcTotal = 0;
+				itemCountSql = " select  count (distinct item_count) as item_count from ( ";
+				for (String column : columns.getDerivedFactTableColumn()) {
+
+					String factColumnName = column; //conceptType.getFacttablecolumn();
+					String factTableColumn = factColumnName;
 
 					if (factColumnName!=null&&factColumnName.contains(".")){
 						int lastIndex = factColumnName.lastIndexOf(".");
@@ -158,35 +260,39 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 						}
 					}
 
+					String joinTableName = factTable;
+
+					if (conceptType.getTablename().equalsIgnoreCase(
+							"patient_dimension")) { 
+						joinTableName = "patient_dimension";
+					} else if (conceptType.getTablename().equalsIgnoreCase(
+							"visit_dimension")) { 
+						joinTableName = "visit_dimension"; 
+					} else if (!conceptType.getTablename().equalsIgnoreCase(
+							"concept_dimension")) { 
+						joinTableName = conceptType.getTablename(); 
+					}
+
+					String dimCode = this.getDimCodeInSqlFormat(conceptType);
+
+					if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) 
+						dimCode = dimCode.replaceAll("\\\\", "\\\\\\\\");
+					itemCountSql += " ( select distinct PATIENT_NUM as item_count from " +  this.getDbSchemaName() + joinTableName +  
+							" where " + " patient_num in (select patient_num from "
+							+ TEMP_DX_TABLE
+
+							//OMOP WAS...
+							//+ " )  and "+ conceptType.getFacttablecolumn() + " IN (select "
+							//+ conceptType.getFacttablecolumn() + " from "
+							+ " )  and "+ factTableColumn + " IN (select "
+							+ factTableColumn + " from "
+							+ getDbSchemaName() + conceptType.getTablename() + "  "
+							+  " where " + conceptType.getColumnname()
+							+ " " + conceptType.getOperator() + " "
+							+ dimCode + ")) union";
+
 				}
-				String joinTableName = factTable;
-
-				if (conceptType.getTablename().equalsIgnoreCase(
-						"patient_dimension")) { 
-					joinTableName = "patient_dimension";
-				} else if (conceptType.getTablename().equalsIgnoreCase(
-						"visit_dimension")) { 
-					joinTableName = "visit_dimension"; 
-				}
-
-				String dimCode = this.getDimCodeInSqlFormat(conceptType);
-
-				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) 
-					dimCode = dimCode.replaceAll("\\\\", "\\\\\\\\");
-				itemCountSql = " select count(distinct PATIENT_NUM) as item_count  from " +  this.getDbSchemaName() + joinTableName +  
-						" where " + " patient_num in (select patient_num from "
-						+ TEMP_DX_TABLE
-
-						//OMOP WAS...
-						//+ " )  and "+ conceptType.getFacttablecolumn() + " IN (select "
-						//+ conceptType.getFacttablecolumn() + " from "
-						+ " )  and "+ factTableColumn + " IN (select "
-						+ factTableColumn + " from "
-						+ getDbSchemaName() + conceptType.getTablename() + "  "
-						+  " where " + conceptType.getColumnname()
-						+ " " + conceptType.getOperator() + " "
-						+ dimCode + ")";
-
+				itemCountSql = itemCountSql.substring(0,itemCountSql.length()-5) + "  ) a ";
 				stmt = sfConn.prepareStatement(itemCountSql);
 				stmt.setQueryTimeout(transactionTimeout);
 				log.debug("Executing count sql [" + itemCountSql + "]");
@@ -194,10 +300,12 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				//
 				subLogTimingUtil.setStartTime();
 				resultSet = stmt.executeQuery();
-				if (csr.getSqlFinishedFlag()) {
-					timeoutFlag = true;
-					throw new CRCTimeOutException("The query was canceled.");
-				}
+				/*
+					if (csr.getSqlFinishedFlag()) {
+						timeoutFlag = true;
+						throw new CRCTimeOutException("The query was canceled.");
+					}
+				 */
 				resultSet.next();
 				int demoCount = resultSet.getInt("item_count");
 				subLogTimingUtil.setEndTime();
@@ -209,21 +317,28 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				}
 				//
 
-				actualTotal += demoCount;
+				actualTotal = demoCount;
+				//if (demoCount > 0)
+				//	conceptWithCount++;
+
+
+
+				//if (conceptWithCount > 0)
+				//	actualTotal = actualTotal/conceptWithCount;
 				if (obfscDataRoleFlag) {
 					GaussianBoxMuller gaussianBoxMuller = new GaussianBoxMuller();
-					demoCount = (int) gaussianBoxMuller
-							.getNormalizedValueForCount(demoCount,breakdownCountSigma,obfuscatedMinimumValue);
-					obsfcTotal += demoCount;
+					actualTotal = (int) gaussianBoxMuller
+							.getNormalizedValueForCount(actualTotal,breakdownCountSigma,obfuscatedMinimumValue);
+					//obsfcTotal += actualTotal;
 				}
 				DataType mdataType = new DataType();
-				mdataType.setValue(String.valueOf(demoCount));
+				mdataType.setValue(String.valueOf(actualTotal));
 				mdataType.setColumn(conceptType.getName());
 				mdataType.setType("int");
 				resultType.getData().add(mdataType);
 			}
-			csr.setSqlFinishedFlag();
-			csrThread.interrupt();
+			//csr.setSqlFinishedFlag();
+			//csrThread.interrupt();
 			resultSet.close();
 			stmt.close();
 
