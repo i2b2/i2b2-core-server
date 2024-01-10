@@ -746,7 +746,10 @@ public class QueryExecutorHelperDao extends CRCDAO {
 							sfDAOFactory, queryInstanceId, resultName);
 					param.put("ResultInstanceId", resultInstanceId);
 					param.put("ResultOptionName", resultName);
-					param.put("ResultFullName", resultOutputOption.getFullName().trim());
+					if (resultOutputOption.getFullName() == null)
+						param.put("ResultFullName", null);
+					else
+						param.put("ResultFullName", resultOutputOption.getFullName().trim());
 					param.put("ResultPriority", resultOutputOption.getPriorityIndex());
 					
 					if (resultOutputOption.getPaths() != null)
