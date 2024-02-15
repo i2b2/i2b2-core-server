@@ -1941,7 +1941,9 @@ public class ConceptDao extends JdbcDaoSupport {
 		if(termInfoType.isSynonyms() == false)
 			synonym = " and c_synonym_cd = 'N'";
 
-		String sql = "select distinct(c_facttablecolumn) from " + metadataSchema+tableName  + " where c_facttablecolumn is not null and c_fullname like ? {ESCAPE '?'}" ;
+		String sql = "select distinct(c_facttablecolumn) from " + metadataSchema+tableName  + " where c_facttablecolumn is not null and c_fullname like ? ";
+		if (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL"))
+		   sql += "{ESCAPE '?'}" ;
 		sql = sql + hidden + synonym ;
 
 		if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
