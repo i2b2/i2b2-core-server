@@ -14,6 +14,8 @@
  */
 package edu.harvard.i2b2.crc.dao.setfinder;
 
+import java.io.IOException;
+import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -22,9 +24,11 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
+import edu.harvard.i2b2.crc.datavo.pdo.BlobType;
 
 /**
  * Class to manager operation of QtBreakdownPath $Id:
@@ -36,15 +40,16 @@ import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
 public class QueryBreakdownTypeSpringDao extends CRCDAO implements
 IQueryBreakdownTypeDao {
 
-	JdbcTemplate jdbcTemplate = null;
+	static JdbcTemplate jdbcTemplate = null;
 
 	QtBreakdownTypeRowMapper queryBreakdownTypeMapper = new QtBreakdownTypeRowMapper();
 
-	private DataSourceLookup dataSourceLookup = null;
+	static DataSourceLookup dataSourceLookup = null;
 
 	public QueryBreakdownTypeSpringDao(DataSource dataSource,
 			DataSourceLookup dataSourceLookup) {
 		setDataSource(dataSource);
+		
 		setDbSchemaName(dataSourceLookup.getFullSchema());
 		jdbcTemplate = new JdbcTemplate(dataSource);
 		this.dataSourceLookup = dataSourceLookup;
@@ -61,7 +66,7 @@ IQueryBreakdownTypeDao {
 	@SuppressWarnings("unchecked")
 	public QtQueryBreakdownType getBreakdownTypeByName(String name) {
 
-		String sql = "select distinct  b.VALUE  ,   b.CREATE_DATE  ,   b.UPDATE_DATE   ,  b.USER_ID , a.name, a.user_role_cd, a.classname from " + getDbSchemaName()
+		String sql = "select  b.VALUE,   b.CREATE_DATE  ,   b.UPDATE_DATE   ,  b.USER_ID , a.name, a.user_role_cd, a.classname from " + getDbSchemaName()
 		+ "qt_query_result_type a left join " + getDbSchemaName()
 		+ "qt_breakdown_path b on  a.name = b.name where a.name = ? ";
 		QtQueryBreakdownType queryStatusType  = (QtQueryBreakdownType) jdbcTemplate
@@ -79,6 +84,41 @@ IQueryBreakdownTypeDao {
 			queryBreakdownType.setCreateDate(rs.getDate("UPDATE_DATE"));
 			queryBreakdownType.setName(rs.getString("NAME"));
 			queryBreakdownType.setValue(rs.getString("VALUE"));
+			/*
+			String dsLookup = dataSourceLookup.getServerType();
+					//jdbcTemplate.getDataSource().getConnection().getMetaData().getDatabaseProductName();
+			if (dsLookup.equalsIgnoreCase("POSTGRESQL"))// || dsLookup.equalsIgnoreCase("ORACLE"))
+			{
+				String clob = rs.getString("VALUE_BLOB");
+				if (clob !=null)
+				{
+					BlobType blobType = new BlobType();
+					blobType.getContent().add(clob);
+					queryBreakdownType.setValue(blobType);
+
+				}
+
+			} else {
+				String clob = rs.getString("VALUE_BLOB");
+				Clob observationClob = rs.getClob("VALUE_BLOB");
+
+				if (observationClob != null) {
+					BlobType blobType = new BlobType();
+					try {
+						blobType.getContent().add(
+								JDBCUtil.getClobStringWithLinebreak(observationClob));
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					queryBreakdownType.setValue(blobType);
+				}
+			}
+			*/
+			
 			queryBreakdownType.setUserId(rs.getString("USER_ID"));
 			queryBreakdownType.setUserRoleCd(rs.getString("USER_ROLE_CD"));
 			queryBreakdownType.setClassname(rs.getString("CLASSNAME"));

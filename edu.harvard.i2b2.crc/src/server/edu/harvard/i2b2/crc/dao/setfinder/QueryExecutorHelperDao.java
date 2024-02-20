@@ -711,25 +711,26 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			//String fileName = "";
 			String fileName = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename");
 
-			if (fileName.contains("{{{RANDOM_")) {
-				int start = fileName.indexOf("{{{RANDOM_");
-				int end = fileName.indexOf("}}}", start);
-				int size = Integer.parseInt(fileName.substring(start+10, end));
+		//	if (fileName.contains("{{{RANDOM_")) {
+		//		int start = fileName.indexOf("{{{RANDOM_");
+		//		int end = fileName.indexOf("}}}", start);
+		//		int size = Integer.parseInt(fileName.substring(start+10, end));
 
 				SecureRandom random = new SecureRandom();
 
-				param.put("ResultRandom", String.valueOf(random.nextInt(size)));
-			}
+				param.put("ResultRandom", String.valueOf(random.nextInt()));
+		//	}
 
-			if (fileName.contains("{{{DATE_")) {
-				int start = fileName.indexOf("{{{DATE_");
-				int end = fileName.indexOf("}}}", start);
-				String date = fileName.substring(start+8, end);
+		//	if (fileName.contains("{{{DATE_")) {
+		//		int start = fileName.indexOf("{{{DATE_");
+		//		int end = fileName.indexOf("}}}", start);
+		//		String date = fileName.substring(start+8, end);
 
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
+		//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
 				//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
-				param.put("ResultDate", String.valueOf(LocalDate.now().format(formatter)));
-			}
+				//param.put("ResultDate", String.valueOf(LocalDate.now().format(formatter)));
+				param.put("ResultDate",  LocalDate.now());
+			//}
 		} catch (Exception e) {}
 
 

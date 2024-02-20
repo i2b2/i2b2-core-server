@@ -8,19 +8,11 @@ import java.nio.ByteOrder;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.util.zip.ZipEntry;
-//import java.util.zip.DeflaterOutputStream;
-//import java.util.zip.GZIPOutputStream;
-//import java.util.zip.ZipOutputStream;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
-//mport net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.io.outputstream.ZipOutputStream;
-import net.lingala.zip4j.model.ZipParameters;
-import net.lingala.zip4j.model.enums.CompressionLevel;
-import net.lingala.zip4j.model.enums.EncryptionMethod;
+
 
 public class FileBuffer implements Closeable {
 	public static int BUFFER_RESERVED_SIZE = 1 << 20;
@@ -31,7 +23,6 @@ public class FileBuffer implements Closeable {
 	public ByteBuffer buffer;
 	public long position = 0;
 	protected RandomAccessFile out;
-	protected ZipOutputStream zipStream;
 	protected String zipType = "";
 	protected FileChannel channel;
 	protected int currentBytes = 0;
@@ -59,11 +50,12 @@ public class FileBuffer implements Closeable {
 			file = new File(path);
 			fileName = file.getName();
 			int index = fileName.lastIndexOf(".");
-			Boolean isZip = false;
+			//Boolean isZip = false;
 			if (index > -1) {
 				extName = fileName.substring(index + 1);
 				fileName = fileName.substring(0, index);
-				if (extName.equalsIgnoreCase("zip") || extName.equalsIgnoreCase("gz")) {
+			
+				/*if (extName.equalsIgnoreCase("zip") || extName.equalsIgnoreCase("gz")) {
 					zipType =  extName.toLowerCase();
 					isZip = true;
 					index = fileName.lastIndexOf(".");
@@ -72,6 +64,7 @@ public class FileBuffer implements Closeable {
 						fileName = fileName.substring(0, index);
 					}
 				}
+				*/
 			} else if (default_ext != null) {
 				extName = default_ext;
 				file = new File(path + "." + extName);
@@ -82,39 +75,12 @@ public class FileBuffer implements Closeable {
 			channel = out.getChannel();
 			this.bufferSize = bufferSize;
 
-			if (isZip) {
-				BufferedOutputStream buff = new BufferedOutputStream(Channels.newOutputStream(channel));
+		//	if (isZip) {
+		//		BufferedOutputStream buff = new BufferedOutputStream(Channels.newOutputStream(channel));
 
-				if (zipType.equals("zip")) {
-
-
-					ZipParameters zipParameters = new ZipParameters();
-					if (!encryptMethod.equals("NONE")) {
-						zipParameters.setEncryptFiles(true);
-						zipParameters.setCompressionLevel(CompressionLevel.MAXIMUM);
-						if (encryptMethod.equals("AES"))
-								zipParameters.setEncryptionMethod(EncryptionMethod.AES);
-						else if (encryptMethod.equals("STANARD"))
-							zipParameters.setEncryptionMethod(EncryptionMethod.ZIP_STANDARD);
-						else
-							zipParameters.setEncryptionMethod(EncryptionMethod.NONE);
-
-					}
-					zipParameters.setFileNameInZip( fileName + ".csv" );
-					//zipParameters.setPassword("password");
-
-					//zipStream = new ZipOutputStream(buff);
-					//zip.
-					//ZipFile zipfile = new ZipFile(fileName + (extName.equals(null) ? "" : "." + default_ext), "password".toCharArray());
+		//		if (zipType.equals("zip")) {
 
 
-					if (zipParameters.getEncryptionMethod().equals(EncryptionMethod.NONE)) 
-						zipStream = new ZipOutputStream(new FileOutputStream(new File(path)));
-					else
-						zipStream = new ZipOutputStream(new FileOutputStream(new File(path))
-								, "password".toCharArray());
-
-					zipStream.putNextEntry(zipParameters);
 
 					//zipfile.addStream(null, zipParameters);
 
@@ -122,7 +88,7 @@ public class FileBuffer implements Closeable {
 					// ZipOutputStream zip = new ZipOutputStream(buff);
 					//   zip.putNextEntry(new ZipEntry(fileName + (extName.equals(null) ? "" : "." + default_ext)));
 					//   zipStream = zip;
-				} 
+		//		} 
 				//else zipStream = new GZIPOutputStream(buff, true);
 
 
@@ -135,12 +101,12 @@ public class FileBuffer implements Closeable {
                     zipStream = zip;
                 } else zipStream = new GZIPOutputStream(buff, true);
 				 */
-			} else {
+			//} else {
 
 				zipType = null;
 				buffer = ByteBuffer.allocateDirect(bufferSize + BUFFER_RESERVED_SIZE);
 				buffer.order(ByteOrder.nativeOrder());
-			}
+			//}
 			if (charset != null) this.charset = Charset.forName(charset);
 		} catch (IOException | I2B2Exception e) {
 			close();
@@ -159,11 +125,12 @@ public class FileBuffer implements Closeable {
 	protected void fill(boolean force) throws IOException {
 		if ((!force && bLen < BUFFER_RESERVED_SIZE) || bLen == 0) return; // || channel == null || !channel.isOpen()) return;
 		try {
-			if (zipType != null) zipStream.write(bList, 0, bLen);
-			else buffer.put(bList, 0, bLen);
+			//if (zipType != null) zipStream.write(bList, 0, bLen);
+			//else
+				buffer.put(bList, 0, bLen);
 			currentBytes += bLen;
 			bLen = 0;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			bLen = 0;
 			currentBytes = 0;
 			close();
@@ -224,13 +191,13 @@ public class FileBuffer implements Closeable {
 		try {
 			flush(true);
 			if (channel != null && channel.isOpen()) {
-				if (zipStream != null) {
+				//if (zipStream != null) {
 					//zipStream..finish();
 
-					zipStream.closeEntry();
-					zipStream.flush();
-					zipStream.close();
-				}
+				//	zipStream.closeEntry();
+				//	zipStream.flush();
+				//	zipStream.close();
+				//}
 				channel.close();
 			}
 			//MM if (buffer != null && buffer.isDirect()) ((DirectBuffer) buffer).cleaner().clean();
@@ -238,7 +205,7 @@ public class FileBuffer implements Closeable {
 			channel = null;
 			out = null;
 			buffer = null;
-			zipStream = null;
+			//zipStream = null;
 			bList = null;
 		} catch (IOException e) {
 			//e.printStackTrace();
