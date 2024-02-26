@@ -24,62 +24,62 @@ import edu.harvard.i2b2.crc.dao.redcap.xml.EnumValues;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Item
 {
-	@XmlElement(name = "filename")
-	private String filename;
+	@XmlElement(name = "Filename")
+	private String Filename;
 
-	@XmlElement(name = "seperator_character")
-	private String seperator_character;
+	@XmlElement(name = "SeperatorCharacter")
+	private String SeperatorCharacter;
 
-	@XmlElement(name = "query")
-	private String query;
+	@XmlElement(name = "Query")
+	private String Query;
 
-	@XmlElement(name = "result_output")
-	private String result_output;
+	@XmlElement(name = "ResultOutput")
+	private String ResultOutput;
 
     public String getFilename ()
     {
-        return filename;
+        return Filename;
     }
 
     public void setFilename (String filename)
     {
-        this.filename = filename;
+        this.Filename = filename;
     }
 
-    public String getSeperator_character ()
+    public String getSeperatorCharacter ()
     {
-        return seperator_character;
+        return SeperatorCharacter;
     }
 
-    public void setSeperator_character (String seperator_character)
+    public void setSeperatorCharacter (String seperator_character)
     {
-        this.seperator_character = seperator_character;
+        this.SeperatorCharacter = seperator_character;
     }
 
     public String getQuery ()
     {
-        return query;
+        return Query;
     }
 
     public void setQuery (String query)
     {
-        this.query = query;
+        this.Query = query;
     }
 
-    public String getResult_output ()
+    public String getResultOutput ()
     {
-        return result_output;
+        return ResultOutput;
     }
 
-    public void setResult_output (String result_output)
+    public void setResultOutput (String result_output)
     {
-        this.result_output = result_output;
+        this.ResultOutput = result_output;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [filename = "+filename+", seperator_character = "+seperator_character+", query = "+query+", result_output = "+result_output+"]";
+        return "ClassPojo [filename = "+Filename+", seperator_character = "+SeperatorCharacter+", query = "+Query+", result_output = "+ResultOutput+"]";
     }
 }
 			

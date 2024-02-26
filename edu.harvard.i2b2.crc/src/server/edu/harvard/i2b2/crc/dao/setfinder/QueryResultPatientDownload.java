@@ -221,15 +221,15 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						item.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename").replace(".zip", ".csv"));
 						item.setFilename(processFilename(item.getFilename(), param, sfDAOFactory));
 						
-						valueExport.setZip_filename(processFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"), param, sfDAOFactory));
+						valueExport.setZipFilename(processFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"), param, sfDAOFactory));
 					}else {
 						item.setFilename(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"));
 						item.setFilename(processFilename(item.getFilename(), param, sfDAOFactory));
 					}
 					item.setQuery(exportItemXml);
-					item.setSeperator_character(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultseperator"));
+					item.setSeperatorCharacter(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultseperator"));
 					valueExport.setItem(new Item[] {item});
-					valueExport.setZip_encrypt_method(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.zipencryptmethod"));
+					valueExport.setZipEncryptMethod(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.zipencryptmethod"));
 					
 				}
 				JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
@@ -237,7 +237,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				//		.unMashallFromString(exportItemXml).getValue();
 
 				String letter = valueExport.getLetter();
-				String letterFilenameStr = valueExport.getLetter_filename();
+				String letterFilenameStr = valueExport.getLetterFilename();
 				String letterFilename = null;
 				if (letterFilenameStr != null) {
 					letterFilename = letterFilenameStr;
@@ -248,7 +248,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				}
 				
 				
-				String zipFileNameStr = valueExport.getZip_filename();//.getZipFilename();
+				String zipFileNameStr = valueExport.getZipFilename();//.getZipFilename();
 				String zipFileName = null;
 				if (zipFileNameStr != null) {
 					zipFileName = zipFileNameStr;
@@ -303,8 +303,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (separatorStr != null) {
 						separator = getChar(separatorStr);
 					}
-					if (item.getSeperator_character() != null)
-						separator = getChar(item.getSeperator_character());
+					if (item.getSeperatorCharacter() != null)
+						separator = getChar(item.getSeperatorCharacter());
 
 					String quotecharStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultquotechar");
 					if (quotecharStr != null) {
@@ -457,7 +457,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 			        letter = letter.replaceAll("\\{\\{\\{ZIP_FILENAME_WIN\\}\\}\\}", zipFileName.replaceAll("/", "\\\\"));
 			        letter = letter.replaceAll("\\{\\{\\{ZIP_FILENAME_MAC\\}\\}\\}", zipFileName.replaceAll("\\\\", "/"));
-			        letter = letter.replaceAll("\\{\\{\\{ZIP_PASSWORD\\}\\}\\}", valueExport.getZip_password());	
+			        letter = letter.replaceAll("\\{\\{\\{ZIP_PASSWORD\\}\\}\\}", valueExport.getZipPassword());	
 			        // Now calling writer() method with string
 			        pw.write(processFilename(letter, param , sfDAOFactory ));
 			 
@@ -473,8 +473,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					File file = new File(zipFileName);
 					file.getParentFile().mkdirs();
 					String zipencryptMethod = "NONE";
-					if ( valueExport.getZip_encrypt_method() != null) {
-						zipencryptMethod = valueExport.getZip_encrypt_method();
+					if ( valueExport.getZipEncryptMethod() != null) {
+						zipencryptMethod = valueExport.getZipEncryptMethod();
 					}
 					
 					ZipParameters zipParameters = new ZipParameters();
@@ -501,7 +501,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						new ZipFile(zipFileName).addFolder(new File(workDir),zipParameters);
 						//zipStream = new ZipOutputStream(new FileOutputStream(new File(zipFileName)));
 					else
-						new ZipFile(zipFileName,valueExport.getZip_password().toCharArray()).addFolder(new File(workDir),zipParameters);
+						new ZipFile(zipFileName,valueExport.getZipPassword().toCharArray()).addFolder(new File(workDir),zipParameters);
 
 
 //						zipStream = new ZipOutputStream(new FileOutputStream(new File(zipFileName))

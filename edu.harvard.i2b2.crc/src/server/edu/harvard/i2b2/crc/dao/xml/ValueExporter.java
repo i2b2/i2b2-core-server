@@ -23,21 +23,24 @@ import edu.harvard.i2b2.crc.dao.redcap.xml.EnumValues;
 <ValueExporter>
   <Version>3.02</Version>
   <CreationDateTime>08/09/2024 12:00:00</CreationDateTime>
-  <zipFilename>/tmp/finalfile.zip</zipFilename>
-  <zipEncryptMethod>AES</zipEncryptMethod>
-  <zipPassword>test123</zipPassword>
-  <item>
-                <filename>/tmp/tst.csv</filename>
-                <query>select * from obser aiont)fact a, {{{DX}}} b where a.patient_num = b.patient_num</query>
-                <result_output>DEMOGRAPHIOCS_CSV</result_output>
-               <separator_character>\t</separator_character>
-  </item>
-  <item>
-                <filename>/tmp/second.csv</filename>
-                <query>select * from cat</query>
-                <result_output>OTHER_DATA_CSV</result_output>
-               <separator_character>\t</separator_character>
-  </item>
+  <ZipFilename>/tmp/finalfile.zip</ZipFilename>
+  <ZipEncryptMethod>AES</ZipEncryptMethod>
+  <ZipPassword>test123</ZipPassword>
+  <DataManagerEmail>admin@site.org</DataManagerEmail>
+  <ReuqestLetter>This user requested a query with ID of {{{ID} and name of {{{NAME}} ....
+	</ReuqestLetter>
+  <LetterFilename>/tmp/readme.txt</LetterFilename>
+  <Letter>sdfdsfsd</Letter>
+  <Item>
+                <Filename>/tmp/tst.csv</Filename>
+                <Query>select * from obser aiont)fact a, {{{DX}}} b where a.patient_num = b.patient_num</Query>
+               <SeparatorCharacter>\t</SeparatorCharacter>
+  </Item>
+  <Item>
+                <Filename>/tmp/second.csv</Filename>
+                <Query>select * from cat</Query>
+               <SeparatorCharacter>\t</SeparatorCharacter>
+  </Item>
 </ValueExporter>
  */
                  
@@ -47,53 +50,74 @@ import edu.harvard.i2b2.crc.dao.redcap.xml.EnumValues;
 public class ValueExporter
 {
 
-    @XmlElement(name = "item")
+    @XmlElement(name = "Item")
     private Item[] item;
 
     @XmlElement(name = "CreationDateTime")
     private String CreationDateTime;
 
-    @XmlElement(name = "letter_filename")
-    private String letter_filename;
+    @XmlElement(name = "LetterFilename")
+    private String LetterFilename;
 
-    @XmlElement(name = "letter")
-    private String letter;
+    @XmlElement(name = "Letter")
+    private String Letter;
 
-    public String getLetter_filename() {
-		return letter_filename;
-	}
+    @XmlElement(name = "ReuqestLetter")
+    private String ReuqestLetter;
 
-	public void setLetter_filename(String letter_filename) {
-		this.letter_filename = letter_filename;
-	}
+    @XmlElement(name = "DataManagerEmail")
+    private String DataManagerEmail;
 
-	public String getLetter() {
-		return letter;
-	}
-
-	public void setLetter(String letter) {
-		this.letter = letter;
-	}
-
-	@XmlElement(name = "zip_filename")
-    private String zip_filename;
+    @XmlElement(name = "ZipFilename")
+    private String ZipFilename;
 
     @XmlElement(name = "Version")
     private String Version;
 
-    @XmlElement(name = "zip_encrypt_method")
-    private String zip_encrypt_method;
+    @XmlElement(name = "ZipEncryptMethod")
+    private String ZipEncryptMethod;
 
-
-    @XmlElement(name = "zip_password")
-    private String zip_password;
+    @XmlElement(name = "ZipPassword")
+    private String ZipPassword;
     
-    public String getZip_password() {
-		return zip_password;
+    public String getLetterFilename() {
+		return LetterFilename;
 	}
 
-	public void setZip_password(String zip_password) {
-		this.zip_password = zip_password;
+	public void setLetterFilename(String letter_filename) {
+		this.LetterFilename = letter_filename;
+	}
+
+	public String getLetter() {
+		return Letter;
+	}
+
+	public void setLetter(String letter) {
+		this.Letter = letter;
+	}
+    
+    public String getReuqestLetter() {
+		return ReuqestLetter;
+	}
+
+	public void setReuqestLetter(String reuqestLetter) {
+		ReuqestLetter = reuqestLetter;
+	}
+
+	public String getDataManagerEmail() {
+		return DataManagerEmail;
+	}
+
+	public void setDataManagerEmail(String dataManagerEmail) {
+		DataManagerEmail = dataManagerEmail;
+	}
+
+	public String getZipPassword() {
+		return ZipPassword;
+	}
+
+	public void setZipPassword(String zip_password) {
+		this.ZipPassword = zip_password;
 	}
 
 	private String[] content;
@@ -118,14 +142,14 @@ public class ValueExporter
         this.CreationDateTime = CreationDateTime;
     }
 
-    public String getZip_filename ()
+    public String getZipFilename ()
     {
-        return zip_filename;
+        return ZipFilename;
     }
 
-    public void setZip_filename (String zip_filename)
+    public void setZipFilename (String zip_filename)
     {
-        this.zip_filename = zip_filename;
+        this.ZipFilename = zip_filename;
     }
 
     public String getVersion ()
@@ -138,14 +162,14 @@ public class ValueExporter
         this.Version = Version;
     }
 
-    public String getZip_encrypt_method ()
+    public String getZipEncryptMethod ()
     {
-        return zip_encrypt_method;
+        return ZipEncryptMethod;
     }
 
-    public void setZip_encrypt_method (String zip_encrypt_method)
+    public void setZipEncryptMethod (String zip_encrypt_method)
     {
-        this.zip_encrypt_method = zip_encrypt_method;
+        this.ZipEncryptMethod = zip_encrypt_method;
     }
 
     public String[] getContent ()
@@ -161,7 +185,7 @@ public class ValueExporter
     @Override
     public String toString()
     {
-        return "ClassPojo [item = "+item+", CreationDateTime = "+CreationDateTime+", zip_filename = "+zip_filename+", Version = "+Version+", zip_encrypt_method = "+zip_encrypt_method+", content = "+content+"]";
+        return "ClassPojo [item = "+item+", CreationDateTime = "+CreationDateTime+", zip_filename = "+ZipFilename+", Version = "+Version+", zip_encrypt_method = "+ZipEncryptMethod+", content = "+content+"]";
     }
 }
 			
