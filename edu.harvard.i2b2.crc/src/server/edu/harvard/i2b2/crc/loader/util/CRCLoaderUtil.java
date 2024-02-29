@@ -61,7 +61,7 @@ public class CRCLoaderUtil {
 	private static final String DATASOURCE_JNDI_PROPERTIES = "queryprocessor.jndi.datasource_name";
 
 	/** property name for metadata schema name* */
-	private static final String PMCELL_WS_URL_PROPERTIES = "edu.harvard.i2b2.crc.loader.ws.pm.url";
+	private static final String PMCELL_WS_URL_PROPERTIES = "queryprocessor.ws.pm.url";
 
 
 	/** property name for metadata schema name* */
@@ -342,7 +342,7 @@ public class CRCLoaderUtil {
 
 				JdbcTemplate jt =  new JdbcTemplate(ds);
 				Connection conn = ds.getConnection();
-				
+
 				String metadataSchema = conn.getSchema();
 				conn.close();
 				String sql =  "select * from " + metadataSchema + ".hive_cell_params where status_cd <> 'D' and cell_id = 'CRC'";
@@ -370,16 +370,18 @@ public class CRCLoaderUtil {
 		{
 			if (appProperties.get(i).getName() != null)
 			{
-				if (appProperties.get(i).getDatatype().equalsIgnoreCase("U"))
-					try {
-						propertyValue = ServiceClient.getContextRoot() + appProperties.get(i).getValue();
+				if (appProperties.get(i).getName().equalsIgnoreCase(propertyName))
 
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				else 
-					propertyValue = appProperties.get(i).getValue();
+					if (appProperties.get(i).getDatatype().equalsIgnoreCase("U"))
+						try {
+							propertyValue = ServiceClient.getContextRoot() + appProperties.get(i).getValue();
+
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					else 
+						propertyValue = appProperties.get(i).getValue();
 			}
 		}
 
@@ -392,7 +394,7 @@ public class CRCLoaderUtil {
 		return propertyValue;
 	}
 
-/*
+	/*
 
 	public class  HiveCellParamMapper void getHiveCellParam() implements RowMapper {  
 
@@ -405,20 +407,20 @@ public class CRCLoaderUtil {
 			return param;
 		}
 	}
-*/
+	 */
 }
 
 class getHiveCellParam implements RowMapper<ParamType> {
 	@Override
 	public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-			ParamType param = new ParamType();
-			param.setId(rs.getInt("id"));
-			param.setName(rs.getString("param_name_cd"));
-			param.setValue(rs.getString("value"));
-			param.setDatatype(rs.getString("datatype_cd"));
-			return param;
-		} 
+		ParamType param = new ParamType();
+		param.setId(rs.getInt("id"));
+		param.setName(rs.getString("param_name_cd"));
+		param.setValue(rs.getString("value"));
+		param.setDatatype(rs.getString("datatype_cd"));
+		return param;
+	} 
 }
 
 
