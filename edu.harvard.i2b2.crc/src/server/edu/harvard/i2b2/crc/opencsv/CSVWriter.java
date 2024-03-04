@@ -68,7 +68,7 @@ public class CSVWriter implements Closeable {
 	protected HashMap<String, Boolean> excludes = new HashMap<>();
 	protected HashMap<String, String> remaps = new HashMap();
 	protected String[] titles;
-	protected SetFinderDAOFactory sfDAOFactory;
+//	protected SetFinderDAOFactory sfDAOFactory;
 
 	/**
 	 * Constructs CSVWriter using a comma for the separator.
@@ -79,11 +79,11 @@ public class CSVWriter implements Closeable {
 		this(writer, CSVParser.DEFAULT_SEPARATOR);
 	}
 
-	public CSVWriter(String fileName, char separator, char quotechar, char escapechar, String lineEnd, int recordCount, SetFinderDAOFactory sfDAOFactory) throws Exception {
+	public CSVWriter(String fileName, char separator, char quotechar, char escapechar, String lineEnd, int recordCount) throws Exception {
 		this(new FileWriter(fileName), separator, quotechar, escapechar, lineEnd);
 		this.CSVFileName = fileName;
 		this.recordCount = recordCount;
-		this.sfDAOFactory = sfDAOFactory;
+		//this.sfDAOFactory = sfDAOFactory;
 		String extensionName = "csv";
 		if (quotechar == '\'' && escapechar == quotechar) extensionName = "sql";
 
@@ -208,11 +208,11 @@ public class CSVWriter implements Closeable {
 					+ "	Config	 title:		2. PRODUCTION \n"
 					+ "	Run	 directory:     " + this.CSVFileName + "\n"
 					+ ""
-					+ "Data Sources:\n"
-					+ "	--CRC Name:         " + sfDAOFactory.getDataSourceLookup().getNiceName() + "\n"
-					+ "	--CRC Vendor:    	" + sfDAOFactory.getDataSource().getConnection().getMetaData().getDatabaseProductName() + "\n" //sfDAOFactory.getDataSourceLookup().getServerType()  + "\n"
-					+ "	--CRC URL: 	        " + sfDAOFactory.getDataSource().getConnection().getMetaData().getURL() + "\n"
-					+ "	--CRC Username: 	" + sfDAOFactory.getDataSource().getConnection().getMetaData().getUserName() + "\n"
+	//				+ "Data Sources:\n"
+	//				+ "	--CRC Name:         " + sfDAOFactory.getDataSourceLookup().getNiceName() + "\n"
+	//				+ "	--CRC Vendor:    	" + sfDAOFactory.getDataSource().getConnection().getMetaData().getDatabaseProductName() + "\n" //sfDAOFactory.getDataSourceLookup().getServerType()  + "\n"
+	//				+ "	--CRC URL: 	        " + sfDAOFactory.getDataSource().getConnection().getMetaData().getURL() + "\n"
+	//				+ "	--CRC Username: 	" + sfDAOFactory.getDataSource().getConnection().getMetaData().getUserName() + "\n"
 					+ "";
 					
 			logWriter.write(msg + "\n");

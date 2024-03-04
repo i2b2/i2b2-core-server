@@ -706,7 +706,6 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		param.put("ObfuscatedRoleFlag", dataObfuscFlag);
 		param.put("panelList", panelList);
 		param.put("queryDef", queryDef);
-
 		try {
 			//String fileName = "";
 			String fileName = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename");

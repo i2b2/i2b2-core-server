@@ -310,6 +310,40 @@ public class CallPMUtil {
 		UserType userType = configureType.getUser();
 		return userType.isIsAdmin();
 	}
+	
+	public static UserType getUserFromResponse(String responseXml)
+			throws JAXBUtilException, I2B2Exception {
+		JAXBElement responseJaxb = jaxbUtil.unMashallFromString(responseXml);
+
+		//CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseXml);
+		ResponseMessageType pmRespMessageType = (ResponseMessageType) responseJaxb
+				.getValue();
+		logesapi.debug(null,"CRC's PM call response xml" + responseXml);
+
+		ResponseHeaderType responseHeader = pmRespMessageType
+				.getResponseHeader();
+		StatusType status = responseHeader.getResultStatus().getStatus();
+		String procStatus = status.getType();
+		String procMessage = status.getValue();
+
+		if (procStatus.equals("ERROR")) {
+			logesapi.info(null,"PM Error reported by CRC web Service " + procMessage);
+			throw new I2B2Exception("PM Error reported by CRC web Service "
+					+ procMessage);
+		} else if (procStatus.equals("WARNING")) {
+			logesapi.info(null,"PM Warning reported by CRC web Service" + procMessage);
+			throw new I2B2Exception("PM Warning reported by CRC web Service"
+					+ procMessage);
+		}
+
+		JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
+		ConfigureType configureType = (ConfigureType) helper.getObjectByClass(
+				pmRespMessageType.getMessageBody().getAny(),
+				ConfigureType.class);
+		return configureType.getUser();
+		//return userType.isIsAdmin();
+	}
+	
 	private static OMElement buildOMElement(RequestMessageType requestMessageType)
 			throws XMLStreamException, JAXBUtilException {
 		StringWriter strWriter = new StringWriter();

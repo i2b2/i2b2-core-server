@@ -59,7 +59,7 @@ public class CancelStatementRunner implements Runnable {
 		}
 		try {
 			// cancel the stmt if the sql did not complete
-			if (this.sqlFinishedFlag == false) {
+			if (this.sqlFinishedFlag == false && stmt != null) {
 				stmt.cancel();
 			}
 		} catch (SQLException e) {

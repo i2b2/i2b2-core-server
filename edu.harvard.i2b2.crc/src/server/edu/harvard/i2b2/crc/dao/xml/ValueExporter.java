@@ -50,8 +50,8 @@ import edu.harvard.i2b2.crc.dao.redcap.xml.EnumValues;
 public class ValueExporter
 {
 
-    @XmlElement(name = "Item")
-    private Item[] item;
+    @XmlElement(name = "Table")
+    private Table[] Table;
 
     @XmlElement(name = "CreationDateTime")
     private String CreationDateTime;
@@ -62,10 +62,21 @@ public class ValueExporter
     @XmlElement(name = "Letter")
     private String Letter;
 
-    @XmlElement(name = "ReuqestLetter")
-    private String ReuqestLetter;
+    @XmlElement(name = "RequestLetter")
+    private String RequestLetter;
 
-    @XmlElement(name = "DataManagerEmail")
+    @XmlElement(name = "RequesterEmailLetter")
+    private String RequesterEmailLetter;
+    
+    public String getRequesterEmailLetter() {
+		return RequesterEmailLetter;
+	}
+
+	public void setRequesterEmailLetter(String requesterEmailLetter) {
+		RequesterEmailLetter = requesterEmailLetter;
+	}
+
+	@XmlElement(name = "DataManagerEmail")
     private String DataManagerEmail;
 
     @XmlElement(name = "ZipFilename")
@@ -96,12 +107,12 @@ public class ValueExporter
 		this.Letter = letter;
 	}
     
-    public String getReuqestLetter() {
-		return ReuqestLetter;
+    public String getRequestLetter() {
+		return RequestLetter;
 	}
 
-	public void setReuqestLetter(String reuqestLetter) {
-		ReuqestLetter = reuqestLetter;
+	public void setRequestLetter(String reuqestLetter) {
+		RequestLetter = reuqestLetter;
 	}
 
 	public String getDataManagerEmail() {
@@ -122,14 +133,14 @@ public class ValueExporter
 
 	private String[] content;
 
-    public Item[] getItem ()
+    public Table[] getTable ()
     {
-        return item;
+        return Table;
     }
 
-    public void setItem (Item[] item)
+    public void setItem (Table[] item)
     {
-        this.item = item;
+        this.Table = Table;
     }
 
     public String getCreationDateTime ()
@@ -185,7 +196,7 @@ public class ValueExporter
     @Override
     public String toString()
     {
-        return "ClassPojo [item = "+item+", CreationDateTime = "+CreationDateTime+", zip_filename = "+ZipFilename+", Version = "+Version+", zip_encrypt_method = "+ZipEncryptMethod+", content = "+content+"]";
+        return "ClassPojo [Table = "+Table+", CreationDateTime = "+CreationDateTime+", zip_filename = "+ZipFilename+", Version = "+Version+", zip_encrypt_method = "+ZipEncryptMethod+", content = "+content+"]";
     }
 }
 			

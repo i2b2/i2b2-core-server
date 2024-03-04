@@ -36,6 +36,15 @@ public class QtQueryMaster implements java.io.Serializable {
 
 	private String deleteFlag;
 	private String i2b2RequestXml;
+	private String pmXml;
+
+	public String getPmXml() {
+		return pmXml;
+	}
+
+	public void setPmXml(String pmXml) {
+		this.pmXml = pmXml;
+	}
 
 	public final static String DELETE_ON_FLAG = "Y";
 	public final static String DELETE_OFF_FLAG = "N";
