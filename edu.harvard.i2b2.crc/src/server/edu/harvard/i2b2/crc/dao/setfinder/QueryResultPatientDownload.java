@@ -173,9 +173,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 		int actualTotal = 0, obsfcTotal = 0;
 
-		
-        QtQueryMaster queryMaster = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
-        UserType user = null;
+
+		QtQueryMaster queryMaster = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
+		UserType user = null;
 		//zip up if priority is 999
 		if (resultPriority == 999)
 		{
@@ -211,9 +211,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				//String sqlFinal = "";
 				QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 
-				 valueExport = new ValueExporter();
+				valueExport = new ValueExporter();
 
-				
+
 				String workDir = "";
 
 				String workDirStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.workfolder");
@@ -229,7 +229,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename").endsWith(".zip")) {
 						item.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename").replace(".zip", ".csv"));
 						item.setFilename(processFilename(item.getFilename(), param));
-						
+
 						valueExport.setZipFilename(processFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"), param));
 					}else {
 						item.setFilename(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"));
@@ -239,7 +239,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					item.setSeperatorCharacter(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultseperator"));
 					valueExport.setItem(new Table[] {item});
 					valueExport.setZipEncryptMethod(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.zipencryptmethod"));
-					
+
 				}
 				JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
 				//ValueExport valueExport = (ValueExport) jaxbUtil
@@ -250,23 +250,23 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				String letterFilename = null;
 				if (letterFilenameStr != null) {
 					letterFilename = letterFilenameStr;
-					
+
 					letterFilename = processFilename(letterFilename, param);
 
-					
+
 				}
-				
-				
+
+
 				String zipFileNameStr = valueExport.getZipFilename();//.getZipFilename();
 				String zipFileName = null;
 				if (zipFileNameStr != null) {
 					zipFileName = zipFileNameStr;
-					
+
 					zipFileName = processFilename(zipFileName, param);
 
-					
+
 				}
-				
+
 				for (Table item: valueExport.getTable()) {
 					/*
 					 * 		JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
@@ -343,7 +343,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (maxFetchRowsStr != null) {
 						maxFetchRows =  Integer.parseInt(maxFetchRowsStr);
 					}
-					
+
 					fileName = processFilename(fileName, param);
 
 					/*fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}", userName);
@@ -379,7 +379,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 							//DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
 							//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
-							
+
 							DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
 							fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}",  ((LocalDate) param.get("ResultDate")).format(formatter));
 									//(String) param.get("ResultDate"));
@@ -387,7 +387,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						} catch (Exception e) {}
 
 					}
-					*/
+					 */
 
 
 
@@ -421,71 +421,73 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					}
 				}
 
-					edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
-					BodyType bodyType = new BodyType();
-					bodyType.getAny().add(of.createResult(resultType));
-					ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
-					resultEnvelop.setBody(bodyType);
+				edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
+				BodyType bodyType = new BodyType();
+				bodyType.getAny().add(of.createResult(resultType));
+				ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
+				resultEnvelop.setBody(bodyType);
 
-					//JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+				//JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
 
-					StringWriter strWriter = new StringWriter();
-					subLogTimingUtil.setStartTime();
-					jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
-							strWriter);
-					subLogTimingUtil.setEndTime();
-					//tm.begin();
-					IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
-					xmlResult = strWriter.toString();
-					if (resultInstanceId != null)
-						xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
-								.toString());
-					//
-					if (processTimingFlag != null) {
-						if (!processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.NONE) ) {
-							ProcessTimingReportUtil ptrUtil = new ProcessTimingReportUtil(sfDAOFactory.getDataSourceLookup());
-							if (processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.DEBUG) ) {
-								ptrUtil.logProcessTimingMessage(queryInstanceId, ptrUtil.buildProcessTiming(subLogTimingUtil, "JAXB - " + resultTypeName , ""));
-							}
-							logTimingUtil.setEndTime();
-							ptrUtil.logProcessTimingMessage(queryInstanceId, ptrUtil.buildProcessTiming(logTimingUtil, "BUILD - " + resultTypeName , ""));
+				StringWriter strWriter = new StringWriter();
+				subLogTimingUtil.setStartTime();
+				jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
+						strWriter);
+				subLogTimingUtil.setEndTime();
+				//tm.begin();
+				IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+				xmlResult = strWriter.toString();
+				if (resultInstanceId != null)
+					xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
+							.toString());
+				//
+				if (processTimingFlag != null) {
+					if (!processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.NONE) ) {
+						ProcessTimingReportUtil ptrUtil = new ProcessTimingReportUtil(sfDAOFactory.getDataSourceLookup());
+						if (processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.DEBUG) ) {
+							ptrUtil.logProcessTimingMessage(queryInstanceId, ptrUtil.buildProcessTiming(subLogTimingUtil, "JAXB - " + resultTypeName , ""));
 						}
+						logTimingUtil.setEndTime();
+						ptrUtil.logProcessTimingMessage(queryInstanceId, ptrUtil.buildProcessTiming(logTimingUtil, "BUILD - " + resultTypeName , ""));
 					}
+				}
 				//}
 				//tm.commit();
 
 				//Process XIP File 
 				if (letter != null && letterFilename != null) {
-					
+
 					File path  = new File(letterFilename);
 					path.getParentFile().mkdirs();
-			        // Declaring the print writer with path
-			        PrintWriter pw = new PrintWriter(path);
-			 
-			        
-			        //queryMaster.
-			        letter = letter.replaceAll("\\{\\{\\{ZIP_FILENAME_WIN\\}\\}\\}", zipFileName.replaceAll("/", "\\\\"));
-			        letter = letter.replaceAll("\\{\\{\\{ZIP_FILENAME_MAC\\}\\}\\}", zipFileName.replaceAll("\\\\", "/"));
-			        letter = letter.replaceAll("\\{\\{\\{ZIP_PASSWORD\\}\\}\\}", valueExport.getZipPassword());	
-			        // Now calling writer() method with string
-			        pw.write(processFilename(letter, param  ));
-			 
-			        // Flushing the print writer
-			        pw.flush();
-			 
-			        // Lastly closing the printwriter
-			        // using the close() method
-			        pw.close();
+					// Declaring the print writer with path
+					PrintWriter pw = new PrintWriter(path);
+
+
+					//queryMaster.
+					if (zipFileName != null) {
+						letter = letter.replaceAll("\\{\\{\\{ZIP_FILENAME_WIN\\}\\}\\}", zipFileName.replaceAll("/", "\\\\"));
+						letter = letter.replaceAll("\\{\\{\\{ZIP_FILENAME_MAC\\}\\}\\}", zipFileName.replaceAll("\\\\", "/"));
+						letter = letter.replaceAll("\\{\\{\\{ZIP_PASSWORD\\}\\}\\}", valueExport.getZipPassword());	
+					}
+					// Now calling writer() method with string
+					pw.write(processFilename(letter, param  ));
+
+					// Flushing the print writer
+					pw.flush();
+
+					// Lastly closing the printwriter
+					// using the close() method
+					pw.close();
 				}
 				if (zipFileName != null && skipCSV == false) {
-					
+
 					File file = new File(zipFileName);
 					file.getParentFile().mkdirs();
 					String zipencryptMethod = "NONE";
 					if ( valueExport.getZipEncryptMethod() != null) {
 						zipencryptMethod = valueExport.getZipEncryptMethod();
 					}
-					
+
 					ZipParameters zipParameters = new ZipParameters();
 					if (!zipencryptMethod.equals("NONE")) {
 						zipParameters.setEncryptFiles(true);
@@ -508,18 +510,18 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 					if (zipParameters.getEncryptionMethod().equals(EncryptionMethod.NONE))
 						new ZipFile(zipFileName).addFolder(new File(workDir),zipParameters);
-						//zipStream = new ZipOutputStream(new FileOutputStream(new File(zipFileName)));
+					//zipStream = new ZipOutputStream(new FileOutputStream(new File(zipFileName)));
 					else
 						new ZipFile(zipFileName,valueExport.getZipPassword().toCharArray()).addFolder(new File(workDir),zipParameters);
 
 
-//						zipStream = new ZipOutputStream(new FileOutputStream(new File(zipFileName))
-//								, valueExport.getZip_password().toCharArray());
+					//						zipStream = new ZipOutputStream(new FileOutputStream(new File(zipFileName))
+					//								, valueExport.getZip_password().toCharArray());
 
 					//zipStream.putNextEntry(zipParameters);
 				}
 
-				
+
 				String requesterLetter = valueExport.getRequesterEmailLetter();
 				if (requesterLetter != null && user.getEmail() != null) {
 
@@ -616,26 +618,26 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 	}
 
-	
+
 	public static ValueExporter JaxbXmlToObj(String xmlString) {
 
 		ValueExporter val = new ValueExporter();
 		ValueExporter resultDataSet = null ;
-        JAXBContext jaxbContext;
-        try {
-            jaxbContext = JAXBContext.newInstance(val.getClass());
+		JAXBContext jaxbContext;
+		try {
+			jaxbContext = JAXBContext.newInstance(val.getClass());
 
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-             resultDataSet = (ValueExporter) jaxbUnmarshaller.unmarshal(new StringReader(xmlString));
+			resultDataSet = (ValueExporter) jaxbUnmarshaller.unmarshal(new StringReader(xmlString));
 
-            //System.out.println(resultDataSet);
-        }
-        catch (JAXBException e) {
-            e.printStackTrace();
-        }
-        return resultDataSet;
-    }
+			//System.out.println(resultDataSet);
+		}
+		catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		return resultDataSet;
+	}
 	private String sanitizeFilename(String filename)
 	{
 
@@ -671,29 +673,29 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		}
 
 	}
-	
+
 	private String processFilename(String fileName, Map param)
 	{
 
 
-//		SetFinderDAOFactory sfDAOFactory = (SetFinderDAOFactory) param
-//				.get("SetFinderDAOFactory");
+		//		SetFinderDAOFactory sfDAOFactory = (SetFinderDAOFactory) param
+		//				.get("SetFinderDAOFactory");
 
 		String projectId = (String) param.get("projectId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
 		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
 		String resultFullName = queryDef.getQueryName();
 		//queryDef.getQueryId()
-		
-//		String resultFullName =  sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-//				sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
-//		QtQueryMaster qtMaster =  sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster();
-		
+
+		//		String resultFullName =  sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
+		//				sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
+		//		QtQueryMaster qtMaster =  sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster();
+
 		fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}",(String) param.get("UserName"));//queryDef.getUserId());
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_STARTDATE\\}\\}\\}", ((java.sql.Timestamp) param.get("QueryStartDate")).toLocaleString());//sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getStartDate().toLocaleString());
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_ENDDATE\\}\\}\\}", new Date().toLocaleString());
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_RUNTIME\\}\\}\\}", Integer.toString(Math.toIntExact(new Date().getTime() - ((java.sql.Timestamp) param.get("QueryStartDate")).getTime())/1000));
-		
+
 		fileName = fileName.replaceAll("\\{\\{\\{PATIENT_COUNT\\}\\}\\}", param.get("RecordCount").toString());		
 		fileName = fileName.replaceAll("\\{\\{\\{FULL_NAME\\}\\}\\}", (String) param.get("FullName"));			
 		fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId.substring(1, projectId.length()-1));
@@ -727,16 +729,16 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 				//DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
 				//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
-				
+
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
 				fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}",  ((LocalDate) param.get("ResultDate")).format(formatter));
-						//(String) param.get("ResultDate"));
+				//(String) param.get("ResultDate"));
 
 			} catch (Exception e) {}
 
 		}
 
-		
+
 		return fileName;
 	}
 

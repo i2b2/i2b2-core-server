@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -69,11 +70,14 @@ IQueryBreakdownTypeDao {
 		String sql = "select  b.VALUE,   b.CREATE_DATE  ,   b.UPDATE_DATE   ,  b.USER_ID , a.name, a.user_role_cd, a.classname from " + getDbSchemaName()
 		+ "qt_query_result_type a left join " + getDbSchemaName()
 		+ "qt_breakdown_path b on  a.name = b.name where a.name = ? ";
-		QtQueryBreakdownType queryStatusType  = (QtQueryBreakdownType) jdbcTemplate
-				.queryForObject(sql, new Object[] { name },
+		List queryStatusType  =  jdbcTemplate
+				.query(sql, new Object[] { name },
 						queryBreakdownTypeMapper);
 
-		return queryStatusType;
+		if (queryStatusType.size() > 0)
+		return (QtQueryBreakdownType) queryStatusType.get(0);
+		else
+			return null;
 	}
 
 	private static class QtBreakdownTypeRowMapper implements RowMapper {

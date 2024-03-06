@@ -159,6 +159,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
 		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
 		List<PanelType> panelList = (List<PanelType>)param.get("panelList");
+
 		boolean skipCSV = false;
 		if ((Boolean)param.get("SkipCSV") != null)
 			skipCSV = (Boolean)param.get("SkipCSV");
@@ -181,9 +182,12 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 		
         QtQueryMaster queryMaster = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
         UserType user = null;
-
+        sfDAOFactory.getQueryMasterDAO().renameQuery(queryMaster.getQueryMasterId(), "(" + queryMaster.getQueryMasterId() + ") " + queryDef.getQueryName());
         
 		try {
+			
+			if (recordCount==0) return;
+
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
 			logTimingUtil.setStartTime();
 
@@ -315,6 +319,9 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 									//obsfcTotal, 
 									obfuscatedRecordCount, recordCount, obfusMethod);
 
+							if (recordCount == 0)
+								description = "0 patients, no email sent";
+							else
 							description = resultTypeList.get(0)
 									.getDescription() + " for \"" + queryName +"\"";
 
@@ -325,7 +332,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 							
 							
 							
-							if (valueExport != null) {
+							if ((valueExport != null) && (recordCount != 0)) {
 								String letter = valueExport.getRequestLetter();
 								if (letter != null) {
 

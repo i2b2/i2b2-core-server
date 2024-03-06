@@ -152,7 +152,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		}
 		if ((findChildType.getCategory().toLowerCase().equals("top")) ||
 				(findChildType.getCategory().toLowerCase().equals("@"))) {
-			sql += " query_master_id,name,user_id,group_id,create_date,delete_date,null as request_xml,delete_flag,generated_sql, null as i2b2_request_xml, master_type_cd, null as plugin_id from "
+			sql += " query_master_id,name,user_id,group_id,create_date,delete_date,null as pm_xml,null as request_xml,delete_flag,generated_sql, null as i2b2_request_xml, master_type_cd, null as plugin_id from "
 					+ getDbSchemaName()
 					+ "qt_query_master where ";
 			if (roles != null && !roles.contains("MANAGER"))
@@ -224,7 +224,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		}
 		if ((findChildType.getCategory().toLowerCase().equals("results")) ||
 				(findChildType.getCategory().equals("@"))) {
-			sql += " qm.query_master_id,qm.name,qm.user_id,qm.group_id,qm.create_date,qm.delete_date,null as request_xml,qm.delete_flag,qm.generated_sql, null as i2b2_request_xml, qm.master_type_cd, null as plugin_id  from "
+			sql += " qm.query_master_id,qm.name,qm.user_id,qm.group_id,qm.create_date,qm.delete_date,null as pm_xml,null as request_xml,qm.delete_flag,qm.generated_sql, null as i2b2_request_xml, qm.master_type_cd, null as plugin_id  from "
 					+ getDbSchemaName()
 					+ "qt_query_master qm, "
 					+ getDbSchemaName()
@@ -297,7 +297,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		}
 		if ((findChildType.getCategory().toLowerCase().equals("pdo")) ||
 				(findChildType.getCategory().toLowerCase().equals("@"))) {
-			sql += "  qm.query_master_id,qm.name,qm.user_id,qm.group_id,qm.create_date,qm.delete_date,null as request_xml,qm.delete_flag,null as generated_sql, null as i2b2_request_xml, qm.master_type_cd, null as plugin_id  from "
+			sql += "  qm.query_master_id,qm.name,qm.user_id,qm.group_id,qm.create_date,qm.delete_date,null as pm_xml,null as request_xml,qm.delete_flag,null as generated_sql, null as i2b2_request_xml, qm.master_type_cd, null as plugin_id  from "
 					+ getDbSchemaName()
 					+ "qt_query_master qm, "
 					+ getDbSchemaName()
@@ -405,7 +405,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 						DAOFactoryHelper.SQLSERVER)) {
 			sql += " top " + fetchSize;
 		}
-		sql += " query_master_id,name,user_id,group_id,create_date,delete_date,null as request_xml,delete_flag,generated_sql, null as i2b2_request_xml,  master_type_cd, null as plugin_id from "
+		sql += " query_master_id,name,user_id,group_id,create_date,delete_date,null as request_xml,null as pm_xml,delete_flag,generated_sql, null as i2b2_request_xml,  master_type_cd, null as plugin_id from "
 				+ getDbSchemaName()
 				+ "qt_query_master "
 				+ " where user_id = ? and delete_flag = ? ";// and master_type_cd is NULL";
@@ -469,7 +469,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 						DAOFactoryHelper.SQLSERVER)) {
 			sql += " top " + fetchSize;
 		}
-		sql += " query_master_id,name,user_id,group_id,create_date,delete_date,null as request_xml,delete_flag,generated_sql,null as i2b2_request_xml, master_type_cd, null as plugin_id from "
+		sql += " query_master_id,name,user_id,group_id,create_date,delete_date,null as request_xml,null as pm_xml,delete_flag,generated_sql,null as i2b2_request_xml, master_type_cd, null as plugin_id from "
 				+ getDbSchemaName()
 				+ "qt_query_master "
 				+ " where group_id = ? and delete_flag = ? "; //and master_type_cd is NULL";
