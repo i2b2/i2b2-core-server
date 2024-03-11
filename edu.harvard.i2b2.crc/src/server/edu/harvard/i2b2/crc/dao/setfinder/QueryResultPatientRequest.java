@@ -333,6 +333,13 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 							
 							
 							if ((valueExport != null) && (recordCount != 0)) {
+								if (valueExport.getDataManagerEmail() == null)
+								{
+									QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+
+									valueExport.setDataManagerEmail(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"));
+
+								}
 								String letter = valueExport.getRequestLetter();
 								if (letter != null) {
 
@@ -362,6 +369,9 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 							throw new I2B2DAOException(
 									"Failed to write obfuscated description "
 											+ e.getMessage(), e);
+						} catch (I2B2Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
 				}

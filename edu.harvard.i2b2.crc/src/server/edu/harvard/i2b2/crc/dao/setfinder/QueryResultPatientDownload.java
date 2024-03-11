@@ -232,7 +232,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 						valueExport.setZipFilename(processFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"), param));
 					}else {
-						item.setFilename(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"));
+						item.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"));
 						item.setFilename(processFilename(item.getFilename(), param));
 					}
 					item.setQuery(exportItemXml);
