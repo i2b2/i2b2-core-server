@@ -218,7 +218,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 				String workDirStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.workfolder");
 				if (workDirStr != null) {
-					workDir = workDirStr + File.separatorChar + (String) param.get("ResultRandom") + File.separatorChar;
+					workDir = workDirStr; // + File.separatorChar + (String) param.get("ResultRandom") + File.separatorChar;
 				}
 
 				try {
