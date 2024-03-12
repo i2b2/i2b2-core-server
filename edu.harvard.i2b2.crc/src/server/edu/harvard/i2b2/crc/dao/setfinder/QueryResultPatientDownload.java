@@ -249,7 +249,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				String letterFilenameStr = valueExport.getLetterFilename();
 				String letterFilename = null;
 				if (letterFilenameStr != null) {
-					letterFilename = letterFilenameStr;
+					letterFilename = workDirStr + letterFilenameStr;
 
 					letterFilename = processFilename(letterFilename, param);
 
