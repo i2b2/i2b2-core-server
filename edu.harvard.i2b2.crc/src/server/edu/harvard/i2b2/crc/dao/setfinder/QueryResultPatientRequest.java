@@ -179,13 +179,13 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 
 		int actualTotal = 0, obsfcTotal = 0;
 
-		
-        QtQueryMaster queryMaster = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
-        UserType user = null;
-        sfDAOFactory.getQueryMasterDAO().renameQuery(queryMaster.getQueryMasterId(), "(" + queryMaster.getQueryMasterId() + ") " + queryDef.getQueryName());
-        
+
+		QtQueryMaster queryMaster = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
+		UserType user = null;
+		sfDAOFactory.getQueryMasterDAO().renameQuery(queryMaster.getQueryMasterId(), "(" + queryMaster.getQueryMasterId() + ") " + queryDef.getQueryName());
+
 		try {
-			
+
 			if (recordCount==0) return;
 
 			LogTimingUtil logTimingUtil = new LogTimingUtil();
@@ -196,18 +196,17 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 
 			String exportItemXml = getItemKeyFromResultType(sfDAOFactory, resultTypeName);
 
-			
+
 
 			user = CallPMUtil.getUserFromResponse(queryMaster.getPmXml());
 
 			param.put("QueryStartDate", queryMaster.getCreateDate());
 			param.put("FullName", user.getFullName());
 			param.put("UserName", user.getUserName());
-			
+
 			//get break down count sigma from property file 
 
-			ResultType resultType = new ResultType();
-			resultType.setName(resultTypeName);
+
 			//stmt = sfConn.prepareStatement(itemCountSql);
 
 			CancelStatementRunner csr = new CancelStatementRunner(stmt,
@@ -218,14 +217,14 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 			//String sqlFinal = "";
 			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 
-			 valueExport = new ValueExporter();
+			valueExport = new ValueExporter();
 
 
 
 			valueExport = JaxbXmlToObj(exportItemXml);
 
 
-			JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+			//JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
 			//ValueExport valueExport = (ValueExport) jaxbUtil
 			//		.unMashallFromString(exportItemXml).getValue();
 
@@ -234,26 +233,6 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 				throw new CRCTimeOutException("The query was canceled.");
 			}
 
-
-			edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
-			BodyType bodyType = new BodyType();
-			bodyType.getAny().add(of.createResult(resultType));
-			ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
-			resultEnvelop.setBody(bodyType);
-
-			//JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
-
-			StringWriter strWriter = new StringWriter();
-			subLogTimingUtil.setStartTime();
-			jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
-					strWriter);
-			subLogTimingUtil.setEndTime();
-			//tm.begin();
-			IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
-			xmlResult = strWriter.toString();
-			if (resultInstanceId != null)
-				xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
-						.toString());
 			//
 			if (processTimingFlag != null) {
 				if (!processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.NONE) ) {
@@ -303,7 +282,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 							}
 							IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
 							List<QtQueryResultType> resultTypeList = resultTypeDao
-									.getQueryResultTypeByName(resultTypeName, roles);
+									.getQueryResultTypeByName(resultTypeName, null);
 
 							// add "(Obfuscated)" in the description
 							//description = resultTypeList.get(0)
@@ -322,16 +301,16 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 							if (recordCount == 0)
 								description = "0 patients, no email sent";
 							else
-							description = resultTypeList.get(0)
-									.getDescription() + " for \"" + queryName +"\"";
+								description = resultTypeList.get(0)
+								.getDescription() + " for \"" + queryName +"\"";
 
 							// set the result instance description
 							resultInstanceDao.updateResultInstanceDescription(
 									resultInstanceId, description);
 							//	tm.commit();
-							
-							
-							
+
+
+
 							if ((valueExport != null) && (recordCount != 0)) {
 								if (valueExport.getDataManagerEmail() == null)
 								{
@@ -344,6 +323,50 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 								if (letter != null) {
 
 									letter = processFilename(letter, param);
+
+
+
+									ResultType resultType = new ResultType();
+									resultType.setName(resultTypeName);
+									DataType mdataType = new DataType();
+									mdataType.setValue(String.valueOf(recordCount));
+									mdataType.setColumn("patient_count");
+									mdataType.setType("int");
+									resultType.getData().add(mdataType);	
+									mdataType = new DataType();
+									mdataType.setValue(letter);
+									mdataType.setColumn("RequestLetter");
+									mdataType.setType("string");
+									resultType.getData().add(mdataType);
+									mdataType = new DataType();
+									mdataType.setValue(valueExport.getDataManagerEmail());
+									mdataType.setColumn("DataManagerEmail");
+									mdataType.setType("string");
+									resultType.getData().add(mdataType);
+									
+									edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
+									BodyType bodyType = new BodyType();
+									bodyType.getAny().add(of.createResult(resultType));
+									ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
+									resultEnvelop.setBody(bodyType);
+
+									//JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+
+									StringWriter strWriter = new StringWriter();
+
+									//subLogTimingUtil.setStartTime();
+									JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+									jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
+											strWriter);
+									//subLogTimingUtil.setEndTime();
+									//tm.begin();
+									IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+									xmlResult = strWriter.toString();
+									if (resultInstanceId != null)
+										xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
+												.toString());
+
+
 									EmailUtil email = new EmailUtil();
 									try {
 										email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(), "i2b2 reuqest for data load", letter);
@@ -369,7 +392,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 							throw new I2B2DAOException(
 									"Failed to write obfuscated description "
 											+ e.getMessage(), e);
-						} catch (I2B2Exception e) {
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -441,24 +464,24 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 	{
 
 
-//		SetFinderDAOFactory sfDAOFactory = (SetFinderDAOFactory) param
-//				.get("SetFinderDAOFactory");
+		//		SetFinderDAOFactory sfDAOFactory = (SetFinderDAOFactory) param
+		//				.get("SetFinderDAOFactory");
 
 		String projectId = (String) param.get("projectId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
 		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
 		String resultFullName = queryDef.getQueryName();
 		//queryDef.getQueryId()
-		
-//		String resultFullName =  sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-//				sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
-//		QtQueryMaster qtMaster =  sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster();
-		
+
+		//		String resultFullName =  sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
+		//				sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
+		//		QtQueryMaster qtMaster =  sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster();
+
 		fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}",(String) param.get("UserName"));//queryDef.getUserId());
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_STARTDATE\\}\\}\\}", ((java.sql.Timestamp) param.get("QueryStartDate")).toLocaleString());//sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getStartDate().toLocaleString());
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_ENDDATE\\}\\}\\}", new Date().toLocaleString());
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_RUNTIME\\}\\}\\}", Integer.toString(Math.toIntExact(new Date().getTime() - ((java.sql.Timestamp) param.get("QueryStartDate")).getTime())/1000));
-		
+
 		fileName = fileName.replaceAll("\\{\\{\\{PATIENT_COUNT\\}\\}\\}", param.get("RecordCount").toString());		
 		fileName = fileName.replaceAll("\\{\\{\\{FULL_NAME\\}\\}\\}", (String) param.get("FullName"));			
 		fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId.substring(1, projectId.length()-1));
@@ -492,16 +515,16 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 
 				//DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
 				//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
-				
+
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
 				fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}",  ((LocalDate) param.get("ResultDate")).format(formatter));
-						//(String) param.get("ResultDate"));
+				//(String) param.get("ResultDate"));
 
 			} catch (Exception e) {}
 
 		}
 
-		
+
 		return fileName;
 	}
 
