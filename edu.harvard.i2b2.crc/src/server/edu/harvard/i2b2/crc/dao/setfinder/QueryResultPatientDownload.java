@@ -66,6 +66,7 @@ import org.owasp.esapi.Logger;
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.EmailUtil;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
@@ -171,6 +172,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		boolean errorFlag = false, timeoutFlag = false;
 		//String itemKey = "";
 
+		String letter = "";
 		int actualTotal = 0, obsfcTotal = 0;
 
 
@@ -245,7 +247,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				//ValueExport valueExport = (ValueExport) jaxbUtil
 				//		.unMashallFromString(exportItemXml).getValue();
 
-				String letter = valueExport.getLetter();
+				 letter = valueExport.getLetter();
 				String letterFilenameStr = valueExport.getLetterFilename();
 				String letterFilename = null;
 				if (letterFilenameStr != null) {
@@ -594,6 +596,37 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 										//obsfcTotal, 
 										obfuscatedRecordCount, recordCount, obfusMethod);
 
+								
+								ResultType resultType = new ResultType();
+								resultType.setName(resultTypeName);
+								DataType mdataType = new DataType();
+								mdataType.setValue(String.valueOf(recordCount));
+								mdataType.setColumn("patient_count");
+								mdataType.setType("int");
+								resultType.getData().add(mdataType);	
+								mdataType = new DataType();
+								mdataType.setValue(letter);
+								mdataType.setColumn("RequestLetter");
+								mdataType.setType("string");
+								resultType.getData().add(mdataType);
+								mdataType = new DataType();
+
+								
+								edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
+								BodyType bodyType = new BodyType();
+								bodyType.getAny().add(of.createResult(resultType));
+								ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
+								resultEnvelop.setBody(bodyType);
+
+								//JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+
+								StringWriter strWriter = new StringWriter();
+
+								//subLogTimingUtil.setStartTime();
+								JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+								jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
+										strWriter);
+								
 								description = resultTypeList.get(0)
 										.getDescription() + " for \"" + queryName +"\"";
 
@@ -608,6 +641,10 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 							} catch (IllegalStateException e) {
 								throw new I2B2DAOException(
 										"Failed to write obfuscated description "
+												+ e.getMessage(), e);
+							} catch (JAXBUtilException e) {
+								throw new I2B2DAOException(
+										"Failed to write jaxb  "
 												+ e.getMessage(), e);
 							}
 						}
