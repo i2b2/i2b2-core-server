@@ -525,11 +525,18 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 
 				String requesterLetter = valueExport.getRequesterEmailLetter();
-				if (requesterLetter != null && user.getEmail() != null) {
+				
+				
+				if (valueExport.getDataManagerEmail() == null)
+				{
+					valueExport.setDataManagerEmail(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"));
+
+				}
+				if (requesterLetter != null && valueExport.getDataManagerEmail() != null) {
 
 					requesterLetter = processFilename(requesterLetter, param);
 					EmailUtil email = new EmailUtil();
-					email.email(user.getEmail(), user.getEmail(), "i2b2 reuqest for data load", requesterLetter);
+					email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(), "i2b2 export for data load", requesterLetter);
 				}
 
 			} catch (SQLException sqlEx) {
