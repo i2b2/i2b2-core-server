@@ -739,6 +739,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 					&& resultOutputList.getResultOutput().size() > 0) {
 				List<ResultOutputOptionType> resultOptionList = resultOutputList
 						.getResultOutput();
+				param.put("resultOptionList", resultOptionList);
 				for (ResultOutputOptionType resultOutputOption : resultOptionList) {
 					String resultName = resultOutputOption.getName()
 							.toUpperCase();

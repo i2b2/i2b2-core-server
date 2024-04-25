@@ -20,7 +20,7 @@ import javax.mail.PasswordAuthentication;
 
 public class EmailUtil {
 
-	public void email (String toEmail, String fromEmail, String subject, String body) throws I2B2Exception, UnsupportedEncodingException, MessagingException {
+	public void email (String toEmail, String fromEmail, String body) throws I2B2Exception, UnsupportedEncodingException, MessagingException {
 
 
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
@@ -49,11 +49,12 @@ public class EmailUtil {
 			session = Session.getDefaultInstance(props, null);
 		else
 			session = Session.getDefaultInstance(props, auth);
-		sendEmail(session, toEmail,subject, body);
+		sendEmail(session, toEmail,qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.subject"), body, qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.from.email"),
+				qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.from.fullname"));
 
 
 	}
-	private  void sendEmail(Session session, String toEmail, String subject, String body) throws MessagingException, UnsupportedEncodingException{
+	private  void sendEmail(Session session, String toEmail, String subject, String body, String fromEmail, String fromFullname) throws MessagingException, UnsupportedEncodingException{
 		
 			MimeMessage msg = new MimeMessage(session);
 			//set message headers
@@ -61,9 +62,9 @@ public class EmailUtil {
 			msg.addHeader("format", "flowed");
 			msg.addHeader("Content-Transfer-Encoding", "8bit");
 
-			msg.setFrom(new InternetAddress("no_reply@example.com", "NoReply-JD"));
+			msg.setFrom(new InternetAddress(fromEmail, fromFullname));
 
-			msg.setReplyTo(InternetAddress.parse("no_reply@example.com", false));
+			msg.setReplyTo(InternetAddress.parse(fromEmail, false));
 
 			msg.setSubject(subject, "UTF-8");
 

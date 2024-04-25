@@ -85,6 +85,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
 import edu.harvard.i2b2.crc.datavo.pm.UserType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.delegate.pm.CallPMUtil;
 import edu.harvard.i2b2.crc.opencsv.CSVWriter;
 import edu.harvard.i2b2.crc.opencsv.ResultSetHelperService;
@@ -159,6 +160,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
 		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
 		List<PanelType> panelList = (List<PanelType>)param.get("panelList");
+		List<ResultOutputOptionType>  resultOptionList = (List<ResultOutputOptionType>) param.get("resultOptionList");
 
 		boolean skipCSV = false;
 		if ((Boolean)param.get("SkipCSV") != null)
@@ -312,12 +314,10 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 
 
 							if ((valueExport != null) && (recordCount != 0)) {
+								QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 								if (valueExport.getDataManagerEmail() == null)
 								{
-									QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-
 									valueExport.setDataManagerEmail(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"));
-
 								}
 								String letter = valueExport.getRequestLetter();
 								if (letter != null) {
@@ -343,7 +343,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 									mdataType.setColumn("DataManagerEmail");
 									mdataType.setType("string");
 									resultType.getData().add(mdataType);
-									
+
 									edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 									BodyType bodyType = new BodyType();
 									bodyType.getAny().add(of.createResult(resultType));
@@ -367,18 +367,34 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 												.toString());
 
 
-									EmailUtil email = new EmailUtil();
-									try {
-										email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(), "i2b2 reuqest for data load", letter);
-									} catch (UnsupportedEncodingException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									} catch (I2B2Exception e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									} catch (MessagingException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
+									if (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) {
+										EmailUtil email = new EmailUtil();
+										try {
+											String requestedData = "\n";
+											String finalResultOutput = "";
+											for (ResultOutputOptionType resultOutputOption : resultOptionList) {
+												String resultName = resultOutputOption.getName()
+														.toUpperCase();
+												resultTypeList = resultTypeDao
+														.getQueryResultTypeByName(resultName, null);
+												if (resultTypeList.size() > 0) {
+													requestedData += resultTypeList.get(0).getDescription() + ", ";
+													finalResultOutput = resultTypeList.get(0).getName().toUpperCase();
+												}
+											}
+											letter = letter.replaceAll("\\{\\{\\{REQUESTED_DATA_TYPE\\}\\}\\}",requestedData);
+											if (resultTypeName.equals(finalResultOutput))
+												email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(),  letter);
+										} catch (UnsupportedEncodingException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										} catch (I2B2Exception e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										} catch (MessagingException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
 									}
 								}
 

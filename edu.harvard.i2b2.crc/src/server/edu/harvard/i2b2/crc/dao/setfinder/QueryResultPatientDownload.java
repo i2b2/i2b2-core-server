@@ -82,6 +82,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
 import edu.harvard.i2b2.crc.datavo.pm.UserType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.delegate.pm.CallPMUtil;
 import edu.harvard.i2b2.crc.opencsv.CSVWriter;
 import edu.harvard.i2b2.crc.opencsv.ResultSetHelperService;
@@ -197,6 +198,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				param.put("QueryStartDate", queryMaster.getCreateDate());
 				param.put("FullName", user.getFullName());
 				param.put("UserName", user.getUserName());
+				param.put("resultInstanceId", resultInstanceId);
 				String exportItemXml = getItemKeyFromResultType(sfDAOFactory, resultTypeName);
 
 				//get break down count sigma from property file 
@@ -535,8 +537,10 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				if (requesterLetter != null && valueExport.getDataManagerEmail() != null) {
 
 					requesterLetter = processFilename(requesterLetter, param);
-					EmailUtil email = new EmailUtil();
-					email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(), "i2b2 export for data load", requesterLetter);
+					
+					//Send out email
+					//EmailUtil email = new EmailUtil();
+					//email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(), "i2b2 export for data load", requesterLetter);
 				}
 
 			} catch (SQLException sqlEx) {
@@ -617,7 +621,11 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 								mdataType.setType("string");
 								resultType.getData().add(mdataType);
 								mdataType = new DataType();
-
+								mdataType.setValue(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
+								mdataType.setColumn("QueryMasterID");
+								mdataType.setType("string");
+								resultType.getData().add(mdataType);
+								mdataType = new DataType();
 								
 								edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 								BodyType bodyType = new BodyType();
@@ -634,6 +642,11 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 								jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
 										strWriter);
 								
+								IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+								xmlResult = strWriter.toString();
+								if (resultInstanceId != null)
+									xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
+											.toString());
 								description = resultTypeList.get(0)
 										.getDescription() + " for \"" + queryName +"\"";
 
@@ -743,7 +756,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		fileName = fileName.replaceAll("\\{\\{\\{PATIENT_COUNT\\}\\}\\}", param.get("RecordCount").toString());		
 		fileName = fileName.replaceAll("\\{\\{\\{FULL_NAME\\}\\}\\}", (String) param.get("FullName"));			
 		fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId.substring(1, projectId.length()-1));
-		//fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", resultInstanceId);
+		fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", (String) param.get("resultFullName"));
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", sanitizeFilename(resultFullName));
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_MASTER_ID\\}\\}\\}", sanitizeFilename(queryInstanceId)); //qtMaster.getQueryMasterId()));
 
