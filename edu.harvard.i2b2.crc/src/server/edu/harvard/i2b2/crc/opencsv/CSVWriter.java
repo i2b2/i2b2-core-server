@@ -19,6 +19,8 @@ package edu.harvard.i2b2.crc.opencsv;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -68,6 +70,7 @@ public class CSVWriter implements Closeable {
 	protected HashMap<String, Boolean> excludes = new HashMap<>();
 	protected HashMap<String, String> remaps = new HashMap();
 	protected String[] titles;
+	protected String msg = "";
 //	protected SetFinderDAOFactory sfDAOFactory;
 
 	/**
@@ -89,8 +92,9 @@ public class CSVWriter implements Closeable {
 
 			buffer = new FileBuffer(INITIAL_BUFFER_SIZE, fileName, extensionName);
 		//logWriter = new PrintWriter(buffer.file.getParentFile().getAbsolutePath() + File.separator + buffer.fileName + ".log");
-		logWriter = new PrintWriter(fileName + ".log");
-		writeLogHeader();
+		logWriter = new PrintWriter(new FileOutputStream(
+			    new File(buffer.file.getParentFile().getAbsolutePath() + File.separator + "Log.txt")), true);
+		writeLogHeader(fileName);
 		//logWriter = new PrintWriter(System.err);
 	}
 
@@ -194,12 +198,18 @@ public class CSVWriter implements Closeable {
 		return add(sbf.toString());
 	}
 
-	protected void writeLogHeader() {
+	protected void writeLogHeader(String fileName) {
 		//String msg = String.format("%s: %d rows extracted, total: %d rows, %.2f MB, %.3f secs on fetching.", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), rows - incrRows, rows, (float) buffer.position / 1024 / 1024, resultService == null ? 0f : (float) resultService.cost / 1e9);
 
-		String msg;
+		//String msg;
 		try {
-			msg = "Environment Settings:---------------------------------------------------------------------------\n"
+			
+			String md5 = "";
+			try (InputStream is = Files.newInputStream(Paths.get(fileName))) {
+			     md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(is);
+			}
+
+			msg += "Environment Settings:---------------------------------------------------------------------------\n"
 					+ " \n"
 					+ "	Machine	 name:		"+ InetAddress.getLocalHost().getHostName() + "\n"
 					+ "	Operating system:	" + System.getProperty("os.name") + " " + System.getProperty("os.version") + "\n"
@@ -207,6 +217,8 @@ public class CSVWriter implements Closeable {
 					+ "	Version	 number:	[6.3.2.1]\n"
 					+ "	Config	 title:		2. PRODUCTION \n"
 					+ "	Run	 directory:     " + this.CSVFileName + "\n"
+					+ " File Name:			" + fileName + "\n"	
+					+ " md5 hash:			" + md5 + "\n"		
 					+ ""
 	//				+ "Data Sources:\n"
 	//				+ "	--CRC Name:         " + sfDAOFactory.getDataSourceLookup().getNiceName() + "\n"
@@ -221,6 +233,11 @@ public class CSVWriter implements Closeable {
 			e.printStackTrace();
 		}
 		logWriter.flush();
+	}
+	
+	public String getLog()
+	{
+		return msg;
 	}
 	
 	protected void writeLog(int rows) {

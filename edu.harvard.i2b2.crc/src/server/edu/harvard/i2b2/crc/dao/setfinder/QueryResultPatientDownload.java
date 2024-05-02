@@ -156,6 +156,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
 		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
 		List<PanelType> panelList = (List<PanelType>)param.get("panelList");
+		List<ResultOutputOptionType>  resultOptionList = (List<ResultOutputOptionType>) param.get("resultOptionList");
+
 		boolean skipCSV = false;
 		if ((Boolean)param.get("SkipCSV") != null)
 			skipCSV = (Boolean)param.get("SkipCSV");
@@ -176,7 +178,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		String letter = "";
 		int actualTotal = 0, obsfcTotal = 0;
 
-
+		String logFile = "";
+		int rowCount = 0;
 		QtQueryMaster queryMaster = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
 		UserType user = null;
 		//zip up if priority is 999
@@ -249,7 +252,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				//ValueExport valueExport = (ValueExport) jaxbUtil
 				//		.unMashallFromString(exportItemXml).getValue();
 
-				 letter = valueExport.getLetter();
+				letter = valueExport.getLetter();
+
+
 				String letterFilenameStr = valueExport.getLetterFilename();
 				String letterFilename = null;
 				if (letterFilenameStr != null) {
@@ -264,7 +269,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				String zipFileNameStr = valueExport.getZipFilename();//.getZipFilename();
 				String zipFileName = null;
 				if (zipFileNameStr != null) {
-					zipFileName = zipFileNameStr;
+					zipFileName = workDirStr + zipFileNameStr;
 
 					zipFileName = processFilename(zipFileName, param);
 
@@ -414,8 +419,10 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 							//String lockoutQueryCountStr = qpUtil
 							//		.getCRCPropertyValue("edu.harvard.i2b2.crc.lockout.setfinderquery.count");
 							writer.setAsyncMode(async);
-							int result = writer.writeAll(resultSet, true);
+							rowCount = writer.writeAll(resultSet, true);
 
+							logFile += writer.getLog();
+							resultSet.close();
 						}
 						if (csr.getSqlFinishedFlag()) {
 							timeoutFlag = true;
@@ -483,66 +490,85 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					// using the close() method
 					pw.close();
 				}
-				if (zipFileName != null && skipCSV == false) {
-
-					File file = new File(zipFileName);
-					file.getParentFile().mkdirs();
-					String zipencryptMethod = "NONE";
-					if ( valueExport.getZipEncryptMethod() != null) {
-						zipencryptMethod = valueExport.getZipEncryptMethod();
-					}
-
-					ZipParameters zipParameters = new ZipParameters();
-					if (!zipencryptMethod.equals("NONE")) {
-						zipParameters.setEncryptFiles(true);
-						zipParameters.setCompressionLevel(CompressionLevel.MAXIMUM);
-						if (zipencryptMethod.equals("AES"))
-							zipParameters.setEncryptionMethod(EncryptionMethod.AES);
-						else if (zipencryptMethod.equals("STANARD"))
-							zipParameters.setEncryptionMethod(EncryptionMethod.ZIP_STANDARD);
-						else
-							zipParameters.setEncryptionMethod(EncryptionMethod.NONE);
-
-					}
-					//zipParameters.setFileNameInZip( workDir + "*.*" );
-					//zipParameters.setPassword("password");
-
-					//zipStream = new ZipOutputStream(buff);
-					//zip.
-					//ZipFile zipfile = new ZipFile(fileName + (extName.equals(null) ? "" : "." + default_ext), "password".toCharArray());
-
-
-					if (zipParameters.getEncryptionMethod().equals(EncryptionMethod.NONE))
-						new ZipFile(zipFileName).addFolder(new File(workDir),zipParameters);
-					//zipStream = new ZipOutputStream(new FileOutputStream(new File(zipFileName)));
-					else
-						new ZipFile(zipFileName,valueExport.getZipPassword().toCharArray()).addFolder(new File(workDir),zipParameters);
-
-
-					//						zipStream = new ZipOutputStream(new FileOutputStream(new File(zipFileName))
-					//								, valueExport.getZip_password().toCharArray());
-
-					//zipStream.putNextEntry(zipParameters);
-				}
 
 
 				String requesterLetter = valueExport.getRequesterEmailLetter();
-				
-				
+
+
 				if (valueExport.getDataManagerEmail() == null)
 				{
 					valueExport.setDataManagerEmail(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"));
 
 				}
-				if (requesterLetter != null && valueExport.getDataManagerEmail() != null) {
 
-					requesterLetter = processFilename(requesterLetter, param);
-					
-					//Send out email
-					//EmailUtil email = new EmailUtil();
-					//email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(), "i2b2 export for data load", requesterLetter);
+				if (letter != null && valueExport.getDataManagerEmail() != null) {
+
+					letter = processFilename(letter, param);
+
+					//Send out email letter
+					EmailUtil email = new EmailUtil();
+					IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
+					String requestedData = "\n";
+					String finalResultOutput = "";
+
+					for (ResultOutputOptionType resultOutputOption : resultOptionList) {
+						String resultName = resultOutputOption.getName()
+								.toUpperCase();
+						List<QtQueryResultType> resultTypeList = resultTypeDao
+								.getQueryResultTypeByName(resultName, null);
+						if (resultTypeList.size() > 0) {
+							requestedData += resultTypeList.get(0).getDescription() + ", ";
+							finalResultOutput = resultTypeList.get(0).getName().toUpperCase();
+						}
+					}
+					letter = letter.replaceAll("\\{\\{\\{REQUESTED_DATA_TYPE\\}\\}\\}",requestedData);
+					if (zipFileName != null && skipCSV == false && resultTypeName.equals(finalResultOutput)) {
+
+						File file = new File(zipFileName);
+						file.getParentFile().mkdirs();
+						String zipencryptMethod = "NONE";
+						if ( valueExport.getZipEncryptMethod() != null) {
+							zipencryptMethod = valueExport.getZipEncryptMethod();
+						}
+
+						ZipParameters zipParameters = new ZipParameters();
+						if (!zipencryptMethod.equals("NONE")) {
+							zipParameters.setEncryptFiles(true);
+							zipParameters.setCompressionLevel(CompressionLevel.MAXIMUM);
+							if (zipencryptMethod.equals("AES"))
+								zipParameters.setEncryptionMethod(EncryptionMethod.AES);
+							else if (zipencryptMethod.equals("STANARD"))
+								zipParameters.setEncryptionMethod(EncryptionMethod.ZIP_STANDARD);
+							else
+								zipParameters.setEncryptionMethod(EncryptionMethod.NONE);
+
+						}
+						//zipParameters.setFileNameInZip( workDir + "*.*" );
+						//zipParameters.setPassword("password");
+
+						//zipStream = new ZipOutputStream(buff);
+						//zip.
+						//ZipFile zipfile = new ZipFile(fileName + (extName.equals(null) ? "" : "." + default_ext), "password".toCharArray());
+
+
+						if (zipParameters.getEncryptionMethod().equals(EncryptionMethod.NONE))
+							new ZipFile(zipFileName).addFolder(new File(workDir),zipParameters);
+						//zipStream = new ZipOutputStream(new FileOutputStream(new File(zipFileName)));
+						else
+							new ZipFile(zipFileName,valueExport.getZipPassword().toCharArray()).addFolder(new File(workDir),zipParameters);
+
+
+						//						zipStream = new ZipOutputStream(new FileOutputStream(new File(zipFileName))
+						//								, valueExport.getZip_password().toCharArray());
+
+						//zipStream.putNextEntry(zipParameters);
+					}
+
+					if ((resultTypeName.equals(finalResultOutput))
+							&& (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) )
+
+						email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(), "i2b2 Data Export - " + queryDef.getQueryName(), letter);
 				}
-
 			} catch (SQLException sqlEx) {
 				// catch oracle query timeout error ORA-01013
 				if (sqlEx.toString().indexOf("ORA-01013") > -1) {
@@ -607,18 +633,28 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 										//obsfcTotal, 
 										obfuscatedRecordCount, recordCount, obfusMethod);
 
-								
+
 								ResultType resultType = new ResultType();
 								resultType.setName(resultTypeName);
 								DataType mdataType = new DataType();
 								mdataType.setValue(String.valueOf(recordCount));
-								mdataType.setColumn("patient_count");
+								mdataType.setColumn("PatientCount");
+								mdataType.setType("int");
+								resultType.setName(resultTypeName);
+								mdataType = new DataType();
+								mdataType.setValue(String.valueOf(rowCount));								
+								mdataType.setColumn("RowCount");
 								mdataType.setType("int");
 								resultType.getData().add(mdataType);	
 								mdataType = new DataType();
 								mdataType.setValue(letter);
 								mdataType.setColumn("RequestLetter");
 								mdataType.setType("string");
+								mdataType = new DataType();
+								mdataType.setValue(String.valueOf(logFile));								
+								mdataType.setColumn("Log");
+								mdataType.setType("string");
+
 								resultType.getData().add(mdataType);
 								mdataType = new DataType();
 								mdataType.setValue(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
@@ -626,7 +662,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 								mdataType.setType("string");
 								resultType.getData().add(mdataType);
 								mdataType = new DataType();
-								
+
 								edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 								BodyType bodyType = new BodyType();
 								bodyType.getAny().add(of.createResult(resultType));
@@ -641,7 +677,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 								JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
 								jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
 										strWriter);
-								
+
 								IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
 								xmlResult = strWriter.toString();
 								if (resultInstanceId != null)

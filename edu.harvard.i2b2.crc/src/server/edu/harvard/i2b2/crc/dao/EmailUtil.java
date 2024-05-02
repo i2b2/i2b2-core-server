@@ -20,7 +20,7 @@ import javax.mail.PasswordAuthentication;
 
 public class EmailUtil {
 
-	public void email (String toEmail, String fromEmail, String body) throws I2B2Exception, UnsupportedEncodingException, MessagingException {
+	public void email (String toEmail, String fromEmail, String subject, String body) throws I2B2Exception, UnsupportedEncodingException, MessagingException {
 
 
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
@@ -49,7 +49,7 @@ public class EmailUtil {
 			session = Session.getDefaultInstance(props, null);
 		else
 			session = Session.getDefaultInstance(props, auth);
-		sendEmail(session, toEmail,qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.subject"), body, qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.from.email"),
+		sendEmail(session, toEmail, subject, body, qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.from.email"),
 				qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.from.fullname"));
 
 

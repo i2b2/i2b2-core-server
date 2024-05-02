@@ -144,6 +144,8 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 		// String itemKey = (String) param.get("ItemKey");
 		String resultTypeName = (String) param.get("ResultOptionName");
 
+		String requestedData = "\n";
+		String finalResultOutput = "";
 
 		ValueExporter valueExport = null;
 		//ZipOutputStream zipStream;
@@ -323,6 +325,18 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 								if (letter != null) {
 
 									letter = processFilename(letter, param);
+			
+									for (ResultOutputOptionType resultOutputOption : resultOptionList) {
+										String resultName = resultOutputOption.getName()
+												.toUpperCase();
+										resultTypeList = resultTypeDao
+												.getQueryResultTypeByName(resultName, null);
+										if (resultTypeList.size() > 0) {
+											requestedData += resultTypeList.get(0).getDescription() + ", ";
+											finalResultOutput = resultTypeList.get(0).getName().toUpperCase();
+										}
+									}
+									letter = letter.replaceAll("\\{\\{\\{REQUESTED_DATA_TYPE\\}\\}\\}",requestedData);
 
 
 
@@ -365,26 +379,14 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 									if (resultInstanceId != null)
 										xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
 												.toString());
-
+//qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.subject")
 
 									if (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) {
 										EmailUtil email = new EmailUtil();
 										try {
-											String requestedData = "\n";
-											String finalResultOutput = "";
-											for (ResultOutputOptionType resultOutputOption : resultOptionList) {
-												String resultName = resultOutputOption.getName()
-														.toUpperCase();
-												resultTypeList = resultTypeDao
-														.getQueryResultTypeByName(resultName, null);
-												if (resultTypeList.size() > 0) {
-													requestedData += resultTypeList.get(0).getDescription() + ", ";
-													finalResultOutput = resultTypeList.get(0).getName().toUpperCase();
-												}
-											}
-											letter = letter.replaceAll("\\{\\{\\{REQUESTED_DATA_TYPE\\}\\}\\}",requestedData);
+											
 											if (resultTypeName.equals(finalResultOutput))
-												email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(),  letter);
+												email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(),  "i2b2 Data Request", letter);
 										} catch (UnsupportedEncodingException e) {
 											// TODO Auto-generated catch block
 											e.printStackTrace();
