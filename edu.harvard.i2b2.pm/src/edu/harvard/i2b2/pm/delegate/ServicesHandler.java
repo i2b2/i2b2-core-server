@@ -394,6 +394,7 @@ public class ServicesHandler extends RequestHandler {
 				uType.setFullName(user.getFullName());
 				uType.setUserName(rmt.getUsername());
 				uType.setDomain(rmt.getDomain());
+				uType.setEmail(user.getEmail());
 				uType.setIsAdmin(user.isIsAdmin());
 				PasswordType passType = new PasswordType();
 				passType.setIsToken(true);
@@ -426,6 +427,7 @@ public class ServicesHandler extends RequestHandler {
 					UserType user = validateSuppliedPassword( rmt.getUsername(), rmt.getPassword().getValue(), params, skipValidation);
 					uType.setFullName(user.getFullName());
 					uType.setIsAdmin(user.isIsAdmin());
+					uType.setEmail(user.getEmail());
 					//Dont log AGG_SERVICE_ACOUNT
 					if (!rmt.getUsername().equals("AGG_SERVICE_ACCOUNT"))
 						saveLoginAttempt(pmDb, rmt.getUsername(), "SUCCESS");

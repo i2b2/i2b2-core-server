@@ -50,34 +50,19 @@ import edu.harvard.i2b2.crc.dao.redcap.xml.EnumValues;
 public class ValueExporter
 {
 
-    @XmlElement(name = "Table")
-    private Table[] Table;
+    @XmlElement(name = "File")
+    private File[] File;
 
     @XmlElement(name = "CreationDateTime")
     private String CreationDateTime;
 
-    @XmlElement(name = "LetterFilename")
-    private String LetterFilename;
 
-    @XmlElement(name = "Letter")
-    private String Letter;
-
-    @XmlElement(name = "RequestLetter")
-    private String RequestLetter;
-
-    @XmlElement(name = "RequesterEmailLetter")
-    private String RequesterEmailLetter;
+    @XmlElement(name = "DataManagerEmailMessage")
+    private String DataManagerEmailMessage;
     
-    public String getRequesterEmailLetter() {
-		return RequesterEmailLetter;
-	}
 
-	public void setRequesterEmailLetter(String requesterEmailLetter) {
-		RequesterEmailLetter = requesterEmailLetter;
-	}
-
-	@XmlElement(name = "DataManagerEmail")
-    private String DataManagerEmail;
+	@XmlElement(name = "RequesterEmailMessage")
+    private String RequesterEmailMessage;
 
     @XmlElement(name = "ZipFilename")
     private String ZipFilename;
@@ -91,36 +76,22 @@ public class ValueExporter
     @XmlElement(name = "ZipPassword")
     private String ZipPassword;
     
-    public String getLetterFilename() {
-		return LetterFilename;
-	}
-
-	public void setLetterFilename(String letter_filename) {
-		this.LetterFilename = letter_filename;
-	}
-
-	public String getLetter() {
-		return Letter;
-	}
-
-	public void setLetter(String letter) {
-		this.Letter = letter;
-	}
+  
     
-    public String getRequestLetter() {
-		return RequestLetter;
+    public String getRequesterEmailMessage() {
+		return RequesterEmailMessage;
 	}
 
-	public void setRequestLetter(String reuqestLetter) {
-		RequestLetter = reuqestLetter;
+	public void setRequesterEmailMessage(String requesterEmailMessage) {
+		RequesterEmailMessage = requesterEmailMessage;
 	}
 
-	public String getDataManagerEmail() {
-		return DataManagerEmail;
+	public String getDataManagerEmailMessage() {
+		return DataManagerEmailMessage;
 	}
 
-	public void setDataManagerEmail(String dataManagerEmail) {
-		DataManagerEmail = dataManagerEmail;
+	public void setDataManagerEmailMessage(String dataManagerEmailMessage) {
+		DataManagerEmailMessage = dataManagerEmailMessage;
 	}
 
 	public String getZipPassword() {
@@ -133,14 +104,14 @@ public class ValueExporter
 
 	private String[] content;
 
-    public Table[] getTable ()
+    public File[] getFile ()
     {
-        return Table;
+        return File;
     }
 
-    public void setItem (Table[] item)
+    public void setFile (File[] file)
     {
-        this.Table = Table;
+        this.File = file;
     }
 
     public String getCreationDateTime ()
@@ -193,11 +164,11 @@ public class ValueExporter
         this.content = content;
     }
 
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [Table = "+Table+", CreationDateTime = "+CreationDateTime+", zip_filename = "+ZipFilename+", Version = "+Version+", zip_encrypt_method = "+ZipEncryptMethod+", content = "+content+"]";
-    }
+  //  @Override
+  ////  public String toString()
+  //  {
+   //     return "ClassPojo [Table = "+Table+", CreationDateTime = "+CreationDateTime+", zip_filename = "+ZipFilename+", Version = "+Version+", zip_encrypt_method = "+ZipEncryptMethod+", content = "+content+"]";
+   // }
 }
 			
 			

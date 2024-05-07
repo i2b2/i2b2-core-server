@@ -22,7 +22,7 @@ import edu.harvard.i2b2.crc.dao.redcap.xml.EnumValues;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Table
+public class File
 {
 	@XmlElement(name = "Filename")
 	private String Filename;

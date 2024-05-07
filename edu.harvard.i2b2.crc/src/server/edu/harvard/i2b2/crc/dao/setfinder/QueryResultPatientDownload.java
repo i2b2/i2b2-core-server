@@ -38,6 +38,8 @@ import edu.harvard.i2b2.crc.dao.xml.ValueExporter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -88,7 +90,6 @@ import edu.harvard.i2b2.crc.opencsv.CSVWriter;
 import edu.harvard.i2b2.crc.opencsv.ResultSetHelperService;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
-import edu.harvard.i2b2.crc.dao.xml.Table;
 import edu.harvard.i2b2.crc.dao.xml.Item_orig;
 import edu.harvard.i2b2.crc.dao.xml.Items;
 import edu.harvard.i2b2.crc.dao.xml.ValueExport;
@@ -232,7 +233,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					valueExport = JaxbXmlToObj(exportItemXml);
 				} catch (Exception e)
 				{
-					Table item = new Table();
+					edu.harvard.i2b2.crc.dao.xml.File item = new edu.harvard.i2b2.crc.dao.xml.File();
 					if (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename").endsWith(".zip")) {
 						item.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename").replace(".zip", ".csv"));
 						item.setFilename(processFilename(item.getFilename(), param));
@@ -244,7 +245,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					}
 					item.setQuery(exportItemXml);
 					item.setSeperatorCharacter(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultseperator"));
-					valueExport.setItem(new Table[] {item});
+					valueExport.setFile(new edu.harvard.i2b2.crc.dao.xml.File[] {item});
 					valueExport.setZipEncryptMethod(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.zipencryptmethod"));
 
 				}
@@ -252,23 +253,16 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				//ValueExport valueExport = (ValueExport) jaxbUtil
 				//		.unMashallFromString(exportItemXml).getValue();
 
-				letter = valueExport.getLetter();
+				letter = valueExport.getDataManagerEmailMessage();
 
 
-				String letterFilenameStr = valueExport.getLetterFilename();
+				String letterFilenameStr = valueExport.getDataManagerEmailMessage();
 				String letterFilename = null;
-				if (letterFilenameStr != null) {
-					letterFilename = workDirStr + letterFilenameStr;
-
-					letterFilename = processFilename(letterFilename, param);
-
-
-				}
-
 
 				String zipFileNameStr = valueExport.getZipFilename();//.getZipFilename();
 				String zipFileName = null;
 				if (zipFileNameStr != null) {
+					
 					zipFileName = workDirStr + zipFileNameStr;
 
 					zipFileName = processFilename(zipFileName, param);
@@ -276,7 +270,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 				}
 
-				for (Table item: valueExport.getTable()) {
+				for (edu.harvard.i2b2.crc.dao.xml.File item: valueExport.getFile()) {
 					/*
 					 * 		JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
 		RequestMessageType reqMsgType = (RequestMessageType) jaxbUtil
@@ -290,6 +284,12 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		System.out.println("query namef"
 				+ queryDefinitionType.getQueryDefinition().getQueryName());
 					 */
+
+					Path p = Paths.get(item.getFilename());
+					letterFilename = workDirStr + p.getParent() + File.separator + "Letter.txt";
+
+					letterFilename = processFilename(letterFilename, param);
+
 
 
 					if (item.getQuery().contains("{{{DX}}}"))
@@ -492,16 +492,10 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				}
 
 
-				String requesterLetter = valueExport.getRequesterEmailLetter();
+				//String requesterLetter = valueExport.getDataManagerEmailMessage();
 
 
-				if (valueExport.getDataManagerEmail() == null)
-				{
-					valueExport.setDataManagerEmail(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"));
-
-				}
-
-				if (letter != null && valueExport.getDataManagerEmail() != null) {
+				if (letter != null && qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail") != null) {
 
 					letter = processFilename(letter, param);
 
@@ -567,7 +561,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if ((resultTypeName.equals(finalResultOutput))
 							&& (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) )
 
-						email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(), "i2b2 Data Export - " + queryDef.getQueryName(), letter);
+						email.email(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), "i2b2 Data Export - " + queryDef.getQueryName(), letter);
 				}
 			} catch (SQLException sqlEx) {
 				// catch oracle query timeout error ORA-01013

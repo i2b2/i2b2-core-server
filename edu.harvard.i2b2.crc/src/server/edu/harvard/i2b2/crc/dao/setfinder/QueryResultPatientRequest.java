@@ -91,7 +91,6 @@ import edu.harvard.i2b2.crc.opencsv.CSVWriter;
 import edu.harvard.i2b2.crc.opencsv.ResultSetHelperService;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
-import edu.harvard.i2b2.crc.dao.xml.Table;
 import edu.harvard.i2b2.crc.dao.xml.Item_orig;
 import edu.harvard.i2b2.crc.dao.xml.Items;
 import edu.harvard.i2b2.crc.dao.xml.ValueExport;
@@ -207,7 +206,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 			param.put("QueryStartDate", queryMaster.getCreateDate());
 			param.put("FullName", user.getFullName());
 			param.put("UserName", user.getUserName());
-
+			param.put("Email", user.getEmail());
 			//get break down count sigma from property file 
 
 
@@ -317,15 +316,13 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 
 							if ((valueExport != null) && (recordCount != 0)) {
 								QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-								if (valueExport.getDataManagerEmail() == null)
-								{
-									valueExport.setDataManagerEmail(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"));
-								}
-								String letter = valueExport.getRequestLetter();
+								String letter = valueExport.getDataManagerEmailMessage();
+								String requesterMessage = valueExport.getRequesterEmailMessage();
 								if (letter != null) {
 
 									letter = processFilename(letter, param);
 			
+									requesterMessage = processFilename(requesterMessage, param);
 									for (ResultOutputOptionType resultOutputOption : resultOptionList) {
 										String resultName = resultOutputOption.getName()
 												.toUpperCase();
@@ -337,23 +334,23 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 										}
 									}
 									letter = letter.replaceAll("\\{\\{\\{REQUESTED_DATA_TYPE\\}\\}\\}",requestedData);
-
+									requesterMessage  = requesterMessage.replaceAll("\\{\\{\\{REQUESTED_DATA_TYPE\\}\\}\\}",requestedData);
 
 
 									ResultType resultType = new ResultType();
 									resultType.setName(resultTypeName);
 									DataType mdataType = new DataType();
 									mdataType.setValue(String.valueOf(recordCount));
-									mdataType.setColumn("patient_count");
+									mdataType.setColumn("patientCount");
 									mdataType.setType("int");
 									resultType.getData().add(mdataType);	
 									mdataType = new DataType();
 									mdataType.setValue(letter);
-									mdataType.setColumn("RequestLetter");
+									mdataType.setColumn("RequestEmail");
 									mdataType.setType("string");
 									resultType.getData().add(mdataType);
 									mdataType = new DataType();
-									mdataType.setValue(valueExport.getDataManagerEmail());
+									mdataType.setValue(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"));
 									mdataType.setColumn("DataManagerEmail");
 									mdataType.setType("string");
 									resultType.getData().add(mdataType);
@@ -385,8 +382,11 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 										EmailUtil email = new EmailUtil();
 										try {
 											
-											if (resultTypeName.equals(finalResultOutput))
-												email.email(valueExport.getDataManagerEmail(), valueExport.getDataManagerEmail(),  "i2b2 Data Request", letter);
+											if (resultTypeName.equals(finalResultOutput)) {
+												email.email(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"),  "i2b2 Data Request", letter);
+												if (user.getEmail()!= null &&  !user.getEmail().equals("") && requesterMessage != null)
+													email.email(user.getEmail(), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"),  "i2b2 Data Request", requesterMessage);
+											}
 										} catch (UnsupportedEncodingException e) {
 											// TODO Auto-generated catch block
 											e.printStackTrace();
