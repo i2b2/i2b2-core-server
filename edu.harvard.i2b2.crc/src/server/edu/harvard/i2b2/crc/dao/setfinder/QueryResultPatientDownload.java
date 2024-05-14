@@ -294,9 +294,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 					if (item.getQuery().contains("{{{DX}}}"))
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{DX\\}\\}\\}", TEMP_DX_TABLE));
-					if (item.getQuery().contains("{{{DATABASE_NAME}}}"))
-						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{DATABASE_NAME\\}\\}\\}", this.getDbSchemaName()));
-
+					if (item.getQuery().contains("{{{FULL_SCHEMA}}}"))
+						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{FULL_SCHEMA\\}\\}\\}", this.getDbSchemaName()));
 
 					stmt = sfConn.prepareStatement(item.getQuery());
 					stmt.setQueryTimeout(transactionTimeout);
@@ -446,11 +445,13 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						strWriter);
 				subLogTimingUtil.setEndTime();
 				//tm.begin();
+				/*
 				IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
 				xmlResult = strWriter.toString();
 				if (resultInstanceId != null)
 					xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
 							.toString());
+				*/
 				//
 				if (processTimingFlag != null) {
 					if (!processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.NONE) ) {
@@ -677,6 +678,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 								if (resultInstanceId != null)
 									xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
 											.toString());
+								
 								description = resultTypeList.get(0)
 										.getDescription() + " for \"" + queryName +"\"";
 
@@ -684,6 +686,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 								resultInstanceDao.updateResultInstanceDescription(
 										resultInstanceId, description);
 								//	tm.commit();
+								 
+								
 							} catch (SecurityException e) {
 								throw new I2B2DAOException(
 										"Failed to write obfuscated description "

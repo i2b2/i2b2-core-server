@@ -177,8 +177,10 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 			boolean isError = false;
 			for (QueryResultInstanceType queryIntance: masterInstanceResponse.getQueryResultInstance())
 			{
+				
 				if (queryIntance.getQueryStatusType().getName().equals("QUEUED")
-						|| queryIntance.getQueryStatusType().getName().equals("PROCESSING"))
+						|| queryIntance.getQueryStatusType().getName().equals("PROCESSING")
+						|| queryIntance.getEndDate() == null)
 					isProcessing = true;
 				if (queryIntance.getQueryStatusType().getName().equals("ERROR")
 						|| queryIntance.getQueryStatusType().getName().equals("TIMEDOUT"))

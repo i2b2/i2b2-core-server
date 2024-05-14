@@ -93,7 +93,7 @@ public class CSVWriter implements Closeable {
 			buffer = new FileBuffer(INITIAL_BUFFER_SIZE, fileName, extensionName);
 		//logWriter = new PrintWriter(buffer.file.getParentFile().getAbsolutePath() + File.separator + buffer.fileName + ".log");
 		logWriter = new PrintWriter(new FileOutputStream(
-			    new File(buffer.file.getParentFile().getAbsolutePath() + File.separator + "Log.txt")), true);
+			    new File(buffer.file.getParentFile().getAbsolutePath() + File.separator + "Log.txt"), true));
 		writeLogHeader(fileName);
 		//logWriter = new PrintWriter(System.err);
 	}
