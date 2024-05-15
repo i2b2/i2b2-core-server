@@ -54,6 +54,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryInstanceType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryMasterType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryResultInstanceType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryStatusTypeType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
@@ -94,7 +95,7 @@ public class QueryManagerBean{ // implements SessionBean {
 	// public static String UPLOADPROCESSOR_QUEUE_NAME =
 	// "queue/jms.querytool.QueryExecutor";
 
-//	SessionContext context;
+	//	SessionContext context;
 
 	/**
 	 * Function to publish patients using publish message format.
@@ -110,7 +111,7 @@ public class QueryManagerBean{ // implements SessionBean {
 	 */
 	public MasterInstanceResultResponseType processQuery(
 			DataSourceLookup dataSourceLookup, String xmlRequest)
-			throws Exception {
+					throws Exception {
 		String responseXML = null;
 
 		MasterInstanceResultResponseType masterInstanceResultType = null;
@@ -124,7 +125,7 @@ public class QueryManagerBean{ // implements SessionBean {
 					.getDataSourceLookupInput(xmlRequest);
 			SetFinderDAOFactory sfDAOFactory = null;
 			// tm.begin();
-//			transaction.begin();
+			//			transaction.begin();
 			if (dsLookupInput.getProjectPath() == null) {
 				throw new I2B2Exception("project id is missing in the request");
 			}
@@ -142,14 +143,14 @@ public class QueryManagerBean{ // implements SessionBean {
 			// create query instance
 			IQueryInstanceDao queryInstanceDao = sfDAOFactory
 					.getQueryInstanceDAO();
-			
+
 			UserType userType = getUserTypeFromSetfinderHeader(requestMsgType);
 			String userId = userType.getLogin();
 			String groupId = userType.getGroup();
 			String queryInstanceId = queryInstanceDao.createQueryInstance(
 					queryMasterId, userId, groupId,
 					"QUEUED", 5);
-//					QueryExecutorMDB.SMALL_QUEUE, 5);
+			//					QueryExecutorMDB.SMALL_QUEUE, 5);
 			log.debug("New Query instance id " + queryInstanceId);
 
 			IQueryResultInstanceDao patientSetResultDao = sfDAOFactory
@@ -181,11 +182,11 @@ public class QueryManagerBean{ // implements SessionBean {
 			}
 
 			// tm.commit();
-//			transaction.commit();
+			//			transaction.commit();
 			QtQueryInstance queryInstance = queryInstanceDao
 					.getQueryInstanceByInstanceId(queryInstanceId);
-					 
-					 
+
+
 			queryInstance.setBatchMode(QueryManagerBeanUtil.PROCESSING);
 			log.debug("getting responsetype");
 			ResultResponseType responseType = executeSqlInQueue(
@@ -194,7 +195,7 @@ public class QueryManagerBean{ // implements SessionBean {
 					userId, generatedSql, sessionId, queryInstanceId,
 					patientSetId, xmlRequest, timeout);
 
-//			transaction.begin();
+			//			transaction.begin();
 			// responseXML = qmBeanUtil.buildQueryRequestResponse(xmlRequest,
 			// status,
 			// sessionId,queryMasterId,queryInstanceId,responseType);
@@ -235,7 +236,24 @@ public class QueryManagerBean{ // implements SessionBean {
 					+ responseType1.getQueryResultInstance().size());
 
 			//If query result instanace -> query_status_type is processing that set QUEUE
-			if (responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("2"))
+			//Determine if any resultinstance is type ERROR or PROCSSING
+			boolean processing = false;
+			boolean error = false;
+			if (responseType1.getQueryResultInstance() != null) 
+				for (QueryResultInstanceType resultType :responseType1.getQueryResultInstance())
+				{
+					if (resultType.getQueryStatusType().getStatusTypeId().equals("1"))
+						processing = true;
+					if (resultType.getQueryStatusType().getStatusTypeId().equals("2"))
+						processing = true;
+					if (resultType.getQueryStatusType().getStatusTypeId().equals("4"))
+						error = true;
+					if (resultType.getQueryStatusType().getStatusTypeId().equals("5"))
+						error = true;
+
+				}
+			/*
+			if (responseType1.getQueryResultInstance() != null && processing== true) //responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("2"))
 			{
 				responseType1.getQueryResultInstance().get(0).getQueryStatusType().setStatusTypeId("1");			
 				responseType1.getQueryResultInstance().get(0).getQueryStatusType().setName("QUEUED");
@@ -246,7 +264,9 @@ public class QueryManagerBean{ // implements SessionBean {
 				e.setValue("RUNNING");
 				stype.getCondition().add(e);
 				responseType1.setStatus(stype);
-			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("3"))
+			} else 
+			*/
+			if 	(responseType1.getQueryResultInstance() != null && error == false && processing == false) //responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("3"))
 			{
 				//	QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
 				//	status.setStatusTypeId("3");
@@ -267,7 +287,7 @@ public class QueryManagerBean{ // implements SessionBean {
 				queryInstance.setEndDate(new Date(System
 						.currentTimeMillis()));
 				queryInstanceDao.update(queryInstance, false);
-			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("4"))
+			} else if 	(responseType1.getQueryResultInstance() != null && error == true) //responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("4"))
 			{
 
 				//			QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
@@ -288,7 +308,7 @@ public class QueryManagerBean{ // implements SessionBean {
 				//SKIP this one and goto MEDIUM Queue
 				/* */
 
-			} else if (queryInstance.getBatchMode().equals("PROCESSING"))
+			} else if (processing == true) //queryInstance.getBatchMode().equals("PROCESSING"))
 			{
 				QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
 
@@ -305,11 +325,12 @@ public class QueryManagerBean{ // implements SessionBean {
 				queryInstance.setQtQueryStatusType(status1);
 
 				queryInstance.setBatchMode("MEDIUM_QUEUE");
+				queryInstance.setEndDate(null);
 				queryInstanceDao.update(queryInstance, false);
 
 				responseType1.getQueryResultInstance().get(0).setQueryStatusType(status);
 
-			} else if 	(responseType1.getQueryResultInstance() != null && responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("5"))
+			} else if 	(responseType1.getQueryResultInstance() != null && error == true) //responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("5"))
 			{
 
 				// why does 5 (incomplete) become error?	
@@ -339,8 +360,8 @@ public class QueryManagerBean{ // implements SessionBean {
 					.buildQueryInstanceType(queryInstance);
 			// set query instance
 			masterInstanceResultType.setQueryInstance(queryInstanceType2);
-			
-			
+
+
 		} catch (I2B2DAOException ex) {
 			log.debug("Got an error in QueryManagerBean, thropwing: " + ex.getMessage());
 			ex.printStackTrace();
@@ -375,18 +396,18 @@ public class QueryManagerBean{ // implements SessionBean {
 			String projectId, String ownerId, String userId,
 			String generatedSql, String sessionId, String queryInstanceId,
 			String patientSetId, String xmlRequest, long timeout)
-			throws Exception {
+					throws Exception {
 
 		QueryManagerBeanUtil qmBeanUtil = new QueryManagerBeanUtil();
 
 		// process interactive query
-	//	log.debug("process query in queue");
+		//	log.debug("process query in queue");
 		Map returnValues = qmBeanUtil.testSend(domainId, projectId, ownerId,
 				generatedSql, sessionId, queryInstanceId, patientSetId,
 				xmlRequest, timeout);
 
-	//	log.debug("My returnValue map is:" + returnValues);
-	//	log.debug("My mapssize is: " + returnValues.size());
+		//	log.debug("My returnValue map is:" + returnValues);
+		//	log.debug("My mapssize is: " + returnValues.size());
 		// build response message, if query completed before given timeout
 		String status = (String) returnValues
 				.get(QueryManagerBeanUtil.QUERY_STATUS_PARAM);
@@ -423,9 +444,9 @@ public class QueryManagerBean{ // implements SessionBean {
 				.getCRCPropertyValue("edu.harvard.i2b2.crc.pm.serviceaccount.user")))
 			throw new Exception("Cannot run queries as servcice account: " + userId);
 		queryMaster.setUserId(userId);
-		
+
 		//If time not set than set to 12:00
-		
+
 		for (PanelType panel: queryDefType.getPanel())
 		{
 			if (panel.getPanelDateFrom() != null && panel.getPanelDateFrom().getValue() != null) {
@@ -452,8 +473,8 @@ public class QueryManagerBean{ // implements SessionBean {
 				}
 			}
 		}
-		
-		
+
+
 		StringWriter queryDefWriter = new StringWriter();
 		CRCJAXBUtil.getQueryDefJAXBUtil().marshaller(
 				of.createQueryDefinition(queryDefType), queryDefWriter);
@@ -471,7 +492,7 @@ public class QueryManagerBean{ // implements SessionBean {
 		PasswordType passType = i2b2RequestMsgType.getMessageHeader().getSecurity().getPassword();
 		passType.setValue("password not stored"); 
 		passType.setIsToken(false);
-		
+
 		JAXBUtil util = CRCJAXBUtil.getJAXBUtil();
 		StringWriter strWriter = new StringWriter();
 		edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory i2b2ObjFactory = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
@@ -513,7 +534,7 @@ public class QueryManagerBean{ // implements SessionBean {
 			RequestMessageType requestMessageType) throws Exception {
 		String queryName = null;
 		QueryDefinitionType queryDef = null;
-		
+
 		BodyType bodyType = requestMessageType.getMessageBody();
 		JAXBUnWrapHelper unWrapHelper = new JAXBUnWrapHelper();
 		QueryDefinitionRequestType queryDefReqType = (QueryDefinitionRequestType) unWrapHelper
@@ -569,5 +590,5 @@ public class QueryManagerBean{ // implements SessionBean {
 
 	public void ejbPassivate() throws EJBException, RemoteException {
 	}
-	*/
+	 */
 }

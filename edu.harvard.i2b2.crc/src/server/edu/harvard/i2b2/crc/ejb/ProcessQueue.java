@@ -189,7 +189,7 @@ public class ProcessQueue implements Runnable{
 										" from  " +dslookup.getFullSchema() + ".QT_QUERY_MASTER qm, " +
 										dslookup.getFullSchema() + ".qt_query_instance qi " +
 										" where qm.QUERY_MASTER_ID = qi.QUERY_master_id " +
-										"  and qi.batch_mode = '" + queue +  "' " +
+										"  and qi.batch_mode = '" + queue +  "' " + 
 										" and qi.end_date is null ";
 						if (dslookup.equals("SQLSERVER"))
 							finalSql +=	" and  start_date < dateadd(minute, -3, getdate()) ";

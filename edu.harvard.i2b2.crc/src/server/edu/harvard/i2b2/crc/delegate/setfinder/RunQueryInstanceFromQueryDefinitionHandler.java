@@ -206,6 +206,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 					newStatusType.setDescription("MEDIUM_QUEUE");
 					newStatusType.setStatusTypeId("7");
 					masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
+					masterInstanceResponse.getQueryInstance().setEndDate(null);
 				} else 	if (isError)
 				{
 					masterInstanceResponse.getStatus().getCondition().get(0).setType("ERROR");
