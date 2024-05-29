@@ -109,12 +109,12 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 
 			privilegeLocal.checkPriviledge(daoFactory,
 					"SETFINDER_QRY_WITH_DATAOBFSC", roles);
-        	//TODO removed ejbs
-//			QueryManagerLocalHome queryManagerLocalHome = qpUtil
-//					.getQueryManagerLocalHome();
+			//TODO removed ejbs
+			//			QueryManagerLocalHome queryManagerLocalHome = qpUtil
+			//					.getQueryManagerLocalHome();
 
-//			QueryManagerLocal queryManagerLocal = queryManagerLocalHome
-//					.create();
+			//			QueryManagerLocal queryManagerLocal = queryManagerLocalHome
+			//					.create();
 
 			log.debug("Calling QueryManager ");
 			QueryManagerBean queryManagerLocal = new QueryManagerBean();
@@ -146,38 +146,38 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 				masterInstanceResponse.setStatus(status);
 				errorFlag = true;
 			} 
-			
+
 			else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("5")) {
 				//why is '5' (incomplete) == error ?
-				
+
 				QueryStatusTypeType newStatusType = new QueryStatusTypeType();
 				newStatusType.setName("ERROR");
 				newStatusType.setDescription("ERROR");
 				newStatusType.setStatusTypeId("4");
 				masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
 
-								masterInstanceResponse.setStatus(this.buildCRCStausType(
-										 "ERROR", "ERROR"));
-			/*
+				masterInstanceResponse.setStatus(this.buildCRCStausType(
+						"ERROR", "ERROR"));
+				/*
 			} else if (statusType.getStatusTypeId() != null && statusType.getStatusTypeId().trim().equals("3")) {
 						masterInstanceResponse.setStatus(this.buildCRCStausType(
 								 "DONE", "DONE"));
-									
+
 			} else if (statusType.getStatusTypeId() != null && !statusType.getStatusTypeId().trim().equals("6")) {
 				masterInstanceResponse.setStatus(this.buildCRCStausType(
 						 "RUNNING", "RUNNING"));
-			 */
+				 */
 			} else {
-			 masterInstanceResponse.setStatus(this.buildCRCStausType(
-			 RequestHandlerDelegate.DONE_TYPE, "DONE"));
+				masterInstanceResponse.setStatus(this.buildCRCStausType(
+						RequestHandlerDelegate.DONE_TYPE, "DONE"));
 			}
-			
+
 			//Check to see if any queryinstance are stil processing
 			boolean isProcessing = false;
 			boolean isError = false;
 			for (QueryResultInstanceType queryIntance: masterInstanceResponse.getQueryResultInstance())
 			{
-				
+
 				if (queryIntance.getQueryStatusType().getName().equals("QUEUED")
 						|| queryIntance.getQueryStatusType().getName().equals("PROCESSING")
 						|| queryIntance.getEndDate() == null)
@@ -186,27 +186,41 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 						|| queryIntance.getQueryStatusType().getName().equals("TIMEDOUT"))
 					isError = true;
 			}
-			
+
 			//If Batchmode is equal to PROCESSING then set to finished			
 			if (isProcessing || isError)
 			{
 				masterInstanceResponse.setStatus(this.buildCRCStausType(
-						 RequestHandlerDelegate.DONE_TYPE, "DONE"));
-				
+						RequestHandlerDelegate.DONE_TYPE, "DONE"));
+
 				if (isProcessing)
 				{
-					
+
 					masterInstanceResponse.getStatus().getCondition().get(0).setType("RUNNING");
 					masterInstanceResponse.getStatus().getCondition().get(0).setValue("RUNNING");
 
-					
-					masterInstanceResponse.getQueryInstance().setBatchMode("MEDIUM_QUEUE");
-					QueryStatusTypeType newStatusType = new QueryStatusTypeType();
-					newStatusType.setName("MEDIUM_QUEUE");
-					newStatusType.setDescription("MEDIUM_QUEUE");
-					newStatusType.setStatusTypeId("7");
-					masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
-					masterInstanceResponse.getQueryInstance().setEndDate(null);
+					if (masterInstanceResponse.getQueryInstance().getBatchMode().equals("LARGE_QUEUE"))
+					{
+						masterInstanceResponse.getQueryInstance().setBatchMode("INCOMPLETE");
+					}
+					else if (masterInstanceResponse.getQueryInstance().getBatchMode().equals("MEDIUM_QUEUE"))						
+					{
+						QueryStatusTypeType newStatusType = new QueryStatusTypeType();
+						newStatusType.setName("LARGE_QUEUE");
+						newStatusType.setDescription("LARGE_QUEUE");
+						newStatusType.setStatusTypeId("7");
+						masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
+						masterInstanceResponse.getQueryInstance().setEndDate(null);
+
+					} else {
+						masterInstanceResponse.getQueryInstance().setBatchMode("MEDIUM_QUEUE");
+						QueryStatusTypeType newStatusType = new QueryStatusTypeType();
+						newStatusType.setName("MEDIUM_QUEUE");
+						newStatusType.setDescription("MEDIUM_QUEUE");
+						newStatusType.setStatusTypeId("7");
+						masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
+						masterInstanceResponse.getQueryInstance().setEndDate(null);
+					}
 				} else 	if (isError)
 				{
 					masterInstanceResponse.getStatus().getCondition().get(0).setType("ERROR");
@@ -222,7 +236,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 				//	masterInstanceResponse.getQueryInstance().setBatchMode(masterInstanceResponse.getQueryInstance().getQueryStatusType().getName());
 				//}
 			}
-			 response = this.buildResponseMessage(requestXml, bodyType);
+			response = this.buildResponseMessage(requestXml, bodyType);
 		} catch (Exception ee) {
 			log.debug("Ran into a error: " + ee.getMessage());
 			masterInstanceResponse = new MasterInstanceResultResponseType();
@@ -241,7 +255,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 	public boolean getLockedoutFlag() {
 		return lockedoutFlag;
 	}
-	
+
 	public boolean getErrorFlag() { 
 		return errorFlag;
 	}
