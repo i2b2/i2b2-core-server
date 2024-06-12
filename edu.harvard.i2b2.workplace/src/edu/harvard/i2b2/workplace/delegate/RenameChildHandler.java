@@ -34,6 +34,7 @@ public class RenameChildHandler extends RequestHandler {
 			renameChildMsg = requestMsg;
 			renameChildType = requestMsg.getRenameChildType();	
 
+			renameChildType.setName(renameChildType.getName().replaceAll("\\<[^>]*>",""));
 			// test bad username   -- good 2/1/08	
 		//	renameChildMsg.getMessageHeaderType().getSecurity().setUsername("bad");
 			projectInfo = getRoleInfo(requestMsg.getMessageHeaderType());	

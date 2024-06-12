@@ -437,6 +437,7 @@ public class QueryManagerBean{ // implements SessionBean {
 		String userId = userType.getLogin();
 		String groupId = userType.getGroup();
 		QueryDefinitionType queryDefType = getQueryDefinition(i2b2RequestMsgType);
+		queryDefType.setQueryName(queryDefType.getQueryName().replaceAll("\\<[^>]*>",""));
 		edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.setfinder.query.ObjectFactory();
 
 		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();

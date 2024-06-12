@@ -33,7 +33,9 @@ public class AnnotateChildHandler extends RequestHandler {
 	public AnnotateChildHandler(AnnotateChildDataMessage requestMsg) throws I2B2Exception {
 			annotateChildMsg = requestMsg;
 			annotateChildType = requestMsg.getAnnotateChildType();	
-
+			annotateChildType.setNode(annotateChildType.getNode().replaceAll("\\<[^>]*>",""));
+			annotateChildType.setTooltip(annotateChildType.getTooltip().replaceAll("\\<[^>]*>",""));
+			
 			// test bad username   -- good 2/1/08	
 		//	annotateChildMsg.getMessageHeaderType().getSecurity().setUsername("bad");
 			projectInfo = getRoleInfo(requestMsg.getMessageHeaderType());	
