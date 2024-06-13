@@ -74,7 +74,7 @@ public class RenameQueryMasterHandler extends RequestHandler {
 			//            QueryInfoLocal queryInfoLocal = queryInfoLocalHome.create();
 			String userId = masterRenameRequestType.getUserId();
 			String masterId = masterRenameRequestType.getQueryMasterId();
-			String newQueryName = masterRenameRequestType.getQueryName();
+			String newQueryName = masterRenameRequestType.getQueryName().replaceAll("\\<[^>]*>","");
 			QueryInfoBean query = new QueryInfoBean();
 			masterResponseType = query.renameQueryMaster(this.getDataSourceLookup(),userId,
 					masterId, newQueryName);
