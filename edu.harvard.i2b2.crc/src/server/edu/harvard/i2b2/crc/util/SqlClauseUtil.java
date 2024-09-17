@@ -18,8 +18,8 @@ import edu.harvard.i2b2.common.util.db.JDBCUtil;
 
 /**
  * Class to build sql clause from the input, to catch sql injection attack.
- * 
- * 
+ *
+ *
  */
 public class SqlClauseUtil {
 	protected final static Log log = LogFactory.getLog(SqlClauseUtil.class);
@@ -28,7 +28,7 @@ public class SqlClauseUtil {
 
 	/**
 	 * Rebuild the sql IN clause from the input value constrain
-	 * 
+	 *
 	 * @param theValueCons
 	 * @param encloseSingleQuote
 	 * @return
@@ -76,7 +76,7 @@ public class SqlClauseUtil {
 
 	/**
 	 * Rebuild the sql BETWEEN clause from the input value constrain
-	 * 
+	 *
 	 * @param betweenConstraint
 	 * @return
 	 * @throws I2B2Exception
@@ -100,59 +100,65 @@ public class SqlClauseUtil {
 		return firstElement.replaceAll("'", "''") + " and "
 				+ thirdElement.replaceAll("'", "''");
 	}
-	
-	
+
+
 	public static boolean isEnclosedinSingleQuote(String value) {
 		if (value.startsWith("'") && value.endsWith("'")) {
 			return true;
-		} else { 
+		} else {
 			return false;
 		}
 	}
 	public static boolean isEnclosedinBraces(String value) {
 		if (value.startsWith("(") && value.endsWith(")")) {
 			return true;
-		} else { 
+		} else {
 			return false;
 		}
 	}
-	
-	public static String handleMetaDataTextValue(String operator,String value) { 
+
+	public static String handleMetaDataTextValue(String operator,String value) {
 		String  formattedValue = value;
 		if ((operator != null)
 				&& (operator.toUpperCase().equals("LIKE"))) {
 			boolean needPercentFlag = false, needSlashFlag = false;
 			//if not enclosed in single quote
-			if (!SqlClauseUtil.isEnclosedinSingleQuote(formattedValue)) { 
+			if (!SqlClauseUtil.isEnclosedinSingleQuote(formattedValue)) {
+				log.debug("formattedValue before change: " + formattedValue);
 				//escape the single quote
 				formattedValue = JDBCUtil.escapeSingleQuote(formattedValue);
-				
+				//For some reason the single quote escape doesn't work as expected,
+				//hence we do another replacement here instead of in escapeSingleQuote to avoid regression issue.
+				//in case there was an escaped single quote like '' being replaced into '''', we change it back.
+				formattedValue = formattedValue.replace("'", "''").replace("''''", "''");
+				log.debug("formattedValue after change: " + formattedValue);
+
 				// if missing \
 				if (formattedValue.lastIndexOf('%') != formattedValue.length() - 1) {
-					needPercentFlag = true; 
-				} 
-				
+					needPercentFlag = true;
+				}
+
 				//else if missing %
-				if (needPercentFlag) { 
+				if (needPercentFlag) {
 					if (formattedValue.lastIndexOf('\\') != formattedValue.length() - 1) {
 						log.debug("Adding \\ at the end of the Concept path ");
 						needSlashFlag = true;
-					}	
-				} else { 
+					}
+				} else {
 					if (formattedValue.lastIndexOf('\\') != formattedValue.length() - 2) {
 						log.debug("Adding \\ at the end of the Concept path ");
 						needSlashFlag = true;
 					}
 				}
-				
+
 				if (needSlashFlag) {
 					if (needPercentFlag) {
 						formattedValue=formattedValue+"\\%";
 					} else {
 						formattedValue = formattedValue + "\\";
 					}
-				
-				} else if (needPercentFlag) { 
+
+				} else if (needPercentFlag) {
 					formattedValue = formattedValue + "%";
 				}
 				formattedValue = "'" + formattedValue + "'";
@@ -162,61 +168,61 @@ public class SqlClauseUtil {
 			formattedValue = value;
 			formattedValue = SqlClauseUtil.buildINClause(formattedValue, true);
 			formattedValue = "(" + formattedValue  + ")";
-			
-		} else { 
+
+		} else {
 			boolean needSingleQuoteFlag = false;
-			
+
 			formattedValue = value;
 			//escape the single quote
 			formattedValue = JDBCUtil.escapeSingleQuote(formattedValue);
-			
-			
+
+
 			// if not enclosed in '', add it
-			if (!SqlClauseUtil.isEnclosedinSingleQuote(value)) { 
+			if (!SqlClauseUtil.isEnclosedinSingleQuote(value)) {
 					needSingleQuoteFlag = true;
 			}
-			if (needSingleQuoteFlag) { 
+			if (needSingleQuoteFlag) {
 				formattedValue = "'" + formattedValue + "'";
 			}
 		}
 		return formattedValue;
 	}
 
-	public static String handleMetaDataNumericValue(String operator, String value) { 
+	public static String handleMetaDataNumericValue(String operator, String value) {
 		String formattedValue = "";
 		boolean needBracesFlag = false;
 		//if operator is IN, then add open and close braces if it is missing
-		if (operator.toUpperCase().equals("IN")) { 
-			if (!SqlClauseUtil.isEnclosedinBraces(value)) { 
+		if (operator.toUpperCase().equals("IN")) {
+			if (!SqlClauseUtil.isEnclosedinBraces(value)) {
 				needBracesFlag = true;
 			}
 		}
-		if (needBracesFlag) { 
+		if (needBracesFlag) {
 			formattedValue = "(" + value + ")";
-		} else { 
+		} else {
 			formattedValue = value;
 		}
 		return formattedValue;
 	}
-	
-	public static String handleMetaDataDateValue(String operator, String value) { 
+
+	public static String handleMetaDataDateValue(String operator, String value) {
 		String formattedValue = "";
 		boolean needBracesFlag = false;
 		//if operator is IN, then add open and close braces if it is missing
-		if (operator.toUpperCase().equals("IN")) { 
-			if (!SqlClauseUtil.isEnclosedinBraces(value)) { 
+		if (operator.toUpperCase().equals("IN")) {
+			if (!SqlClauseUtil.isEnclosedinBraces(value)) {
 				needBracesFlag = true;
 			}
 		}
-		if (needBracesFlag) { 
+		if (needBracesFlag) {
 			formattedValue = "(" + value + ")";
-		} else { 
+		} else {
 			formattedValue = value;
 		}
 		return formattedValue;
 	}
-	
-	
-	
+
+
+
 
 }
