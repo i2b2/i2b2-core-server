@@ -574,6 +574,10 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					timeoutFlag = true;
 					throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
 				}
+				if (sqlEx.getMessage().indexOf("timed out") > -1) {
+					timeoutFlag = true;
+					throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
+				}
 				errorFlag = true;
 				log.error("Error while executing sql", sqlEx);
 				throw new I2B2DAOException("Error while executing sql", sqlEx);

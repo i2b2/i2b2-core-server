@@ -390,7 +390,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			// call the result generator with the db connection/temp table
 			callResultGenerator(resultOutputList, manualConnection,
 					sfDAOFactory, requestXml, patientSetId, queryInstanceId,
-					TEMP_DX_TABLE, recordCount, obfuscatedRecordCount, transactionTimeout, pmXml);
+					TEMP_DX_TABLE, recordCount, obfuscatedRecordCount, transactionTimeout, pmXml, totalTime/1000);
 
 
 			if (dsLookup.getServerType().equalsIgnoreCase(
@@ -557,7 +557,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			ResultOutputOptionListType resultOutputList,
 			Connection manualConnection, SetFinderDAOFactory sfDAOFactory,
 			String requestXml, String patientSetId, String queryInstanceId,
-			String TEMP_DX_TABLE, int recordCount, int obfuscatedRecordCount, int transactionTimeout, String pmXml)
+			String TEMP_DX_TABLE, int recordCount, int obfuscatedRecordCount, int transactionTimeout, String pmXml, long dxCreateTime)
 					throws CRCTimeOutException, LockedoutException, I2B2DAOException {
 
 		log.debug("getting queryProcess instance");
@@ -706,6 +706,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		param.put("ObfuscatedRoleFlag", dataObfuscFlag);
 		param.put("panelList", panelList);
 		param.put("queryDef", queryDef);
+		param.put("DXCreateTime", dxCreateTime);
 		try {
 			//String fileName = "";
 			String fileName = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename");

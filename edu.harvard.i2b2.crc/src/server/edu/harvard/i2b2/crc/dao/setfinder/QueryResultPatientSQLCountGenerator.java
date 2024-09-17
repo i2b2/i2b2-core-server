@@ -99,6 +99,8 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 		int obfuscatedRecordCount = (Integer) param.get("ObfuscatedRecordCount");
 		int recordCount = (Integer) param.get("RecordCount");
 		int transactionTimeout = (Integer) param.get("TransactionTimeout");
+		long dxCreateTime = (Long) param.get("DXCreateTime");
+		transactionTimeout = transactionTimeout - Math.toIntExact(dxCreateTime);
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
 
 		this
@@ -147,6 +149,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DATABASE_NAME\\}\\}\\}", this.getDbSchemaName());
 
 
+			log.info("Timeout to run breakdowns: " + transactionTimeout);
 			String[] sqls = itemCountSql.split("<\\*>");
 			int count = 0;
 			while (count < sqls.length - 1)
@@ -251,6 +254,10 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 				throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
 			}
 			if (sqlEx.getMessage().indexOf("The query was canceled.") > -1) {
+				timeoutFlag = true;
+				throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
+			}
+			if (sqlEx.getMessage().indexOf("timed out") > -1) {
 				timeoutFlag = true;
 				throw new CRCTimeOutException(sqlEx.getMessage(), sqlEx);
 			}
