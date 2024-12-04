@@ -89,7 +89,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "valuetypeCd",
     "modifier",
     "domainName",
-    "onParent"
+    "onParent",
+    "mAppliedPath"
 })
 public class ConceptType {
 
@@ -150,6 +151,8 @@ public class ConceptType {
     @XmlElement(name = "on_parent", required = true)
     protected String onParent;
 
+    @XmlElement(name = "m_applied_path", required = false)
+    protected  String mAppliedPath;
     /**
      * Gets the value of the level property.
      * 
@@ -790,4 +793,7 @@ public class ConceptType {
         this.onParent = value;
     }
 
+    public void setMAppliedPath(String value) { this.mAppliedPath = value; }
+
+    public String getMAppliedPath() { return this.mAppliedPath; }
 }

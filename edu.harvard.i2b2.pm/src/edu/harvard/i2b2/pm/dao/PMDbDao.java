@@ -1109,6 +1109,10 @@ public class PMDbDao extends JdbcDaoSupport {
 			sql =  "select count(*) as badlogin from pm_user_login where user_id = ? and " +
 					" attempt_cd = 'BADPASSWORD' and " +
 					"(entry_date + cast('" + waittime + " minutes' as interval))  >= now() ";
+		else if (database.equalsIgnoreCase("Snowflake"))
+			sql =  "select count(*) as badlogin from pm_user_login where user_id = ? and " +
+					" attempt_cd = 'BADPASSWORD' and " +
+					"dateadd(minute, " + waittime + ", entry_date)  >= CURRENT_TIMESTAMP ";
 
 		int results = jt.queryForObject(sql, Integer.class, userId);
 
@@ -1133,7 +1137,9 @@ public class PMDbDao extends JdbcDaoSupport {
 		else if (database.equalsIgnoreCase("postgresql"))
 			addSql = "insert into pm_user_login " + 
 					"(user_id, attempt_cd, changeby_char, entry_date, status_cd) values (?,?,?,now(),'A')";
-
+		else if (database.equalsIgnoreCase("Snowflake"))
+			addSql = "insert into pm_user_login " +
+					"(user_id, attempt_cd, changeby_char, entry_date, status_cd) values (?,?,?,current_timestamp,'A')";
 		int numRowsAdded =
 				jt.update(addSql, 
 						userId,
@@ -1157,6 +1163,9 @@ public class PMDbDao extends JdbcDaoSupport {
 		else if (database.equalsIgnoreCase("postgresql"))
 			addSql = "insert into pm_user_session " + 
 					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?,now(),  now() + interval '" + timeout + " millisecond')";
+		else if (database.equalsIgnoreCase("Snowflake"))
+			addSql = "insert into pm_user_session " +
+					"(user_id, session_id, changeby_char, entry_date, expired_date) values (?,?,?, current_timestamp, DATEADD(ms," + timeout + ",current_timestamp))";
 
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.MILLISECOND, timeout);

@@ -271,6 +271,9 @@ IFactRelatedQueryHandler {
 					if(dataSourceLookup.getServerType().equals("ORACLE")){
 						sql=   "SELECT * FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'TABLE' AND lower(OBJECT_NAME) = 'observation_fact'";
 						sql += " and OWNER = '" + dataSourceLookup.getFullSchema() + "'";
+					} else if (dataSourceLookup.getServerType().equals("SNOWFLAKE")) {
+						sql = "select * from information_schema.tables where lower(table_name) = 'observation_fact'";
+						sql += " and table_schema = '" + dataSourceLookup.getFullSchema() + "'";
 					}
 					//log.info("no Filter sql: " + dataSourceLookup.getServerType() + " " + sql);
 					
@@ -431,6 +434,9 @@ IFactRelatedQueryHandler {
 					if(dataSourceLookup.getServerType().equals("ORACLE")){
 						sql=   "SELECT * FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'TABLE' AND lower(OBJECT_NAME) = 'observation_fact'";
 						sql += " and OWNER = '" + dataSourceLookup.getFullSchema() + "'";
+					} else if (dataSourceLookup.getServerType().equals("SNOWFLAKE")) {
+						sql = "select * from information_schema.tables where lower(table_name) = 'observation_fact'";
+						sql += " and table_schema = '" + dataSourceLookup.getFullSchema() + "'";
 					}
 					//log.info("no Filter sql: " + dataSourceLookup.getServerType() + " " + sql);
 					PreparedStatement stmt1 = conn.prepareStatement(sql);
@@ -727,8 +733,12 @@ IFactRelatedQueryHandler {
 						obsFactSelectClause, tableLookupJoinClause,
 						fullWhereClause);
 					mainQuerySql += factWithoutFilterSql ;
-				}
-				else {
+				} else if (dataSourceLookup.getServerType().equals("SNOWFLAKE")) {
+					factWithoutFilterSql = postgresFactQueryWithoutFilter(
+							obsFactSelectClause, tableLookupJoinClause,
+							fullWhereClause);
+					mainQuerySql += factWithoutFilterSql + ") b \n";
+				} else {
 					factWithoutFilterSql = postgresFactQueryWithoutFilter(
 							obsFactSelectClause, tableLookupJoinClause,
 							fullWhereClause);
@@ -766,7 +776,7 @@ IFactRelatedQueryHandler {
 			//check for version 1.5, if so return the fact without the duplicates in modifier_cd and instance num
 			//TODO Removed because not working in 1.6.05
 			/*
-			if (this.requestVersion.startsWith("1.5")) { 
+			if (this.requestVersion.startsWith("1.5")) {
 			mainQuerySql = " select * from (select *, rank() over(partition by obs_encounter_num, obs_patient_num,obs_concept_cd,obs_start_date,obs_provider_id order by obs_modifier_cd,obs_instance_num ) ordernum " +
 					" from ( " + mainQuerySql + ") ordersql   ) ordersql1 where ordernum = 1 ";
 			}
@@ -775,7 +785,7 @@ IFactRelatedQueryHandler {
 
 		if (this.outputOptionList.getObservationSet().getSelectionfilter()!= null)
 		{
-			//mainQuerySql = "with f as (" + mainQuerySql + ") select * from  f where f.NVAL_NUM in (select min(nval_num) from OBSERVATION_FACT f2 where f2.PATIENT_NUM = f.PATIENT_NUM)";			
+			//mainQuerySql = "with f as (" + mainQuerySql + ") select * from  f where f.NVAL_NUM in (select min(nval_num) from OBSERVATION_FACT f2 where f2.PATIENT_NUM = f.PATIENT_NUM)";
 			mainQuerySql = "with main_query as (" + mainQuerySql + ") select * from (select f1.*, " +
 					" rank() over(partition by obs_patient_num, obs_concept_cd order by ";
 			if (this.outputOptionList.getObservationSet().getSelectionfilter().value().equalsIgnoreCase("min_value"))
@@ -839,7 +849,13 @@ IFactRelatedQueryHandler {
 			panelName = JDBCUtil.escapeSingleQuote(panel.getName());
 		}
 
-		obsFactSelectClause += (", '" + panelName + "' panel_name ");
+		// query "\\'" is valid but "\'" is not valid
+		if (dataSourceLookup.getServerType().equals("SNOWFLAKE") && panelName != null && panelName.endsWith("\\") && !panelName.endsWith("\\\\")) {
+			obsFactSelectClause += (", '" + panelName + "\\" + "' panel_name ");
+		} else {
+			obsFactSelectClause += (", '" + panelName + "' panel_name ");
+		}
+
 		int totalItemOccurance = 0;
 		if (panel.getTotalItemOccurrences() != null) {
 			totalItemOccurance = panel.getTotalItemOccurrences().getValue();
@@ -1488,6 +1504,6 @@ IFactRelatedQueryHandler {
 		return factColumns;
 	}
 
-	
+
 
 }

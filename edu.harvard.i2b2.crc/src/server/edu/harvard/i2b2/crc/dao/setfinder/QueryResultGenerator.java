@@ -184,7 +184,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 					+ this.getDbSchemaName()
 					+ "concept_dimension  where concept_path like ?)";
 
-			//get break down count sigma from property file 
+			//get break down count sigma from property file
 
 			double breakdownCountSigma = GaussianBoxMuller.getBreakdownCountSigma();
 			double obfuscatedMinimumValue = GaussianBoxMuller.getObfuscatedMinimumVal();
@@ -202,7 +202,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
 			for (ConceptType conceptType : conceptsType.getConcept()) {
 
-				// OMOP WAS...	
+				// OMOP WAS...
 				// String joinTableName = "observation_fact";
 				String factTable = "observation_fact";
 				DerivedFactColumnsType columns = new DerivedFactColumnsType();
@@ -263,21 +263,21 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 					String joinTableName = factTable;
 
 					if (conceptType.getTablename().equalsIgnoreCase(
-							"patient_dimension")) { 
+							"patient_dimension")) {
 						joinTableName = "patient_dimension";
 					} else if (conceptType.getTablename().equalsIgnoreCase(
-							"visit_dimension")) { 
-						joinTableName = "visit_dimension"; 
+							"visit_dimension")) {
+						joinTableName = "visit_dimension";
 					} else if (!conceptType.getTablename().equalsIgnoreCase(
-							"concept_dimension")) { 
-						joinTableName = conceptType.getTablename(); 
+							"concept_dimension")) {
+						joinTableName = conceptType.getTablename();
 					}
 
 					String dimCode = this.getDimCodeInSqlFormat(conceptType);
 
-					if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) 
+					if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
 						dimCode = dimCode.replaceAll("\\\\", "\\\\\\\\");
-					itemCountSql += " ( select distinct PATIENT_NUM as item_count from " +  this.getDbSchemaName() + joinTableName +  
+					itemCountSql += " ( select distinct PATIENT_NUM as item_count from " +  this.getDbSchemaName() + joinTableName +
 							" where " + " patient_num in (select patient_num from "
 							+ TEMP_DX_TABLE
 
@@ -437,7 +437,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 
 						resultInstanceDao.updatePatientSet(resultInstanceId,
 								QueryStatusTypeId.STATUSTYPE_ID_FINISHED, null,
-								//obsfcTotal, 
+								//obsfcTotal,
 								obfuscatedRecordCount, recordCount, obfusMethod);
 
 						description = resultTypeList.get(0)

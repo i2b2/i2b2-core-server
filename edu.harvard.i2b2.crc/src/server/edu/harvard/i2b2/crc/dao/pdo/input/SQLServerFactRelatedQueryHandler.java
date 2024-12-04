@@ -201,6 +201,12 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 			 TEMP_FACT_PARAM_TABLE = "TEMP_FACT_PARAM_TABLE";
 
 		}
+
+		if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
+			TEMP_PDO_INPUTLIST_TABLE = "TEMP_PDO_INPUTLIST";
+			TEMP_FACT_PARAM_TABLE = "TEMP_FACT_PARAM_TABLE";
+
+		}
 		// check if concept filter present
 		if ((filterList != null) && (filterList.getPanel() != null)
 				&& (filterList.getPanel().size() > 0)) {
@@ -827,10 +833,10 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 		//check for version 1.5, if so return the fact without the duplicates in modifier_cd and instance num
 		//TODO Removed because not working in 1.6.05
 		/*
-		 if (this.requestVersion.startsWith("1.5")) { 	
+		 if (this.requestVersion.startsWith("1.5")) {
 			 mainQuerySql = " select * from (select *, rank() over(partition by obs_encounter_num, obs_patient_num,obs_concept_cd,obs_start_date,obs_provider_id order by obs_modifier_cd,obs_instance_num ) ordernum " +
 				" from ( " + mainQuerySql + ") ordersql   ) ordersql1 where ordernum = 1 ";
-			 
+
 		 }
 		 */ 
 		 mainQuerySql += " ORDER BY obs_patient_num,obs_start_date,obs_concept_cd,obs_instance_num,obs_modifier_cd,rnum";
@@ -1515,7 +1521,7 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 //		if (factColumns.isEmpty()) {
 //			throw new ConceptNotFoundException("[" + itemKey + "] ");
 
-//		} 
+//		}
 
 		return factColumns;
 	}

@@ -208,7 +208,7 @@ public class SchedulerInfoBean {
 					//.startNow()
 					.build();
 			//.withSchedule(simpleSchedule()
-			//	          .withIntervalInHours(3)
+			//        .withIntervalInMinutes(5))
 			//NOTE: check to see if can have multiple withinterval
 
 			scheduler.scheduleJob(job, trigger);

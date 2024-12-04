@@ -19,6 +19,8 @@ public class DAOFactoryHelper {
 	public static final String ORACLE = "ORACLE";
 	public static final String SQLSERVER = "SQLSERVER";
 	public static final String POSTGRESQL = "POSTGRESQL";
+	public static final String SNOWFLAKE = "SNOWFLAKE";
+
 	DataSourceLookup dataSourceLookup = null;
 	DataSource dataSource = null;
 	DataSourceLookup originalDataSourceLookup = null;
@@ -82,7 +84,15 @@ public class DAOFactoryHelper {
 				return new OracleDAOFactory(dataSourceLookup,
 						originalDataSourceLookup);
 			}
-		} else {
+		} else if (dataSourceName.equalsIgnoreCase(SNOWFLAKE)) {
+			if (dataSource != null) {
+				return new OracleDAOFactory(dataSourceLookup, dataSource);
+			} else {
+				return new OracleDAOFactory(dataSourceLookup,
+						originalDataSourceLookup);
+			}
+		}
+		else {
 			return null;
 		}
 	}

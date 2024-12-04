@@ -212,6 +212,8 @@ class GetNamesInfoMapper implements RowMapper<ConceptType> {
 				try {
 					if (dbType.equals("POSTGRESQL"))
 						entry.setComment(rs.getString("c_comment"));
+					else if (dbType.equals("SNOWFLAKE"))
+						entry.setComment(rs.getString("c_comment"));
 					else
 						entry.setComment(JDBCUtil.getClobString(rs.getClob("c_comment")));
 				} catch (IOException e1) {
@@ -224,6 +226,8 @@ class GetNamesInfoMapper implements RowMapper<ConceptType> {
 				String c_xml = null;
 				try {
 					if (dbType.equals("POSTGRESQL"))
+						c_xml = rs.getString("c_comment");
+					else if (dbType.equals("SNOWFLAKE"))
 						c_xml = rs.getString("c_comment");
 					else
 						c_xml = JDBCUtil.getClobString(rs.getClob("c_metadataxml"));

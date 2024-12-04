@@ -77,44 +77,44 @@ public class ValueConstrainsHandler {
 						ConstrainOperatorType.CONTAINS.value())) {
 					containsSql = containsUtil.formatValue(value,dbServerType);
 				} else if(operatorType.value().equalsIgnoreCase(
-						ConstrainOperatorType.CONTAINS_DATABASE.value())) { 
+						ConstrainOperatorType.CONTAINS_DATABASE.value())) {
 					containsSql = containsUtil.formatValue("[" + value + "]",dbServerType);
-				} else { 
+				} else {
 					log.debug("LARGETEXT : Invalid operator skipped [" + operatorType.value() + "]" );
 					continue;
 				}
 					//panelAccuracyScale = 100 - panelAccuracyScale;
-					
+
 					constrainSql = " valtype_cd = 'B' AND " ;
-					if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+					if (dbServerType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || dbServerType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
 					{
-						
+
 						constrainSql +=  " observation_blob like '%" + containsSql + "%' ";
 					}
-					else if (oracleFlag == true) { 
+					else if (oracleFlag == true) {
 						constrainSql +=  " contains(observation_blob,'" + containsSql + "') ";
 						if (panelAccuracyScale>0) {
 							constrainSql += " >= " + panelAccuracyScale + " ";
-						} else { 
+						} else {
 							constrainSql += " > 0 ";
 						}
-					} else { 
+					} else {
 						if (panelAccuracyScale>0) {
 							panelAccuracyScale = panelAccuracyScale * 10;
 							j++;
-							containsJoinSql += " INNER JOIN freetexttable(" + dbSchemaName + "observation_fact,observation_blob,'"+  containsSql  + "') " 
+							containsJoinSql += " INNER JOIN freetexttable(" + dbSchemaName + "observation_fact,observation_blob,'"+  containsSql  + "') "
 									+ " AS ft" + j + " ON text_search_index = ft" +j+ ".[KEY] ";
-							
+
 							constrainSql += " ft"+j+".[RANK] >= " + panelAccuracyScale + " ";
-				
-						} else { 
-							constrainSql +=  " CONTAINS(observation_blob,'" + containsSql + "') ";	
+
+						} else {
+							constrainSql +=  " CONTAINS(observation_blob,'" + containsSql + "') ";
 						}
-						
+
 					}
-					
-					
-				
+
+
+
 
 			} else if (valueType.equals(ConstrainValueType.TEXT)) {
 				// check if operator and value not null

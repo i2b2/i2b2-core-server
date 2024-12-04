@@ -151,7 +151,8 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 
 		} else if (dsLookup.getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.ORACLE) || dsLookup.getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.POSTGRESQL) || dsLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
 			TEMP_TABLE = getDbSchemaName() + "QUERY_GLOBAL_TEMP";
 			TEMP_DX_TABLE = getDbSchemaName() + "DX";
 		}
@@ -223,27 +224,27 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 						String newRequestMsg = "";
 
 						/*
-						 * create table  qt_est_observation_fact 
+						 * create table  qt_est_observation_fact
 	as
 
-	select  lower(c.concept_path) as concept_path, o.patient_num as patient_num, min(o.nval_num) as min_nval_num, max(o.nval_num) as max_nval_num, 
-	count(patient_num) as instance_num, avg(o.nval_num) as avg_nval_num, 
+	select  lower(c.concept_path) as concept_path, o.patient_num as patient_num, min(o.nval_num) as min_nval_num, max(o.nval_num) as max_nval_num,
+	count(patient_num) as instance_num, avg(o.nval_num) as avg_nval_num,
 	min(o.start_date) as first_start_date, max(o.start_date) as last_start_date
 	from observation_fact o, concept_dimension c
 	where
 	o.concept_cd = c.concept_cd
-	group by o.patient_num, c.concept_path 
+	group by o.patient_num, c.concept_path
 
 
 	select concat('<breakDown><patientCount>', count(nval_num),'</patientCount><valueData>', cast(nval_num as integer), '</valueData></breakDown>')
-	from observation_fact 
+	from observation_fact
 	where concept_cd = 'LOINC:14815-5'
 	and nval_num is not null
 	group by cast(nval_num as integer)
 
 	SELECT cast(nval_num as integer) as a,
 	        COUNT(*) AS Count
-	FROM    
+	FROM
 	        (SELECT
 	             nval_num,
 	             NTILE(70) OVER (ORDER BY m.nval_num) AS Buckets
@@ -252,7 +253,7 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 	                where concept_cd = 'LOINC:9830-1'
 
 	        ) m
-	WHERE   
+	WHERE
 	      Buckets BETWEEN 2 AND 69
 	GROUP BY cast(nval_num as integer)
 
@@ -261,18 +262,18 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 	truncate table calc_qt_breakdown
 	GO
 	insert into calc_qt_breakdown
-	select 'sex_cd', sex_cd as patient_range, count(distinct patient_num) as patient_count 
+	select 'sex_cd', sex_cd as patient_range, count(distinct patient_num) as patient_count
 	from patient_dimension  group by sex_cd order by 1
 	GO
 	insert into calc_qt_breakdown
-	select 'race_cd', b.c_name as patient_range, count(distinct a.patient_num) as patient_count 
+	select 'race_cd', b.c_name as patient_range, count(distinct a.patient_num) as patient_count
 	from patient_dimension a, i2b2 b where a.race_cd = b.c_dimcode group by a.race_cd, b.c_name order by 1
 	GO
 	insert into calc_qt_breakdown
-	select 'total_counts', 'patients', count(distinct patient_num) from observation_fact 
+	select 'total_counts', 'patients', count(distinct patient_num) from observation_fact
 	GO
 	insert into calc_qt_breakdown
-	select 'total_counts', 'encounters', count(distinct encounter_num) from observation_fact 
+	select 'total_counts', 'encounters', count(distinct encounter_num) from observation_fact
 	GO
 	insert into calc_qt_breakdown
 	select 'total_counts', 'diagnosis', count( patient_num) from observation_fact where concept_cd IN (select concept_cd from  public.concept_dimension   where concept_path LIKE '\\i2b2\\Diagnoses\\%' )
@@ -324,10 +325,10 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 						for (int i =0; i < panelList.length; i++) { 
 							//PanelType panelType = panelList[i];
 							//buildRequestXml(panelType);
-							//queryDefRequestType.getQueryDefinition().getPanel().clear(); 
+							//queryDefRequestType.getQueryDefinition().getPanel().clear();
 							log.debug("Setfinder query panel count " + panelList.length);
 							//queryDefRequestType.getQueryDefinition().getPanel().add(panelType);
-							//newRequestMsg = this.buildRequestMessage(reqMsgType, queryDefRequestType); 
+							//newRequestMsg = this.buildRequestMessage(reqMsgType, queryDefRequestType);
 
 							log.debug("Single panel request message [" + newRequestMsg + "]");
 							//send request xml for each panel
@@ -366,7 +367,8 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 								}
 								
 								key = key.substring(key.indexOf('\\', 3)).toLowerCase();
-								if (dsLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+								if (dsLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+										dsLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
 									key = key.replace("\\", "\\\\");
 								
 								generatedSql += " ( concept_path LIKE '" + key + "%'";
