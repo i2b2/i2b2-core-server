@@ -168,7 +168,8 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 						+ " ? ";
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SQLSERVER) || dataSourceLookup.getServerType().equalsIgnoreCase(
-							DAOFactoryHelper.POSTGRESQL)) {
+					DAOFactoryHelper.POSTGRESQL) || dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
 				//concatOperator = "+";
 				// messageUpdate = " MESSAGE = isnull(Cast(MESSAGE as nvarchar(4000)),'') "
 				//		+ concatOperator + " ? ";
@@ -268,7 +269,10 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 					DAOFactoryHelper.POSTGRESQL)  ) {
 				concatOperator = "||";
 				messageUpdate = " MESSAGE = ? ";
-	
+			} else 	if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)  ) {
+				concatOperator = "||";
+				messageUpdate = " MESSAGE = ? ";
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SQLSERVER)) {
 				// Cast(notes as nvarchar(4000))
@@ -330,8 +334,8 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 		private String SEQUENCE_ORACLE = "";
 		private String SEQUENCE_POSTGRESQL = "";
 		private String INSERT_POSTGRESQL = "";
-
-		
+		private String SEQUENCE_SNOWFLAKE = "";
+		private String INSERT_SNOWFLAKE = "";
 		private DataSourceLookup dataSourceLookup = null;
 
 		public SaveQueryInstance(DataSource dataSource, String dbSchemaName,
@@ -373,8 +377,20 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 						+ "nextval('qt_query_instance_query_instance_id_seq') ";
 				declareParameter(new SqlParameter(Types.INTEGER));
 
-			} 
+			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
+				INSERT_SNOWFLAKE = "INSERT INTO "
+						+ dbSchemaName
+						+ "QT_QUERY_INSTANCE "
+						+ "(QUERY_INSTANCE_ID, QUERY_MASTER_ID, USER_ID, GROUP_ID,BATCH_MODE,START_DATE,END_DATE,STATUS_TYPE_ID,DELETE_FLAG) "
+						+ "VALUES (?,?,?,?,?,?,?,?,?)";
+				setSql(INSERT_SNOWFLAKE);
+				SEQUENCE_SNOWFLAKE = "select "
+						+ dbSchemaName
+						+ "SEQ_QT_QUERY_INSTANCE.nextval";
+				declareParameter(new SqlParameter(Types.INTEGER));
 
+			}
 			declareParameter(new SqlParameter(Types.INTEGER));
 			declareParameter(new SqlParameter(Types.VARCHAR));
 			declareParameter(new SqlParameter(Types.VARCHAR));
@@ -418,6 +434,19 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.POSTGRESQL)) {
 				queryInstanceId = jdbc.queryForObject(SEQUENCE_POSTGRESQL, Integer.class);
+				queryInstance.setQueryInstanceId(String
+						.valueOf(queryInstanceId));
+				object = new Object[] { queryInstance.getQueryInstanceId(),
+						queryInstance.getQtQueryMaster().getQueryMasterId(),
+						queryInstance.getUserId(), queryInstance.getGroupId(),
+						queryInstance.getBatchMode(),
+						queryInstance.getStartDate(),
+						queryInstance.getEndDate(),
+						queryInstance.getQtQueryStatusType().getStatusTypeId(),
+						queryInstance.getDeleteFlag() };
+			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
+				queryInstanceId = jdbc.queryForObject(SEQUENCE_SNOWFLAKE, Integer.class);
 				queryInstance.setQueryInstanceId(String
 						.valueOf(queryInstanceId));
 				object = new Object[] { queryInstance.getQueryInstanceId(),
