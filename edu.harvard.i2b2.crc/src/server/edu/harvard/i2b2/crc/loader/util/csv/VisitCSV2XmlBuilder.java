@@ -17,7 +17,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.Hashtable;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 //import javax.xml.namespace.QName;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;

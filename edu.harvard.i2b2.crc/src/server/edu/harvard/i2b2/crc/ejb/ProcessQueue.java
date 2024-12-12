@@ -18,8 +18,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -40,7 +40,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 public class ProcessQueue implements Runnable{
 	private static Log log = LogFactory.getLog(ExecRunnable.class);
-	protected static Logger logesapi = ESAPI.getLogger(ExecRunnable.class);
+	protected static Log logesapi = LogFactory.getLog(ExecRunnable.class);
 
 	public ProcessQueue(String lQueue) {
 
@@ -237,10 +237,10 @@ public class ProcessQueue implements Runnable{
 
 						if (queryInstanceId != 0 && readTimeoutPropertyValue(queue) > 1) { 
 
-							logesapi.debug(null,"in ProcessQueue my pmXml is"+ pmXml);
+							logesapi.debug("in ProcessQueue my pmXml is"+ pmXml);
 							ExecRunnable exec = new ExecRunnable(sqlString, Integer.toString(queryInstanceId), null,
 									xmlRequest, dslookup.getDomainId(), projectId, ownerId, pmXml, transactionTimeout);
-							logesapi.info(null,"STARTING " + queue + " FOR " + queryInstanceId + " " + sqlString + " " + transactionTimeout);
+							logesapi.info("STARTING " + queue + " FOR " + queryInstanceId + " " + sqlString + " " + transactionTimeout);
 							
 							Thread t = new Thread(exec);
 

@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
@@ -34,7 +34,7 @@ public class QueryInstance {
 
 	private static Log log = LogFactory.getLog(QueryInstance.class);
 
-	protected static Logger logesapi = ESAPI.getLogger(QueryInstance.class);
+	protected static Log logesapi = LogFactory.getLog(QueryInstance.class);
 
 	SetFinderDAOFactory sfDAOFactory = null;
 
@@ -69,7 +69,7 @@ public class QueryInstance {
 						+ "] for query instance= " + queryInstanceId);
 				patientSetId = patientSetResultDao.createPatientSet(
 						queryInstanceId, resultOption.getName());
-				logesapi.debug(null,"Patient Set ID [" + patientSetId
+				logesapi.debug("Patient Set ID [" + patientSetId
 						+ "] for query instance= " + queryInstanceId);
 			}
 		} else {
@@ -77,7 +77,7 @@ public class QueryInstance {
 			String defaultResultType = "PATIENTSET";
 			patientSetId = patientSetResultDao.createPatientSet(
 					queryInstanceId, defaultResultType);
-			logesapi.debug(null,"Patient Set ID [" + patientSetId
+			logesapi.debug("Patient Set ID [" + patientSetId
 					+ "] for query instance= " + queryInstanceId);
 		}
 		return queryInstanceId;

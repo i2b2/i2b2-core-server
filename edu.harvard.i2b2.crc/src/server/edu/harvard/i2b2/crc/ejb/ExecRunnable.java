@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.catalina.tribes.tipis.AbstractReplicatedMap.MapMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -53,7 +53,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 public class ExecRunnable implements Runnable{
 	private static Log log = LogFactory.getLog(ExecRunnable.class);
 //
-	protected static Logger logesapi = ESAPI.getLogger(ExecRunnable.class);
+	protected static Log logesapi = LogFactory.getLog(ExecRunnable.class);
 
 	String sqlString = "";
 	String queryInstanceId = "";
@@ -141,7 +141,7 @@ public class ExecRunnable implements Runnable{
 					SetFinderDAOFactory sfDAOFactory = daoFactory
 							.getSetFinderDAOFactory();
 					DataSourceLookup dsLookup = sfDAOFactory.getDataSourceLookup();
-					logesapi.debug(null,"ORIG domain id"
+					logesapi.debug("ORIG domain id"
 							+ sfDAOFactory.getOriginalDataSourceLookup()
 							.getDomainId()
 							+ " ORIG "

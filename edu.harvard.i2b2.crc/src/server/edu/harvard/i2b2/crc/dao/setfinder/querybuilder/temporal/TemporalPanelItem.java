@@ -23,8 +23,8 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
@@ -73,7 +73,7 @@ import edu.harvard.i2b2.crc.util.StringUtil;
 public abstract class TemporalPanelItem {
 
 	protected final Log log = LogFactory.getLog(getClass());
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 	protected TemporalPanel parent = null;
 
@@ -221,7 +221,7 @@ public abstract class TemporalPanelItem {
 				+ formatSql(panelDateConstraintSql)
 				+ " \ngroup by " + groupbyClause
 				+ formatSql(havingClause);
-		logesapi.debug(null,"Derived table sql [" + derivedTableSql + "]");
+		logesapi.debug("Derived table sql [" + derivedTableSql + "]");
 
 		return derivedTableSql;
 	}

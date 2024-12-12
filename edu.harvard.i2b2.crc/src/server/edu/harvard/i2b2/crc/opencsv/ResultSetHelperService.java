@@ -1,6 +1,6 @@
 package edu.harvard.i2b2.crc.opencsv;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigDecimal;

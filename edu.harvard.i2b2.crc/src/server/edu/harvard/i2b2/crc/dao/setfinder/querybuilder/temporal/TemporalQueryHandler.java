@@ -18,8 +18,8 @@ package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
 import java.util.List;
 import java.util.Map;
 
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -34,7 +34,7 @@ import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 
 public class TemporalQueryHandler extends CRCDAO {
 
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 	private DataSourceLookup dataSourceLookup = null;
 	private String queryXML = null;
@@ -112,7 +112,7 @@ public class TemporalQueryHandler extends CRCDAO {
 		this.maxPanelNum = tQuery.getMaxPanelIndex();
 		this.isTemporalQuery = (tQuery.getSubQueryCount()>1?true:false);
 		this.isProtectedQuery = tQuery.isProtectedQuery();
-		logesapi.debug(null,tQuerySql);
+		logesapi.debug(tQuerySql);
 		
 		return tQuerySql;
 

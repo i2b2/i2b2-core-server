@@ -4,8 +4,8 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
@@ -27,7 +27,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.ScheduleType;
 public class QuartzExec {
 
 	protected final Log logger = LogFactory.getLog(getClass());
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 	 SchedulerFactory sf = null;
 	 Scheduler sched = null;
 	 

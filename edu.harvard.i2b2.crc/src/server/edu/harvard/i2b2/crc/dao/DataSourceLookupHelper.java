@@ -12,8 +12,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
@@ -25,7 +25,7 @@ public class DataSourceLookupHelper {
 			.getLog(DataSourceLookupHelper.class);
 
 	
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 	private DataSourceLookupDAO dsLookupDao = null;
 
@@ -84,7 +84,7 @@ public class DataSourceLookupHelper {
 			String parentProjectId = null;
 			while ((projectLevel = projectId.lastIndexOf('/', projectLevel)) > 0) {
 				parentProjectId = projectId.substring(0, projectLevel + 1);
-				logesapi.debug(null,"Trying with project id :" + parentProjectId);
+				logesapi.debug("Trying with project id :" + parentProjectId);
 				matchedDataSource = match(parentProjectId, ownerId,
 						dataSourceLookupList);
 				if (matchedDataSource != null) {
@@ -96,25 +96,25 @@ public class DataSourceLookupHelper {
 			}
 			if (matchedFlag) {
 				if (ownerId.equalsIgnoreCase(matchedDataSource.getOwnerId())) {
-					logesapi.info(null,"Located DataSource for hiveId=[" + hiveId
+					logesapi.info("Located DataSource for hiveId=[" + hiveId
 							+ "] projectId=[" + parentProjectId
 							+ "] and ownerId =[" + ownerId + "]");
 				} else {
-					logesapi.info(null,"Located DataSource for hiveId=[" + hiveId
+					logesapi.info("Located DataSource for hiveId=[" + hiveId
 							+ "] projectId=[" + parentProjectId + "]");
 
 				}
 				return matchedDataSource;
 
 			} else {
-				logesapi.info(null,"Could not match Project id=[" + projectId
+				logesapi.info("Could not match Project id=[" + projectId
 						+ "] Trying with hive =" + hiveId);
 				matchedDataSourceLookup = matchHiveOwner(hiveId, ownerId);
 				return matchedDataSourceLookup;
 			}
 
 		} else {
-			logesapi.info(null,"Could not match Project id=[" + projectId
+			logesapi.info("Could not match Project id=[" + projectId
 					+ "] Trying with hive =" + hiveId);
 			matchedDataSourceLookup = matchHiveOwner(hiveId, ownerId);
 			return matchedDataSourceLookup;
@@ -145,10 +145,10 @@ public class DataSourceLookupHelper {
 				}
 			}
 			if (matchedFlag) {
-				logesapi.info(null,"Located Datasource matching hive=[" + hiveId
+				logesapi.info("Located Datasource matching hive=[" + hiveId
 						+ "] and owner=[" + ownerId + "]");
 			} else if (matchedDataSourceLookup != null) {
-				logesapi.info(null,"Located Datasource matching hive=[" + hiveId
+				logesapi.info("Located Datasource matching hive=[" + hiveId
 						+ " and owner =[@]");
 			} else {
 				throw new I2B2Exception(

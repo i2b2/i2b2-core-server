@@ -25,8 +25,6 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
 import org.springframework.util.Assert;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -47,8 +45,14 @@ import edu.harvard.i2b2.crc.delegate.DbLookupReqHandler;
 import edu.harvard.i2b2.crc.delegate.DeleteDblookupHandler;
 import edu.harvard.i2b2.crc.delegate.GetAllDblookupsHandler;
 import edu.harvard.i2b2.crc.delegate.GetDblookupHandler;
+import edu.harvard.i2b2.crc.delegate.GetRPDODeleteHandler;
+import edu.harvard.i2b2.crc.delegate.GetRPDOHandler;
+import edu.harvard.i2b2.crc.delegate.GetRPDORenameHandler;
+import edu.harvard.i2b2.crc.delegate.GetRPDOSetHandler;
+import edu.harvard.i2b2.crc.delegate.GetAllRPDOsHandler;
 import edu.harvard.i2b2.crc.delegate.JobReqHandler;
 import edu.harvard.i2b2.crc.delegate.QTBreakdownRequestDelegate;
+import edu.harvard.i2b2.crc.delegate.RPDOReqHandler;
 import edu.harvard.i2b2.crc.delegate.RequestHandler;
 import edu.harvard.i2b2.crc.delegate.SetDblookupHandler;
 import edu.harvard.i2b2.crc.delegate.quartz.GetAllJobsHandler;
@@ -80,7 +84,7 @@ import edu.harvard.i2b2.crc.dao.redcap.SurveyRecord;
 public class QueryService {
 	/** log **/
 	protected final Log log = LogFactory.getLog(getClass());
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	//protected final Log logesapi = LogFactory.getLog(getClass());
 
 	/** set pdo request constant used only inside this class **/
 	private final String PDO_REQUEST = "PDO_REQUEST";
@@ -108,7 +112,7 @@ public class QueryService {
 	public OMElement request(OMElement omElement) {
 		Assert.notNull(omElement,
 				"Setfinder request OMElement must not be null");
-		logesapi.debug(null,"Inside setfinder request " + omElement);
+		log.debug("Inside setfinder request " + omElement);
 		return handleRequest(SETFINDER_REQUEST, omElement);
 	}
 
@@ -122,7 +126,7 @@ public class QueryService {
 	public OMElement breakdownrequest(OMElement omElement) {
 		Assert.notNull(omElement,
 				"Setfinder request OMElement must not be null");
-		logesapi.debug(null,"Inside setfinder request " + omElement);
+		log.debug("Inside setfinder request " + omElement);
 		return handleRequest(QTBREAKDOWN_REQUEST, omElement);
 	}
 	/**
@@ -134,7 +138,7 @@ public class QueryService {
 	 */
 	public OMElement pdorequest(OMElement omElement) {
 		Assert.notNull(omElement, "PDO request OMElement must not be null");
-		logesapi.debug(null,"Inside pdo request " + omElement);
+		log.debug("Inside pdo request " + omElement);
 		return handleRequest(PDO_REQUEST, omElement);
 	}
 
@@ -178,14 +182,14 @@ public class QueryService {
 	 */
 	public OMElement getNameInfo(OMElement omElement) {
 		Assert.notNull(omElement, "getNameInfo  OMElement must not be null");
-		logesapi.debug(null,"Inside getNameInfo request " + omElement);
+		log.debug("Inside getNameInfo request " + omElement);
 		return handleRequest(GETNAMEINFO_REQUEST, omElement);
 	}
 
 	public OMElement publishDataRequest(OMElement request) {
 		Assert.notNull(request,
 				"publish data request OMElement must not be null");
-		logesapi.debug(null,"Inside publish data request " + request);
+		log.debug("Inside publish data request " + request);
 		//TODO removed loader
 		// Added back
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -209,7 +213,7 @@ public class QueryService {
 	public OMElement bulkLoadRequest(OMElement request) {
 		Assert.notNull(request,
 				"bulk load request OMElement must not be null");
-		logesapi.debug(null,"Inside bulk load request " + request);
+		log.debug("Inside bulk load request " + request);
 
 		//LoaderQueryReqDel handles permissions...
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -230,7 +234,200 @@ public class QueryService {
 
 	}	
 	
+	/**  
+	 * This function get the RPDO All Tables
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllJobsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement getAllTablesList(OMElement getAllJobsElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getAllJobsElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = getAllJobsElement.toString();
+		GetAllRPDOsDataMessage jobsDataMsg = new GetAllRPDOsDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != jobsDataMsg.getRequestMessageType()) {
+			if (null != jobsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = jobsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		
+		return execute(new GetAllRPDOsHandler(jobsDataMsg), waitTime);
+	}
+	
+	/**  
+	 * This function get the RPDO All Tables
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllJobsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement getTable(OMElement getAllJobsElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getAllJobsElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = getAllJobsElement.toString();
+		GetRPDODataMessage jobsDataMsg = new GetRPDODataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != jobsDataMsg.getRequestMessageType()) {
+			if (null != jobsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = jobsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		
+		return execute(new GetRPDOHandler(jobsDataMsg), waitTime);
+	}
+	
+	
+	/**  
+	 * This function rename the RPDO Tables
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllJobsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement deleteTable(OMElement getAllJobsElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getAllJobsElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = getAllJobsElement.toString();
+		GetRPDODataMessage jobsDataMsg = new GetRPDODataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != jobsDataMsg.getRequestMessageType()) {
+			if (null != jobsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = jobsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		
+		return execute(new GetRPDODeleteHandler(jobsDataMsg), waitTime);
+	}
+	
+	/**  
+	 * This function rename the RPDO Tables
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllJobsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement renameTable(OMElement getAllJobsElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getAllJobsElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = getAllJobsElement.toString();
+		GetRPDODataMessage jobsDataMsg = new GetRPDODataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != jobsDataMsg.getRequestMessageType()) {
+			if (null != jobsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = jobsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		
+		return execute(new GetRPDORenameHandler(jobsDataMsg), waitTime);
+	}
+	
 
+	/**  
+	 * This function save the RPDO Tables
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllJobsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement setTable(OMElement getAllJobsElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getAllJobsElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = getAllJobsElement.toString();
+		GetRPDODataMessage jobsDataMsg = new GetRPDODataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != jobsDataMsg.getRequestMessageType()) {
+			if (null != jobsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = jobsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		return execute(new GetRPDOSetHandler(jobsDataMsg), waitTime);
+
+	}
+	
+	/**  
+	 * This function save the RPDO Tables
+	 * 
+	 * It accepts incoming request, and returns a response, both in i2b2 message format. 
+	 * 
+	 * @param  OMElement
+	 *            getAllJobsElement
+	 * @return OMElement in i2b2message format
+	 * @throws Exception
+	 */
+	public OMElement makeRequest(OMElement getAllJobsElement) throws I2B2Exception {
+		String crcDataResponse = null;
+		String unknownErrMsg = null;
+		if (null == getAllJobsElement) {
+			log.error("Incoming CRC request is null");
+			unknownErrMsg = "Error message delivered from the remote server.\nYou may wish to retry your last action";
+			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrMsg);
+			crcDataResponse = MessageFactory.convertToXMLString(responseMsgType);
+			return MessageFactory.createResponseOMElementFromString(crcDataResponse);
+		}
+		String requestElementString = getAllJobsElement.toString();
+		GetAllJobsDataMessage jobsDataMsg = new GetAllJobsDataMessage(requestElementString);
+		long waitTime = 0;
+		if (null != jobsDataMsg.getRequestMessageType()) {
+			if (null != jobsDataMsg.getRequestMessageType().getRequestHeader()) {
+				waitTime = jobsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
+			}
+		}
+		
+		return executeJobs(new GetAllJobsHandler(requestElementString), waitTime);
+	}
+	
 	/**  
 	 * This function is main webservice interface to get the I2B2HIVE.CRC_DB_LOOKUP data.
 	 * It uses AXIOM elements(OMElement) to conveniently parse xml messages.
@@ -289,7 +486,7 @@ public class QueryService {
 	public OMElement getLoadDataStatusRequest(OMElement request) {
 		Assert.notNull(request,
 				"get load Data status request OMElement must not be null");
-		logesapi.debug(null,"Inside load status request " + request);
+		log.debug("Inside load status request " + request);
 
 		//LoaderQueryReqDel handles permissions...
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -367,6 +564,64 @@ public class QueryService {
 		return returnElement;
 	}
 
+
+	private OMElement execute(RPDOReqHandler handler, long waitTime) throws I2B2Exception {
+		//do processing inside thread, so that service could send back message with timeout error.  
+		OMElement returnElement = null;   	
+		String unknownErrorMessage = "Error message delivered from the remote server \nYou may wish to retry your last action";  
+		ExecutorRunnable er = new ExecutorRunnable();        
+		er.setRpdoHandler(handler);
+		Thread t = new Thread(er);
+		String dataResponse = null;
+		log.info("waiting " + waitTime + "ms for response from remote server processing " + handler.getClass().getName());
+		synchronized (t) {
+			t.start();
+			try {
+				long startTime = System.currentTimeMillis();
+				long deltaTime = -1;
+				while((er.isJobCompleteFlag() == false) && (deltaTime < waitTime)) {
+					if (waitTime > 0) {
+						t.wait(waitTime - deltaTime);
+						deltaTime = System.currentTimeMillis() - startTime;
+					} else {
+						t.wait();
+					}
+				}
+				dataResponse = er.getOutputString();
+				if (dataResponse == null) {
+					ResponseMessageType responseMsgType = null;
+					if (!er.isJobCompleteFlag()) {
+						String timeOuterror = "Remote server timed out after waittime of " + waitTime + "ms.";            				
+						log.error(timeOuterror);
+						responseMsgType = MessageFactory.doBuildErrorResponse(null, timeOuterror);
+					} else {
+						if (null != er.getJobException()) {
+							log.error("jobException: " + er.getJobException().getMessage());            		    	
+							dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+						} else {
+							log.error("CRC data response is null!");
+							log.info("CRC waited " + deltaTime + "ms for " + handler.getClass().getName());
+						}
+						log.info("waitTime is " + waitTime);
+						responseMsgType = MessageFactory.doBuildErrorResponse(null, unknownErrorMessage);
+						dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+					}
+					dataResponse = MessageFactory.convertToXMLString(responseMsgType);
+				}
+			} catch (InterruptedException e) {
+				log.error(e.getMessage());
+				throw new I2B2Exception("Thread error while running CRC job!");
+			} finally {
+				t.interrupt();
+				er = null;
+				t = null;
+			}
+		}
+		returnElement = MessageFactory.createResponseOMElementFromString(dataResponse);
+		return returnElement;
+	}
+
+	
 	//swc20160523 copied from edu.harvard.i2b2.im/src/edu/harvard/i2b2/im/ws/IMService.java
 	private OMElement execute(DbLookupReqHandler handler, long waitTime) throws I2B2Exception {
 		//do processing inside thread, so that service could send back message with timeout error.  

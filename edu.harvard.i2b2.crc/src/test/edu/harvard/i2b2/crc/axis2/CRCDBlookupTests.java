@@ -17,7 +17,7 @@ package edu.harvard.i2b2.crc.axis2;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import junit.framework.JUnit4TestAdapter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

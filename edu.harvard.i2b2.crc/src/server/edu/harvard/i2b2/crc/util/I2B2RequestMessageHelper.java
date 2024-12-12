@@ -10,12 +10,12 @@ package edu.harvard.i2b2.crc.util;
 
 import java.io.StringWriter;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
@@ -40,7 +40,7 @@ import edu.harvard.i2b2.crc.delegate.getnameinfo.GetNameInfoRequestDelegate;
 public class I2B2RequestMessageHelper {
 
 	private static Log log = LogFactory.getLog(I2B2RequestMessageHelper.class);
-	protected static Logger logesapi = ESAPI.getLogger(I2B2RequestMessageHelper.class);
+	protected static Log logesapi = LogFactory.getLog(I2B2RequestMessageHelper.class);
 
 	String requestXml = null;
 	JAXBUnWrapHelper unWrapHelper = null;
@@ -61,7 +61,7 @@ public class I2B2RequestMessageHelper {
 			requestMessageType = (RequestMessageType) jaxbElement
 			.getValue();
 		} catch (JAXBUtilException jaxbUtilEx) {
-			logesapi.error(null,"Error processing request xml [" + requestXml + "]",
+			logesapi.error("Error processing request xml [" + requestXml + "]",
 					jaxbUtilEx);
 			throw new I2B2Exception(jaxbUtilEx.getMessage());
 		}

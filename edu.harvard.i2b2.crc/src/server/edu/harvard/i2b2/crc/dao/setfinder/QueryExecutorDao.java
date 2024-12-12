@@ -22,12 +22,12 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.axis2.AxisFault;
 //import org.springframework.beans.factory.BeanFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -75,7 +75,7 @@ import edu.harvard.i2b2.crc.util.SqlClauseUtil;
 public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 
 
-	protected static Logger logesapi = ESAPI.getLogger(ExecRunnable.class);
+	protected static Log logesapi = LogFactory.getLog(ExecRunnable.class);
 
 
 	private DataSourceLookup dataSourceLookup = null,
@@ -515,22 +515,22 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 						}
 						generatedSql = "select count(distinct patient_num) as patient_num_count from ( \n" + generatedSql + " \n ) allitem ";
 
-						logesapi.debug(null,"Setfinder converted sql without temp table " + generatedSql);
+						logesapi.debug("Setfinder converted sql without temp table " + generatedSql);
 
 					} catch (JAXBUtilException e) { 
 						e.printStackTrace();
 					} catch (I2B2Exception e) { 
 						e.printStackTrace();
 					}
-					logesapi.debug(null,"Setfinder skip temp table generated sql " + generatedSql);
-					logesapi.debug(null,"Setfinder skip temp table missing item message " +  missingItemMessage);
-					logesapi.debug(null,"Setfinder skip temp table process timing message " + processTimingMessage);
+					logesapi.debug("Setfinder skip temp table generated sql " + generatedSql);
+					logesapi.debug("Setfinder skip temp table missing item message " +  missingItemMessage);
+					logesapi.debug("Setfinder skip temp table process timing message " + processTimingMessage);
 				}
 				queryMasterDao.updateQueryAfterRun(masterId, generatedSql, queryType);
 
 				if (missingItemMessage != null
 						&& missingItemMessage.trim().length() > 1) {
-					logesapi.debug(null,"Setfinder query missing item message not null" + missingItemMessage);
+					logesapi.debug("Setfinder query missing item message not null" + missingItemMessage);
 					missingItemFlag = true;
 
 					queryInstance.setEndDate(new Date(System

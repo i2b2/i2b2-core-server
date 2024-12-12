@@ -50,8 +50,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
@@ -80,7 +80,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
  */
 public class QueryResultPatientSkipCSVDownload extends CRCDAO implements IResultGenerator {
 
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 
 

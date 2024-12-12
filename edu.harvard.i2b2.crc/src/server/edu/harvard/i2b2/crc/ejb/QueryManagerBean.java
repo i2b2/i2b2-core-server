@@ -18,13 +18,13 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.Map;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -89,7 +89,7 @@ public class QueryManagerBean{ // implements SessionBean {
 	private static Log log = LogFactory.getLog(QueryManagerBean.class);
 	public static String RESPONSE_QUEUE_NAME = "queue/jms.querytool.QueryResponse";
 
-	protected static Logger logesapi = ESAPI.getLogger(QueryManagerBean.class);
+	protected static Log logesapi = LogFactory.getLog(QueryManagerBean.class);
 
 
 	// public static String UPLOADPROCESSOR_QUEUE_NAME =
@@ -168,7 +168,7 @@ public class QueryManagerBean{ // implements SessionBean {
 
 					patientSetId = patientSetResultDao.createPatientSet(
 							queryInstanceId, resultOption.getName());
-					logesapi.debug(null,"Patient Set ID [" + patientSetId
+					logesapi.debug("Patient Set ID [" + patientSetId
 							+ "] for query instance= " + queryInstanceId);
 				}
 			} else {
@@ -177,7 +177,7 @@ public class QueryManagerBean{ // implements SessionBean {
 				String defaultResultType = "PATIENTSET";
 				patientSetId = patientSetResultDao.createPatientSet(
 						queryInstanceId, defaultResultType);
-				logesapi.debug(null,"Patient Set ID [" + patientSetId
+				logesapi.debug("Patient Set ID [" + patientSetId
 						+ "] for query instance= " + queryInstanceId);
 			}
 

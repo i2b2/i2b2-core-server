@@ -24,8 +24,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import oracle.sql.ArrayDescriptor;
 
@@ -59,7 +59,7 @@ import edu.harvard.i2b2.crc.loader.delegate.LoaderQueryRequestDelegate;
 public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 
 	private DataSourceLookup dataSourceLookup = null;
-	protected static Logger logesapi = ESAPI.getLogger(PdoQueryEidDao.class);
+	protected static Log  logesapi = LogFactory.getLog(PdoQueryEidDao.class);
 
 	public PdoQueryEidDao(DataSourceLookup dataSourceLookup,
 			DataSource dataSource) {
@@ -352,7 +352,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		while (resultSet.next()) {
 			singleEidType = eidBuilder.buildEidSet(resultSet);
 			eidMapId = singleEidType.getEventMapId().get(0);
-			logesapi.debug(null,"Building  pidMapId " + eidMapId.getValue()
+			log.debug("Building  pidMapId " + eidMapId.getValue()
 					+ "   " + singleEidType.getEventId().getValue() + " "
 					+ eidMapId.getSource());
 			tempSinglePidType = singleEidType.getEventId().getValue();

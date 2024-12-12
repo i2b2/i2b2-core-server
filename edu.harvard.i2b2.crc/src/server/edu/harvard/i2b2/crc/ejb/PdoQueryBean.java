@@ -26,7 +26,7 @@ import java.util.Map;
 //import javax.ejb.EJBException;
 //import javax.ejb.SessionBean;
 //import javax.ejb.SessionContext;
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.axis2.AxisFault;

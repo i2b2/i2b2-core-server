@@ -48,9 +48,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -172,9 +170,9 @@ public class CRCLoaderTest  extends CRCAxisAbstract {
 			MessageContext mc = new MessageContext();
 			mc.setEnvelope(env);
             
-            FileDataSource fileDataSource = new FileDataSource( testFileDir + "/ptMap_8-15-2012.csv");
-            DataHandler dataHandler = new DataHandler(fileDataSource);
-            mc.addAttachment(fileDataSource.getName(), dataHandler);
+           // FileDataSource fileDataSource = new FileDataSource( testFileDir + "/ptMap_8-15-2012.csv");
+           // DataHandler dataHandler = new DataHandler(fileDataSource);
+          //  mc.addAttachment(fileDataSource.getName(), dataHandler);
             
           //  fileDataSource = new FileDataSource(testFileDir + "ptMap_8-15-2012.csv");
            // dataHandler = new DataHandler(fileDataSource);

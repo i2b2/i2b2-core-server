@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
@@ -88,7 +88,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
  */
 public class QueryInfoBean { //implements SessionBean {
 	private static Log log = LogFactory.getLog(QueryInfoBean.class);
-	protected static Logger logesapi = ESAPI.getLogger(QueryInfoBean.class);
+	protected static Log logesapi = LogFactory.getLog(QueryInfoBean.class);
 
 	/**
 	 * Function to return master query list for the given user id
@@ -233,7 +233,7 @@ public class QueryInfoBean { //implements SessionBean {
 
 					doc = edu.harvard.i2b2.common.util.xml.XMLUtil
 							.convertStringToDOM(requestXml);
-					logesapi.debug(null,"query definition xml prefix "
+					logesapi.debug("query definition xml prefix "
 							+ doc.getDocumentElement().getPrefix());
 					requestXmlType.getContent().add(doc.getDocumentElement());
 				} catch (Exception i2b2) {

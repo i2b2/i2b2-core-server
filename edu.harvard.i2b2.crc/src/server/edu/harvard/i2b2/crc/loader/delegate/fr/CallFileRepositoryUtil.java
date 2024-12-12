@@ -15,10 +15,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import javax.xml.bind.JAXBElement;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
+import jakarta.xml.bind.JAXBElement;
 
 import edu.harvard.i2b2.common.util.axis2.ServiceClient;
 import org.apache.axiom.om.OMXMLBuilderFactory;
@@ -175,7 +176,7 @@ public class CallFileRepositoryUtil {
 			String attachmentName = CRCLoaderUtil.getInstance()
 					.getFileRepositoryAttachmentName();
 
-			javax.activation.DataHandler dataHandler2 = response
+			jakarta.activation.DataHandler dataHandler2 = response
 					.getAttachment(attachmentName);
 			String processFolderName = CRCLoaderUtil.getInstance()
 					.getProcessFolderName();

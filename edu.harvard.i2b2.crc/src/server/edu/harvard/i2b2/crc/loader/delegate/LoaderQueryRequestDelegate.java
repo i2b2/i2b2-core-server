@@ -14,13 +14,13 @@
  */
 package edu.harvard.i2b2.crc.loader.delegate;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
@@ -47,7 +47,7 @@ import edu.harvard.i2b2.crc.util.I2B2RequestMessageHelper;
 public class LoaderQueryRequestDelegate extends RequestHandlerDelegate {
 	/** log **/
 	protected final Log log = LogFactory.getLog(getClass());
-	protected static Logger logesapi = ESAPI.getLogger(LoaderQueryRequestDelegate.class);
+	protected static Log logesapi = LogFactory.getLog(LoaderQueryRequestDelegate.class);
 
 	/**
 	 * @see edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate#handleRequest(java.lang.String)
@@ -108,7 +108,7 @@ public class LoaderQueryRequestDelegate extends RequestHandlerDelegate {
 				}
 
 				log.debug("project name from PM " + projectType.getName());
-				logesapi.debug(null,"project id from PM " + projectType.getId());
+				logesapi.debug("project id from PM " + projectType.getId());
 				if (projectType.getRole().get(0) != null) {
 					log.debug("Project role from PM "
 							+ projectType.getRole().get(0));

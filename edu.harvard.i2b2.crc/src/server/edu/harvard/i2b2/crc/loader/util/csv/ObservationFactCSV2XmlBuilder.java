@@ -19,7 +19,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.Hashtable;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 //import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;

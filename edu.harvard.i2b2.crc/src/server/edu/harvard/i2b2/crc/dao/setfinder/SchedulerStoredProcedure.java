@@ -50,8 +50,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
@@ -86,7 +86,7 @@ import org.quartz.JobExecutionException;
  */
 public class SchedulerStoredProcedure extends CRCDAO implements IResultGenerator, Job {
 
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 	private Map params;
 	@Override
@@ -205,7 +205,7 @@ public class SchedulerStoredProcedure extends CRCDAO implements IResultGenerator
 
 				stmt = sfConn.prepareStatement(itemCountSql);
 				stmt.setQueryTimeout(transactionTimeout);
-				logesapi.debug(null,"Executing count sql [" + itemCountSql + "]");
+				logesapi.debug("Executing count sql [" + itemCountSql + "]");
 
 				//
 				subLogTimingUtil.setStartTime();

@@ -40,5 +40,26 @@
     <operation name="redcapPush">
         <messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
     </operation>    
+    
+    
+    
+    <operation name="getAllTablesList">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="getTable">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="renameTable">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>   
+    <operation name="setTable">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>        
+    <operation name="deleteTable">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>        
+    <operation name="makeRequest">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>        
 </service>
 

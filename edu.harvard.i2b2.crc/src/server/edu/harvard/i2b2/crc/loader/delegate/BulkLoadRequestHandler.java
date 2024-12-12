@@ -10,7 +10,7 @@ package edu.harvard.i2b2.crc.loader.delegate;
 
 import java.io.StringWriter;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;

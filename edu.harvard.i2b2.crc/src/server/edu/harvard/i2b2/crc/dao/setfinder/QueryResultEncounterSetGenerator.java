@@ -13,8 +13,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -35,7 +35,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 public class QueryResultEncounterSetGenerator extends CRCDAO implements
 		IResultGenerator {
 
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 	@Override
 	public String getResults() {
@@ -93,7 +93,7 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 			// visit_dimension table to get encountner num for the patients.
 			String encounterSql = buildEncounterSetSql(sfDAOFactory,
 					queryInstanceId, TEMP_DX_TABLE, queryGeneratorVersion);
-			logesapi.debug(null,"Executing setfinder query result type encounter set sql [" + encounterSql + "]");
+			logesapi.debug("Executing setfinder query result type encounter set sql [" + encounterSql + "]");
 			/////////
 			//JNix: refactored to no longer pull down records just to insert back.
 			String sql = null;
@@ -122,7 +122,7 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 			loadCount = ps.executeUpdate();
 			ps.close();
 			logTimingUtil.setEndTime();
-			logesapi.debug(null,"Total patients loaded for query instance ="
+			logesapi.debug("Total patients loaded for query instance ="
 					+ queryInstanceId + " is [" + loadCount + "]");
 			/////////
 			if (processTimingFlag != null) {

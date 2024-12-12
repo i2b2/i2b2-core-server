@@ -17,7 +17,7 @@ package edu.harvard.i2b2.crc.delegate;
 import java.io.StringWriter;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

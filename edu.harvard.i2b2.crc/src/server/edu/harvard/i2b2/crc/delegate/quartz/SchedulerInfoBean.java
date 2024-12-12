@@ -16,8 +16,8 @@ import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -63,7 +63,7 @@ public class SchedulerInfoBean {
 
 
 	private static Log log = LogFactory.getLog(QueryInfoBean.class);
-	protected static Logger logesapi = ESAPI.getLogger(QueryInfoBean.class);
+	protected static Log logesapi = LogFactory.getLog(QueryInfoBean.class);
 
 
 	public  JobsType getAllJobsScheduler(Scheduler scheduler,

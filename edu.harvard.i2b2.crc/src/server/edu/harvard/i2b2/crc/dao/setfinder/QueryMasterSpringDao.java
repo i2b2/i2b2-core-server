@@ -24,8 +24,8 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -59,7 +59,7 @@ import edu.harvard.i2b2.crc.util.CacheUtil;
 public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 
 	
-	protected static Logger logesapi = ESAPI.getLogger(QueryMasterSpringDao.class);
+	protected static Log logesapi = LogFactory.getLog(QueryMasterSpringDao.class);
 
 	JdbcTemplate jdbcTemplate = null;
 	SaveQueryMaster saveQueryMaster = null;
@@ -128,7 +128,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				+ userRequestType.getUsername();
 
 		//List<String> roles = (List<String>) cache.getRoot().get(rolePath);
-		logesapi.debug(null,"Roles from get " + rolePath);
+		logesapi.debug("Roles from get " + rolePath);
 		List<String> roles = (List<String>) CacheUtil.get(rolePath);
 
 		String sql = "select ";

@@ -16,13 +16,13 @@ package edu.harvard.i2b2.crc.delegate.pdo;
  
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
@@ -54,7 +54,7 @@ import edu.harvard.i2b2.crc.util.ParamUtil;
 public class PdoQueryRequestDelegate extends RequestHandlerDelegate {
 	/** log **/
 	protected final Log log = LogFactory.getLog(getClass());
-	protected static Logger logesapi = ESAPI.getLogger(PdoQueryRequestDelegate.class);
+	protected static Log logesapi = LogFactory.getLog(PdoQueryRequestDelegate.class);
 
 	/**
 	 * @see edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate#handleRequest(java.lang.String)
@@ -125,7 +125,7 @@ public class PdoQueryRequestDelegate extends RequestHandlerDelegate {
 				}
 
 				log.debug("project name from PM " + projectType.getName());
-				logesapi.debug(null,"project id from PM " + projectType.getId());
+				logesapi.debug("project id from PM " + projectType.getId());
 				if (projectType.getRole() != null) {
 					log.debug("project role from PM "
 							+ projectType.getRole().get(0));
@@ -152,7 +152,7 @@ public class PdoQueryRequestDelegate extends RequestHandlerDelegate {
 							if (param.getName() != null && param.getName().trim().equalsIgnoreCase(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION))  {
 								paramUtil.putParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION,param);
 								String unitCdCache = paramUtil.getParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
-								logesapi.debug(null,"CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
+								logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
 								break;
 							}
 						}

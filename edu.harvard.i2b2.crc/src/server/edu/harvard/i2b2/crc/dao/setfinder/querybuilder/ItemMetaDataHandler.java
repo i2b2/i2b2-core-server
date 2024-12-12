@@ -8,7 +8,7 @@
  ******************************************************************************/
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.axis2.AxisFault;

@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.util.DigestUtils;
+
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 
 /**
@@ -206,7 +208,7 @@ public class CSVWriter implements Closeable {
 			
 			String md5 = "";
 			try (InputStream is = Files.newInputStream(Paths.get(fileName))) {
-			     md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(is);
+			  //MM Fix   md5 = md5Hex(is);
 			}
 
 			msg += "Environment Settings:---------------------------------------------------------------------------\n"

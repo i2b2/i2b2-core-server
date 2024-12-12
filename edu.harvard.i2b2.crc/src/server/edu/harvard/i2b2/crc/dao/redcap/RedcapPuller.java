@@ -52,6 +52,18 @@ import org.apache.axis2.AxisFault;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+
+/*
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -63,8 +75,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+*/
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -83,7 +94,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import javax.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContext;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -98,7 +109,7 @@ import java.nio.file.Paths;
 
 public class RedcapPuller  {
 	protected final Log logger = LogFactory.getLog(getClass());
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 	private final String FORMAT = "json";
 	private final String CONTENT = "record";
@@ -172,22 +183,24 @@ public class RedcapPuller  {
 					apiCall.add(new BasicNameValuePair("token",  api));
 					apiCall.add(new BasicNameValuePair("content", "metadata"));
 					apiCall.add(new BasicNameValuePair("format", FORMAT));
+
 					HttpPost httpPost = new HttpPost(redcapApiUrl);
 
-					httpPost.setEntity(new UrlEncodedFormEntity(apiCall, HTTP.UTF_8));
+					httpPost.setEntity(new UrlEncodedFormEntity(apiCall));
 					httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
 					CloseableHttpClient client = HttpClientBuilder.create().build();
 					response = client.execute(httpPost);
-					if (response.getStatusLine().getStatusCode() >= 300) {
+					//response..getCode()
+					if (response.getCode() >= 300) {
 						throw new  I2B2Exception(String.format("failure - received a %d for %s.", 
-								response.getStatusLine().getStatusCode(), httpPost.getURI().toString()));
+								response.getCode(), httpPost.toString()));
 					}
 
 					HttpEntity entity = response.getEntity();
 					responseStr = EntityUtils.toString(entity, "UTF-8");
 
-					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+					if (response.getCode() == HttpStatus.SC_OK) {
 						metadatas = new Gson().fromJson(responseStr, DataCollectionInstrumentMetadata[].class);
 						if (metadatas != null) {
 							redcapResult.getMetadata().addAll(Arrays.asList(metadatas));
@@ -221,14 +234,14 @@ public class RedcapPuller  {
 
 				HttpPost httpPost = new HttpPost(redcapApiUrl);
 
-				httpPost.setEntity(new UrlEncodedFormEntity(apiCall, HTTP.UTF_8));
+				httpPost.setEntity(new UrlEncodedFormEntity(apiCall));
 				httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
 				CloseableHttpClient client = HttpClientBuilder.create().build();
 				response = client.execute(httpPost);
-				if (response.getStatusLine().getStatusCode() >= 300) {
+				if (response.getCode() >= 300) {
 					throw new  I2B2Exception(String.format("failure - received a %d for %s.", 
-							response.getStatusLine().getStatusCode(), httpPost.getURI().toString()));
+							response.getCode(), httpPost.toString()));
 				}
 
 
@@ -242,9 +255,9 @@ public class RedcapPuller  {
 			}
 			// Create Table_access
 
-			logesapi.debug(null,"Response body: " + responseStr);
+			logesapi.debug("Response body: " + responseStr);
 
-			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+			if (response.getCode() == HttpStatus.SC_OK) {
 				SurveyRecord[] records = new Gson().fromJson(responseStr, SurveyRecord[].class);
 				insertI2B2(records, redcapResult, surveyForm, projectParams, securityType, metadatas);
 
@@ -780,6 +793,7 @@ public class RedcapPuller  {
 		try {	
 
 			List <NameValuePair>  apiCall = new ArrayList <NameValuePair>();
+			
 			apiCall.add(new BasicNameValuePair("token",  api));
 			apiCall.add(new BasicNameValuePair("content", "file"));
 			apiCall.add(new BasicNameValuePair("action", "export"));
@@ -790,14 +804,14 @@ public class RedcapPuller  {
 
 			HttpPost httpPost = new HttpPost(redcapApiUrl);
 
-			httpPost.setEntity(new UrlEncodedFormEntity(apiCall, HTTP.UTF_8));
+			httpPost.setEntity(new UrlEncodedFormEntity(apiCall));
 			httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
 			CloseableHttpClient client = HttpClientBuilder.create().build();
 			response = client.execute(httpPost);
-			if (response.getStatusLine().getStatusCode() >= 300) {
+			if (response.getCode() >= 300) {
 				throw new  I2B2Exception(String.format("failure - received a %d for %s.", 
-						response.getStatusLine().getStatusCode(), httpPost.getURI().toString()));
+						response.getCode(), httpPost.toString()));
 			}
 
 

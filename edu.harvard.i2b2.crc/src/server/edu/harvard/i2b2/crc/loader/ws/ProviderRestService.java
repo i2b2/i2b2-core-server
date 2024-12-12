@@ -17,8 +17,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.FileDataSource;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -160,7 +160,7 @@ public class ProviderRestService {
 		MessageContext outMessageContext = operationContext
 				.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
 		String attachmentfilename = "/crcapp/jdbc.properties";
-		javax.activation.DataHandler outDataHandler = new javax.activation.DataHandler(
+		jakarta.activation.DataHandler outDataHandler = new jakarta.activation.DataHandler(
 				new FileDataSource(attachmentfilename));
 
 		outMessageContext.addAttachment(outDataHandler);

@@ -10,7 +10,7 @@ package edu.harvard.i2b2.crc.datavo.pdo.query;
 
 import java.io.StringWriter;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

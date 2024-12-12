@@ -11,7 +11,9 @@ package edu.harvard.i2b2.crc.dao.redcap;
 
 import java.util.ArrayList;
 
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
+
+//import org.apache.http.HttpStatus;
 
 public class APISurveyResponse {
     private HttpStatus status;

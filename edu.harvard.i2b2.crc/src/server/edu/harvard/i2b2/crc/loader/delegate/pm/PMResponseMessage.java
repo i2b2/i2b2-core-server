@@ -14,12 +14,12 @@
  */
 package edu.harvard.i2b2.crc.loader.delegate.pm;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -39,7 +39,7 @@ public class PMResponseMessage {
 	public static final String THIS_CLASS_NAME = PMResponseMessage.class.getName();
     private Log log = LogFactory.getLog(THIS_CLASS_NAME);	
     private ResponseMessageType pmRespMessageType = null;
-	protected static Logger logesapi = ESAPI.getLogger(PMResponseMessage.class);
+	protected static Log logesapi = LogFactory.getLog(PMResponseMessage.class);
 
 	public PMResponseMessage() {}
 	
@@ -57,10 +57,10 @@ public class PMResponseMessage {
 			String procMessage = status.getValue();
 			
 			if(procStatus.equals("ERROR")){
-				logesapi.info(null,"Error reported by CRC web Service " + procMessage);				
+				logesapi.info("Error reported by CRC web Service " + procMessage);				
 			}
 			else if(procStatus.equals("WARNING")){
-				logesapi.info(null,"Warning reported by CRC web Service" + procMessage);
+				logesapi.info("Warning reported by CRC web Service" + procMessage);
 			}	
 			
 		} catch (JAXBUtilException e) {

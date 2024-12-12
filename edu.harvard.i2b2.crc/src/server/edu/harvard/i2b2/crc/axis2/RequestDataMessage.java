@@ -35,7 +35,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 
 /**

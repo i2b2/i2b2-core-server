@@ -5,18 +5,18 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
 
 public class EmailUtil {
 
@@ -33,7 +33,7 @@ public class EmailUtil {
 		props.put("mail.smtp.socketFactory.port", qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.port")); //SSL Port
 		if (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.ssl.enable").equalsIgnoreCase("true"))
 			props.put("mail.smtp.socketFactory.class",
-					"javax.net.ssl.SSLSocketFactory"); //SSL Factory Class
+					"jakarta.net.ssl.SSLSocketFactory"); //SSL Factory Class
 		props.put("mail.smtp.auth", qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.auth")); //Enabling SMTP Authentication
 		props.put("mail.smtp.port", qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.port")); //SMTP Port
 

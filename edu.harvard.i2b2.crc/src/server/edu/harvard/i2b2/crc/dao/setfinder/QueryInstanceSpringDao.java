@@ -26,8 +26,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameter;
@@ -62,7 +62,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 	/** log **/
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	protected static Logger logesapi = ESAPI.getLogger(QueryInstanceSpringDao.class);
+	protected static Log logesapi = LogFactory.getLog(QueryInstanceSpringDao.class);
 
 
 	public QueryInstanceSpringDao(DataSource dataSource,
@@ -475,7 +475,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 		if (serverType.equalsIgnoreCase(DataSourceLookupDAOFactory.SQLSERVER)) {
 			String errorMsg = callStmt.getString(outParamIndex);
 			if (errorMsg != null) {
-				logesapi.debug(null,"error codde" + errorMsg);
+				logesapi.debug("error codde" + errorMsg);
 				throw new I2B2Exception("Error from stored procedure ["
 						+ errorMsg + "]");
 			}

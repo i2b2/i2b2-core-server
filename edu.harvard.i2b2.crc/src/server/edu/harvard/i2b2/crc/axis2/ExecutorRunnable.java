@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import edu.harvard.i2b2.crc.delegate.DbLookupReqHandler;
 import edu.harvard.i2b2.crc.delegate.JobReqHandler;
+import edu.harvard.i2b2.crc.delegate.RPDOReqHandler;
 import edu.harvard.i2b2.crc.delegate.RequestHandler;
 
 /**
@@ -33,6 +34,7 @@ public class ExecutorRunnable implements Runnable {
     private RequestHandler reqHandler = null;
     private JobReqHandler jobHandler = null;
     private DbLookupReqHandler dbluHdlr = null;
+    private RPDOReqHandler rpdoHandler = null;
     private Exception ex = null;
     private boolean jobCompleteFlag = false;
 
@@ -104,11 +106,22 @@ public class ExecutorRunnable implements Runnable {
         	}  else if (null != jobHandler) {
         		log.debug("about to run JobHandler");
                 outputString = jobHandler.execute().toString();
+        	} else if (null != rpdoHandler) {
+        		log.debug("about to run RPDOHandler");
+                outputString = rpdoHandler.execute().toString();
         	}
             setJobCompleteFlag(true);
         }catch (Exception e) {
             setJobException(e);
         }
     }
+
+	public RPDOReqHandler getRpdoHandler() {
+		return rpdoHandler;
+	}
+
+	public void setRpdoHandler(RPDOReqHandler rpdoHandler) {
+		this.rpdoHandler = rpdoHandler;
+	}
     
  }

@@ -21,7 +21,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MasterInstanceResultResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryResultInstanceType;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import junit.framework.JUnit4TestAdapter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

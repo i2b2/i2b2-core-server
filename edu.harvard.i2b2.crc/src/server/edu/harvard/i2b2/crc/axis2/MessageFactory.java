@@ -32,6 +32,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResultStatusType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.PdoRequestTypeType;
+import edu.harvard.i2b2.crc.datavo.pdo.query.RpdosType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.JobsType;
 //import edu.harvard.i2b2.crc.datavo.wdo.AuditsType;
 import edu.harvard.i2b2.crc.datavo.pdo.query.DblookupsType;
@@ -160,6 +161,15 @@ public class MessageFactory {
 
 		return bodyType;
 	}
+	
+	public static BodyType createBodyType(RpdosType dblookups) {
+//		edu.harvard.i2b2.im.datavo.wdo.ObjectFactory of = new edu.harvard.i2b2.im.datavo.wdo.ObjectFactory();
+		ObjectFactory of = new ObjectFactory();
+		BodyType bodyType = new BodyType();
+		bodyType.getAny().add(of.createRpdos(dblookups));
+
+		return bodyType;
+	}
 
 	public static BodyType createBodyType(JobsType dblookups) {
 //		edu.harvard.i2b2.im.datavo.wdo.ObjectFactory of = new edu.harvard.i2b2.im.datavo.wdo.ObjectFactory();
@@ -269,8 +279,11 @@ public class MessageFactory {
             strWriter = new StringWriter();
 
             edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory objectFactory = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
-            CRCJAXBUtil.getJAXBUtil().marshaller(objectFactory.createResponse(respMessageType),
-                strWriter);
+           // CRCJAXBUtil.getJAXBUtil().marshaller(objectFactory.createResponse(respMessageType),
+             //   strWriter);
+            
+            CRCJAXBUtil.getJAXBUtil().marshallerWithCDATA(objectFactory.createResponse(respMessageType),
+                        strWriter, new String[]{"json_data"});
         } catch (JAXBUtilException e) {
         	 log.error(e.getMessage());
             throw new I2B2Exception("Error converting response message type to string " + e.getMessage(), e);
@@ -356,6 +369,14 @@ public class MessageFactory {
 	 * @throws Exception
 	 */
 	public static ResponseMessageType createBuildResponse(MessageHeaderType messageHeaderType, DblookupsType dblookups) {
+		ResponseMessageType respMessageType = null;
+		ResponseHeaderType respHeader = createResponseHeader("DONE", "CRC processing completed");
+		BodyType bodyType = createBodyType(dblookups);
+		respMessageType = createResponseMessageType(messageHeaderType, respHeader, bodyType);
+		return respMessageType;
+	}
+
+	public static ResponseMessageType createBuildResponse(MessageHeaderType messageHeaderType, RpdosType dblookups) {
 		ResponseMessageType respMessageType = null;
 		ResponseHeaderType respHeader = createResponseHeader("DONE", "CRC processing completed");
 		BodyType bodyType = createBodyType(dblookups);

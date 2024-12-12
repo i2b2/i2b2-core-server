@@ -58,12 +58,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
@@ -110,7 +110,7 @@ import java.io.StringReader;
  */
 public class QueryResultPatientDownload extends CRCDAO implements IResultGenerator {
 
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 	@Override
 	public String getResults() {
@@ -299,7 +299,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 					stmt = sfConn.prepareStatement(item.getQuery());
 					stmt.setQueryTimeout(transactionTimeout);
-					logesapi.debug(null,"Executing count sql [" + item.getQuery() + "]");
+					logesapi.debug("Executing count sql [" + item.getQuery() + "]");
 
 					//
 					subLogTimingUtil.setStartTime();

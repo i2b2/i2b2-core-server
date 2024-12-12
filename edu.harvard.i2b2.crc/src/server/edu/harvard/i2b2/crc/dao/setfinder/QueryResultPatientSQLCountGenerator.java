@@ -41,8 +41,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
@@ -68,7 +68,7 @@ import edu.harvard.i2b2.crc.util.LogTimingUtil;
  */
 public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResultGenerator {
 
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 	@Override
 	public String getResults() {
@@ -157,7 +157,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 
 				stmt = sfConn.prepareStatement(sqls[count]);
 				stmt.setQueryTimeout(transactionTimeout);
-				logesapi.debug(null,"Executing count sql [" + sqls[count] + "]");
+				logesapi.debug("Executing count sql [" + sqls[count] + "]");
 
 				//
 				subLogTimingUtil.setStartTime();
@@ -173,7 +173,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 
 			stmt = sfConn.prepareStatement(sqls[count]);
 			stmt.setQueryTimeout(transactionTimeout);
-			logesapi.debug(null,"Executing count sql [" + sqls[count] + "]");
+			logesapi.debug("Executing count sql [" + sqls[count] + "]");
 
 			//
 			subLogTimingUtil.setStartTime();

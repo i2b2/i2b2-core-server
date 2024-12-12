@@ -12,8 +12,8 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -30,7 +30,7 @@ import edu.harvard.i2b2.crc.util.I2B2RequestMessageHelper;
 public class QueryMaster {
 
 	private static Log log = LogFactory.getLog(QueryMaster.class);
-	protected static Logger logesapi = ESAPI.getLogger(QueryMaster.class);
+	protected static Log logesapi = LogFactory.getLog(QueryMaster.class);
 
 	private SetFinderDAOFactory sfDAOFactory = null;
 
@@ -40,7 +40,7 @@ public class QueryMaster {
 
 	public QtAnalysisPlugin lookupAnalysisPlugin(String analysisName,
 			String version, String projectId) throws I2B2Exception {
-		logesapi.debug(null,"looking for: " + analysisName +":" + version + ":" + projectId);
+		logesapi.debug("looking for: " + analysisName +":" + version + ":" + projectId);
 		IAnalysisPluginDao analysisPluginDao = sfDAOFactory
 				.getAnalysisPluginDao();
 		log.debug("getting QtAnalysisPlugin");

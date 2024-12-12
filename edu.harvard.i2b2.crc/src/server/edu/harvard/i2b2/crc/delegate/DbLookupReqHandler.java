@@ -25,8 +25,8 @@ import edu.harvard.i2b2.crc.datavo.pm.GetUserConfigurationType;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Top level class to process the request. There will be separate request handler
@@ -36,7 +36,7 @@ import org.owasp.esapi.Logger;
  */
 public abstract class DbLookupReqHandler {
 	protected final Log log = LogFactory.getLog(getClass());
-	protected static Logger logesapi = ESAPI.getLogger(DbLookupReqHandler.class);
+	protected static Log logesapi = LogFactory.getLog(DbLookupReqHandler.class);
 
 	/**
 	 * Function to perform operation on the given request
@@ -50,7 +50,7 @@ public abstract class DbLookupReqHandler {
 			GetUserConfigurationType userConfigType = new GetUserConfigurationType();
 			PMServiceDriver pmSrvDrvr = new PMServiceDriver();
 			String response = pmSrvDrvr.getRoles(userConfigType, header);		
-			logesapi.debug(null,response);
+			logesapi.debug(response);
 			PMResponseMessage msg = new PMResponseMessage();
 			StatusType procStatus = msg.processResult(response);
 			if(procStatus.getType().equals("ERROR")) return false;

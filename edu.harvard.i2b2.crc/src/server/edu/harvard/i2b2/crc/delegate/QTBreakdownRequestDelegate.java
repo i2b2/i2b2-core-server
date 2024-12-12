@@ -14,7 +14,7 @@
  */
 package edu.harvard.i2b2.crc.delegate;
  
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;

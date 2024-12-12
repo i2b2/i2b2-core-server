@@ -12,8 +12,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.quartz.SchedulerException;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
@@ -51,7 +51,7 @@ public class StartAnalysis implements StartAnalysisLocal {
 */
 	// log
 	private static Log log = LogFactory.getLog(StartAnalysis.class);
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 	@Override
 	public MasterInstanceResultResponseType start(IDAOFactory daoFactory,
@@ -86,7 +86,7 @@ public class StartAnalysis implements StartAnalysisLocal {
 			log.debug("plugin Name: " + analysisDefType.getAnalysisPluginName());
 			log.debug("plugin version: " +  analysisDefType
 					.getVersion());
-			logesapi.debug(null,"plugin projectid" + msgHelper.getProjectId());
+			logesapi.debug("plugin projectid" + msgHelper.getProjectId());
 			QtAnalysisPlugin analysisPlugin = queryMaster.lookupAnalysisPlugin(
 					analysisDefType.getAnalysisPluginName(), analysisDefType
 							.getVersion(), msgHelper.getProjectId());

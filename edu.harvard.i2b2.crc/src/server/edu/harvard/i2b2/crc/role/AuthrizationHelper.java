@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.dao.IDAOFactory;
@@ -24,7 +24,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 public class AuthrizationHelper {
 
-	protected final Logger log = ESAPI.getLogger(AuthrizationHelper.class);
+	protected final Log log = LogFactory.getLog(AuthrizationHelper.class);
 	private String domainId = null, projectId = null, userId = null;
 	private IDAOFactory daoFactory = null;
 
@@ -104,11 +104,11 @@ public class AuthrizationHelper {
 		//List<String> roles = (List<String>) cache.getRoot().get(rolePath);
 		List<String> roles = (List<String>) CacheUtil.get(rolePath);
 
-		log.debug(null,"Roles from get " + rolePath);
+		log.debug("Roles from get " + rolePath);
 		if (roles != null) {
-			log.debug(null,"Roles from size " + roles.size());
+			log.debug("Roles from size " + roles.size());
 		} else {
-			log.error(null, "Could not find the Roles from the cache for ["
+			log.error( "Could not find the Roles from the cache for ["
 					+ rolePath + "]");
 			throw new I2B2Exception(
 					"Could not find the Roles from the cache for [" + rolePath

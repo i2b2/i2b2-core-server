@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.axis2.AxisFault;
 //import org.springframework.beans.factory.BeanFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -76,7 +76,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
  */
 public class QueryExecutorHelperDao extends CRCDAO {
 
-	protected static Logger logesapi = ESAPI.getLogger(QueryExecutorHelperDao.class);
+	protected static Log logesapi = LogFactory.getLog(QueryExecutorHelperDao.class);
 
 	private DataSourceLookup dataSourceLookup = null,
 			originalDataSourceLookup = null;
@@ -314,7 +314,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			while (count < sqls.length) {
 				singleSql = sqls[count++];
 				if (singleSql != null && singleSql.trim().length() > 10) {
-					logesapi.info(null,"Executing setfinder query sql [" + singleSql + "]"
+					logesapi.info("Executing setfinder query sql [" + singleSql + "]"
 							+ " for query instance= " + queryInstanceId);
 					logTimingUtil.setStartTime();
 					if (this.queryWithoutTempTableFlag == false) { 
@@ -477,7 +477,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			else{
 				errorFlag = true;
 				exception = sqlEx;
-				logesapi.error(null,"Error while executing sql" + singleSql + sqlEx);
+				logesapi.error("Error while executing sql" + singleSql + sqlEx);
 				throw new I2B2DAOException("Error while executing sql", sqlEx);
 			}
 		} catch (LockedoutException crcDaoEx) {
@@ -901,12 +901,12 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		//if the lockout query zero count is -1, dont count zero
 		if (setSize == 0 ) {
 			if (lockoutQueryZeroCount == -1) {
-				logesapi.debug(null,"Setfinder not doing the lockout check for result instance ["+ resultInstanceId + "] " +
+				logesapi.debug("Setfinder not doing the lockout check for result instance ["+ resultInstanceId + "] " +
 						"the zero count property value is -1");
 				return userLockedDate;
 			} else { 
 				//assign the lockout query zero count to lockout query count
-				logesapi.debug(null,"Setfinder lockout query count value for result instance ["+ resultInstanceId + "] " +
+				logesapi.debug("Setfinder lockout query count value for result instance ["+ resultInstanceId + "] " +
 						"taken from zero count property value is ["+lockoutQueryZeroCount +"]");
 				lockoutQueryCount = lockoutQueryZeroCount;
 			}
@@ -966,7 +966,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 	 */
 	public List<String> getRoleFromPM(String requestXml, String pmXml) throws I2B2Exception {
 
-		logesapi.debug(null,"In getRoleFromPM, pmXml is " + pmXml);
+		logesapi.debug("In getRoleFromPM, pmXml is " + pmXml);
 		I2B2RequestMessageHelper reqMsgHelper = new I2B2RequestMessageHelper(
 				requestXml);
 		SecurityType origSecurityType = reqMsgHelper.getSecurityType();
