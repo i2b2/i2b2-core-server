@@ -223,4 +223,37 @@
 	</xs:complexType>
 	
 
+	<xs:element name="rpdos" type="crc:rpdosType"/><!-- swc20160523 added -->      
+
+    
+    <xs:complexType name="rpdosType"><!-- swc20160523 added -->
+        <xs:sequence>
+            <xs:element name="rpdo" type="crc:rpdoType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+	<xs:complexType name="rpdoType"><!-- swc20160523 added, swc20160606 updated -->
+		<xs:sequence>
+			<xs:element name="title" type="xs:string"/>
+		 	<xs:element name="creator_id" type="xs:string"/>
+			<xs:element name="shared" type="xs:boolean"/>
+			<xs:element name="cohort" type="xs:boolean"/>
+			<xs:element name="column_count" type="xs:string"/>
+			<xs:element name="concept" type="crc:conceptTableType" maxOccurs="unbounded"/>
+			<xs:element name="create_date" type="xs:dateTime"/>
+			<xs:element name="update_date" type="xs:dateTime"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:int"/>
+	</xs:complexType>
+
+	<xs:complexType name="conceptTableType"><!-- swc20160523 added, swc20160606 updated -->
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+		 	<xs:element name="display" type="xs:boolean"/>
+			<xs:element name="required" type="xs:boolean"/>
+			<xs:element name="locked" type="xs:boolean"/>
+			<xs:element name="json_data" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:int"/>
+	</xs:complexType>
 </xs:schema>

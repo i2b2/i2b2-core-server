@@ -13,5 +13,5 @@
 // Generated on: 2006.10.27 at 11:21:39 AM EDT 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://i2b2.mgh.harvard.edu/querytool")
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://i2b2.mgh.harvard.edu/querytool")
 package jaxb;
