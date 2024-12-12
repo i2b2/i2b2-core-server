@@ -23,8 +23,8 @@ import org.apache.axiom.om.OMXMLBuilderFactory;
 import edu.harvard.i2b2.common.util.axis2.ServiceClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -44,7 +44,7 @@ public class CallCRCUtil {
 	//private String crcUrl = null;
 	static IMUtil workplaceUtil = IMUtil.getInstance();
 	private static Log log = LogFactory.getLog(CallCRCUtil.class);
-	protected static final Logger logesapi = ESAPI.getLogger(CallCRCUtil.class);
+	protected static final Log logesapi = LogFactory.getLog(CallCRCUtil.class);
 
 
 	public static String callCRCPDORequest(PDORequestMessage getFoldersMsg)
@@ -61,7 +61,7 @@ public class CallCRCUtil {
 			log.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's request xml "
 					+ requestElement);
 			response = getServiceClient("pdorequest", requestElement).toString();
-			logesapi.debug(null,"callCRCQueryRequestXML - CRC setfinder query request XML call's response xml " + response.toString());
+			logesapi.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's response xml " + response.toString());
 			//resultResponseType = getResultResponseMessage(response.toString());
 			//masterInstanceResultResponseType = getResponseMessage(response
 			//		.toString());

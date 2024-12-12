@@ -8,14 +8,11 @@
  ******************************************************************************/
 package edu.harvard.i2b2.common.util.jaxb;
 
-//import com.sun.org.apache.xerces.internal.util.XML11Char;
-
-import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
-
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.xml.utils.XML11Char;
+import org.eclipse.tags.shaded.org.apache.xml.utils.XML11Char;
+import org.glassfish.jaxb.core.marshaller.CharacterEscapeHandler;
 
 
 public class XmlCharacterEscapeHandler implements CharacterEscapeHandler {

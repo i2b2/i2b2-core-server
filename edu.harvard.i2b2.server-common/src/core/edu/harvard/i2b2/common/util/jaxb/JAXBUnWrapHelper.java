@@ -10,7 +10,9 @@ package edu.harvard.i2b2.common.util.jaxb;
 
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
+
+//import jakarta.xml.bind.JAXBElement;
 
 
 public class JAXBUnWrapHelper {

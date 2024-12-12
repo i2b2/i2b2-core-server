@@ -5,5 +5,5 @@
 // Generated on: 2020.04.17 at 02:58:01 PM EDT 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/")
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/")
 package edu.harvard.i2b2.workplace.datavo.pm;

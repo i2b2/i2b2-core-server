@@ -284,11 +284,11 @@ public class ConceptDao extends JdbcDaoSupport {
 		if(childrenType.isSynonyms() == false)
 			synonym = " and c_synonym_cd = 'N'";
 
-        // get all children if the numLevel is less then zero
-        int numLevel = childrenType.getNumLevel();
-        String sql = "select " + parameters + " from " + metadataSchema + tableName + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "");
-        sql += (numLevel >= 0) ? " and c_hlevel > ? and c_hlevel <= ? " : " and c_hlevel > ? ";
-        sql = sql + hidden + synonym + " order by c_hlevel,upper(c_name) ";
+		// get all children if the numLevel is less then zero
+		int numLevel = childrenType.getNumLevel();
+		String sql = "select " + parameters + " from " + metadataSchema + tableName + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "");
+		sql += (numLevel >= 0) ? " and c_hlevel > ? and c_hlevel <= ? " : " and c_hlevel > ? ";
+		sql = sql + hidden + synonym + " order by c_hlevel,upper(c_name) ";
 
 		//log.info(sql + " " + path + " " + level);
 		boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
@@ -311,9 +311,9 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		List<ConceptType> queryResult = null;
 		try {
-            queryResult = (numLevel >= 0)
-                    ? jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath, level, (level + numLevel))
-                    : jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath, level);
+			queryResult = (numLevel >= 0)
+					? jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath, level, (level + numLevel))
+							: jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath, level);
 		} catch (Exception e) {
 			log.error("Get Children " + e.getMessage());
 			throw new I2B2DAOException("Database Error");
@@ -540,7 +540,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		List<ConceptType> queryResult = null;
 		if (tableCd.equals("@"))
 		{
-			String tableSql = "select distinct(c_table_name), c_fullname, c_name from " + metadataSchema + "table_access where c_visualattributes not like '_H%'" ;
+			String tableSql = "select distinct(c_table_name), c_fullname, c_name, c_table_cd from " + metadataSchema + "table_access where c_visualattributes not like '_H%'" ;
 			try {
 				categoryResult = jt.query(tableSql, new GetConceptNameMapper());	    
 			} catch (DataAccessException e) {
@@ -550,9 +550,9 @@ public class ConceptDao extends JdbcDaoSupport {
 
 
 		} else { 
-			String tableSql = "select distinct(c_table_name), c_fullname, c_name from " + metadataSchema + "table_access where c_table_cd = ? " ;
+			String tableSql = "select distinct(c_table_name), c_fullname, c_name, c_table_cd from " + metadataSchema + "table_access where upper(c_table_cd) = ? " ;
 			try {
-				categoryResult = jt.query(tableSql, new GetConceptNameMapper(), tableCd);	    
+				categoryResult = jt.query(tableSql, new GetConceptNameMapper(), tableCd.toUpperCase());	    
 			} catch (DataAccessException e) {
 				log.error("Search by Name " + e.getMessage());
 				throw new I2B2DAOException("Database Error");
@@ -697,13 +697,14 @@ public class ConceptDao extends JdbcDaoSupport {
 					list = jt.query(nameInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()), compareName);
 					//queryResult.addAll(list);
 				} else {
+					vocabType.setCategory(categoryResult.get(i).getTooltip());
 					list = jt.query(nameInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()));
 					//queryResult.addAll(list);
 				}
-				
-				
+
+
 				// Add parent poaths
-				
+
 				String tableName=categoryResult.get(i).getTablename();
 				String name = categoryResult.get(i).getName();
 				/*
@@ -714,8 +715,8 @@ public class ConceptDao extends JdbcDaoSupport {
 					log.error("Get Children " + e.getMessage());
 					throw new I2B2DAOException("Database Error");
 				}
-				*/
-				
+				 */
+
 				//jgk
 				// This does a linear search through fullnames for each previous fullname, O(n^2) :(
 				// BUT it assumes its sorted by hlevel so it only has to search through whats already seen - n(n+1)/2 operations 
@@ -734,7 +735,12 @@ public class ConceptDao extends JdbcDaoSupport {
 								break;
 							}
 						}
-						if (!bAbort) { 
+						if (vocabType.getMax() == 0) {
+							if (node.getTotalnum() != null && node.getTotalnum() > 0) {
+								keep.add(node);
+							}
+						}
+						else if (!bAbort) { 
 							// Add nodes that were not subsumed to the keep list
 							keep.add(node);
 						}
@@ -745,30 +751,30 @@ public class ConceptDao extends JdbcDaoSupport {
 					log.debug("Reduced find terms from "+list.size()+" to "+keep.size());
 					list = keep;
 				}
-				
+
 				if (vocabType.isKeyname()!=null && vocabType.isKeyname()) {
 					// Only do keyname lookups if we haven't exceeded the max				
 					HashMap<String,String> KeynameCache = new HashMap<String,String>();
 					int skipCount = 0; // for debug, number of cache hits
 					//int skipPathCount = category.split("\\\\").length -2; // preamble elements in path, not to be output in key name (everything but final element in category path)
-					
+
 					// A little code to ignore a path in the category name, if there is more than one element.
 					// e.g., \\i2b2_MED\Medications\ will ignore i2b2_MED
 					String[] skipPaths = category.split("\\\\");
 					String skipPath = "";
 					for (int j=1;j<skipPaths.length-1;j++) skipPath=skipPath+"\\"+skipPaths[j];
 					skipPath=skipPath+"\\";
-					
+
 					String sql = "";
 					int keynameCount = 0;
 					for (ConceptType cType: list) {
 						//String path = cType.getDimcode(); //StringUtil.getPath(childrenType.getParent());
 						String parentPath = StringUtil.getParentPath(cType.getKey().substring(tableCd.length()+2));
-											
+
 						// Only do keyname lookups up to the max return result size
 						keynameCount++;
 						if (keynameCount>vocabType.getMax()) break;
-							
+
 						if (KeynameCache.containsKey(parentPath)) {
 							cType.setKeyName(KeynameCache.get(parentPath));
 							skipCount++;
@@ -790,12 +796,12 @@ public class ConceptDao extends JdbcDaoSupport {
 								sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
 								sql += " FROM   pathnames";
 								sql += " order by c_pathorder desc ";
-		
+
 							}
-		
+
 							else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-		
-		
+
+
 								sql = "WITH pathnames (c_name, c_fullname, c_path, c_pathorder) ";
 								sql += " AS ";
 								sql += " ( ";
@@ -807,13 +813,13 @@ public class ConceptDao extends JdbcDaoSupport {
 								sql += "   select m.c_name, m.c_fullname,  substr(m.c_fullname, 1, length(m.c_fullname) - instr(reverse(m.c_fullname), '\\',  2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
 								sql += "  from " + metadataSchema+tableName  + "   m";
 								sql += "       inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";
-		
+
 								sql += " )";
 								sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
 								sql += " FROM   pathnames";
 								sql += " order by c_pathorder desc ";
 							} 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-		
+
 								sql  = "WITH RECURSIVE pathnames ";
 								sql += " AS";
 								sql += " (";
@@ -824,19 +830,19 @@ public class ConceptDao extends JdbcDaoSupport {
 								sql += "    UNION ALL";
 								sql += "    select m.c_name, m.c_fullname,  ";
 								sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - strpos(substr(reverse(m.c_fullname), 2), '\\') ) as c_path,   c_pathorder + 1 as c_pathorder";
-		
+
 								sql += "    from " + metadataSchema+tableName  + "  m";
 								sql += "        inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";
-		
+
 								sql += " ) ";
 								sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
 								sql += " FROM   pathnames";
 								sql += " order by c_pathorder desc";
 							}
-							
-							
+
+
 							//List  rows = jt.queryForList(sql, path);
-		
+
 							/*
 							 * 			List<String> names = jt.query(sql,  new RowMapper() {
 							      public Object mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -845,16 +851,16 @@ public class ConceptDao extends JdbcDaoSupport {
 							    }, path);
 							 */
 							List<ConceptType> names = jt.query(sql, new RowMapper<ConceptType>() {
-									public ConceptType mapRow(ResultSet rs, int rowNum) throws SQLException {
-										ConceptType category = new ConceptType();	 
+								public ConceptType mapRow(ResultSet rs, int rowNum) throws SQLException {
+									ConceptType category = new ConceptType();	 
 
-										category.setKey(rs.getString("c_fullname"));
-										category.setLevel(rs.getInt("c_hlevel"));
-										category.setName(rs.getString("c_name"));
-										return category;
-									}
-								}/*new GetConceptParentMapper()*/, parentPath);
-							
+									category.setKey(rs.getString("c_fullname"));
+									category.setLevel(rs.getInt("c_hlevel"));
+									category.setName(rs.getString("c_name"));
+									return category;
+								}
+							}/*new GetConceptParentMapper()*/, parentPath);
+
 							cType.setKeyName("\\");
 							for (int y=0; y< names.size(); y++) {
 								if(names.get(y).getKey().equals(skipPath)) continue; // only one path component for the category is ever included
@@ -863,8 +869,8 @@ public class ConceptDao extends JdbcDaoSupport {
 								else cType.setKeyName(cType.getKeyName() + names.get(y).getName());
 								if ((y + 1) < names.size())
 									cType.setKeyName(cType.getKeyName() + "\\" );
-							//+  \\ ");
-							
+								//+  \\ ");
+
 							}
 							// In the event that the category does not have a row in the ontology, insert an entry for it manually
 							// TODO: Is the actual category name anywhere? (Currently using the code)
@@ -875,7 +881,7 @@ public class ConceptDao extends JdbcDaoSupport {
 					}
 					if (skipCount>0) log.debug("Skipped keyname lookups due to caching ="+skipCount);
 				}
-				
+
 				// Add list to results after adding parent list names
 				if (queryResult == null)
 					queryResult = list;
@@ -884,6 +890,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 			} catch (DataAccessException e) {
 				log.error("Search by Name " + e.getMessage());
+				e.printStackTrace();
 				throw new I2B2DAOException("Database Error");
 			}
 		}
@@ -1099,7 +1106,7 @@ public class ConceptDao extends JdbcDaoSupport {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-				//"a,able,about,across,after,all,almost,also,am,among,an,and,any,are,as,at,be,because,been,but,by,can,cannot,could,dear,did,do,does,either,else,ever,every,for,from,get,got,had,has,have,he,her,hers,him,his,how,however,i,if,in,into,is,it,its,just,least,let,like,likely,may,me,might,most,must,my,neither,no,nor,not,of,off,often,on,only,or,other,our,own,rather,said,say,says,she,should,since,so,some,than,that,the,their,them,then,there,these,they,this,tis,to,too,twas,us,wants,was,we,were,what,when,where,which,while,who,whom,why,will,with,would,yet,you,your";	
+		//"a,able,about,across,after,all,almost,also,am,among,an,and,any,are,as,at,be,because,been,but,by,can,cannot,could,dear,did,do,does,either,else,ever,every,for,from,get,got,had,has,have,he,her,hers,him,his,how,however,i,if,in,into,is,it,its,just,least,let,like,likely,may,me,might,most,must,my,neither,no,nor,not,of,off,often,on,only,or,other,our,own,rather,said,say,says,she,should,since,so,some,than,that,the,their,them,then,there,these,they,this,tis,to,too,twas,us,wants,was,we,were,what,when,where,which,while,who,whom,why,will,with,would,yet,you,your";	
 		//		String[] stopWords = stopWord.split("'");	
 		return stopWord;
 	}
@@ -1943,7 +1950,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		String sql = "select distinct(c_facttablecolumn) from " + metadataSchema+tableName  + " where c_facttablecolumn is not null and c_fullname like ? ";
 		if (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL"))
-		   sql += "{ESCAPE '?'}" ;
+			sql += "{ESCAPE '?'}" ;
 		sql = sql + hidden + synonym ;
 
 		if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
@@ -2056,7 +2063,7 @@ class GetConceptNodeMapper implements RowMapper<ConceptType> {
 			if ((node.getNode() != null) && !node.getNode().equals("@"))
 				child.setKey("\\\\" + node.getNode() + rs.getString("c_fullname"));  
 			else
-				child.setKey("\\\\" + rs.getString("tableCd") + rs.getString("c_fullname")); 
+				child.setKey("\\\\@"  + rs.getString("c_fullname")); 
 			child.setSynonymCd(rs.getString("c_synonym_cd"));
 			child.setVisualattributes(rs.getString("c_visualattributes"));
 			Integer totalNumValue = rs.getInt("c_totalnum");
@@ -2184,6 +2191,7 @@ class GetConceptNameMapper implements RowMapper<ConceptType> {
 		category.setTablename(rs.getString("c_table_name"));
 		category.setKey(rs.getString("c_fullname"));
 		category.setName(rs.getString("c_name"));
+		category.setTooltip(rs.getString("c_table_cd"));
 		return category;
 	}
 }

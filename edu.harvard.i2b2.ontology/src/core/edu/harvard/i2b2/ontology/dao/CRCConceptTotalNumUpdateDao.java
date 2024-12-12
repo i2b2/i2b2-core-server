@@ -21,8 +21,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -45,7 +45,7 @@ import edu.harvard.i2b2.ontology.util.OntologyUtil;
 public class CRCConceptTotalNumUpdateDao extends JdbcDaoSupport {
 
 	private static Log log = LogFactory.getLog(CRCConceptTotalNumUpdateDao.class);
-	protected static Logger logesapi = ESAPI.getLogger(CRCConceptTotalNumUpdateDao.class);
+	protected static Log logesapi = LogFactory.getLog(CRCConceptTotalNumUpdateDao.class);
 
 	private DataSource dataSource = null;
 
@@ -173,12 +173,12 @@ public class CRCConceptTotalNumUpdateDao extends JdbcDaoSupport {
 					}
 					//pass c_fullname to crc setfinder util class
 					// call frc
-					logesapi.debug(null,"Begin Setfinder query to CRC [" + cFullName + "]");
+					logesapi.debug("Begin Setfinder query to CRC [" + cFullName + "]");
 					conceptSkipFlag = false;
 					try { 
 						masterInstanceResultResponse = CallCRCUtil.callSetfinderQuery("\\\\" + tableAccessType.getTableCd().trim() + cFullName, securityType, projectId);
 					} catch (Throwable  i2b2Ex) { 
-						logesapi.info(null,"Patient count caught the exception " + i2b2Ex.getMessage());
+						logesapi.info("Patient count caught the exception " + i2b2Ex.getMessage());
 						i2b2Ex.printStackTrace();
 						conceptSkipFlag = true;
 					}
@@ -186,7 +186,7 @@ public class CRCConceptTotalNumUpdateDao extends JdbcDaoSupport {
 					if (conceptSkipFlag == false) { 
 						String queryInstanceId = masterInstanceResultResponse.getQueryInstance().getQueryInstanceId();
 						queryStatusType = masterInstanceResultResponse.getQueryInstance().getQueryStatusType();
-						logesapi.debug(null,"End Setfinder query to CRC[" + cFullName + "]");
+						logesapi.debug("End Setfinder query to CRC[" + cFullName + "]");
 						int totalNum = 0;
 						if (queryStatusType.getName().equalsIgnoreCase("PROCESSING")) { 
 							log.info("Setfinder request status is processing query instance id [ " + queryInstanceId + " ]");

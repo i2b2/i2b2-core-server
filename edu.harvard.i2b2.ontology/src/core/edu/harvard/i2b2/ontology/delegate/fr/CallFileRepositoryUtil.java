@@ -11,8 +11,7 @@ package edu.harvard.i2b2.ontology.delegate.fr;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import javax.activation.FileDataSource;
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -32,12 +31,11 @@ import org.apache.axis2.client.Options;
 import edu.harvard.i2b2.common.util.axis2.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.OperationContext;
-import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -63,7 +61,7 @@ public class CallFileRepositoryUtil {
 
 	/** log **/
 	protected static Log log = LogFactory.getLog(CallFileRepositoryUtil.class);
-	protected static Logger logesapi = ESAPI.getLogger(CallFileRepositoryUtil.class);
+	protected static Log logesapi = LogFactory.getLog(CallFileRepositoryUtil.class);
 
 	//private SecurityType securityType = null;
 	//private String projectId = null;
@@ -177,13 +175,14 @@ public class CallFileRepositoryUtil {
 			OperationClient mepClient = sender
 					.createClient(org.apache.axis2.client.ServiceClient.ANON_OUT_IN_OP);
 
-			MessageContext mc = new MessageContext();
-			javax.activation.DataHandler dataHandler = new javax.activation.DataHandler(
+			//MM TODO 
+			/*MessageContext mc = new MessageContext();
+			DataHandler dataHandler = new DataHandler(
 					new FileDataSource(conceptFile));
 
 			mc.addAttachment("cid", dataHandler);
 			mc.setDoingSwA(true);
-
+		
 			SOAPFactory sfac = OMAbstractFactory.getSOAP11Factory();
 			SOAPEnvelope env = sfac.getDefaultEnvelope();
 
@@ -197,14 +196,14 @@ public class CallFileRepositoryUtil {
 			mc.setEnvelope(env);
 			mepClient.addMessageContext(mc);
 			mepClient.execute(true);
-
+			*/
 			MessageContext response = mepClient
 					.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
 			SOAPBody body = response.getEnvelope().getBody();
 
 			response = mepClient
 					.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
-			logesapi.debug(null,"File Repository response envelope: "
+			logesapi.debug("File Repository response envelope: "
 					+ response.toString() + "]");
 			OMElement frResponse = (OMElement) response.getEnvelope().getBody()
 					.getFirstOMChild();

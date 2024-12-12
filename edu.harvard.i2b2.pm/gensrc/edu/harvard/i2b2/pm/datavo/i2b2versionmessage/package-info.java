@@ -5,5 +5,5 @@
 // Generated on: 2020.04.17 at 02:57:35 PM EDT 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.i2b2.org/xsd/hive/msg/version/")
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.i2b2.org/xsd/hive/msg/version/")
 package edu.harvard.i2b2.pm.datavo.i2b2versionmessage;

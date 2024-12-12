@@ -80,11 +80,10 @@
 	 
 	                <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/lib">
 	                        <fileset dir="${lib}/spring" includes="**/*" />
-	                        <fileset dir="${lib}/jcifs" includes="**/*" />
-	                        <fileset dir="${lib}/jdbc" includes="**/*" />
+	                        <fileset dir="${lib}/smbj" includes="**/*" />
                        		<fileset dir="${lib}/okta" includes="**/*" />
 	                        <fileset dir="${lib}/jboss" includes="**/*" />
-	                        <fileset dir="${lib}/esapi" includes="**/*" />
+	                        <fileset dir="${lib}/exec" includes="**/*" />
 	                        <fileset dir="${lib}/zip" includes="**/*" />
 	                        <fileset dir="${lib}/quartz" includes="**/*" />
 	                </copy>

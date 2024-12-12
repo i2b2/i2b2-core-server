@@ -17,7 +17,7 @@ package edu.harvard.i2b2.fr.ws;
 import static org.junit.Assert.*;
 
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import junit.framework.JUnit4TestAdapter;
 

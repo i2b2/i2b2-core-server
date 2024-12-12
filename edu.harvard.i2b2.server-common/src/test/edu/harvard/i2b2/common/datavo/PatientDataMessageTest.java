@@ -22,7 +22,7 @@ import java.io.StringWriter;
 
 import java.util.Date;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 
 public class PatientDataMessageTest extends TestCase {

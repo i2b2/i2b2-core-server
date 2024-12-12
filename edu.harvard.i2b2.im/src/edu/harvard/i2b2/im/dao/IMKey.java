@@ -13,7 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Hashtable;
 
-import org.apache.commons.codec.digest.DigestUtils;
+//import org.apache.commons.codec.digest.DigestUtils;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.im.datavo.pm.ProjectType;
@@ -38,14 +38,17 @@ public class IMKey {
 		{
 			imkey.remove(projectInfo.getId());
 		} else {
+			//MM TODO: FIX
+			/*
 			if (projectInfo.getKey() != null)
 			{
+
 				String key = DigestUtils.sha256Hex(requestType.getKey()).substring(0, 3);
 				if (!key.equals(projectInfo.getKey()))
 					return -1;
 			}
+			*/
 			imkey.put(projectInfo.getId(), requestType.getKey());
-			//		IMKey.imkey = requestType.getKey();
 		}
 		return 0;
 	}

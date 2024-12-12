@@ -14,7 +14,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.nio.file.Paths;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import junit.framework.JUnit4TestAdapter;
 

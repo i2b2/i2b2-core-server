@@ -44,11 +44,11 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.ServiceContext;
-import org.apache.axis2.transport.http.HTTPConstants;
+//import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xml.utils.QName;
+//import org.apache.xml.utils.QName;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
@@ -104,13 +104,13 @@ public class ServiceClient {
 				options.setTransportInProtocol(Constants.TRANSPORT_HTTP);
 				options.setProperty(Constants.Configuration.ENABLE_REST, Constants.VALUE_TRUE);
 //				options.setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);	
-				options.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Constants.VALUE_TRUE);
+				//MM axis2 2.0 options.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Constants.VALUE_TRUE);
 				serviceClient.setOptions(options);
 
 				OMElement result = serviceClient.sendReceive(request);
 				if (result != null) {
 					response = result.toString();
-					//logesapi.debug(null,response);
+					//logesapi.debug(response);
 				}
 				done = true;
 			} catch (Exception e) {

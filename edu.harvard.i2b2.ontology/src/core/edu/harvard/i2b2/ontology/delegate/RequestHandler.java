@@ -18,8 +18,8 @@ import java.util.Iterator;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.ontology.dao.DataSourceLookupHelper;
@@ -37,7 +37,7 @@ import edu.harvard.i2b2.pm.ws.PMServiceDriver;
 
 public abstract class RequestHandler {
     protected static Log log = LogFactory.getLog(RequestHandler.class);
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
     public abstract String  execute() throws I2B2Exception;
     
@@ -47,7 +47,7 @@ public abstract class RequestHandler {
 		try {
 			GetUserConfigurationType userConfigType = new GetUserConfigurationType();
 			String response = PMServiceDriver.getRoles(userConfigType, header);		
-			logesapi.debug(null,response);
+			logesapi.debug(response);
 			PMResponseMessage msg = new PMResponseMessage();
 			StatusType procStatus = msg.processResult(response);
 			if(procStatus.getType().equals("ERROR")) return false;
@@ -74,7 +74,7 @@ public abstract class RequestHandler {
 					PMResponseMessage msg = new PMResponseMessage();
 					StatusType procStatus = null;	
 					String response = PMServiceDriver.getRoles(userConfigType,header);		
-					logesapi.debug(null,response);
+					logesapi.debug(response);
 					procStatus = msg.processResult(response);
 					if(procStatus.getType().equals("ERROR"))
 						return null;

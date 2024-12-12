@@ -36,14 +36,10 @@ import org.apache.axis2.client.Options;
 import edu.harvard.i2b2.common.util.axis2.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.ServiceContext;
-import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
@@ -55,7 +51,7 @@ import edu.harvard.i2b2.ontology.util.OntologyUtil;
 public class PMServiceDriver {
 	private static Log log = LogFactory.getLog(PMServiceDriver.class.getName());
 
-	protected static Logger logesapi = ESAPI.getLogger(PMServiceDriver.class);
+	protected static Log logesapi = LogFactory.getLog(PMServiceDriver.class);
 
 
 	/**
@@ -88,7 +84,7 @@ public class PMServiceDriver {
 				response = ServiceClient.sendREST(pmEPR, getRolesRequestString);
 			
 
-			logesapi.debug(null,"PM response = " + response);
+			logesapi.debug("PM response = " + response);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new Exception(e);

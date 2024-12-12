@@ -29,8 +29,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -66,7 +66,7 @@ import edu.harvard.i2b2.workplace.util.WorkplaceUtil;
 public class FolderDao extends JdbcDaoSupport {
 
 	private static Log log = LogFactory.getLog(FolderDao.class);
-	protected static Logger logesapi = ESAPI.getLogger(FolderDao.class);
+	protected static Log logesapi = LogFactory.getLog(FolderDao.class);
 
 	//    final static String CORE = " c_hierarchy, c_hlevel, c_name, c_user_id, c_group_id, c_share_id, c_index, c_parent_index, c_visualattributes, c_tooltip";
 	//	final static String DEFAULT = " c_name, c_hierarchy";
@@ -390,7 +390,7 @@ public class FolderDao extends JdbcDaoSupport {
 				//CallCRCUtil callCRC = new CallCRCUtil(securityType, projectInfo.getId());
 				log.debug("getting Response");
 				queryResult =  CallCRCUtil.callCRCQueryRequestXML(childrenType.getNode(), securityType, projectInfo.getId());
-				logesapi.debug(null,"got response: " + queryResult);
+				logesapi.debug("got response: " + queryResult);
 				//if (masterInstanceResultResponseType != null && masterInstanceResultResponseType.getQueryMaster().size() > 0)
 				//	queryResult =XMLUtil.convertDOMElementToString((Element) masterInstanceResultResponseType.getQueryMaster().get(0).getRequestXml().getContent().get(0)); ;  //respoonseType.getQueryResultInstance();
 			} catch (Exception e) {
@@ -405,7 +405,7 @@ public class FolderDao extends JdbcDaoSupport {
 				//CallCRCUtil callCRC = new CallCRCUtil(securityType, projectInfo.getId());
 				log.debug("getting Response");
 				queryResult =  CallCRCUtil.callCRCResultInstanceXML(childrenType.getNode(), securityType, projectInfo.getId());
-				logesapi.debug(null,"got response: " + queryResult);
+				logesapi.debug("got response: " + queryResult);
 				//if (masterInstanceResultResponseType != null)
 				//	queryResult = (String) masterInstanceResultResponseType.getCrcXmlResult().getXmlValue().getContent().get(0);
 				//XMLUtil.convertDOMElementToString((Element) masterInstanceResultResponseType.getCrcXmlResult().getXmlValue().getContent().get(0));  //respoonseType.getQueryResultInstance();
@@ -416,7 +416,7 @@ public class FolderDao extends JdbcDaoSupport {
 			}
 			//log.debug("result size = " + queryResult.size());
 		}
-		logesapi.debug(null,"result is: " + queryResult);
+		logesapi.debug("result is: " + queryResult);
 		return queryResult;
 
 	}

@@ -15,7 +15,7 @@
  */
 package edu.harvard.i2b2.pm.ws;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

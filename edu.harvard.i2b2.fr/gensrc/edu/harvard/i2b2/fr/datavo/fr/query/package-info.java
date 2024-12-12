@@ -5,5 +5,5 @@
 // Generated on: 2020.04.17 at 02:57:43 PM EDT 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.i2b2.org/xsd/cell/fr/1.0/")
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.i2b2.org/xsd/cell/fr/1.0/")
 package edu.harvard.i2b2.fr.datavo.fr.query;

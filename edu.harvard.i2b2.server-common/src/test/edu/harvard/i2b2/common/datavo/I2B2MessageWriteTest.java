@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 
 import java.io.StringWriter;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 
 public class I2B2MessageWriteTest extends TestCase {

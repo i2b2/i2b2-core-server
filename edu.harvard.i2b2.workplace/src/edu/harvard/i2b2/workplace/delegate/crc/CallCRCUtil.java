@@ -11,7 +11,7 @@ package edu.harvard.i2b2.workplace.delegate.crc;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -24,16 +24,12 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
-import org.apache.axis2.client.ServiceClient;
+import edu.harvard.i2b2.common.util.axis2.ServiceClient;
 import org.apache.axis2.context.ServiceContext;
-import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
@@ -64,7 +60,7 @@ public class CallCRCUtil {
 	static WorkplaceUtil workplaceUtil = WorkplaceUtil.getInstance();
 	static ServiceClient serviceClient = null;
 	private static Log log = LogFactory.getLog(CallCRCUtil.class);
-	protected static Logger logesapi = ESAPI.getLogger(CallCRCUtil.class);
+	protected static Log logesapi = LogFactory.getLog(CallCRCUtil.class);
 
 	/*
 	public CallCRCUtil(SecurityType securityType, String projectId)
@@ -91,10 +87,10 @@ public class CallCRCUtil {
 			log.debug("begin build element");
 			RequestMessageType requestMessageType = buildResultInstanceRequestXMLRequestMessage(resultInstanceID, securityType, projectId);
 			OMElement requestElement = buildOMElement(requestMessageType);
-			logesapi.debug(null,"callCRCQueryRequestXML - CRC setfinder query request XML call's request xml "
+			logesapi.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's request xml "
 					+ requestElement);
-			response = getServiceClient("/request", requestElement).toString();
-			logesapi.debug(null,"callCRCQueryRequestXML - CRC setfinder query request XML call's response xml " + response.toString());
+			response = ServiceClient.sendREST(workplaceUtil.getCRCUrl() + "/request", requestElement).toString();
+			logesapi.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's response xml " + response.toString());
 			//resultResponseType = getResultResponseMessage(response.toString());
 			//masterInstanceResultResponseType = getResponseMessage(response
 			//		.toString());
@@ -110,14 +106,7 @@ public class CallCRCUtil {
 			log.error(e.getLocalizedMessage());
 			throw new I2B2Exception("Error in CRC upload ", e);
 		} finally {
-			if (serviceClient != null) {
-				try{
-					serviceClient.cleanupTransport();
-					serviceClient.cleanup();
-				} catch (AxisFault e) {
-					log.debug("Error .", e);
-				}
-			}
+			
 		}			
 
 		return response;
@@ -134,7 +123,7 @@ public class CallCRCUtil {
 			OMElement requestElement = buildOMElement(requestMessageType);
 			log.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's request xml "
 					+ requestElement);
-			response = getServiceClient("/request", requestElement).toString();
+			response = ServiceClient.sendREST(workplaceUtil.getCRCUrl() + "/request", requestElement);
 
 			//log.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's response xml " + response.toString());
 			//resultResponseType = getResultResponseMessage(response.toString());
@@ -152,14 +141,7 @@ public class CallCRCUtil {
 			log.error(e.getLocalizedMessage());
 			throw new I2B2Exception("Error in CRC upload ", e);
 		} finally {
-			if (serviceClient != null) {
-				try{
-					serviceClient.cleanupTransport();
-					serviceClient.cleanup();
-				} catch (AxisFault e) {
-					log.debug("Error .", e);
-				}
-			}
+			
 		}	
 		return response;
 	}
@@ -301,6 +283,7 @@ public class CallCRCUtil {
 		return request;
 	}
 
+	/*
 	private static OMElement getServiceClient(String operationName, OMElement request) throws AxisFault, I2B2Exception {
 		// call
 		OMElement response = null;
@@ -335,5 +318,5 @@ public class CallCRCUtil {
 		return response;
 
 	}
-
+	*/
 }

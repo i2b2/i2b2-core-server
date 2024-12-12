@@ -28,8 +28,8 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
@@ -37,10 +37,11 @@ import edu.harvard.i2b2.pm.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.pm.delegate.ServicesHandler;
 import edu.harvard.i2b2.pm.util.AppVersion;
 import edu.harvard.i2b2.pm.util.StringUtil;
-import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletRequest;
 import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.axis2.kernel.http.HTTPConstants;
 
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This is webservice skeleton class. It passes incoming report to PFT parser
@@ -51,21 +52,21 @@ import org.apache.axis2.transport.http.HTTPConstants;
 public class PMService {
 	private static Log log = LogFactory.getLog(PMService.class);
 
-	protected static Logger logesapi = ESAPI.getLogger(PMService.class);
+	protected static Log logesapi = LogFactory.getLog(PMService.class);
 
 	private static String msgVersion = "1.1";
-	private static String i2b2Version = "1.8.1";
+	private static String i2b2Version = "1.8.2";
 
 	public String getVersion()
 	{
 		return i2b2Version;
 	}
-	
+
 	public String getMessageVersion()
 	{
 		return msgVersion;
 	}
-	
+
 	public OMElement getVersion(OMElement getPMDataElement)
 			throws I2B2Exception, JAXBUtilException {
 
@@ -76,7 +77,7 @@ public class PMService {
 		p = Pattern.compile(">.+</ns9:set_password>");
 		m = p.matcher(outString);
 		outString = m.replaceAll(">*********</ns9:set_password>");
-		logesapi.debug(null,"Received Request PM Element " + outString);
+		logesapi.debug("Received Request PM Element " + outString);
 
 		OMElement returnElement = null;
 
@@ -87,11 +88,11 @@ public class PMService {
 		}
 
 		String messageBody = "get_i2b2_message_version";
-		
+
 		try {
 			messageBody = outString.toLowerCase().substring(outString.indexOf("message_body"));
 		} catch (Exception e){}
-		
+
 		edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType pmDataResponse = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType();
 
 		edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType.MessageBody mb = new edu.harvard.i2b2.pm.datavo.i2b2versionmessage.ResponseMessageType.MessageBody();
@@ -182,45 +183,60 @@ public class PMService {
 	 * @throws Exception
 	 */
 	public OMElement getServices(OMElement getPMDataElement)
-			throws I2B2Exception {
-            MessageContext messageContext = MessageContext.getCurrentMessageContext();
-            HttpServletRequest req = (HttpServletRequest) messageContext.getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
-
+			throws Exception {
 		/*
+		//    	OMElement returnElement = null;
+		String pmDataResponse = null;
+		String unknownErrorMessage = "Error message delivered from the remote server \n" +  
+				"You may wish to retry your last action";
 
-    	OMElement returnElement = null;
-    	String pmDataResponse = null;
-    	String unknownErrorMessage = "Error message delivered from the remote server \n" +  
-    			"You may wish to retry your last action";
-
-    	if (getPMDataElement == null) {
-    		log.error("Incoming PM request is null");
+		if (getPMDataElement == null) {
+			log.error("Incoming Workplace request is null");
 
 			ResponseMessageType responseMsgType = MessageFactory.doBuildErrorResponse(null,
 					unknownErrorMessage);
 			pmDataResponse = MessageFactory.convertToXMLString(responseMsgType);
-    		return MessageFactory.createResponseOMElementFromString(pmDataResponse);
-    	}
+			//return MessageFactory.createResponseOMElementFromString(pmDataResponse);
+			throw new I2B2Exception("Incoming PM request is null");
+		}
 
 		ServicesMessage servicesMsg = new ServicesMessage(getPMDataElement.toString());
 
-       // String requestElementString = getPMDataElement.toString();
-       // childrenDataMsg.setRequestMessageType(requestElementString);
+		String requestElementString = getPMDataElement.toString();
+		//    log.info(requestElementString);
+		//foldersDataMsg.setRequestMessageType(requestElementString);
 
-        long waitTime = 0;
-        if (servicesMsg.getRequestMessageType() != null) {
-            if (servicesMsg.getRequestMessageType().getRequestHeader() != null) {
-                waitTime = servicesMsg.getRequestMessageType()
-                                         .getRequestHeader()
-                                         .getResultWaittimeMs();
-            }
-        }
+		long waitTime = 0;
+		if ((servicesMsg.getRequestMessageType() != null) && (servicesMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = servicesMsg.getRequestMessageType()
+					.getRequestHeader()
+					.getResultWaittimeMs();
+		}
 
-        //do Workplace query processing inside thread, so that  
-        // service could send back message with timeout error.     
-        ExecutorRunnable er = new ExecutorRunnable();        
-        return er.execute(new ServicesHandler(servicesMsg), waitTime);
-		 */
+		//do Workplace query processing inside thread, so that  
+		// service could sends back message with timeout error.
+
+		//    ExecutorRunnable er = new ExecutorRunnable();        
+		return edu.harvard.i2b2.common.util.axis2.ServiceClient.getPayLoad(pmDataResponse);
+				//execute(new GetFoldersByProjectHandler(servicesMsg), waitTime);
+
+		*/
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		MessageContext messageContext = MessageContext.getCurrentMessageContext();
+		HttpServletRequest req = (HttpServletRequest) messageContext.getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
 
 		OMElement returnElement = null;
 
@@ -237,7 +253,7 @@ public class PMService {
 		p = Pattern.compile(">.+</ns9:set_password>");
 		m = p.matcher(outString);
 		outString = m.replaceAll(">*********</ns9:set_password>");
-		logesapi.debug(null,"Received Request PM Element " + outString);
+		logesapi.debug("Received Request PM Element " + outString);
 
 
 		log.debug("Begin getting servicesMsg");
@@ -338,7 +354,7 @@ public class PMService {
 		}
 
 		return returnElement;
-
+		
 	}
 }
 

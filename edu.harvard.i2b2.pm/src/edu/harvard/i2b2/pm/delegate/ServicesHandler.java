@@ -41,15 +41,17 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import javax.xml.bind.JAXBElement;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.xml.bind.JAXBElement;
 
 import org.jboss.as.connector.subsystems.datasources.WildFlyDataSource;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.controller.client.OperationBuilder;
 import org.jboss.as.controller.client.helpers.ClientConstants;
 import org.jboss.dmr.ModelNode;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -93,14 +95,14 @@ import edu.harvard.i2b2.pm.util.SecurityAuthentication;
 import edu.harvard.i2b2.pm.ws.MessageFactory;
 import edu.harvard.i2b2.pm.ws.ServicesMessage;
 import java.util.Enumeration;
-import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletRequest;
 
 
 public class ServicesHandler extends RequestHandler {
 	private ProjectType projectInfo = null;
 	private ServicesMessage getServicesMsg = null;
 	private final HttpServletRequest req;
-	protected final Logger logesapi = ESAPI.getLogger(getClass());
+	protected final Log logesapi = LogFactory.getLog(getClass());
 
 	public ServicesHandler(ServicesMessage servicesMsg, HttpServletRequest req) throws I2B2Exception{
 		this.req = req;
@@ -209,12 +211,8 @@ public class ServicesHandler extends RequestHandler {
 			return "edu.harvard.i2b2.pm.util.SecurityAuthenticationLDAP"; // <-- hardcoded, not coming from outside of application
 
 		}
-		else if (AssemblyName.equals("edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM")) {
-
-			return "edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM"; // <-- hardcoded, not coming from outside of application
-
-		}
-		else if (AssemblyName.equals("edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM2")) {
+		else if (AssemblyName.equals("edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM2") ||
+				AssemblyName.equals("edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM")) {
 
 			return "edu.harvard.i2b2.pm.util.SecurityAuthenticationNTLM2"; // <-- hardcoded, not coming from outside of application
 
@@ -306,7 +304,7 @@ public class ServicesHandler extends RequestHandler {
 				e1.printStackTrace();
 				throw new Exception ("Database error in getting environment data");
 			}
-			logesapi.debug(null,"Start parsing environment results of: " + response);
+			logesapi.debug("Start parsing environment results of: " + response);
 
 			Iterator it = response.iterator();
 			while (it.hasNext())

@@ -23,7 +23,7 @@ import edu.harvard.i2b2.ontology.util.OntologyJAXBUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 
 /**

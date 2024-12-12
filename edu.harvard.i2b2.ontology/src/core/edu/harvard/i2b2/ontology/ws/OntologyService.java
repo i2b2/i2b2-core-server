@@ -22,15 +22,14 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.axiom.om.OMDataSource;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.llom.OMSourcedElementImpl;
 import org.apache.axiom.om.util.StAXUtils;
 import org.apache.axis2.json.JSONDataSource;
 import org.apache.axis2.util.StreamWrapper;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
@@ -72,7 +71,7 @@ import edu.harvard.i2b2.ontology.delegate.UpdateTotalNumHandler;
  */
 public class OntologyService {
 	private static Log log = LogFactory.getLog(OntologyService.class);
-	protected static Logger logesapi = ESAPI.getLogger(OntologyService.class);
+	protected static Log logesapi = LogFactory.getLog(OntologyService.class);
 
 	/**
 	 * This function is main webservice interface to get vocab data for a query.
@@ -417,7 +416,7 @@ public class OntologyService {
 		}
 
 		String requestElementString = getDerivedFactColumnsElement.toString();
-		logesapi.debug(null,"ONT derivedFactCol request " + requestElementString);
+		logesapi.debug("ONT derivedFactCol request " + requestElementString);
 		GetTermInfoDataMessage dataMsg = new GetTermInfoDataMessage(
 				requestElementString);
 
@@ -580,7 +579,7 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 		String requestElementString = modifyChildElement.toString();
-		logesapi.debug(null,requestElementString);
+		logesapi.debug(requestElementString);
 		ModifyChildDataMessage childDataMsg = new ModifyChildDataMessage(
 				requestElementString);
 		long waitTime = 0;
@@ -1115,11 +1114,11 @@ public class OntologyService {
 		// service could sends back message with timeout error.
 		// ExecutorRunnable er = new ExecutorRunnable();
 		if(loadDataMsg.getMetadataLoad().getTableName().equalsIgnoreCase("SCHEMES")) {
-			logesapi.info(null,requestElementString);
+			logesapi.info(requestElementString);
 			return execute(new LoadSchemesHandler(loadDataMsg), waitTime);
 		}
 		else if(loadDataMsg.getMetadataLoad().getTableName().equalsIgnoreCase("TABLE_ACCESS")) {
-			logesapi.info(null,requestElementString);
+			logesapi.info(requestElementString);
 			return execute(new LoadTableAccessHandler(loadDataMsg), waitTime);
 		}
 		else
