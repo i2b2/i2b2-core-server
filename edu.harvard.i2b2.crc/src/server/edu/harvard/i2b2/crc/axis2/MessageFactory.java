@@ -283,7 +283,7 @@ public class MessageFactory {
              //   strWriter);
             
             CRCJAXBUtil.getJAXBUtil().marshallerWithCDATA(objectFactory.createResponse(respMessageType),
-                        strWriter, new String[]{"json_data"});
+                        strWriter, new String[]{"data"}, true);
         } catch (JAXBUtilException e) {
         	 log.error(e.getMessage());
             throw new I2B2Exception("Error converting response message type to string " + e.getMessage(), e);

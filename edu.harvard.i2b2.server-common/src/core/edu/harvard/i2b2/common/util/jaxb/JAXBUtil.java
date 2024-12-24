@@ -124,27 +124,27 @@ public class JAXBUtil {
 
 	public void marshallerWithCDATA(Object element, Writer strWriter, String[] cdataElements)
 			throws JAXBUtilException {
-		try {
+		marshallerWithCDATA( element,  strWriter,cdataElements, false);
 
+	}
+
+	public void marshallerWithCDATA(Object element, Writer strWriter, String[] cdataElements, boolean useGlassFish)
+			throws JAXBUtilException {
+		try {
 			JAXBContext jaxbContext = getJAXBContext();
 			Marshaller marshaller = jaxbContext.createMarshaller();
-			//marshaller.setProperty("com.sun.xml.bind.xmlDeclaration",Boolean.TRUE);
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
 					Boolean.TRUE);
-			marshaller.setProperty("org.glassfish.jaxb.characterEscapeHandler", new NoEscapeHandler());
 
-			/*
-			marshaller.setProperty("com.sun.xml.internal.bind.characterEscapeHandler",
-	                new CharacterEscapeHandler() {
-                @Override
-                public void escape(char[] ch, int start, int length,
-                        boolean isAttVal, Writer writer)
-                        throws IOException {
-                    writer.write(ch, start, length);
-                }
-            });
-            */
+			if (useGlassFish) {
+				marshaller.setProperty("org.glassfish.jaxb.characterEscapeHandler", new NoEscapeHandler());
+			} 
+			//else {
+			//	marshaller.setProperty("com.sun.xml.bind.xmlDeclaration",Boolean.TRUE);
+			//}
+
 			marshaller.marshal(element, strWriter);
+
 		} catch (Exception jaxbEx) {
 			jaxbEx.printStackTrace();
 			throw new JAXBUtilException("Error during marshalling ", jaxbEx);

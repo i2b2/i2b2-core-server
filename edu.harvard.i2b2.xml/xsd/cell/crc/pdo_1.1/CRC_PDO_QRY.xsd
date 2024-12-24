@@ -237,7 +237,7 @@
 			<xs:element name="title" type="xs:string"/>
 		 	<xs:element name="creator_id" type="xs:string"/>
 			<xs:element name="shared" type="xs:boolean"/>
-			<xs:element name="cohort" type="xs:boolean"/>
+			<xs:element name="visible" type="xs:boolean"/>
 			<xs:element name="column_count" type="xs:string"/>
 			<xs:element name="concept" type="crc:conceptTableType" maxOccurs="unbounded"/>
 			<xs:element name="create_date" type="xs:dateTime"/>

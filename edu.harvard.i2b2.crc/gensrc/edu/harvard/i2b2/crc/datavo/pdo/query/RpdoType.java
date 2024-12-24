@@ -51,7 +51,7 @@ import java.util.Date;
     "title",
     "creatorId",
     "shared",
-    "cohort",
+    "concept",
     "columnCount",
     "visible",
     "createDate",

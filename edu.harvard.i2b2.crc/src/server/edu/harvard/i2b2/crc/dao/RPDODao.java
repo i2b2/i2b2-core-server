@@ -76,6 +76,8 @@ public class RPDODao extends JdbcDaoSupport {
 	}
 
 	private void initDblookupDao() {		
+		String dataSchema = "";
+
 		try {
 
 
@@ -84,6 +86,8 @@ public class RPDODao extends JdbcDaoSupport {
 
 			IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
 			ds = daoFactory.getSetFinderDAOFactory().getDataSource();
+
+			dataSchema = daoFactory.getSetFinderDAOFactory().getDataSourceLookup().getFullSchema();
 			//ds = QueryProcessorUtil.getInstance().getDataSource("java:/CRCBootStrapDS");
 			//ServiceLocator.getInstance()
 			//.getAppServerDataSource(dataSourceName);
@@ -91,16 +95,16 @@ public class RPDODao extends JdbcDaoSupport {
 			log.error(e2.getMessage());;
 		} 
 		jt = new JdbcTemplate(ds);
-		String dataSchema = "";
-		try {
+		if (dataSchema.equals(""))
+			try {
 
-			Connection conn = ds.getConnection();
+				Connection conn = ds.getConnection();
 
-			dataSchema = conn.getSchema();
-			conn.close();
-		} catch (SQLException e1) {
-			log.error(e1.getMessage());
-		} 
+				dataSchema = conn.getSchema();
+				conn.close();
+			} catch (SQLException e1) {
+				log.error(e1.getMessage());
+			} 
 		if (dataSchema.endsWith(".")) {
 			dbluTable = dataSchema + "RPDO_TABLE_REQUEST ";
 			breakdownTable = dataSchema + "QT_BREAKDOWN_PATH ";
@@ -247,7 +251,7 @@ public class RPDODao extends JdbcDaoSupport {
 				log.info("setRPDO - Number of rows added: " + numRowsAdded);
 			}
 		}
-		
+
 		if (rpdoType.isVisible())
 		{
 			sql = "INSERT INTO " + breakdownTable +
@@ -258,12 +262,12 @@ public class RPDODao extends JdbcDaoSupport {
 					now,
 					now,
 					(rpdoType.isShared() == true?"@":userId));
-		
-			
-			 sql = "SELECT MAX(RESULT_TYPE_ID) from " + resultTypeTable;
+
+
+			sql = "SELECT MAX(RESULT_TYPE_ID) from " + resultTypeTable;
 			int resultTypeId = jt.queryForObject(sql, Integer.class) + 1;
-			
-			
+
+
 			sql = "INSERT INTO " + resultTypeTable +
 					"(RESULT_TYPE_ID, NAME, DESCRIPTION, DISPLAY_TYPE_ID, VISUAL_ATTRIBUTE_TYPE_ID, USER_ROLE_CD, CLASSNAME) VALUES (?,?,?,?,?,?,?) ";
 			jt.update(sql, 
@@ -274,7 +278,7 @@ public class RPDODao extends JdbcDaoSupport {
 					"LA",
 					null,
 					"edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator");
-			
+
 		}
 		return numRowsAdded;
 	}
