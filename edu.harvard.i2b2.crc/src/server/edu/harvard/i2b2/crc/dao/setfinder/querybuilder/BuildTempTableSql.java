@@ -219,8 +219,7 @@ public class BuildTempTableSql extends CRCDAO {
 				+ conceptType.getDimcode();
 		if ((conceptType.getOperator() != null) && (conceptType.getOperator().toUpperCase().equals("LIKE")))
 		{
-			
-			dimensionSql +=  (!dataSourceLookup.getServerType().toUpperCase().equals("POSTGRESQL") ? " {ESCAPE '?'} " : "" ) ;
+			dimensionSql +=  (!(dataSourceLookup.getServerType().toUpperCase().equals("POSTGRESQL") || dataSourceLookup.getServerType().toUpperCase().equals("SNOWFLAKE")) ? " {ESCAPE '?'} " : "" ) ;
 		}
 		dimensionSql += ")";
 
@@ -433,9 +432,9 @@ public class BuildTempTableSql extends CRCDAO {
 		}
 
 		//
-		//" INNER JOIN freetexttable(observation_fact,observation_blob,'"+  containsSql  + "') " 
+		//" INNER JOIN freetexttable(observation_fact,observation_blob,'"+  containsSql  + "') "
 		//+ " AS ft" + j + " ON text_search_index = ft" +j+ ".[KEY] "
-		//+ " AND 
+		//+ " AND
 		//
 
 		if (!joinTableName.equalsIgnoreCase("observation_fact")) { 

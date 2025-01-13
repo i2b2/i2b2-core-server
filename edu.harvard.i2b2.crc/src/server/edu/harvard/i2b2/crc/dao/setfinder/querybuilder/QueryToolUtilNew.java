@@ -67,7 +67,8 @@ public class QueryToolUtilNew extends CRCDAO {
 			tempDxTableName = "#dx";
 		} else if (this.dataSourceLookup.getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.ORACLE) || this.dataSourceLookup.getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.POSTGRESQL) || this.dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
 			tempTableName = "QUERY_GLOBAL_TEMP";
 			tempDxTableName = "DX";
 		}
@@ -137,7 +138,7 @@ public class QueryToolUtilNew extends CRCDAO {
 		SecurityType securityType = PMServiceAccountUtil
 				.getServiceSecurityType(tempSecurityType.getDomain());
 
-		//if query timing is null, then take the timing from panel timing 
+		//if query timing is null, then take the timing from panel timing
 		String queryTimingVal = queryDefType.getQueryTiming();
 		if (queryDefType.getQueryTiming() == null) {
 			CalulateQueryTiming calculateTiming = new CalulateQueryTiming(); 
@@ -266,7 +267,7 @@ public class QueryToolUtilNew extends CRCDAO {
 		List<PanelType> sortedPanelList = sortPanel.sortedPanelList(panelList,
 				securityType, projectId);
 		timingUtil.setEndTime();
-		//build the log xml and add it to the  string variable. 
+		//build the log xml and add it to the  string variable.
 		this.processTimingStr.append(this.processTimingUtil.buildProcessTiming(timingUtil, "SORT PANEL", null));
 
 		BuildTempTableSql tempTableSql = new BuildTempTableSql(

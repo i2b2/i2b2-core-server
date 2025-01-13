@@ -86,17 +86,18 @@ public class BuildTotalOccuranceSql {
 					countDistinct = " distinct cast(patient_num as varchar) + '|' +  cast(encounter_num as varchar) + '|' + " + 
 							" provider_id + '|' + cast(start_date as varchar) + '|' + cast(instance_num as varchar) + '|' +concept_cd"; 
 				} else if (this.dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE)  ||
-						this.dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)	) { 
+						this.dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+						this.dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 					countDistinct = " distinct patient_num || '|' || encounter_num || '|' || provider_id || '|' || instance_num || '|' ||concept_cd || '|' ||cast(start_date as  varchar(50) ) ";
 				}
 				totalOccuranceSql +=  " having count("+countDistinct+") " + totalItemOccurrenceClause;//  + " group by " + selectClause;
 				/*if (panelInvertFlag == true && totalItemOccurrenceClause.trim() != "")
 				{
-					if (instanceNumFlag) 
+					if (instanceNumFlag)
 						selectClause = " group by provider_id, start_date, concept_cd, instance_num, encounter_num ";
-					else if (encounterFlag) 
+					else if (encounterFlag)
 						selectClause = " group by encounter_num ";
-					else 
+					else
 						totalOccuranceSql += " group by patient_num ";
 				}*/
 			}
