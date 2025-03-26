@@ -43,6 +43,8 @@ import jakarta.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="CRC_QRY_getResultType"/>
  *     &lt;enumeration value="CRC_QRY_runQueryInstance_fromAnalysisDefinition"/>
  *     &lt;enumeration value="CRC_QRY_cancelQuery"/>
+ *     &lt;enumeration value="CRC_QRY_updateQueryInstanceMessage"/>
+ *     &lt;enumeration value="CRC_QRY_setQueryMasterIdStatus"/> *     
  *     &lt;enumeration value="CRC_QRY_getAnalysisPluginMetadata"/>
  *     &lt;enumeration value="CRC_QUARTZ_getJob"/>
  *     &lt;enumeration value="CRC_QUARTZ_setJob"/>
@@ -130,7 +132,13 @@ public enum PsmRequestTypeType {
     @XmlEnumValue("CRC_QRY_runQueryInstance_fromAnalysisDefinition")
     CRC_QRY_RUN_QUERY_INSTANCE_FROM_ANALYSIS_DEFINITION("CRC_QRY_runQueryInstance_fromAnalysisDefinition"),
     @XmlEnumValue("CRC_QRY_cancelQuery")
-    CRC_QRY_CANCEL_QUERY("CRC_QRY_cancelQuery"),
+    CRC_QRY_CANCEL_QUERY("CRC_QRY_cancelQuery"), 
+    @XmlEnumValue("CRC_QRY_updateQueryInstanceMessage")
+    CRC_QRY_UPDATE_QUERY_INSTANCE_MESSAGE("CRC_QRY_updateQueryInstanceMessage"),
+    @XmlEnumValue("CRC_QRY_runExport_fromQueryInstanceId")
+    CRC_QRY_RUN_EXPORT_FROM_QUERY_INSTANCE_ID("CRC_QRY_runExport_fromQueryInstanceId"),
+    @XmlEnumValue("CRC_QRY_setQueryInstanceStatus")
+    CRC_QRY_UPDATE_QUERY_INSTANCE_STATUS("CRC_QRY_setQueryInstanceStatus"),
     @XmlEnumValue("CRC_QRY_getAnalysisPluginMetadata")
     CRC_QRY_GET_ANALYSIS_PLUGIN_METADATA("CRC_QRY_getAnalysisPluginMetadata"),
     @XmlEnumValue("CRC_QUARTZ_getJob")

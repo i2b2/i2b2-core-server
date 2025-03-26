@@ -88,10 +88,11 @@ public class GetRPDOHandler extends RPDOReqHandler {
 						dblu.setCreateDate(rpdo.getCreateDate());
 						dblu.setUpdateDate(rpdo.getUpdateDate());
 						dblu.setCreatorId(rpdo.getCreatorId());
+						concept.setRequired(rpdo.isRequired());
 						if (rpdo.getConcept() == null)
 						{
 							concept.setLocked(true);
-							concept.setRequired(true);
+						//	concept.setRequired(true);
 						}
 						dblu.getConcept().add(concept);
 					} while (it.hasNext());

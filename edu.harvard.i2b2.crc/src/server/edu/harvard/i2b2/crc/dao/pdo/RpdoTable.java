@@ -26,6 +26,7 @@ public class RpdoTable {
 
 	protected String creatorId;
     protected boolean shared;
+    protected boolean required;
     protected String columnCount;
     protected String concept;
     protected Date createDate;
@@ -78,6 +79,22 @@ public class RpdoTable {
      */
     public void setCreatorId(String value) {
         this.creatorId = value;
+    }
+
+    /**
+     * Gets the value of the required property.
+     * 
+     */
+    public boolean isRequired() {
+        return required;
+    }
+
+    /**
+     * Sets the value of the required property.
+     * 
+     */
+    public void setRequired(boolean value) {
+        this.required = value;
     }
 
     /**

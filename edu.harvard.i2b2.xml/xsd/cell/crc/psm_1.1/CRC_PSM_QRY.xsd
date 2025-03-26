@@ -206,6 +206,30 @@
                     </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_updateQueryInstanceMessage">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>instance_message_requestType</requestType>
+                        <responseType>result_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+           <xs:enumeration value="CRC_QRY_runExport_fromQueryInstanceId">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>instance_message_requestType</requestType>
+                        <responseType>result_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="CRC_QRY_setQueryInstanceStatus">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <requestType>instance_status_requestType</requestType>
+                        <responseType>result_responseType</responseType>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
             <xs:enumeration value="CRC_QRY_updateResultInstanceDescription">
             <xs:annotation>
                 <xs:appinfo>

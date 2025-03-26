@@ -53,7 +53,9 @@ import jakarta.xml.bind.annotation.XmlType;
     "specificityScale",
     "panel",
     "subqueryConstraint",
-    "subquery"
+    "subquery",
+    "message",
+    "email"
 })
 public class QueryDefinitionType {
 
@@ -75,7 +77,28 @@ public class QueryDefinitionType {
     protected List<QueryConstraintType> subqueryConstraint;
     protected List<QueryDefinitionType> subquery;
 
-    /**
+    @XmlElement(name = "message")
+    protected String message;
+    @XmlElement(name = "email")
+    protected String email;
+    
+    public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
      * Gets the value of the queryId property.
      * 
      * @return

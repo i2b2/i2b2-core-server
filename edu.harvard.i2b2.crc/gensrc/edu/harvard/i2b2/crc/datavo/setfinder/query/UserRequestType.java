@@ -39,6 +39,8 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlType(name = "user_requestType", propOrder = {
     "userId",
     "groupId",
+    "masterTypeCd",
+    "includeQueryInstance",
     "fetchSize"
 })
 public class UserRequestType
@@ -51,6 +53,58 @@ public class UserRequestType
     protected String groupId;
     @XmlElement(name = "fetch_size")
     protected int fetchSize;
+    @XmlElement(name = "master_type_cd")
+    protected String masterTypeCd;
+    @XmlElement(name = "include_query_instance")
+    protected boolean includeQueryInstance;
+
+    /**
+     * Gets the value of the includeQueryInstance property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public boolean getIncludeQueryInstance() {
+        return includeQueryInstance;
+    }
+
+    /**
+     * Sets the value of the includeQueryInstance property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setIncludeQueryInstance(boolean value) {
+        this.includeQueryInstance = value;
+    }
+    
+    /**
+     * Gets the value of the masterTypeCd property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getMasterTypeCd() {
+        return masterTypeCd;
+    }
+
+    /**
+     * Sets the value of the masterTypeCd property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setMasterTypeCd(String value) {
+        this.masterTypeCd = value;
+    }
 
     /**
      * Gets the value of the userId property.
@@ -76,6 +130,7 @@ public class UserRequestType
         this.userId = value;
     }
 
+    
     /**
      * Gets the value of the groupId property.
      * 

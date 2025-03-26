@@ -38,6 +38,8 @@
                     <xs:element name="user_id" type="xs:string"/>
                     <xs:element name="group_id" type="xs:string"/>
                     <xs:element name="fetch_size" type="xs:int"/>
+                    <xs:element name="master_type_cd" type="xs:string"/>
+                    <xs:element name="include_query_instance" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -79,6 +81,29 @@
         </xs:complexContent>
     </xs:complexType>
     
+	<xs:complexType name="instance_status_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+	                <xs:element name="user_id" type="xs:string"/>
+                    <xs:element name="query_instance_id" type="xs:string"/>
+                    <xs:element name="status_name" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+	<xs:complexType name="instance_message_requestType">
+        <xs:complexContent>
+            <xs:extension base="crc:requestType">
+                <xs:sequence>
+	                <xs:element name="user_id" type="xs:string"/>
+                    <xs:element name="query_instance_id" type="xs:string"/>
+                    <xs:element name="message" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
     <xs:complexType name="instance_requestType">
         <xs:complexContent>

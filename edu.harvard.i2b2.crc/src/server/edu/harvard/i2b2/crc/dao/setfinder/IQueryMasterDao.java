@@ -35,6 +35,14 @@ public interface IQueryMasterDao {
 	 */
 	public void updateQueryAfterRun(String masterId, String generatedSql, String masterType);
 
+	
+	/**
+	 * Write query sql for the master id
+	 * 
+	 * @param masterId
+	 */
+	public void updateMasterTypeAfterRun(String masterId,  String masterType);
+
 	/**
 	 * Returns list of query master by user id
 	 * 
@@ -43,7 +51,7 @@ public interface IQueryMasterDao {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<QtQueryMaster> getQueryMasterByUserId(String userId,
-			int fetchSize);
+			int fetchSize, String masterTypeCd, boolean includeQueryInstance);
 
 	/**
 	 * Returns list of query master by find search
@@ -63,7 +71,7 @@ public interface IQueryMasterDao {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<QtQueryMaster> getQueryMasterByGroupId(String groupId,
-			int fetchSize);
+			int fetchSize, String masterTypeCd, boolean includeQueryInstance);
 
 	/**
 	 * Find Query master by id

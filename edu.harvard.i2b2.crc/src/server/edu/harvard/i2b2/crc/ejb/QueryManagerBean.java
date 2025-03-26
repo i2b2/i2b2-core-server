@@ -16,7 +16,10 @@ package edu.harvard.i2b2.crc.ejb;
 
 import java.io.StringWriter;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -37,11 +40,13 @@ import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryMasterDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultInstanceDao;
 import edu.harvard.i2b2.crc.dao.setfinder.QueryInstanceSpringDao;
+import edu.harvard.i2b2.crc.dao.setfinder.QueryResultInstanceSpringDao;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.PSMFactory;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.PasswordType;
@@ -281,12 +286,16 @@ public class QueryManagerBean{ // implements SessionBean {
 				queryInstance.setQtQueryStatusType(status1);
 				//masterInstanceResultType.setQueryInstance(queryInstanceType);
 
-				queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
+				
+				if  (queryMaster.getMasterTypeCd() != null && queryMaster.getMasterTypeCd().equals("EXPORT"))
+					queryInstance.setBatchMode(QueryManagerBeanUtil.SUBMITTED);
+				else
+					queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
 				//queryInstance.setQueryInstanceId("3");
 
 				queryInstance.setEndDate(new Date(System
 						.currentTimeMillis()));
-				queryInstanceDao.update(queryInstance, false);
+				queryInstanceDao.update(queryInstance, true);
 			} else if 	(responseType1.getQueryResultInstance() != null && error == true) //responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("4"))
 			{
 
@@ -392,6 +401,74 @@ public class QueryManagerBean{ // implements SessionBean {
 
 	}
 
+	/**
+	 * Function to publish patients using publish message format.
+	 * 
+	 * @ejb.interface-method view-type="both"
+	 * @ejb.transaction type="Required"
+	 * 
+	 * @param String
+	 *            userId
+	 * @param int master id
+	 * @param long timeout
+	 * 
+	 * @return InstanceResultResponseType
+	 */
+	public InstanceResultResponseType runExportQueryInstance(
+			DataSourceLookup dataSourceLookup, String userId, String quertyInstanceId,
+			String xmlRequest) throws Exception {
+		
+		InstanceResultResponseType instanceResultResponse = new InstanceResultResponseType();
+
+		try {
+			String sessionId = String.valueOf(System.currentTimeMillis());
+			QueryManagerBeanUtil qmBeanUtil = new QueryManagerBeanUtil();
+			long timeout = qmBeanUtil.getTimeout(xmlRequest);
+
+			DataSourceLookup dsLookupInput = qmBeanUtil
+					.getDataSourceLookupInput(xmlRequest);
+			SetFinderDAOFactory sfDAOFactory = null;
+			// tm.begin();
+			//			transaction.begin();
+			if (dsLookupInput.getProjectPath() == null) {
+				throw new I2B2Exception("project id is missing in the request");
+			}
+			DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
+					dsLookupInput.getDomainId(),
+					dsLookupInput.getProjectPath(), dsLookupInput.getOwnerId());
+			IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
+			sfDAOFactory = daoFactory.getSetFinderDAOFactory();
+
+			
+			QueryInstanceSpringDao instanceSpringDao = new QueryInstanceSpringDao(sfDAOFactory.getDataSource(), sfDAOFactory.getDataSourceLookup());
+			
+			
+			QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(sfDAOFactory.getDataSource(), sfDAOFactory.getDataSourceLookup());
+			Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
+			
+			//QueryInstanceType queryInstanceResponse = PSMFactory
+			//		.buildQueryInstanceType(instanceSpringDao.getQueryInstanceByInstanceId(quertyInstanceId));
+			//instanceResultResponse.setQueryInstance(queryInstanceResponse);
+
+			for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(quertyInstanceId))
+			{
+				if (r.getQtQueryResultType().getClassname().equals("edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientDownload"))
+					r.getClass();
+			}
+				
+	
+
+		} catch (I2B2DAOException ex) {
+			log.debug("Got an error in QueryManagerBean, thropwing: " + ex.getMessage());
+			ex.printStackTrace();
+
+			throw new I2B2Exception(ex.getMessage());
+		}
+
+
+		return instanceResultResponse;
+	}
+	
 	private ResultResponseType executeSqlInQueue(String domainId,
 			String projectId, String ownerId, String userId,
 			String generatedSql, String sessionId, String queryInstanceId,

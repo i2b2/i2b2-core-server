@@ -151,7 +151,7 @@ public class PSMFactory {
 				.getObfuscateMethod());
 		if (queryResultInstance.getMessage() != null) {
 			XmlValueType xmlValueType = new XmlValueType();
-			xmlValueType.getContent().add(resultInstanceType.getMessage());
+			xmlValueType.getContent().add(queryResultInstance.getMessage());
 			resultInstanceType.setMessage(xmlValueType);
 		}
 		return resultInstanceType;

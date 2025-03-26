@@ -372,6 +372,35 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 						requestXml);
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
+					PsmRequestTypeType.CRC_QRY_UPDATE_QUERY_INSTANCE_MESSAGE)) {
+				
+				boolean isManager = false;
+				if (projectType != null && projectType.getRole().size() > 0 && projectType.getRole().contains("MANAGER"))
+					isManager = true;
+				
+				UpdateQueryInstanceMessageHandler handler = new UpdateQueryInstanceMessageHandler(
+						requestXml, isManager, projectType.getUserName());
+				responseBodyType = handler.execute();
+			} else if (headerType.getRequestType().equals(
+					PsmRequestTypeType.CRC_QRY_RUN_EXPORT_FROM_QUERY_INSTANCE_ID)) {
+				
+				
+				RunExportFromQueryInstanceHandler handler = new RunExportFromQueryInstanceHandler(
+						requestXml);
+				responseBodyType = handler.execute();				
+				
+				
+				
+			} else if (headerType.getRequestType().equals(
+					PsmRequestTypeType.CRC_QRY_UPDATE_QUERY_INSTANCE_STATUS)) {
+				boolean isManager = false;
+				if (projectType != null && projectType.getRole().size() > 0 && projectType.getRole().contains("MANAGER"))
+					isManager = true;
+
+				SetQueryInstanceStatusHandler handler = new SetQueryInstanceStatusHandler(
+						requestXml, isManager, projectType.getUserName());
+				responseBodyType = handler.execute();
+			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_GET_ANALYSIS_PLUGIN_METADATA)) {
 				GetAnalysisPluginMetadataTypeHandler handler = new GetAnalysisPluginMetadataTypeHandler(
 						requestXml);

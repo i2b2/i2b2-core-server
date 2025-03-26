@@ -553,6 +553,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link InstanceMessageRequestType }
+     * 
+     */
+    public InstanceMessageRequestType createInstanceMessageRequestType() {
+        return new InstanceMessageRequestType();
+    }
+
+    /**
+     * Create an instance of {@link InstanceMessageRequestType }
+     * 
+     */
+    public InstanceStatusRequestType createInstanceStatusRequestType() {
+        return new InstanceStatusRequestType();
+    }
+
+    /**
      * Create an instance of {@link UserRequestType }
      * 
      */

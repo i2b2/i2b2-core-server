@@ -59,6 +59,16 @@ public interface IQueryResultInstanceDao {
 			String description);
 
 	/**
+	 * Function used to update instance message
+	 * 
+	 * @param InstanceId
+	 * @param description
+	 */
+	public void updateInstanceMessage(String instanceId,
+			String message);
+
+	
+	/**
 	 * Return list of query result instance by query instance id
 	 * 
 	 * @param queryInstanceId

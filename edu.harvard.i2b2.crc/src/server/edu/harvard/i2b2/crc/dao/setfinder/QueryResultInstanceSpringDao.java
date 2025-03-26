@@ -166,6 +166,17 @@ IQueryResultInstanceDao {
 				Types.VARCHAR, Types.INTEGER });
 	}
 
+	
+	@Override
+	public void updateInstanceMessage(String instanceId, String message) {
+		String sql = "update "
+				+ getDbSchemaName()
+				+ "qt_query_instance set message = ?  where query_instance_id = ?";
+		jdbcTemplate.update(sql,
+				new Object[] { message, Integer.parseInt(instanceId) }, new int[] {
+				Types.VARCHAR, Types.INTEGER });
+		
+	}
 	/**
 	 * Return list of query result instance by query instance id
 	 * 
@@ -539,4 +550,6 @@ IQueryResultInstanceDao {
 			return resultInstance;
 		}
 	}
+
+
 }

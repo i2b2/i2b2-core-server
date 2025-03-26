@@ -535,7 +535,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		queryStatusType.setStatusTypeId(statusTypeId);
 		queryInstance.setQtQueryStatusType(queryStatusType);
 		queryInstance.setEndDate(new Date(System.currentTimeMillis()));
-		queryInstance.setMessage(message);
+		if (message != null)
+			queryInstance.setMessage(message);
 		queryInstanceDao.update(queryInstance, true);
 	}
 

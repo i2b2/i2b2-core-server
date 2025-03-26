@@ -116,7 +116,7 @@ public class I2B2MessageResponseFactory {
 		edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2message.ObjectFactory();
 		StringWriter strWriter = new StringWriter();
 		util.marshallerWithCDATA(of.createResponse(responseMessageType), strWriter,
-				new String[]{"observation_blob","patient_blob","observer_blob","concept_blob","event_blob"});
+				new String[]{"observation_blob","patient_blob","observer_blob","concept_blob","event_blob","message"});
 		return strWriter.toString();
 	}
 

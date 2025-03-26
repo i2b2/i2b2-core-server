@@ -34,10 +34,12 @@ import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.setfinder.CRCTimeOutException;
 import edu.harvard.i2b2.crc.dao.setfinder.CheckSkipTempTable;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
+import edu.harvard.i2b2.crc.dao.setfinder.IQueryMasterDao;
 import edu.harvard.i2b2.crc.dao.setfinder.QueryExecutorDao;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
@@ -202,12 +204,28 @@ public class ExecRunnable implements Runnable{
 								queryInstanceId, patientSetId,allowLargeTextValueConstrainFlag, pmXml, userRoles);
 		
 					}
+					
+//					String masterType = queryInstance.getQtQueryMaster().getMasterTypeCd();
+					
+					IQueryMasterDao queryMaster = sfDAOFactory.getQueryMasterDAO();
+					QtQueryMaster queryDef = queryMaster.getQueryDefinition( queryInstance.getQtQueryMaster().getQueryMasterId());
+
+							String masterType= 	queryDef.getMasterTypeCd();
+//							QueryMasterSpringDao masterType2 = new QueryMasterSpringDao();
+					
+//					queryInstance.getQtQueryMaster().gt
+		//			QtQueryMaster queryMaster = queryInstanceDao.ge queryMasterDao
+		//					.getQueryDefinition(queryInstance.getQtQueryMaster().getQueryMasterId());
+		//			String masterType = queryInstanceDao.getQueryDefinition(queryInstance.getQtQueryMaster().getQueryMasterId());
 
 					//  outputString = reqHandler.execute();
 					setJobCompleteFlag(true);
 					log.info("Exec Finished Running Query");
-
-					queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
+					
+					if (masterType != null && masterType.equals("EXPORT"))
+						queryInstance.setBatchMode(QueryManagerBeanUtil.SUBMITTED);
+					else
+						queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
 					
 					// status and end time were missing -- added during transactionTimeout fix
 					QtQueryStatusType queryStatusType = queryInstance.getQtQueryStatusType();
@@ -219,7 +237,7 @@ public class ExecRunnable implements Runnable{
 					queryInstance.setEndDate(new Date(System
 							.currentTimeMillis()));
 					
-					queryInstanceDao.update(queryInstance, false);
+					queryInstanceDao.update(queryInstance, true);
 					
 					returnMap.put(QueryManagerBeanUtil.QUERY_STATUS_PARAM, "DONE");
 					returnMap.put(QueryManagerBeanUtil.QT_QUERY_RESULT_INSTANCE_ID_PARAM, queryResultInstanceId);

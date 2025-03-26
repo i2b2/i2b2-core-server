@@ -58,7 +58,7 @@ import edu.harvard.i2b2.crc.util.CacheUtil;
  */
 public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 
-	
+
 	protected static Log logesapi = LogFactory.getLog(QueryMasterSpringDao.class);
 
 	JdbcTemplate jdbcTemplate = null;
@@ -110,6 +110,22 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		// jdbcTemplate.update(sql);
 	}
 
+	/**
+	 * Write query sql for the master id
+	 * 
+	 * @param masterId
+	 * @param generatedSql
+	 */
+	@Override
+	public void updateMasterTypeAfterRun(String masterId, String masterType) {
+		String sql = "UPDATE "
+				+ getDbSchemaName()
+				+ "QT_QUERY_MASTER set  MASTER_TYPE_CD = ? where query_master_id = ?";
+		jdbcTemplate.update(sql, new Object[] { masterType, Integer.parseInt(masterId) });
+		// jdbcTemplate.update(sql);
+	}
+
+	
 	/**
 	 * Returns list of query master by find search
 	 * 
@@ -396,7 +412,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<QtQueryMaster> getQueryMasterByUserId(String userId,
-			int fetchSize) {
+			int fetchSize, String masterTypeCd, boolean includeQueryInstance) {
 
 		String sql = "select ";
 
@@ -409,6 +425,12 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				+ getDbSchemaName()
 				+ "qt_query_master "
 				+ " where user_id = ? and delete_flag = ? ";// and master_type_cd is NULL";
+
+		Object[] obj = new Object[] { userId, DELETE_NO_FLAG };
+		if (masterTypeCd != null) {
+			sql += " and master_type_cd = ?";
+			obj = new Object[] { userId, DELETE_NO_FLAG, masterTypeCd };
+		}
 
 		sql += " order by create_date desc  ";
 
@@ -424,30 +446,32 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		}
 
 		List<QtQueryMaster> queryMasterList = jdbcTemplate.query(sql,
-				new Object[] { userId, DELETE_NO_FLAG }, queryMasterMapper);
+				obj, queryMasterMapper);
 
-		QueryInstanceSpringDao instanceDao = new QueryInstanceSpringDao(dataSource, dataSourceLookup);
+		if (includeQueryInstance) {
+			QueryInstanceSpringDao instanceDao = new QueryInstanceSpringDao(dataSource, dataSourceLookup);
 
-		for (QtQueryMaster qtMaster: queryMasterList) {
-			// create an empty set 
-			Set<QtQueryInstance>  set = new HashSet<>(); 
+			for (QtQueryMaster qtMaster: queryMasterList) {
+				// create an empty set 
+				Set<QtQueryInstance>  set = new HashSet<>(); 
 
-			// Add each element of list into the set 
-			for (QtQueryInstance t : instanceDao.getQueryInstanceByMasterId(qtMaster.getQueryMasterId())) 
-			{
-				QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(dataSource, dataSourceLookup);
-				Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
-				for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(t.getQueryInstanceId()))
+				// Add each element of list into the set 
+				for (QtQueryInstance t : instanceDao.getQueryInstanceByMasterId(qtMaster.getQueryMasterId())) 
 				{
-					
-					setResult.add(r);
+					QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(dataSource, dataSourceLookup);
+					Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
+					for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(t.getQueryInstanceId()))
+					{
+
+						setResult.add(r);
+					}
+					t.setQtQueryResultInstances(setResult);
+					set.add(t); 
+
 				}
-				t.setQtQueryResultInstances(setResult);
-				set.add(t); 
 
+				qtMaster.setQtQueryInstances(set);
 			}
-
-			qtMaster.setQtQueryInstances(set);
 		}
 		return queryMasterList;
 	}
@@ -461,7 +485,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<QtQueryMaster> getQueryMasterByGroupId(String groupId,
-			int fetchSize) {
+			int fetchSize, String masterTypeCd, boolean includeQueryInstance) {
 
 		String sql = "select ";
 		if (fetchSize > 0
@@ -473,6 +497,12 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				+ getDbSchemaName()
 				+ "qt_query_master "
 				+ " where group_id = ? and delete_flag = ? "; //and master_type_cd is NULL";
+
+		Object[] obj = new Object[] { groupId, DELETE_NO_FLAG };
+		if (masterTypeCd != null) {
+			sql += " and master_type_cd = ?";
+			obj = new Object[] { groupId, DELETE_NO_FLAG, masterTypeCd };
+		}
 
 		sql += " order by create_date desc  ";
 
@@ -487,7 +517,33 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 
 		}
 		List<QtQueryMaster> queryMasterList = jdbcTemplate.query(sql,
-				new Object[] { groupId, DELETE_NO_FLAG }, queryMasterMapper);
+				obj, queryMasterMapper);
+
+
+		if (includeQueryInstance) {
+			QueryInstanceSpringDao instanceDao = new QueryInstanceSpringDao(dataSource, dataSourceLookup);
+
+			for (QtQueryMaster qtMaster: queryMasterList) {
+				// create an empty set 
+				Set<QtQueryInstance>  set = new HashSet<>(); 
+
+				// Add each element of list into the set 
+				for (QtQueryInstance t : instanceDao.getQueryInstanceByMasterId(qtMaster.getQueryMasterId())) 
+				{
+					QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(dataSource, dataSourceLookup);
+					Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
+					for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(t.getQueryInstanceId()))
+					{
+						setResult.add(r);
+					}
+					t.setQtQueryResultInstances(setResult);
+					set.add(t); 
+
+				}
+
+				qtMaster.setQtQueryInstances(set);
+			}
+		}
 		return queryMasterList;
 	}
 

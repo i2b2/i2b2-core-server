@@ -64,8 +64,8 @@ public class RpdoType {
     protected String title;
     @XmlElement(name = "creator_id", required = true)
     protected String creatorId;
-    protected boolean shared;
-    protected boolean visible;
+    protected Boolean shared = null;
+    protected Boolean visible = null;
     @XmlElement(name = "column_count", required = true)
     protected String columnCount;
     @XmlElement(required = true)
@@ -131,7 +131,7 @@ public class RpdoType {
      * Gets the value of the shared property.
      * 
      */
-    public boolean isVisible() {
+    public Boolean isVisible() {
         return visible;
     }
 
@@ -147,7 +147,7 @@ public class RpdoType {
      * Gets the value of the shared property.
      * 
      */
-    public boolean isShared() {
+    public Boolean isShared() {
         return shared;
     }
 

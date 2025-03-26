@@ -2063,7 +2063,7 @@ class GetConceptNodeMapper implements RowMapper<ConceptType> {
 			if ((node.getNode() != null) && !node.getNode().equals("@"))
 				child.setKey("\\\\" + node.getNode() + rs.getString("c_fullname"));  
 			else
-				child.setKey("\\\\@"  + rs.getString("c_fullname")); 
+				child.setKey("\\\\" + rs.getString("tableCd") + rs.getString("c_fullname")); 
 			child.setSynonymCd(rs.getString("c_synonym_cd"));
 			child.setVisualattributes(rs.getString("c_visualattributes"));
 			Integer totalNumValue = rs.getInt("c_totalnum");

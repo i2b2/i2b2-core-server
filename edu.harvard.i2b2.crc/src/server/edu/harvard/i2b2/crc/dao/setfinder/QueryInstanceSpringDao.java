@@ -175,7 +175,8 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 				// Cast(notes as nvarchar(4000))
 				
 				//update message field
-				updateMessage(queryInstance.getQueryInstanceId(),queryInstance.getMessage(),true);
+				if (queryInstance.getMessage() != null)
+					updateMessage(queryInstance.getQueryInstanceId(),queryInstance.getMessage(),true);
 			
 				if (queryInstance.getEndDate() != null) { 
 				//update rest of the fields

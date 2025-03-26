@@ -31,6 +31,7 @@ import edu.harvard.i2b2.crc.dao.pdo.RpdoTable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import javax.sql.DataSource;
@@ -150,7 +151,7 @@ public class RPDODao extends JdbcDaoSupport {
 	}
 
 	public List<RpdoTable> getRPDO( int tableID) throws DataAccessException, I2B2Exception {
-		String sql = "SELECT * FROM " +  dbluTable + " WHERE " + getTable;		
+		String sql = "SELECT table_instance_id, table_instance_name, column_name, user_id, set_index, json_data, required, create_date, update_date FROM " +  dbluTable + " WHERE " + getTable;		
 		List<RpdoTable> queryResult = null;
 		try {
 			queryResult = jt.query(sql, new getMapperRPDO(), projectPath, userId,tableID);
@@ -190,9 +191,10 @@ public class RPDODao extends JdbcDaoSupport {
 	}
 
 	public int setRPDO(final RpdoType rpdoType) throws DataAccessException, I2B2Exception {
+		int naxtTableInstanceID = 0;
 		int numRowsAdded = 0;
 		String sql = "SELECT MAX(TABLE_INSTANCE_ID) from " + dbluTable;
-		numRowsAdded = jt.queryForObject(sql, Integer.class) + 1;
+		naxtTableInstanceID = jt.queryForObject(sql, Integer.class) + 1;
 
 		java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 		for(int i=0; i < rpdoType.getConcept().size(); i++)
@@ -206,30 +208,45 @@ public class RPDODao extends JdbcDaoSupport {
 			//json = gson.toJson(json);
 
 			if (json != null && !json.trim().equals("")) {
-				json = json.trim();
-				JsonElement jelement = JsonParser.parseString(json);
-				//JsonElement jelement = new JsonParser().parse(json);
+				String c_fullpath = " ";
+				String c_columnname  = " ";
+				String c_tablename  = " ";
+				String c_operator  = " ";
+				String c_dimcode  = " ";
+				String aggType = " ";
 
-				JsonArray  jarray = jelement.getAsJsonArray();
-				JsonObject jobject = jarray.get(0).getAsJsonObject();
+				try {
+					json = json.trim();
+					JsonElement jelement = JsonParser.parseString(json);
+					//JsonElement jelement = new JsonParser().parse(json);
 
-				String aggType = jobject.get("dataOption").getAsString();
-
-				JsonObject jObj= jobject.get("sdxData").getAsJsonObject();
-				JsonElement jObj2 = jObj.get("origData");
-				jobject =jObj2.getAsJsonObject();
-				String c_fullpath = jobject.get("key").getAsString(); 
-				String c_columnname  = jobject.get("column_name").getAsString(); 
-				String c_tablename  = jobject.get("table_name").getAsString(); 
-				String c_operator  = jobject.get("operator").getAsString(); 
-				String c_dimcode  = jobject.get("dim_code").getAsString(); 
+					JsonArray  jarray = jelement.getAsJsonArray();
+					JsonObject jobject = jarray.get(0).getAsJsonObject();
 
 
+
+					aggType = jobject.get("dataOption").getAsString();
+
+					JsonObject jObj= jobject.get("sdxData").getAsJsonObject();
+					JsonElement jObj2 = jObj.get("origData");
+					jobject =jObj2.getAsJsonObject();
+					c_fullpath = jobject.get("key").getAsString(); 
+					c_columnname  = jobject.get("column_name").getAsString(); 
+					c_tablename  = jobject.get("table_name").getAsString(); 
+					c_operator  = jobject.get("operator").getAsString(); 
+					c_dimcode  = jobject.get("dim_code").getAsString(); 
+				} catch (Exception e) {}
+
+				if (rpdoType.isVisible() == null) 
+					rpdoType.setVisible(false);
+				if (rpdoType.isShared() == null) 
+					rpdoType.setShared(false);
+				
 
 				sql = "INSERT INTO " + dbluTable +
-						"(TABLE_INSTANCE_ID, TABLE_INSTANCE_NAME, COLUMN_NAME, C_FACTTABLECOLUMN, C_FULLPATH, AGG_TYPE,C_COLUMNNAME,C_TABLENAME,C_OPERATOR,C_DIMCODE,USER_ID ,GROUP_ID ,SET_INDEX,JSON_DATA,CREATE_DATE,UPDATE_DATE,DELETE_FLAG,USE_AS_COHORT) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'N',?)";		
-				jt.update(sql, 
-						numRowsAdded,
+						"(TABLE_INSTANCE_ID, TABLE_INSTANCE_NAME, COLUMN_NAME, C_FACTTABLECOLUMN, C_FULLPATH, AGG_TYPE,C_COLUMNNAME,C_TABLENAME,C_OPERATOR,C_DIMCODE,USER_ID ,GROUP_ID ,SET_INDEX,JSON_DATA,CREATE_DATE,UPDATE_DATE,DELETE_FLAG,USE_AS_COHORT,REQUIRED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'N',?)";		
+				numRowsAdded = jt.update(sql, 
+						naxtTableInstanceID,
 						rpdoType.getTitle(),
 						rpdoType.getConcept().get(i).getName(),
 						"concept_cd",
@@ -245,19 +262,41 @@ public class RPDODao extends JdbcDaoSupport {
 						json,
 						now,
 						now,
-						(rpdoType.isVisible() == true?"Y":"N")
+						(rpdoType.isVisible() == true?"Y":"N"),
+						(rpdoType.getConcept().get(i).isRequired()== true?"Y":"N")
 						);
 
 				log.info("setRPDO - Number of rows added: " + numRowsAdded);
 			}
 		}
 
-		if (rpdoType.isVisible())
+		// Always save regardless of isVisible is set
+		//if (rpdoType.isVisible())
+		//{
+			//Remove existing
+		try {
+			sql = "DELETE FROM  " + breakdownTable +
+					" WHERE NAME = ? and USER_ID = ? ";
+	
+			jt.update(sql, 
+					naxtTableInstanceID,
+					(rpdoType.isShared() == true?"@":userId));
+		
+			//Remove existing
+			sql = "DELETE FROM  " + resultTypeTable +
+					" WHERE NAME = ? and CLASSNAME = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated' ";
+	
+			jt.update(sql, 
+					naxtTableInstanceID);
+		} catch (Exception e)
 		{
+			e.printStackTrace();
+		}
+			//Insert
 			sql = "INSERT INTO " + breakdownTable +
 					"(NAME, VALUE, CREATE_DATE, UPDATE_DATE, USER_ID) VALUES (?,?,?,?,?) ";
 			jt.update(sql, 
-					"RPDO_" + numRowsAdded,
+					naxtTableInstanceID,
 					"RPDO()",
 					now,
 					now,
@@ -268,18 +307,19 @@ public class RPDODao extends JdbcDaoSupport {
 			int resultTypeId = jt.queryForObject(sql, Integer.class) + 1;
 
 
+			//Insert
 			sql = "INSERT INTO " + resultTypeTable +
 					"(RESULT_TYPE_ID, NAME, DESCRIPTION, DISPLAY_TYPE_ID, VISUAL_ATTRIBUTE_TYPE_ID, USER_ROLE_CD, CLASSNAME) VALUES (?,?,?,?,?,?,?) ";
 			jt.update(sql, 
 					resultTypeId,
-					"RPDO_" + numRowsAdded,
+					naxtTableInstanceID,
 					rpdoType.getTitle(),
 					"CATNUM",
-					"LA",
+					"LU",
 					null,
-					"edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientSQLCountGenerator");
+					"edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated");
 
-		}
+		//}
 		return numRowsAdded;
 	}
 
@@ -397,9 +437,12 @@ class getMapperRPDOs implements RowMapper<RpdoType> {
 		dblu.setId(rs.getInt("table_instance_id"));
 		dblu.setTitle(rs.getString("table_instance_name"));
 		dblu.setCreatorId(rs.getString("user_id"));
-		dblu.setColumnCount(rs.getString("set_index"));
+		dblu.setColumnCount((rs.getInt("set_index")+1) + "");
 		dblu.setCreateDate(rs.getTimestamp("create_date"));
-		dblu.setShared(true);
+		if (rs.getString("user_id").equals("@"))
+			dblu.setShared(true);
+		else
+			dblu.setShared(false);
 
 		return dblu;
 	}
@@ -417,7 +460,12 @@ class getMapperRPDO implements RowMapper<RpdoTable> {
 		//	dblu.setGroupId(rs.getString("group_id"));
 		dblu.setColumnCount(rs.getString("set_index"));
 		dblu.setConcept(rs.getString("json_data"));
-		//	dblu.setJsonData(rs.getString("json_data"));
+		if (dblu.getId() == -1 ||  (rs.getString("required") != null && rs.getString("required").equals("Y")))
+			dblu.setRequired(true);
+		else
+			dblu.setRequired(false);
+		
+			//	dblu.setJsonData(rs.getString("json_data"));
 		/*
 		dblu.setcFacttablecolumn(rs.getString("c_facttablecolumn"));
 		dblu.setcTablename(rs.getString("c_tablename"));
@@ -435,7 +483,11 @@ class getMapperRPDO implements RowMapper<RpdoTable> {
 		dblu.setConstrainByValueUnitOfMeasure(rs.getString("constrain_by_value_unit_of_measure"));
 		dblu.setConstrainByValueType(rs.getString("constrain_by_value_type"));
 		 */
-		dblu.setShared(true);
+		if (rs.getString("user_id").equals("@"))
+			dblu.setShared(true);
+		else
+			dblu.setShared(false);
+		//dblu.setShared(true);
 		dblu.setCreateDate(rs.getTimestamp("create_date"));
 		dblu.setUpdateDate(rs.getTimestamp("update_date"));
 		//		dblu.setDeleteFlag(rs.getString("delete_flag"));

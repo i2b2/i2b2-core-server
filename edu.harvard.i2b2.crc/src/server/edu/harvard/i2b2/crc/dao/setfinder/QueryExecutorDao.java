@@ -623,7 +623,7 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 		queryStatusType.setStatusTypeId(statusTypeId);
 		queryInstance.setQtQueryStatusType(queryStatusType);
 		queryInstance.setEndDate(new Date(System.currentTimeMillis()));
-		queryInstance.setMessage(message);
+		queryInstance.setMessage(queryInstance.getMessage() + "\n" +  message);
 		queryInstanceDao.update(queryInstance, true);
 	}
 
