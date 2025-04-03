@@ -149,14 +149,14 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		//(String) param.get("ResultFullName");
 
 		String processTimingFlag = (String) param.get("ProcessTimingFlag");
-		String projectId = (String) param.get("projectId");
+		//String projectId = (String) param.get("projectId");
 		int obfuscatedRecordCount = (Integer) param.get("ObfuscatedRecordCount");
 		int recordCount = (Integer) param.get("RecordCount");
 		int resultPriority = (Integer) param.get("ResultPriority");
 		int transactionTimeout = (Integer) param.get("TransactionTimeout");
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
 		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
-		List<PanelType> panelList = (List<PanelType>)param.get("panelList");
+		//List<PanelType> panelList = (List<PanelType>)param.get("panelList");
 		List<ResultOutputOptionType>  resultOptionList = (List<ResultOutputOptionType>) param.get("resultOptionList");
 
 		boolean skipCSV = false;
@@ -166,7 +166,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		this
 		.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
 				.getFullSchema());
-		Map ontologyKeyMap = (Map) param.get("setFinderResultOntologyKeyMap");
+		//Map ontologyKeyMap = (Map) param.get("setFinderResultOntologyKeyMap");
 		String serverType = (String) param.get("ServerType");
 		//		CallOntologyUtil ontologyUtil = (CallOntologyUtil) param
 		//				.get("CallOntologyUtil");
@@ -296,6 +296,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{DX\\}\\}\\}", TEMP_DX_TABLE));
 					if (item.getQuery().contains("{{{FULL_SCHEMA}}}"))
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{FULL_SCHEMA\\}\\}\\}", this.getDbSchemaName()));
+					if (item.getQuery().contains("{{{RESULT_INSTANCE_ID}}}"))
+						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", resultInstanceId));
+					
 
 					stmt = sfConn.prepareStatement(item.getQuery());
 					stmt.setQueryTimeout(transactionTimeout);
@@ -714,12 +717,12 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 	}
 
 
-	public static ValueExporter JaxbXmlToObj(String xmlString) {
+	public static ValueExporter JaxbXmlToObj(String xmlString) throws JAXBException {
 
 		ValueExporter val = new ValueExporter();
 		ValueExporter resultDataSet = null ;
 		JAXBContext jaxbContext;
-		try {
+		//try {
 			jaxbContext = JAXBContext.newInstance(val.getClass());
 
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -727,10 +730,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 			resultDataSet = (ValueExporter) jaxbUnmarshaller.unmarshal(new StringReader(xmlString));
 
 			//System.out.println(resultDataSet);
-		}
-		catch (JAXBException e) {
-			e.printStackTrace();
-		}
+		
 		return resultDataSet;
 	}
 	private String sanitizeFilename(String filename)
@@ -798,7 +798,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", sanitizeFilename(resultFullName));
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_MASTER_ID\\}\\}\\}", sanitizeFilename(queryInstanceId)); //qtMaster.getQueryMasterId()));
 
-		while (fileName.contains("{{{RANDOM_"))
+		if (fileName.contains("{{{RANDOM_"))
 		{
 
 			try {
@@ -814,7 +814,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 		}
 		// Deal with dates
-		while (fileName.contains("{{{DATE_"))
+		if (fileName.contains("{{{DATE_"))
 		{
 
 			try {

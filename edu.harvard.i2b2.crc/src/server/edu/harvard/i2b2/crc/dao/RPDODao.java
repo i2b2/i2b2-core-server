@@ -59,12 +59,14 @@ public class RPDODao extends JdbcDaoSupport {
 	private static String dbluTable;
 	private static String breakdownTable;
 	private static String resultTypeTable;	
-	private static String getTable = " (LOWER(group_id)=LOWER(?) OR group_id='@') AND (LOWER(user_id)=LOWER(?) OR user_id='@') AND table_instance_id=? order by set_index ";
-	private static String keyOrder = " LOWER(group_id)=LOWER(?) AND (LOWER(user_id)=LOWER(?) OR user_id='@') "; //ORDER BY TABLE_INSTANCE_NAME ";
+	private static String getTable = " (LOWER(group_id)=LOWER(?) OR group_id='@')  AND table_instance_id=? order by set_index ";
+	private static String keyOrder = " LOWER(group_id)=LOWER(?) "; //AND (LOWER(user_id)=LOWER(?) OR user_id='@') "; //ORDER BY TABLE_INSTANCE_NAME ";
 	private String domainId = null;
 	private String userId = null;
 	private String projectPath = null;
-
+	private String dataSchema = "";
+	private String serverType = "";
+	
 	public RPDODao() {		
 		initDblookupDao();
 	} 
@@ -77,7 +79,7 @@ public class RPDODao extends JdbcDaoSupport {
 	}
 
 	private void initDblookupDao() {		
-		String dataSchema = "";
+		
 
 		try {
 
@@ -89,6 +91,7 @@ public class RPDODao extends JdbcDaoSupport {
 			ds = daoFactory.getSetFinderDAOFactory().getDataSource();
 
 			dataSchema = daoFactory.getSetFinderDAOFactory().getDataSourceLookup().getFullSchema();
+			serverType = daoFactory.getSetFinderDAOFactory().getDataSourceLookup().getServerType();
 			//ds = QueryProcessorUtil.getInstance().getDataSource("java:/CRCBootStrapDS");
 			//ServiceLocator.getInstance()
 			//.getAppServerDataSource(dataSourceName);
@@ -141,7 +144,7 @@ public class RPDODao extends JdbcDaoSupport {
 				+ "  group by  table_instance_id, table_instance_name, user_id, create_date";
 		List<RpdoType> queryResult = null;
 		try {
-			queryResult = jt.query(sql, new getMapperRPDOs(), projectPath, userId);
+			queryResult = jt.query(sql, new getMapperRPDOs(), projectPath);
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			throw e;
@@ -154,7 +157,7 @@ public class RPDODao extends JdbcDaoSupport {
 		String sql = "SELECT table_instance_id, table_instance_name, column_name, user_id, set_index, json_data, required, create_date, update_date FROM " +  dbluTable + " WHERE " + getTable;		
 		List<RpdoTable> queryResult = null;
 		try {
-			queryResult = jt.query(sql, new getMapperRPDO(), projectPath, userId,tableID);
+			queryResult = jt.query(sql, new getMapperRPDO(), projectPath,tableID);
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
@@ -279,7 +282,7 @@ public class RPDODao extends JdbcDaoSupport {
 					" WHERE NAME = ? and USER_ID = ? ";
 	
 			jt.update(sql, 
-					naxtTableInstanceID,
+					"RPDO_" + naxtTableInstanceID,
 					(rpdoType.isShared() == true?"@":userId));
 		
 			//Remove existing
@@ -287,20 +290,47 @@ public class RPDODao extends JdbcDaoSupport {
 					" WHERE NAME = ? and CLASSNAME = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated' ";
 	
 			jt.update(sql, 
-					naxtTableInstanceID);
+					"RPDO_" + naxtTableInstanceID);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 			//Insert
+		
+		
 			sql = "INSERT INTO " + breakdownTable +
-					"(NAME, VALUE, CREATE_DATE, UPDATE_DATE, USER_ID) VALUES (?,?,?,?,?) ";
+					"(NAME, VALUE, CREATE_DATE, UPDATE_DATE, USER_ID, GROUP_ID) VALUES (?,?,?,?,?,?) ";
+			
+			String value = "RPDO()";
+			if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER))
+			{
+				value = "EXEC " + dataSchema + ".usp_rpdo2 @TABLE_INSTANCE_ID=" + naxtTableInstanceID
+						+ ", @RESULT_INSTANCE_ID={{{RESULT_INSTANCE_ID}}}" 
+						+ ", @MIN_ROW=0"
+						+ ", @MAX_ROW=10000";
+				
+			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE))
+			{
+				value = "EXEC " + dataSchema + ".usp_rpdo2 ('" + naxtTableInstanceID
+						+ "','{{{RESULT_INSTANCE_ID}}}" 
+						+ "','0"
+						+ "','10000')";
+				
+			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+			{
+				value = "SELECT " + dataSchema + ".usp_rpdo2 ('" + naxtTableInstanceID
+						+ "','{{{RESULT_INSTANCE_ID}}}" 
+						+ "','0"
+						+ "','10000')";
+				
+			}
 			jt.update(sql, 
-					naxtTableInstanceID,
-					"RPDO()",
+					"RPDO_" + naxtTableInstanceID,
+					value,
 					now,
 					now,
-					(rpdoType.isShared() == true?"@":userId));
+					(rpdoType.isShared() == true?"@":userId),
+					projectPath);
 
 
 			sql = "SELECT MAX(RESULT_TYPE_ID) from " + resultTypeTable;
@@ -312,7 +342,7 @@ public class RPDODao extends JdbcDaoSupport {
 					"(RESULT_TYPE_ID, NAME, DESCRIPTION, DISPLAY_TYPE_ID, VISUAL_ATTRIBUTE_TYPE_ID, USER_ROLE_CD, CLASSNAME) VALUES (?,?,?,?,?,?,?) ";
 			jt.update(sql, 
 					resultTypeId,
-					naxtTableInstanceID,
+					"RPDO_" + naxtTableInstanceID,
 					rpdoType.getTitle(),
 					"CATNUM",
 					"LU",
@@ -335,11 +365,11 @@ public class RPDODao extends JdbcDaoSupport {
 		int numRowsAdded = 0;
 
 		String sql = "UPDATE " + dbluTable +
-				" SET  TABLE_INSTANCE_NAME = ? WHERE TABLE_INSTANCE_ID = ? and USER_ID = ?";		
+				" SET  TABLE_INSTANCE_NAME = ? WHERE TABLE_INSTANCE_ID = ? and GROUP_ID = ?";		
 		numRowsAdded = jt.update(sql, 
 				title,
 				id,
-				userId
+				projectPath
 				);
 		return numRowsAdded;
 	}
@@ -347,11 +377,25 @@ public class RPDODao extends JdbcDaoSupport {
 	public int getRPDODelete(Integer id) {
 		int numRowsAdded = 0;
 
-		String sql = "UPDATE " + dbluTable +
-				" SET  DELETE_FLAG = 'Y' WHERE TABLE_INSTANCE_ID = ? and USER_ID = ?";		
+		
+		String sql = "DELETE FROM  " + breakdownTable +
+				" WHERE NAME = ?";
+
+		jt.update(sql, 
+				"RPDO_" + id);
+	
+		//Remove existing
+		sql = "DELETE FROM  " + resultTypeTable +
+				" WHERE NAME = ? and CLASSNAME = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated' ";
+
+		jt.update(sql, 
+				"RPDO_" + id);
+		
+		 sql = "UPDATE " + dbluTable +
+				" SET  DELETE_FLAG = 'Y' WHERE TABLE_INSTANCE_ID = ? and GROUP_ID = ?";		
 		numRowsAdded = jt.update(sql, 
 				id,
-				userId
+				projectPath
 				);
 		return numRowsAdded;
 	}

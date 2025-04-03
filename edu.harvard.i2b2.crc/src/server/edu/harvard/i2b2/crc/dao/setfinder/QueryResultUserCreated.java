@@ -143,7 +143,7 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 			DataType mdataType = new DataType();
 
 			mdataType.setValue( new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-			mdataType.setColumn("Request Submitted");
+			mdataType.setColumn("CREATED");
 			mdataType.setType("string");
 			resultType.getData().add(mdataType);
 
@@ -151,7 +151,7 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 			mdataType = new DataType();
 
 			mdataType.setValue( queryDef.getEmail());
-			mdataType.setColumn("Email");
+			mdataType.setColumn("EMAIL");
 			mdataType.setType("string");
 			resultType.getData().add(mdataType);
 
