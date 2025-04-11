@@ -133,6 +133,8 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				log.debug("project name from PM " + projectType.getName());
 				logesapi.debug("project id from PM " + projectType.getId());
 
+				if (projectType.getUserName() == null)
+					projectType.setUserName(securityType.getUsername());
 
 				if (projectType.getRole() != null) {
 					log.debug("project role from PM "

@@ -504,7 +504,9 @@ public class QueryManagerBean{ // implements SessionBean {
 						mdataType.setType("string");
 						resultType.getData().add(mdataType);
 
+						SaveXMLResult(resultType, sfDAOFactory, r.getResultInstanceId());
 
+						/*
 						edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 						edu.harvard.i2b2.crc.datavo.i2b2result.BodyType bodyType2 = new edu.harvard.i2b2.crc.datavo.i2b2result.BodyType();
 						bodyType2.getAny().add(of.createResult(resultType));
@@ -522,7 +524,7 @@ public class QueryManagerBean{ // implements SessionBean {
 
 						xmlResultDao2.deleteQueryXmlResult(r.getResultInstanceId());
 						xmlResultDao2.createQueryXmlResult(r.getResultInstanceId(), xmlResult2);
-
+						 */
 
 
 						// Call QueryResultPatientDownload
@@ -571,6 +573,7 @@ public class QueryManagerBean{ // implements SessionBean {
 
 						param.put("ResultRandom", String.valueOf(random.nextInt()));
 						param.put("ResultDate",  LocalDate.now());
+						param.put("resultType", resultType);
 						param.put("isRPDO", true);
 
 
@@ -586,6 +589,8 @@ public class QueryManagerBean{ // implements SessionBean {
 						resultType.getData().add(mdataType);
 
 
+						SaveXMLResult(resultType, sfDAOFactory, r.getResultInstanceId());
+						/*
 						bodyType2 = new edu.harvard.i2b2.crc.datavo.i2b2result.BodyType();
 						bodyType2.getAny().add(of.createResult(resultType));
 						resultEnvelop = new ResultEnvelopeType();
@@ -602,7 +607,7 @@ public class QueryManagerBean{ // implements SessionBean {
 
 						xmlResultDao2.deleteQueryXmlResult(r.getResultInstanceId());
 						xmlResultDao2.createQueryXmlResult(r.getResultInstanceId(), xmlResult2);
-
+						*/
 
 
 
@@ -626,6 +631,27 @@ public class QueryManagerBean{ // implements SessionBean {
 		return instanceResultResponse;
 	}
 
+	private void SaveXMLResult(ResultType resultType, SetFinderDAOFactory sfDAOFactory, String resultInstanceId) throws JAXBUtilException
+	{
+		edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
+		edu.harvard.i2b2.crc.datavo.i2b2result.BodyType bodyType2 = new edu.harvard.i2b2.crc.datavo.i2b2result.BodyType();
+		bodyType2.getAny().add(of.createResult(resultType));
+		ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
+		resultEnvelop.setBody(bodyType2);
+
+		JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+
+		StringWriter strWriter2 = new StringWriter();
+		jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
+				strWriter2);
+		//tm.begin();
+		IXmlResultDao xmlResultDao2 = sfDAOFactory.getXmlResultDao();
+		String xmlResult2 = strWriter2.toString();
+
+		xmlResultDao2.deleteQueryXmlResult(resultInstanceId);
+		xmlResultDao2.createQueryXmlResult(resultInstanceId, xmlResult2);
+
+	}
 
 	protected Object getRequestType(String requestXml, Class classname)
 			throws JAXBUtilException {

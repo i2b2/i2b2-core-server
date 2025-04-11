@@ -519,7 +519,6 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		List<QtQueryMaster> queryMasterList = jdbcTemplate.query(sql,
 				obj, queryMasterMapper);
 
-
 		if (includeQueryInstance) {
 			QueryInstanceSpringDao instanceDao = new QueryInstanceSpringDao(dataSource, dataSourceLookup);
 

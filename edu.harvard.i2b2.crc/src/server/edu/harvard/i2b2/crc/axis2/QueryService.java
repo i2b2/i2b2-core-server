@@ -21,15 +21,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.om.OMText;
 import org.apache.axiom.om.OMXMLBuilderFactory;
-import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.context.OperationContext;
-import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
@@ -45,10 +38,11 @@ import edu.harvard.i2b2.crc.loader.delegate.BulkLoadRequestHandler;
 import edu.harvard.i2b2.crc.loader.delegate.GetLoadStatusRequestHandler;
 import edu.harvard.i2b2.crc.loader.delegate.LoaderQueryRequestDelegate;
 import edu.harvard.i2b2.crc.loader.delegate.PublishDataRequestHandler;
-import jakarta.activation.DataHandler;
-import jakarta.activation.FileDataSource;
+import edu.harvard.i2b2.crc.datavo.I2B2MessageResponseFactory;
 //import edu.harvard.i2b2.crc.loader.ws.ProviderRestService;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
+import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
+import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.crc.delegate.DbLookupReqHandler;
 //import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.delegate.DeleteDblookupHandler;
@@ -867,55 +861,6 @@ public class QueryService {
 					.toString());
 			log.debug("Response in service" + response);
 			returnElement = buildOMElementFromString(response);
-			
-			/*
-			// We can obtain the request (incoming) MessageContext as follows
-			MessageContext inMessageContext = MessageContext.getCurrentMessageContext();
-			// We can obtain the operation context from the request message context
-			OperationContext operationContext = inMessageContext.getOperationContext();
-			// Now we can obtain the response (outgoing) message context from the
-			// operation context
-			MessageContext outMessageContext = operationContext
-					.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
-			
-			
-			FileDataSource graphImageDataSource;
-			DataHandler graphImageDataHandler;
-			graphImageDataSource = new FileDataSource("/tmp/2.png");
-			graphImageDataHandler = new DataHandler(graphImageDataSource);
-			String graphImageID = outMessageContext.addAttachment(graphImageDataHandler);
-			returnElement =  createDownloadStatisticsElement("Apache Axis2","2007 January",34000,graphImageID);
-			*/
-			
-
-			FileDataSource fileDataSource;
-			DataHandler fileDataHandler;
-
-			String filename = "/tmp/2.png";
-			// We can obtain the request (incoming) MessageContext as follows
-			MessageContext inMessageContext = MessageContext
-					.getCurrentMessageContext();
-			// We can obtain the operation context from the request message
-			// context
-			OperationContext operationContext = inMessageContext
-					.getOperationContext();
-			MessageContext outMessageContext = operationContext
-					.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
-			outMessageContext.setDoingSwA(true);
-			outMessageContext.setDoingREST(false);
-			if (!filename.equals("")) {
-				fileDataSource = new FileDataSource(filename);
-				fileDataHandler = new DataHandler(fileDataSource);
-				// use requested filename as content ID
-				outMessageContext.addAttachment(filename, fileDataHandler);
-				outMessageContext.setDoingMTOM(false);
-				outMessageContext.setDoingSwA(true);
-				returnElement = buildOMElementFromString(response,
-						fileDataHandler.getName());
-			} else {
-				log.error("where did the file go? ");
-			}
-			
 		} catch (XMLStreamException e) {
 			log.error("xml stream exception", e);
 		} catch (I2B2Exception e) {
@@ -926,51 +871,6 @@ public class QueryService {
 		return returnElement;
 	}
 
-	
-	private OMElement buildOMElementFromString(String xmlString,
-			String contentID) throws XMLStreamException {
-		OMElement returnElement = null;
-
-		try {
-			StringReader strReader = new StringReader(xmlString);
-			XMLInputFactory xif = XMLInputFactory.newInstance();
-			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
-
-			returnElement = OMXMLBuilderFactory.createStAXOMBuilder(reader).getDocumentElement();
-
-			OMFactory factory = OMAbstractFactory.getOMFactory();
-			OMNamespace omNs = factory.createOMNamespace(
-					"http://www.i2b2.org/xsd", "swa");
-
-			OMElement fileElement = factory.createOMElement("file", omNs,
-					returnElement);
-			fileElement.addAttribute("href", contentID, null);
-		} catch (XMLStreamException ex) {
-			log.error("Error while converting FR response PDO to OMElement", ex);
-			throw ex;
-		}
-
-		return returnElement;
-	}
-
-	
-	private OMElement createDownloadStatisticsElement2(String projectName, String month,
-			long downloads, String graphCID) {
-		OMFactory factory = OMAbstractFactory.getOMFactory();
-		OMNamespace omNs = factory.createOMNamespace("http://service.sample/xsd", "swa");
-		OMElement wrapperElement = factory.createOMElement("getStatsResponse", omNs);
-		OMElement nameElement = factory.createOMElement("projectName", omNs, wrapperElement);
-		nameElement.setText(projectName);
-		OMElement monthElement = factory.createOMElement("month", omNs, wrapperElement);
-		monthElement.setText(month);
-		OMElement downloadsElement = factory.createOMElement("downloads", omNs, wrapperElement);
-		downloadsElement.setText("" + downloads);
-		OMElement graphElement = factory.createOMElement("graph", omNs, wrapperElement);
-        graphCID = "cid:"+graphCID;
-		graphElement.addAttribute("href", graphCID,null);
-		return wrapperElement;
-	}
-	
 	/**
 	 * Function constructs OMElement for the given String
 	 * 

@@ -102,9 +102,9 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 		String processTimingFlag = (String) param.get("ProcessTimingFlag");
 		int obfuscatedRecordCount = (Integer) param.get("ObfuscatedRecordCount");
 		int recordCount = (Integer) param.get("RecordCount");
-		int transactionTimeout = (Integer) param.get("TransactionTimeout");
-		long dxCreateTime = (Long) param.get("DXCreateTime");
-		transactionTimeout = transactionTimeout - Math.toIntExact(dxCreateTime);
+		//int transactionTimeout = (Integer) param.get("TransactionTimeout");
+		//long dxCreateTime = (Long) param.get("DXCreateTime");
+		//transactionTimeout = transactionTimeout ;//- Math.toIntExact(dxCreateTime);
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
 
 		QueryDefinitionType queryDef = (QueryDefinitionType) param.get("queryDef");

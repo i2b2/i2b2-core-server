@@ -45,12 +45,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -142,6 +144,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		// String itemKey = (String) param.get("ItemKey");
 		String resultTypeName = (String) param.get("ResultOptionName");
 
+		ResultType resultXmlType = (ResultType) param.get("resultType");
 
 		//ZipOutputStream zipStream;
 
@@ -207,8 +210,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 				//get break down count sigma from property file 
 
-				ResultType resultType = new ResultType();
-				resultType.setName(resultTypeName);
+				//ResultType resultType = new ResultType();
+				//resultType.setName(resultTypeName);
 				//stmt = sfConn.prepareStatement(itemCountSql);
 
 				CancelStatementRunner csr = new CancelStatementRunner(stmt,
@@ -357,51 +360,37 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 					fileName = processFilename(fileName, param);
 
-					/*fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}", userName);
-					fileName = fileName.replaceAll("\\{\\{\\{FULL_NAME\\}\\}\\}", resultFullName);			
-					fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId.substring(1, projectId.length()-1));
-					//fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", resultInstanceId);
-					fileName = fileName.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", sanitizeFilename(queryDef.getQueryName()));
-					fileName = fileName.replaceAll("\\{\\{\\{QUERY_MASTER_ID\\}\\}\\}", sanitizeFilename(queryDef.getQueryId()));
 
-					while (fileName.contains("{{{RANDOM_"))
-					{
+					//Update XML Value
+					
+					DataType mdataType = new DataType();
 
-						try {
-							int start = fileName.indexOf("{{{RANDOM_");
-							int end = fileName.indexOf("}}}", start);
-							int size = Integer.parseInt(fileName.substring(start+10, end));
-
-							//SecureRandom random = new SecureRandom();
-							//fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", String.valueOf(random.nextInt(size)));
-							fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", (String) param.get("ResultRandom"));
-
-						} catch (Exception e) {}
-
-					}
-					// Deal with dates
-					while (fileName.contains("{{{DATE_"))
-					{
-
-						try {
-							int start = fileName.indexOf("{{{DATE_");
-							int end = fileName.indexOf("}}}", start);
-							String date = fileName.substring(start+8, end);
-
-							//DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
-							//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
-
-							DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
-							fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}",  ((LocalDate) param.get("ResultDate")).format(formatter));
-									//(String) param.get("ResultDate"));
-
-						} catch (Exception e) {}
-
-					}
-					 */
+					mdataType.setValue( fileName);
+					mdataType.setColumn("FILENAME");
+					mdataType.setType("string");
+					resultXmlType.getData().add(mdataType);
 
 
+					edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of2 = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
+					edu.harvard.i2b2.crc.datavo.i2b2result.BodyType bodyType2 = new edu.harvard.i2b2.crc.datavo.i2b2result.BodyType();
+					bodyType2.getAny().add(of2.createResult(resultXmlType));
+					ResultEnvelopeType resultEnvelop2 = new ResultEnvelopeType();
+					resultEnvelop2.setBody(bodyType2);
 
+					JAXBUtil jaxbUtil2 = CRCJAXBUtil.getJAXBUtil();
+
+					StringWriter strWriter2 = new StringWriter();
+					jaxbUtil2.marshaller(of2.createI2B2ResultEnvelope(resultEnvelop2),
+							strWriter2);
+					//tm.begin();
+					IXmlResultDao xmlResultDao2 = sfDAOFactory.getXmlResultDao();
+					String xmlResult2 = strWriter2.toString();
+
+					xmlResultDao2.deleteQueryXmlResult(resultInstanceId);
+					xmlResultDao2.createQueryXmlResult(resultInstanceId, xmlResult2);
+
+					
+					
 					if (skipCSV == false) {
 						boolean async = true;
 
@@ -436,7 +425,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 				edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 				BodyType bodyType = new BodyType();
-				bodyType.getAny().add(of.createResult(resultType));
+				bodyType.getAny().add(of.createResult(resultXmlType));
 				ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
 				resultEnvelop.setBody(bodyType);
 
@@ -567,6 +556,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 						email.email(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), "i2b2 Data Export - " + queryDef.getQueryName(), letter);
 				}
+				
+
 			} catch (SQLException sqlEx) {
 				// catch oracle query timeout error ORA-01013
 				if (sqlEx.toString().indexOf("ORA-01013") > -1) {
