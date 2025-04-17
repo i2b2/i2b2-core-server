@@ -411,7 +411,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<QtQueryMaster> getQueryMasterByUserId(String userId,
+	public List<QtQueryMaster> getQueryMasterByUserId(String userId, String groupId,
 			int fetchSize, String masterTypeCd, boolean includeQueryInstance) {
 
 		String sql = "select ";
@@ -424,12 +424,12 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		sql += " query_master_id,name,user_id,group_id,create_date,delete_date,null as request_xml,null as pm_xml,delete_flag,generated_sql, null as i2b2_request_xml,  master_type_cd, null as plugin_id from "
 				+ getDbSchemaName()
 				+ "qt_query_master "
-				+ " where user_id = ? and delete_flag = ? ";// and master_type_cd is NULL";
+				+ " where user_id = ? and (group_id = ? OR group_id = '@') and delete_flag = ? ";// and master_type_cd is NULL";
 
-		Object[] obj = new Object[] { userId, DELETE_NO_FLAG };
+		Object[] obj = new Object[] { userId, groupId, DELETE_NO_FLAG };
 		if (masterTypeCd != null) {
 			sql += " and master_type_cd = ?";
-			obj = new Object[] { userId, DELETE_NO_FLAG, masterTypeCd };
+			obj = new Object[] { userId, groupId, DELETE_NO_FLAG, masterTypeCd };
 		}
 
 		sql += " order by create_date desc  ";

@@ -50,7 +50,7 @@ public interface IQueryMasterDao {
 	 * @return List<QtQueryMaster>
 	 */
 	@SuppressWarnings("unchecked")
-	public List<QtQueryMaster> getQueryMasterByUserId(String userId,
+	public List<QtQueryMaster> getQueryMasterByUserId(String userId, String groupId,
 			int fetchSize, String masterTypeCd, boolean includeQueryInstance);
 
 	/**

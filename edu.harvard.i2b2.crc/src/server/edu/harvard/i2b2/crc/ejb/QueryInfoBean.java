@@ -124,6 +124,7 @@ public class QueryInfoBean { //implements SessionBean {
 					throws I2B2DAOException {
 
 		String userId = userRequestType.getUserId();
+		String groupId = userRequestType.getGroupId();
 		int fetchSize = userRequestType.getFetchSize();
 		boolean includeQueryInstance = userRequestType.getIncludeQueryInstance();
 		String masterTypeCd = userRequestType.getMasterTypeCd();
@@ -133,7 +134,7 @@ public class QueryInfoBean { //implements SessionBean {
 				.getProjectPath(), dataSourceLookup.getOwnerId());
 		IQueryMasterDao queryMasterDao = sfDaoFactory.getQueryMasterDAO();
 		List<QtQueryMaster> masterList = queryMasterDao.getQueryMasterByUserId(
-				userId, fetchSize, masterTypeCd, includeQueryInstance);
+				userId, groupId, fetchSize, masterTypeCd, includeQueryInstance);
 		MasterResponseType masterResponseType = buildMasterResponseType(masterList);
 		return masterResponseType;
 	}
@@ -481,6 +482,12 @@ public class QueryInfoBean { //implements SessionBean {
 						mdataType.setColumn(statusName);
 						mdataType.setType("string");
 						resultType.getData().add(mdataType);
+					
+						mdataType.setValue(userId);
+						mdataType.setColumn("ApprovedBy");
+						mdataType.setType("string");
+						resultType.getData().add(mdataType);
+							
 						
 
 						edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
@@ -625,8 +632,10 @@ public class QueryInfoBean { //implements SessionBean {
 					.getQueryBreakdownTypeDao();
 			QtQueryBreakdownType queryBreakdownType = queryBreakdownTypeDao.
 					getBreakdownTypeByName(queryResultType.getName(), dataSourceLookup.getProjectPath());
-			if (queryBreakdownType.getUserId() == null || queryBreakdownType.getUserId().equalsIgnoreCase(dataSourceLookup.getOwnerId()) 
-					|| queryBreakdownType.getUserId().equalsIgnoreCase("@"))
+
+			//log.info("here"+ queryBreakdownType.getName() + "|" + queryBreakdownType.getUserId());
+			if (queryBreakdownType != null && (queryBreakdownType.getUserId() == null || queryBreakdownType.getUserId().equalsIgnoreCase(dataSourceLookup.getOwnerId()) 
+					|| queryBreakdownType.getUserId().equalsIgnoreCase("@")))
 				returnQueryResultType.add(PSMFactory
 						.buildQueryResultType(queryResultType));
 		}

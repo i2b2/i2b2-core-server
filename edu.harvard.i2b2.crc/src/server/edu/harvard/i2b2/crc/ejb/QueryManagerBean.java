@@ -432,29 +432,39 @@ public class QueryManagerBean{ // implements SessionBean {
 	 * @return InstanceResultResponseType
 	 */
 	public InstanceResultResponseType runExportQueryInstance(
-			DataSourceLookup dataSourceLookup, String userId, String quertyInstanceId,
+			DataSourceLookup dataSourceLookup, String userId, String queryInstanceId,
 			String xmlRequest) throws Exception {
 
 		InstanceResultResponseType instanceResultResponse = new InstanceResultResponseType();
 
+		SetFinderDAOFactory sfDAOFactory = null;
+		QueryManagerBeanUtil qmBeanUtil = new QueryManagerBeanUtil();
+
+		DataSourceLookup dsLookupInput = qmBeanUtil
+				.getDataSourceLookupInput(xmlRequest);
+
+		DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
+				dsLookupInput.getDomainId(),
+				dsLookupInput.getProjectPath(), dsLookupInput.getOwnerId());
+
+		IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
+		sfDAOFactory = daoFactory.getSetFinderDAOFactory();
+
+		IQueryInstanceDao queryInstanceDao = sfDAOFactory
+				.getQueryInstanceDAO();
+
+		QtQueryInstance queryInstance = queryInstanceDao
+				.getQueryInstanceByInstanceId(queryInstanceId);
+
 		try {
 			String sessionId = String.valueOf(System.currentTimeMillis());
-			QueryManagerBeanUtil qmBeanUtil = new QueryManagerBeanUtil();
 			long timeout = qmBeanUtil.getTimeout(xmlRequest);
 
-			DataSourceLookup dsLookupInput = qmBeanUtil
-					.getDataSourceLookupInput(xmlRequest);
-			SetFinderDAOFactory sfDAOFactory = null;
 			// tm.begin();
 			//			transaction.begin();
 			if (dsLookupInput.getProjectPath() == null) {
 				throw new I2B2Exception("project id is missing in the request");
 			}
-			DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
-					dsLookupInput.getDomainId(),
-					dsLookupInput.getProjectPath(), dsLookupInput.getOwnerId());
-			IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
-			sfDAOFactory = daoFactory.getSetFinderDAOFactory();
 
 
 			QueryInstanceSpringDao instanceSpringDao = new QueryInstanceSpringDao(sfDAOFactory.getDataSource(), sfDAOFactory.getDataSourceLookup());
@@ -463,11 +473,19 @@ public class QueryManagerBean{ // implements SessionBean {
 			QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(sfDAOFactory.getDataSource(), sfDAOFactory.getDataSourceLookup());
 			Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
 
+			
+
+
+			queryInstance.setBatchMode(QueryManagerBeanUtil.PROCESSING);
+			queryInstance.setEndDate(new Date(System
+					.currentTimeMillis()));
+			queryInstanceDao.update(queryInstance, false);
+			//SKIP this one and goto MEDIUM Queue
 			//QueryInstanceType queryInstanceResponse = PSMFactory
 			//		.buildQueryInstanceType(instanceSpringDao.getQueryInstanceByInstanceId(quertyInstanceId));
 			//instanceResultResponse.setQueryInstance(queryInstanceResponse);
 
-			for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(quertyInstanceId))
+			for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(queryInstanceId))
 			{
 				if (r.getQtQueryResultType().getClassname().equals("edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated"))
 				{
@@ -556,7 +574,7 @@ public class QueryManagerBean{ // implements SessionBean {
 						SetFinderConnection sfConn = new SetFinderConnection(sfDAOFactory.getDataSource().getConnection());
 						param.put("SetFinderConnection", sfConn);
 						param.put("SetFinderDAOFactory", sfDAOFactory);
-						param.put("QueryInstanceId", quertyInstanceId);
+						param.put("QueryInstanceId", queryInstanceId);
 						param.put("TEMP_DX_TABLE", TEMP_DX_TABLE);
 						param.put("ResultInstanceId", r.getResultInstanceId());
 						param.put("ResultOptionName", r.getQtQueryResultType().getName());
@@ -618,11 +636,21 @@ public class QueryManagerBean{ // implements SessionBean {
 				}
 			}
 
+			queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
+			queryInstance.setEndDate(new Date(System
+					.currentTimeMillis()));
+			queryInstanceDao.update(queryInstance, false);
+
 
 
 		} catch (I2B2DAOException ex) {
 			log.debug("Got an error in QueryManagerBean, thropwing: " + ex.getMessage());
 			ex.printStackTrace();
+
+			queryInstance.setBatchMode(QueryManagerBeanUtil.PROCESSING);
+			queryInstance.setEndDate(new Date(System
+					.currentTimeMillis()));
+			queryInstanceDao.update(queryInstance, false);
 
 			throw new I2B2Exception(ex.getMessage());
 		}

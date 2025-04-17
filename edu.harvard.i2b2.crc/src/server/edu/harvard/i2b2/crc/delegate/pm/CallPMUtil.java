@@ -274,6 +274,8 @@ public class CallPMUtil {
 						+ projectId + "]");
 			}
 		}
+		if (configureType.getUser().isIsAdmin())
+			projectType.getRole().add("ADMIN");
 
 		return projectType;
 	}

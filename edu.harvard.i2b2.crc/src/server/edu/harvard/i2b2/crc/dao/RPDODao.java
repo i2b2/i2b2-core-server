@@ -71,6 +71,7 @@ public class RPDODao extends JdbcDaoSupport {
 	private String serverType = "";
 	//private String projectId = null;
 	private boolean isManager = false;
+	private boolean isAdmin = false;
 
 	public RPDODao() {		
 		initDblookupDao();
@@ -90,6 +91,9 @@ public class RPDODao extends JdbcDaoSupport {
 			if (projectType != null && projectType.getRole().size() > 0) {
 				if ((!projectType.getRole().contains("MANAGER"))) {
 					isManager = true;
+				}
+				if ((!projectType.getRole().contains("ADMIN"))) {
+					isAdmin = true;
 				}
 			}
 		} catch (Exception e)
@@ -215,6 +219,14 @@ public class RPDODao extends JdbcDaoSupport {
 	}
 */
 	public int setRPDO(final RpdoType rpdoType) throws DataAccessException, I2B2Exception {
+		//verify ismanager and can set userId to '@'
+		if (isAdmin == false && rpdoType.getCreatorId().equals("@"))
+			throw new I2B2Exception("Access Denied");		
+		if (isAdmin && rpdoType.getCreatorId().equals("@"))
+			projectPath = "@";
+		
+
+			
 		int naxtTableInstanceID = 0;
 		int numRowsAdded = 0;
 		String sql = "SELECT MAX(TABLE_INSTANCE_ID) from " + dbluTable;
@@ -293,7 +305,7 @@ public class RPDODao extends JdbcDaoSupport {
 							c_tablename,
 							c_operator,
 							c_dimcode,
-							(rpdoType.isShared() == true?"@":userId),
+							(rpdoType.isShared() == true?"@":rpdoType.getCreatorId()),
 							projectPath,
 							i,
 							json,
@@ -314,11 +326,11 @@ public class RPDODao extends JdbcDaoSupport {
 		//Remove existing
 		try {
 			sql = "DELETE FROM  " + breakdownTable +
-					" WHERE NAME = ? and USER_ID = ? ";
+					" WHERE NAME = ?";
 
 			jt.update(sql, 
-					"RPDO_" + naxtTableInstanceID,
-					(rpdoType.isShared() == true?"@":userId));
+					"RPDO_" + naxtTableInstanceID);
+					//(rpdoType.isShared() == true?"@":userId));
 
 			//Remove existing
 			sql = "DELETE FROM  " + resultTypeTable +
