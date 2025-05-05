@@ -365,8 +365,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					
 					DataType mdataType = new DataType();
 
-					mdataType.setValue( fileName);
-					mdataType.setColumn("FILENAME");
+					mdataType.setValue( workDir);
+					mdataType.setColumn("DIRECTORY");
 					mdataType.setType("string");
 					resultXmlType.getData().add(mdataType);
 

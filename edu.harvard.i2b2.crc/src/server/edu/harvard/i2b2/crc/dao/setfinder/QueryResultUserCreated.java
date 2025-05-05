@@ -143,7 +143,7 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 			DataType mdataType = new DataType();
 
 			mdataType.setValue( new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-			mdataType.setColumn("CREATED");
+			mdataType.setColumn("SUBMITTED");
 			mdataType.setType("string");
 			resultType.getData().add(mdataType);
 

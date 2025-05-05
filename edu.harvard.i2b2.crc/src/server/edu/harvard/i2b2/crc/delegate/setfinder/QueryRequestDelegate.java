@@ -37,6 +37,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
+import edu.harvard.i2b2.crc.datavo.pm.ConfigureType;
 import edu.harvard.i2b2.crc.datavo.pm.ParamType;
 import edu.harvard.i2b2.crc.datavo.pm.ProjectType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType;
@@ -72,7 +73,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 		PsmQryHeaderType headerType = null;
 		String response = null;
 		JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
-
+		ConfigureType configureType = null;
 		try {
 			JAXBElement jaxbElement = jaxbUtil.unMashallFromString(requestXml);
 
@@ -133,6 +134,13 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				log.debug("project name from PM " + projectType.getName());
 				logesapi.debug("project id from PM " + projectType.getId());
 
+				
+
+				JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
+				 configureType = (ConfigureType) helper.getObjectByClass(
+						 bodyType.getAny(),
+						ConfigureType.class);
+				
 				if (projectType.getUserName() == null)
 					projectType.setUserName(securityType.getUsername());
 
@@ -226,13 +234,13 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 					.equals(
 							PsmRequestTypeType.CRC_QRY_GET_QUERY_MASTER_LIST_FROM_GROUP_ID)) {
 				// check if user have right permission to access this request
-				if (projectType != null && projectType.getRole().size() > 0) {
-					if ((!projectType.getRole().contains("MANAGER"))) {
+				if (projectType != null && projectType.getRole().size() > 0) {  
+					if ((!projectType.getRole().contains("MANAGER")) && !configureType.getUser().isIsAdmin()) {
 						// Not authorized
 						procStatus = new StatusType();
 						procStatus.setType("ERROR");
 						procStatus
-						.setValue("Authorization failure, should have MANAGER  role");
+						.setValue("Authorization failure, should have MANAGER or ADMIN role");
 						response = I2B2MessageResponseFactory
 								.buildResponseMessage(requestXml, procStatus,
 										bodyType);
@@ -243,7 +251,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 					procStatus = new StatusType();
 					procStatus.setType("ERROR");
 					procStatus
-					.setValue("Authorization failure, should have MANAGER role");
+					.setValue("Authorization failure, should have MANAGER or ADMIN role");
 					response = I2B2MessageResponseFactory.buildResponseMessage(
 							requestXml, procStatus, bodyType);
 					return response;

@@ -484,7 +484,7 @@ public class QueryInfoBean { //implements SessionBean {
 						resultType.getData().add(mdataType);
 					
 						mdataType.setValue(userId);
-						mdataType.setColumn("ApprovedBy");
+						mdataType.setColumn("APPROVEDBY");
 						mdataType.setType("string");
 						resultType.getData().add(mdataType);
 							

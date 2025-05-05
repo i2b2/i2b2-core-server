@@ -519,6 +519,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		List<QtQueryMaster> queryMasterList = jdbcTemplate.query(sql,
 				obj, queryMasterMapper);
 
+		log.info(queryMasterList);
 		if (includeQueryInstance) {
 			QueryInstanceSpringDao instanceDao = new QueryInstanceSpringDao(dataSource, dataSourceLookup);
 
@@ -529,6 +530,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				// Add each element of list into the set 
 				for (QtQueryInstance t : instanceDao.getQueryInstanceByMasterId(qtMaster.getQueryMasterId())) 
 				{
+					try {
 					QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(dataSource, dataSourceLookup);
 					Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
 					for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(t.getQueryInstanceId()))
@@ -537,6 +539,10 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 					}
 					t.setQtQueryResultInstances(setResult);
 					set.add(t); 
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+					}
 
 				}
 
