@@ -483,13 +483,6 @@ public class QueryInfoBean { //implements SessionBean {
 						mdataType.setType("string");
 						resultType.getData().add(mdataType);
 					
-						mdataType.setValue(userId);
-						mdataType.setColumn("APPROVEDBY");
-						mdataType.setType("string");
-						resultType.getData().add(mdataType);
-							
-						
-
 						edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 						BodyType bodyType = new BodyType();
 						bodyType.getAny().add(of.createResult(resultType));

@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -524,26 +525,15 @@ public class QueryManagerBean{ // implements SessionBean {
 
 						SaveXMLResult(resultType, sfDAOFactory, r.getResultInstanceId());
 
-						/*
-						edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
-						edu.harvard.i2b2.crc.datavo.i2b2result.BodyType bodyType2 = new edu.harvard.i2b2.crc.datavo.i2b2result.BodyType();
-						bodyType2.getAny().add(of.createResult(resultType));
-						ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
-						resultEnvelop.setBody(bodyType2);
 
-						JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
-
-						StringWriter strWriter2 = new StringWriter();
-						jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
-								strWriter2);
-						//tm.begin();
-						IXmlResultDao xmlResultDao2 = sfDAOFactory.getXmlResultDao();
-						String xmlResult2 = strWriter2.toString();
-
-						xmlResultDao2.deleteQueryXmlResult(r.getResultInstanceId());
-						xmlResultDao2.createQueryXmlResult(r.getResultInstanceId(), xmlResult2);
-						 */
-
+						// Get the breakdown
+						String PSetResultInstanceId = "-1";
+						for (QtQueryResultInstance r2 : resultInstanceDao.getResultInstanceList(queryInstanceId))
+						{
+							if (r2.getQtQueryResultType().getName().equals("PATIENTSET"))
+								PSetResultInstanceId= r2.getResultInstanceId();
+						
+						}
 
 						// Call QueryResultPatientDownload
 						QueryDefinitionType queryDef =  new QueryDefinitionType();
@@ -586,6 +576,7 @@ public class QueryManagerBean{ // implements SessionBean {
 						param.put("TransactionTimeout", 0);
 						param.put("ObfuscatedRoleFlag", false);
 						param.put("queryDef", queryDef);
+						param.put("PSetResultInstanceId", PSetResultInstanceId);
 						param.put("resultOptionList", resultOutput);
 						//						ResultOutputOptionType>) param.get("");
 
@@ -594,7 +585,12 @@ public class QueryManagerBean{ // implements SessionBean {
 						param.put("resultType", resultType);
 						param.put("isRPDO", true);
 
-
+						DataType mdataType3 = new DataType();
+						mdataType3.setValue( new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+						mdataType3.setColumn("PROCESSING");
+						mdataType3.setType("string");
+						resultType.getData().add(mdataType3);
+						
 						edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientDownload qrpd = new edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientDownload();
 
 						qrpd.generateResult(param);
@@ -606,6 +602,13 @@ public class QueryManagerBean{ // implements SessionBean {
 						mdataType.setType("string");
 						resultType.getData().add(mdataType);
 
+
+						DataType mdataType2 = new DataType();
+						mdataType2.setValue(userId);
+						mdataType2.setColumn("APPROVEDBY");
+						mdataType2.setType("string");
+						resultType.getData().add(mdataType2);
+							
 
 						SaveXMLResult(resultType, sfDAOFactory, r.getResultInstanceId());
 						/*

@@ -27,7 +27,16 @@ public class RpdoTable {
 	protected String creatorId;
     protected boolean shared;
     protected boolean required;
-    protected String columnCount;
+    protected boolean visible;
+    public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	protected String columnCount;
     protected String concept;
     protected Date createDate;
     protected Date updateDate;

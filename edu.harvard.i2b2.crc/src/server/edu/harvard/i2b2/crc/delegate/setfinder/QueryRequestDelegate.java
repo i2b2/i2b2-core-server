@@ -73,7 +73,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 		PsmQryHeaderType headerType = null;
 		String response = null;
 		JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
-		ConfigureType configureType = null;
+		
 		try {
 			JAXBElement jaxbElement = jaxbUtil.unMashallFromString(requestXml);
 
@@ -134,12 +134,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				log.debug("project name from PM " + projectType.getName());
 				logesapi.debug("project id from PM " + projectType.getId());
 
-				
-
-				JAXBUnWrapHelper helper = new JAXBUnWrapHelper();
-				 configureType = (ConfigureType) helper.getObjectByClass(
-						 bodyType.getAny(),
-						ConfigureType.class);
+			
 				
 				if (projectType.getUserName() == null)
 					projectType.setUserName(securityType.getUsername());
@@ -235,7 +230,8 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 							PsmRequestTypeType.CRC_QRY_GET_QUERY_MASTER_LIST_FROM_GROUP_ID)) {
 				// check if user have right permission to access this request
 				if (projectType != null && projectType.getRole().size() > 0) {  
-					if ((!projectType.getRole().contains("MANAGER")) && !configureType.getUser().isIsAdmin()) {
+					//if ((!projectType.getRole().contains("MANAGER")) || !projectType.getRole().contains("ADMIN")) {
+					if (!(projectType.getRole().contains("MANAGER") || projectType.getRole().contains("ADMIN"))) {
 						// Not authorized
 						procStatus = new StatusType();
 						procStatus.setType("ERROR");

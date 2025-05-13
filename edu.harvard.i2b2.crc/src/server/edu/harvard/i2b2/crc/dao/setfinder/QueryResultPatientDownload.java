@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -141,6 +142,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		String queryInstanceId = (String) param.get("QueryInstanceId");
 		String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
 		String resultInstanceId = (String) param.get("ResultInstanceId");
+		String PSetResultInstanceId = (String) param.get("PSetResultInstanceId");
 		// String itemKey = (String) param.get("ItemKey");
 		String resultTypeName = (String) param.get("ResultOptionName");
 
@@ -206,6 +208,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				param.put("FullName", user.getFullName());
 				param.put("UserName", user.getUserName());
 				param.put("resultInstanceId", resultInstanceId);
+				param.put("QueryMasterId", queryMaster.getQueryMasterId());
+
 				String exportItemXml = getItemKeyFromResultType(sfDAOFactory, resultTypeName);
 
 				//get break down count sigma from property file 
@@ -274,22 +278,10 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				}
 
 				for (edu.harvard.i2b2.crc.dao.xml.File item: valueExport.getFile()) {
-					/*
-					 * 		JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
-		RequestMessageType reqMsgType = (RequestMessageType) jaxbUtil
-				.unMashallFromString(xml).getValue();
-		System.out.println(reqMsgType.getMessageHeader().getMessageControlId());
-		JAXBUnWrapHelper unWrapHelper = new JAXBUnWrapHelper();
-		QueryDefinitionRequestType queryDefinitionType = (QueryDefinitionRequestType) unWrapHelper
-				.getObjectByClass(
-						reqMsgType.getMessageBody().getAny(),
-						edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionRequestType.class);
-		System.out.println("query namef"
-				+ queryDefinitionType.getQueryDefinition().getQueryName());
-					 */
+
 
 					Path p = Paths.get(item.getFilename());
-					letterFilename = workDirStr + p.getParent() + File.separator + "Letter.txt";
+					letterFilename =  p.getParent() + File.separator + "Letter.txt";
 
 					letterFilename = processFilename(letterFilename, param);
 
@@ -300,7 +292,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (item.getQuery().contains("{{{FULL_SCHEMA}}}"))
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{FULL_SCHEMA\\}\\}\\}", this.getDbSchemaName()));
 					if (item.getQuery().contains("{{{RESULT_INSTANCE_ID}}}"))
-						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", resultInstanceId));
+						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", PSetResultInstanceId));  //use the patient set
 					
 
 					stmt = sfConn.prepareStatement(item.getQuery());
@@ -347,7 +339,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						fileName = fileNameStr;
 					}
 					if (item.getFilename() != null)
-						fileName = workDir + item.getFilename();
+						fileName = item.getFilename();
 
 					String fetchSizeStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.resultfetchsize");
 					if (fetchSizeStr != null) {
@@ -365,12 +357,20 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					
 					DataType mdataType = new DataType();
 
-					mdataType.setValue( workDir);
+					mdataType.setValue( p.getParent().toString());
 					mdataType.setColumn("DIRECTORY");
 					mdataType.setType("string");
 					resultXmlType.getData().add(mdataType);
 
 
+					for(Iterator<DataType> i = resultXmlType.getData().iterator(); i.hasNext();) {
+					       DataType name = i.next();
+					       //Do Something
+					       if (name.getColumn().equals("APPROVEDBY"))
+					    	   i.remove();
+					 }
+
+					
 					edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of2 = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 					edu.harvard.i2b2.crc.datavo.i2b2result.BodyType bodyType2 = new edu.harvard.i2b2.crc.datavo.i2b2result.BodyType();
 					bodyType2.getAny().add(of2.createResult(resultXmlType));
@@ -396,7 +396,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 						File file = new File(fileName);
 						file.getParentFile().mkdirs();
-						try (CSVWriter writer = new  CSVWriter(fileName, separator,  quotechar,  escapechar,  Character.toString(lineEnd), recordCount)) {
+						try (CSVWriter writer = new  CSVWriter(fileName, separator,  quotechar,  escapechar,  Character.toString(lineEnd), recordCount, true)) {
 							//CSVWriter(fileName)) {
 
 
@@ -414,12 +414,68 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 							logFile += writer.getLog();
 							resultSet.close();
+
 						}
 						if (csr.getSqlFinishedFlag()) {
 							timeoutFlag = true;
 							throw new CRCTimeOutException("The query was canceled.");
 						}
+						
+						// if RPDO than save the RPDO table
+						String sql = "SELECT TABLE_INSTANCE_ID "
+								+ "      ,TABLE_INSTANCE_NAME "
+								+ "      ,USER_ID "
+								+ "      ,GROUP_ID"
+								+ "      ,SET_INDEX"
+								+ "      ,C_FACTTABLECOLUMN"
+								+ "      ,C_TABLENAME"
+								+ "      ,COLUMN_NAME"
+								+ "      ,C_FULLPATH"
+								+ "      ,C_COLUMNNAME"
+								+ "      ,C_COLUMNDATATYPE"
+								+ "      ,C_OPERATOR"
+								+ "      ,C_DIMCODE"
+								+ "      ,AGG_TYPE"
+								+ "      ,CONSTRAIN_BY_DATE_TO"
+								+ "      ,CONSTRAIN_BY_DATE_FROM"
+								+ "      ,CONSTRAIN_BY_VALUE_OPERATOR"
+								+ "      ,CONSTRAIN_BY_VALUE_CONSTRAINT"
+								+ "      ,CONSTRAIN_BY_VALUE_UNIT_OF_MEASURE"
+								+ "      ,CONSTRAIN_BY_VALUE_TYPE"
+								+ "      ,CREATE_DATE	  "
+								+ "  FROM " + this.getDbSchemaName() + "RPDO_TABLE_REQUEST"
+								+ "   WHERE TABLE_INSTANCE_ID = " + resultTypeName.replace("RPDO_", "")
+								+ "  order by set_index asc ";
+						log.info(sql);
+						stmt = sfConn.prepareStatement(sql);
+						stmt.setQueryTimeout(transactionTimeout);
 
+						resultSet = stmt.executeQuery();
+						
+						try (CSVWriter writer = new  CSVWriter(p.getParent().toString()  + File.separator +  resultInstanceId + "_RPDO_Table.csv", separator,  quotechar,  escapechar,  Character.toString(lineEnd), recordCount, false)) {
+							//CSVWriter(fileName)) {
+
+
+							//Define fetch size(default as 30000 rows), higher to be faster performance but takes more memory
+							ResultSetHelperService.RESULT_FETCH_SIZE=fetchSize;
+							//Define MAX extract rows, -1 means unlimited.
+							ResultSetHelperService.MAX_FETCH_ROWS=maxFetchRows;
+
+
+
+							//String lockoutQueryCountStr = qpUtil
+							//		.getCRCPropertyValue("edu.harvard.i2b2.crc.lockout.setfinderquery.count");
+							writer.setAsyncMode(async);
+							rowCount = writer.writeAll(resultSet, true);
+
+							//logFile += writer.getLog();
+							resultSet.close();
+							stmt.close();
+						}
+						if (csr.getSqlFinishedFlag()) {
+							timeoutFlag = true;
+							throw new CRCTimeOutException("The query was canceled.");
+						}
 					}
 				}
 
@@ -559,6 +615,15 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				
 
 			} catch (SQLException sqlEx) {
+				
+
+				if (resultInstanceId != null) {
+					IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
+							.getPatientSetResultDAO();
+
+						resultInstanceDao.updatePatientSet(resultInstanceId,
+								QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
+				}
 				// catch oracle query timeout error ORA-01013
 				if (sqlEx.toString().indexOf("ORA-01013") > -1) {
 					timeoutFlag = true;
@@ -634,27 +699,27 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 								mdataType.setColumn("PatientCount");
 								mdataType.setType("int");
 								resultType.setName(resultTypeName);
-								mdataType = new DataType();
-								mdataType.setValue(String.valueOf(rowCount));								
-								mdataType.setColumn("RowCount");
-								mdataType.setType("int");
-								resultType.getData().add(mdataType);	
-								mdataType = new DataType();
-								mdataType.setValue(letter);
-								mdataType.setColumn("RequestLetter");
-								mdataType.setType("string");
-								mdataType = new DataType();
-								mdataType.setValue(String.valueOf(logFile));								
-								mdataType.setColumn("Log");
-								mdataType.setType("string");
+								DataType mdataType2 = new DataType();
+								mdataType2.setValue(String.valueOf(rowCount));								
+								mdataType2.setColumn("RowCount");
+								mdataType2.setType("int");
+								resultType.getData().add(mdataType2);	
+								DataType mdataType3 = new DataType();
+								mdataType3.setValue(letter);
+								mdataType3.setColumn("RequestLetter");
+								mdataType3.setType("string");
+								resultType.getData().add(mdataType3);	
+								DataType mdataType4 = new DataType();
+								mdataType4.setValue(String.valueOf(logFile));								
+								mdataType4.setColumn("Log");
+								mdataType4.setType("string");
 
-								resultType.getData().add(mdataType);
-								mdataType = new DataType();
-								mdataType.setValue(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
-								mdataType.setColumn("QueryMasterID");
-								mdataType.setType("string");
-								resultType.getData().add(mdataType);
-								mdataType = new DataType();
+								resultType.getData().add(mdataType4);
+								DataType mdataType5 = new DataType();
+								mdataType5.setValue(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
+								mdataType5.setColumn("QueryMasterID");
+								mdataType5.setType("string");
+								resultType.getData().add(mdataType5);
 
 								edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 								BodyType bodyType = new BodyType();
@@ -763,31 +828,26 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 	private String processFilename(String fileName, Map param)
 	{
 
-
-		//		SetFinderDAOFactory sfDAOFactory = (SetFinderDAOFactory) param
-		//				.get("SetFinderDAOFactory");
-
 		String projectId = (String) param.get("projectId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
 		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
 		String resultFullName = queryDef.getQueryName();
-		//queryDef.getQueryId()
-
-		//		String resultFullName =  sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-		//				sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
-		//		QtQueryMaster qtMaster =  sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster();
 
 		fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}",(String) param.get("UserName"));//queryDef.getUserId());
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_STARTDATE\\}\\}\\}", ((java.sql.Timestamp) param.get("QueryStartDate")).toLocaleString());//sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getStartDate().toLocaleString());
+		fileName = fileName.replaceAll("\\{\\{\\{QUERY_STARTDATE\\}\\}\\}", ((java.sql.Timestamp) param.get("QueryStartDate")).toLocalDateTime().format( DateTimeFormatter.ofPattern("MMddyyyy")));
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_ENDDATE\\}\\}\\}", new Date().toLocaleString());
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_RUNTIME\\}\\}\\}", Integer.toString(Math.toIntExact(new Date().getTime() - ((java.sql.Timestamp) param.get("QueryStartDate")).getTime())/1000));
+	
+		//MM Figue out why failing.
+		//fileName = fileName.replaceAll("\\{\\{\\{QUERY_RUNTIME\\}\\}\\}", Integer.toString(Math.toIntExact(new Date().getTime() - ((java.sql.Timestamp) param.get("QueryStartDate")).getTime())/1000));
 
 		fileName = fileName.replaceAll("\\{\\{\\{PATIENT_COUNT\\}\\}\\}", param.get("RecordCount").toString());		
 		fileName = fileName.replaceAll("\\{\\{\\{FULL_NAME\\}\\}\\}", (String) param.get("FullName"));			
-		fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId.substring(1, projectId.length()-1));
-		fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", (String) param.get("resultFullName"));
+		fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId);
+		fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", (String) param.get("ResultInstanceId"));
 		fileName = fileName.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", sanitizeFilename(resultFullName));
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_MASTER_ID\\}\\}\\}", sanitizeFilename(queryInstanceId)); //qtMaster.getQueryMasterId()));
+		fileName = fileName.replaceAll("\\{\\{\\{QUERY_INSTANCE_ID\\}\\}\\}", sanitizeFilename(queryInstanceId)); //qtMaster.getQueryMasterId()));
+		fileName = fileName.replaceAll("\\{\\{\\{QUERY_MASTER_ID\\}\\}\\}", param.get("QueryMasterId").toString()); //qtMaster.getQueryMasterId()));
+		fileName = fileName.replaceAll("\\{\\{\\{RESULT_OPTION_NAME\\}\\}\\}", (String) param.get("ResultOptionName"));			
 
 		if (fileName.contains("{{{RANDOM_"))
 		{

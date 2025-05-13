@@ -69,11 +69,12 @@ public class CSVWriter implements Closeable {
 	protected ResultSetHelperService resultService;
 	protected FileBuffer buffer;
 	protected boolean asyncMode = false;
+	protected boolean logFile = false;
 	protected HashMap<String, Boolean> excludes = new HashMap<>();
 	protected HashMap<String, String> remaps = new HashMap();
 	protected String[] titles;
 	protected String msg = "";
-//	protected SetFinderDAOFactory sfDAOFactory;
+	//	protected SetFinderDAOFactory sfDAOFactory;
 
 	/**
 	 * Constructs CSVWriter using a comma for the separator.
@@ -84,25 +85,29 @@ public class CSVWriter implements Closeable {
 		this(writer, CSVParser.DEFAULT_SEPARATOR);
 	}
 
-	public CSVWriter(String fileName, char separator, char quotechar, char escapechar, String lineEnd, int recordCount) throws Exception {
+	public CSVWriter(String fileName, char separator, char quotechar, char escapechar, String lineEnd, int recordCount, boolean logFile) throws Exception {
 		this(new FileWriter(fileName), separator, quotechar, escapechar, lineEnd);
 		this.CSVFileName = fileName;
+		this.logFile = logFile;
 		this.recordCount = recordCount;
 		//this.sfDAOFactory = sfDAOFactory;
 		String extensionName = "csv";
 		if (quotechar == '\'' && escapechar == quotechar) extensionName = "sql";
 
-			buffer = new FileBuffer(INITIAL_BUFFER_SIZE, fileName, extensionName);
+		buffer = new FileBuffer(INITIAL_BUFFER_SIZE, fileName, extensionName);
 		//logWriter = new PrintWriter(buffer.file.getParentFile().getAbsolutePath() + File.separator + buffer.fileName + ".log");
-		logWriter = new PrintWriter(new FileOutputStream(
-			    new File(buffer.file.getParentFile().getAbsolutePath() + File.separator + "Log.txt"), true));
-		writeLogHeader(fileName);
+
+		if (logFile) {
+			logWriter = new PrintWriter(new FileOutputStream(
+					new File(buffer.file.getParentFile().getAbsolutePath() + File.separator + "Log.txt"), true));
+			writeLogHeader(fileName);
+		}
 		//logWriter = new PrintWriter(System.err);
 	}
 
-//	public CSVWriter(String fileName) throws Exception {
-//		this(fileName, CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, DEFAULT_ESCAPE_CHARACTER, DEFAULT_LINE_END);
-//	}
+	//	public CSVWriter(String fileName) throws Exception {
+	//		this(fileName, CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, DEFAULT_ESCAPE_CHARACTER, DEFAULT_LINE_END);
+	//	}
 
 	/**
 	 * Constructs CSVWriter with supplied separator.
@@ -201,14 +206,14 @@ public class CSVWriter implements Closeable {
 	}
 
 	protected void writeLogHeader(String fileName) {
-		//String msg = String.format("%s: %d rows extracted, total: %d rows, %.2f MB, %.3f secs on fetching.", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), rows - incrRows, rows, (float) buffer.position / 1024 / 1024, resultService == null ? 0f : (float) resultService.cost / 1e9);
 
-		//String msg;
+		if (logFile == false)
+			return;
 		try {
-			
+
 			String md5 = "";
 			try (InputStream is = Files.newInputStream(Paths.get(fileName))) {
-			  //MM Fix   md5 = md5Hex(is);
+				//MM Fix   md5 = md5Hex(is);
 			}
 
 			msg += "Environment Settings:---------------------------------------------------------------------------\n"
@@ -222,13 +227,13 @@ public class CSVWriter implements Closeable {
 					+ " File Name:			" + fileName + "\n"	
 					+ " md5 hash:			" + md5 + "\n"		
 					+ ""
-	//				+ "Data Sources:\n"
-	//				+ "	--CRC Name:         " + sfDAOFactory.getDataSourceLookup().getNiceName() + "\n"
-	//				+ "	--CRC Vendor:    	" + sfDAOFactory.getDataSource().getConnection().getMetaData().getDatabaseProductName() + "\n" //sfDAOFactory.getDataSourceLookup().getServerType()  + "\n"
-	//				+ "	--CRC URL: 	        " + sfDAOFactory.getDataSource().getConnection().getMetaData().getURL() + "\n"
-	//				+ "	--CRC Username: 	" + sfDAOFactory.getDataSource().getConnection().getMetaData().getUserName() + "\n"
+					//				+ "Data Sources:\n"
+					//				+ "	--CRC Name:         " + sfDAOFactory.getDataSourceLookup().getNiceName() + "\n"
+					//				+ "	--CRC Vendor:    	" + sfDAOFactory.getDataSource().getConnection().getMetaData().getDatabaseProductName() + "\n" //sfDAOFactory.getDataSourceLookup().getServerType()  + "\n"
+					//				+ "	--CRC URL: 	        " + sfDAOFactory.getDataSource().getConnection().getMetaData().getURL() + "\n"
+					//				+ "	--CRC Username: 	" + sfDAOFactory.getDataSource().getConnection().getMetaData().getUserName() + "\n"
 					+ "";
-					
+
 			logWriter.write(msg + "\n");
 		} catch ( Exception e) {
 			// TODO Auto-generated catch block
@@ -236,18 +241,20 @@ public class CSVWriter implements Closeable {
 		}
 		logWriter.flush();
 	}
-	
+
 	public String getLog()
 	{
 		return msg;
 	}
-	
-	protected void writeLog(int rows) {
-			String msg = String.format("%s: %d rows extracted, total: %d rows, %.2f MB, %.3f secs on fetching.", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), rows - incrRows, rows, (float) buffer.position / 1024 / 1024, resultService == null ? 0f : (float) resultService.cost / 1e9);
 
-					logWriter.write(msg + "\n");
-			
-			logWriter.flush();
+	protected void writeLog(int rows) {
+		if (logFile == false)
+			return;
+		String msg = String.format("%s: %d rows extracted, total: %d rows, %.2f MB, %.3f secs on fetching.", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), rows - incrRows, rows, (float) buffer.position / 1024 / 1024, resultService == null ? 0f : (float) resultService.cost / 1e9);
+
+		logWriter.write(msg + "\n");
+
+		logWriter.flush();
 		incrRows = rows;
 	}
 
@@ -342,9 +349,9 @@ public class CSVWriter implements Closeable {
 	}
 
 	public void flush(boolean force) throws IOException {
-			if (buffer.currentBytes == 0) return;
-			if (buffer.flush(force))
-				writeLog(totalRows);
+		if (buffer.currentBytes == 0) return;
+		if (buffer.flush(force))
+			writeLog(totalRows);
 	}
 
 	/**
@@ -359,7 +366,7 @@ public class CSVWriter implements Closeable {
 		if (nextLine == null) {
 			return;
 		}
-		if (totalRows == 0) writeLog(0);
+		if (totalRows == 0 && logFile) writeLog(0);
 		lineWidth = 0;
 		int counter = 0;
 		String nextElement;
@@ -439,8 +446,10 @@ public class CSVWriter implements Closeable {
 	 */
 	public void close() throws IOException {
 		flush(true);
-		writeLog(totalRows);
-		logWriter.close();
+		if (logFile) {
+			writeLog(totalRows);
+			logWriter.close();
+		}
 		buffer.close();
 		resultService = null;
 		System.gc();

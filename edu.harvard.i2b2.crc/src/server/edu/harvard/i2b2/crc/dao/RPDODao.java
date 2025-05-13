@@ -166,10 +166,10 @@ public class RPDODao extends JdbcDaoSupport {
 
 	public List<RpdoType> findRPDOs() throws DataAccessException, I2B2DAOException{	
 		//String sql = "SELECT * FROM " +  dbluTable + " WHERE" + keyOrder;		
-		String sql = "select distinct table_instance_id, table_instance_name, max(set_index) as set_index, user_id, shared, create_date "
+		String sql = "select distinct table_instance_id, table_instance_name, max(set_index) as set_index, user_id, shared, create_date, update_date "
 				+ "  FROM " +  dbluTable 
-				+ " WHERE delete_flag = 'N' and " + keyOrderRegular
-				+ "  group by  table_instance_id, table_instance_name, user_id, shared, create_date";
+				+ " WHERE " + keyOrderRegular
+				+ "  group by  table_instance_id, table_instance_name, user_id, shared, create_date, update_date";
 
 	/*	if (isAdmin || isManager)
 			sql = "select distinct table_instance_id, table_instance_name, max(set_index) as set_index, user_id, shared, create_date "
@@ -199,7 +199,7 @@ public class RPDODao extends JdbcDaoSupport {
 	}
 
 	public List<RpdoTable> getRPDO( int tableID) throws DataAccessException, I2B2Exception {
-		String sql = "SELECT table_instance_id, table_instance_name, column_name, user_id, set_index, json_data, required, shared, create_date, update_date FROM " +  dbluTable + " WHERE " + getTable;		
+		String sql = "SELECT table_instance_id, table_instance_name, column_name, user_id, set_index, json_data, required, shared, create_date, update_date, delete_flag FROM " +  dbluTable + " WHERE " + getTable;		
 		List<RpdoTable> queryResult = null;
 		try {
 			queryResult = jt.query(sql, new getMapperRPDO(), projectPath,tableID);
@@ -243,7 +243,7 @@ public class RPDODao extends JdbcDaoSupport {
 
 			naxtTableInstanceID = origRpdo.getId();
 			create = new java.sql.Timestamp(origRpdo.getCreateDate().getTime());
-			userId = rpdoType.getCreatorId();
+			userId = origRpdo.getCreatorId();
 		} 
 
 		for(int i=0; i < rpdoType.getConcept().size(); i++)
@@ -287,7 +287,7 @@ public class RPDODao extends JdbcDaoSupport {
 				} catch (Exception e) {}
 
 				if (rpdoType.isVisible() == null) 
-					rpdoType.setVisible(false);
+					rpdoType.setVisible(true);
 				if (rpdoType.isShared() == null) 
 					rpdoType.setShared(false);
 
@@ -296,7 +296,7 @@ public class RPDODao extends JdbcDaoSupport {
 
 				sql = "INSERT INTO " + dbluTable +
 						"(TABLE_INSTANCE_ID, TABLE_INSTANCE_NAME, COLUMN_NAME, C_FACTTABLECOLUMN, C_FULLPATH, AGG_TYPE,C_COLUMNNAME,C_TABLENAME,C_OPERATOR,C_DIMCODE,USER_ID ,GROUP_ID ,SET_INDEX,JSON_DATA,CREATE_DATE,UPDATE_DATE,DELETE_FLAG,USE_AS_COHORT,REQUIRED,SHARED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'N',?,?)";		
-				log.info(sql);
+				
 				numRowsAdded = jt.update(sql, 
 						naxtTableInstanceID,
 						rpdoType.getTitle(),
@@ -314,11 +314,11 @@ public class RPDODao extends JdbcDaoSupport {
 						json,
 						create,
 						now,
-						(rpdoType.isVisible() == true?"Y":"N"),
+						(rpdoType.getConcept().get(i).isDisplay() == false?"Y":"N"),
 						(rpdoType.getConcept().get(i).isRequired()== true?"Y":"N"),
 						(rpdoType.isShared() == true?"Y":"N")
 						);
-
+				
 				log.info("setRPDO - Number of rows added: " + numRowsAdded);
 
 			}
@@ -459,15 +459,15 @@ public class RPDODao extends JdbcDaoSupport {
 
 		if (isManager || isAdmin)
 		{
-			sql = "UPDATE " + dbluTable +
-					" SET  DELETE_FLAG = 'Y' WHERE DELETE_FLAG = 'N' and TABLE_INSTANCE_ID = ?";		
+			sql = "DELETE FROM " + dbluTable +
+					" WHERE TABLE_INSTANCE_ID = ?";		
 			numRowsAdded = jt.update(sql, 
 					id
 					);
 
 		} else {
-			sql = "UPDATE " + dbluTable +
-					" SET  DELETE_FLAG = 'Y' WHERE DELETE_FLAG = 'N' and TABLE_INSTANCE_ID = ? and GROUP_ID = ? and USER_ID != '@'";		
+			sql = "DELETE FROM " + dbluTable +
+					" WHERE TABLE_INSTANCE_ID = ? and GROUP_ID = ? and USER_ID != '@'";		
 			numRowsAdded = jt.update(sql, 
 					id,
 					projectPath
@@ -508,6 +508,8 @@ class getMapperRPDOs implements RowMapper<RpdoType> {
 		dblu.setCreatorId(rs.getString("user_id"));
 		dblu.setColumnCount((rs.getInt("set_index")+1) + "");
 		dblu.setCreateDate(rs.getTimestamp("create_date"));
+		if ((rs.getTimestamp("update_date") != null))
+			dblu.setUpdateDate(rs.getTimestamp("update_date"));
 		if ((rs.getString("shared") != null && rs.getString("shared").equals("Y")))
 			dblu.setShared(true);
 		else
@@ -540,10 +542,11 @@ class getMapperRPDO implements RowMapper<RpdoTable> {
 		else
 			dblu.setRequired(false);
 
-		//if (rs.getString("user_id").equals("@"))
-		//	dblu.setShared(true);
-		//else
-		//	dblu.setShared(false);
+		if ((rs.getString("delete_flag") != null && rs.getString("delete_flag").equals("Y")))
+			dblu.setVisible(false);
+		else
+			dblu.setVisible(true);
+		
 		if ((rs.getString("shared") != null && rs.getString("shared").equals("Y")))
 			dblu.setShared(true);
 		else
