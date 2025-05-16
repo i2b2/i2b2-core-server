@@ -6,7 +6,10 @@ public class CDATAAdapter extends XmlAdapter<String, String> {
 
     @Override
     public String marshal(String v) throws Exception {
-        return "<![CDATA[" + v + "]]>";
+    	if (v.contains("<") || v.contains("&"))
+    		return "<![CDATA[" + v + "]]>";
+    	else 
+    		return v;
     }
 
     @Override

@@ -78,17 +78,27 @@ public class RPDODao extends JdbcDaoSupport {
 		initDblookupDao();
 	} 
 
+
+	public RPDODao(String domainID, String userID, String projectPath) throws I2B2Exception, JAXBUtilException {
+		this.domainId = domainID;
+		this.userId = userID;
+		this.projectPath = projectPath;
+
+		initDblookupDao();
+
+	}
+
 	public RPDODao(MessageHeaderType reqMsgHdr) throws I2B2Exception, JAXBUtilException {
 		domainId = reqMsgHdr.getSecurity().getDomain();
 		userId = reqMsgHdr.getSecurity().getUsername();
 		projectPath = reqMsgHdr.getProjectId();
+
 		initDblookupDao();
 
 		try {
 			PMServiceDriver pmServiceDriver = new PMServiceDriver();
 			ProjectType projectType = pmServiceDriver.checkValidUser(reqMsgHdr.getSecurity(),
 					projectPath);
-
 
 			if (projectType != null && projectType.getRole().size() > 0) {
 				for(String role: projectType.getRole()) {
@@ -103,8 +113,9 @@ public class RPDODao extends JdbcDaoSupport {
 		} catch (Exception e)
 		{
 			e.printStackTrace();
-		}
+		}		
 	}
+
 
 	private void initDblookupDao() {		
 
@@ -171,7 +182,7 @@ public class RPDODao extends JdbcDaoSupport {
 				+ " WHERE " + keyOrderRegular
 				+ "  group by  table_instance_id, table_instance_name, user_id, shared, create_date, update_date";
 
-	/*	if (isAdmin || isManager)
+		/*	if (isAdmin || isManager)
 			sql = "select distinct table_instance_id, table_instance_name, max(set_index) as set_index, user_id, shared, create_date "
 					+ "  FROM " +  dbluTable 
 					+ " WHERE delete_flag = 'N' and " + keyOrderPriv
@@ -180,15 +191,15 @@ public class RPDODao extends JdbcDaoSupport {
 		log.info("my sql"+ sql);
 		log.info("isAdmin" + isAdmin);
 		log.info("isManager" + isManager);
-		*/
+		 */
 		List<RpdoType> queryResult = null;
 		try {
 			/*
 			if (isAdmin || isManager)
 				queryResult = jt.query(sql, new getMapperRPDOs(), projectPath);
 			else
-			*/
-				queryResult = jt.query(sql, new getMapperRPDOs(), projectPath, userId);
+			 */
+			queryResult = jt.query(sql, new getMapperRPDOs(), projectPath, userId);
 
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
@@ -263,6 +274,13 @@ public class RPDODao extends JdbcDaoSupport {
 				String c_operator  = " ";
 				String c_dimcode  = " ";
 				String aggType = " ";
+				
+				String valueType = null;
+				String valueOperator = null;
+				String value = null;
+				String valueUnit = null;
+				String dateTo = null;
+				String dateFrom = null;
 
 				try {
 					json = json.trim();
@@ -284,6 +302,35 @@ public class RPDODao extends JdbcDaoSupport {
 					c_tablename  = jobject.get("table_name").getAsString(); 
 					c_operator  = jobject.get("operator").getAsString(); 
 					c_dimcode  = jobject.get("dim_code").getAsString(); 
+					
+					//Get lab values
+					JsonElement jObj3 = jObj.get("LabValues");
+					if (jObj3 != null)
+					{
+						jobject =jObj3.getAsJsonObject();
+
+						valueType = jobject.get("ValueType").getAsString(); 
+						valueOperator = jobject.get("ValueOperator").getAsString(); 
+						value = jobject.get("Value").getAsString(); 
+						valueUnit = jobject.get("ValueUnit").getAsString(); 
+						
+					}
+					
+					//Get date range
+					JsonElement jObj4 = jObj.get("dateRange");
+					if (jObj4 != null)
+					{
+						jobject =jObj4.getAsJsonObject();
+
+						dateFrom = jobject.get("start").getAsString(); 
+						if (dateFrom.equals(""))
+							dateFrom = null;
+						dateTo = jobject.get("end").getAsString(); 
+						if (dateTo.equals(""))
+							dateTo = null;
+
+					}
+					
 				} catch (Exception e) {}
 
 				if (rpdoType.isVisible() == null) 
@@ -295,8 +342,8 @@ public class RPDODao extends JdbcDaoSupport {
 					rpdoType.setTitle(rpdoType.getTitle().substring(0, 199));
 
 				sql = "INSERT INTO " + dbluTable +
-						"(TABLE_INSTANCE_ID, TABLE_INSTANCE_NAME, COLUMN_NAME, C_FACTTABLECOLUMN, C_FULLPATH, AGG_TYPE,C_COLUMNNAME,C_TABLENAME,C_OPERATOR,C_DIMCODE,USER_ID ,GROUP_ID ,SET_INDEX,JSON_DATA,CREATE_DATE,UPDATE_DATE,DELETE_FLAG,USE_AS_COHORT,REQUIRED,SHARED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'N',?,?)";		
-				
+						"(TABLE_INSTANCE_ID, TABLE_INSTANCE_NAME, COLUMN_NAME, C_FACTTABLECOLUMN, C_FULLPATH, AGG_TYPE,C_COLUMNNAME,C_TABLENAME,C_OPERATOR,C_DIMCODE,CONSTRAIN_BY_DATE_TO, CONSTRAIN_BY_DATE_FROM, CONSTRAIN_BY_VALUE_OPERATOR, CONSTRAIN_BY_VALUE_CONSTRAINT, CONSTRAIN_BY_VALUE_UNIT_OF_MEASURE, CONSTRAIN_BY_VALUE_TYPE,USER_ID ,GROUP_ID ,SET_INDEX,JSON_DATA,CREATE_DATE,UPDATE_DATE,DELETE_FLAG,USE_AS_COHORT,REQUIRED,SHARED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'N',?,?)";		
+
 				numRowsAdded = jt.update(sql, 
 						naxtTableInstanceID,
 						rpdoType.getTitle(),
@@ -308,6 +355,14 @@ public class RPDODao extends JdbcDaoSupport {
 						c_tablename,
 						c_operator,
 						c_dimcode,
+						
+						dateTo,
+						dateFrom,
+						valueOperator,
+						value, 
+						valueUnit,
+						valueType,
+						
 						userId,
 						projectPath,
 						i,
@@ -318,47 +373,76 @@ public class RPDODao extends JdbcDaoSupport {
 						(rpdoType.getConcept().get(i).isRequired()== true?"Y":"N"),
 						(rpdoType.isShared() == true?"Y":"N")
 						);
-				
+
 				log.info("setRPDO - Number of rows added: " + numRowsAdded);
 
 			}
 		}
+
 		//Update required
-		sql = "  update " + dbluTable 
-				+ "  set  "
-				+ "       C_FACTTABLECOLUMN = rpdo.C_FACTTABLECOLUMN "
-				+ "      ,C_TABLENAME = rpdo.C_TABLENAME "
-				+ "      ,C_FULLPATH = rpdo.C_FULLPATH "
-				+ "      ,C_COLUMNNAME = rpdo.C_COLUMNNAME "
-				+ "      ,C_COLUMNDATATYPE = rpdo.C_COLUMNDATATYPE "
-				+ "      ,C_OPERATOR = rpdo.C_OPERATOR "
-				+ "      ,C_DIMCODE = rpdo.C_DIMCODE "
-				+ "	   ,GENERATED_SQL = rpdo.GENERATED_SQL "
-				+ "from ( "
-				+ " SELECT C_FACTTABLECOLUMN "
-				+ "      ,C_TABLENAME "
-				+ "      ,COLUMN_NAME "
-				+ "      ,C_FULLPATH "
-				+ "      ,C_COLUMNNAME "
-				+ "      ,C_COLUMNDATATYPE "
-				+ "      ,C_OPERATOR "
-				+ "      ,C_DIMCODE "
-				+ "	  ,GENERATED_SQL "
-				+ "    FROM " + dbluTable 
-				+ "	where  table_instance_id = -1) AS rpdo "
-				+ "where  "
-				+ "rpdo.COLUMN_NAME = RPDO_TABLE_REQUEST.COLUMN_NAME "
-				+ "and RPDO_TABLE_REQUEST.TABLE_INSTANCE_ID = ? "
-				+ "and RPDO_TABLE_REQUEST.REQUIRED = 'Y' ";
+		if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE))
+			sql = "MERGE INTO " + dbluTable + "  tgt "
+					+ "USING ( "
+					+ "    SELECT  C_FACTTABLECOLUMN, "
+					+ "            C_TABLENAME, "
+					+ "            COLUMN_NAME, "
+					+ "            C_FULLPATH, "
+					+ "            C_COLUMNNAME, "
+					+ "            C_COLUMNDATATYPE, "
+					+ "            C_OPERATOR, "
+					+ "            C_DIMCODE, "
+					+ "            GENERATED_SQL "
+					+ "    FROM    " + dbluTable 
+					+ "    WHERE   TABLE_INSTANCE_ID = -1 "
+					+ ") src "
+					+ "ON (   src.COLUMN_NAME       = tgt.COLUMN_NAME "
+					+ "   AND tgt.TABLE_INSTANCE_ID = ? "
+					+ "   AND tgt.REQUIRED          = 'Y' ) "
+					+ "WHEN MATCHED THEN "
+					+ "  UPDATE SET "
+					+ "        tgt.C_FACTTABLECOLUMN = src.C_FACTTABLECOLUMN, "
+					+ "        tgt.C_TABLENAME       = src.C_TABLENAME, "
+					+ "        tgt.C_FULLPATH        = src.C_FULLPATH, "
+					+ "        tgt.C_COLUMNNAME      = src.C_COLUMNNAME, "
+					+ "        tgt.C_COLUMNDATATYPE  = src.C_COLUMNDATATYPE, "
+					+ "        tgt.C_OPERATOR        = src.C_OPERATOR, "
+					+ "        tgt.C_DIMCODE         = src.C_DIMCODE, "
+					+ "        tgt.GENERATED_SQL     = src.GENERATED_SQL ";
+		else
+			sql = "  update " + dbluTable 
+			+ "  set  "
+			+ "       C_FACTTABLECOLUMN = rpdo.C_FACTTABLECOLUMN "
+			+ "      ,C_TABLENAME = rpdo.C_TABLENAME "
+			+ "      ,C_FULLPATH = rpdo.C_FULLPATH "
+			+ "      ,C_COLUMNNAME = rpdo.C_COLUMNNAME "
+			+ "      ,C_COLUMNDATATYPE = rpdo.C_COLUMNDATATYPE "
+			+ "      ,C_OPERATOR = rpdo.C_OPERATOR "
+			+ "      ,C_DIMCODE = rpdo.C_DIMCODE "
+			+ "	   ,GENERATED_SQL = rpdo.GENERATED_SQL "
+			+ "from ( "
+			+ " SELECT C_FACTTABLECOLUMN "
+			+ "      ,C_TABLENAME "
+			+ "      ,COLUMN_NAME "
+			+ "      ,C_FULLPATH "
+			+ "      ,C_COLUMNNAME "
+			+ "      ,C_COLUMNDATATYPE "
+			+ "      ,C_OPERATOR "
+			+ "      ,C_DIMCODE "
+			+ "	  ,GENERATED_SQL "
+			+ "    FROM " + dbluTable 
+			+ "	where  table_instance_id = -1) AS rpdo "
+			+ "where  "
+			+ "rpdo.COLUMN_NAME = RPDO_TABLE_REQUEST.COLUMN_NAME "
+			+ "and RPDO_TABLE_REQUEST.TABLE_INSTANCE_ID = ? "
+			+ "and RPDO_TABLE_REQUEST.REQUIRED = 'Y' ";
 
 		log.info(sql);
+		try {
 		numRowsAdded = jt.update(sql, 
 				naxtTableInstanceID);
-		// Always save regardless of isVisible is set
-		//if (rpdoType.isVisible())
-		//{
+
+		
 		//Remove existing
-		try {
 			sql = "DELETE FROM  " + breakdownTable +
 					" WHERE NAME = ?";
 
@@ -392,10 +476,10 @@ public class RPDODao extends JdbcDaoSupport {
 
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE))
 			{
-				value = "EXEC " + dataSchema + ".usp_rpdo2 ('" + naxtTableInstanceID
+				value = "{ call " + dataSchema + ".usp_rpdo2 ('" + naxtTableInstanceID
 						+ "','{{{RESULT_INSTANCE_ID}}}" 
 						+ "','0"
-						+ "','10000')";
+						+ "','10000',?)}";
 
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 			{
@@ -450,6 +534,17 @@ public class RPDODao extends JdbcDaoSupport {
 				id,
 				projectPath
 				);
+
+		if (numRowsAdded > 0) {
+			sql = "UPDATE " + resultTypeTable +
+					" SET  DESCRIPTION = ? WHERE NAME = ?";		
+			numRowsAdded = jt.update(sql, 
+					title,
+					"RPDO_" + id
+					);
+		}
+
+
 		return numRowsAdded;
 	}
 
@@ -546,7 +641,7 @@ class getMapperRPDO implements RowMapper<RpdoTable> {
 			dblu.setVisible(false);
 		else
 			dblu.setVisible(true);
-		
+
 		if ((rs.getString("shared") != null && rs.getString("shared").equals("Y")))
 			dblu.setShared(true);
 		else

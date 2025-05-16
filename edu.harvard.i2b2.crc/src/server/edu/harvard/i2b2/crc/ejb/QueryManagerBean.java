@@ -488,7 +488,11 @@ public class QueryManagerBean{ // implements SessionBean {
 
 			for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(queryInstanceId))
 			{
-				if (r.getQtQueryResultType().getClassname().equals("edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated"))
+				if (r.getQtQueryResultType().getClassname().equals("edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientRequest")) {
+					r.getQtQueryResultType().setName(r.getQtQueryResultType().getName().replace("REQUEST", "CSV"));
+				}
+				if (r.getQtQueryResultType().getClassname().equals("edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated") ||
+						r.getQtQueryResultType().getClassname().equals("edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientRequest"))
 				{
 
 

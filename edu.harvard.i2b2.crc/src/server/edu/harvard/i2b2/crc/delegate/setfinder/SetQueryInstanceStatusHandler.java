@@ -34,6 +34,7 @@ public class SetQueryInstanceStatusHandler extends RequestHandler {
 	private InstanceStatusRequestType instanceMessageRequestType = null;
 
 	private boolean isManager = false;
+	private boolean isAdmin = false;
 	private String userId = null;
 
 

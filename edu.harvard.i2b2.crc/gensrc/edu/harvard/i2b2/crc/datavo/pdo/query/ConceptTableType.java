@@ -53,6 +53,7 @@ public class ConceptTableType {
 //  @XmlElement(name = "json_data", required = true)
 
     @XmlElement(required = true)
+    @XmlJavaTypeAdapter(value=CDATAAdapter.class)
     protected String name;
     protected boolean display;
     protected boolean required;

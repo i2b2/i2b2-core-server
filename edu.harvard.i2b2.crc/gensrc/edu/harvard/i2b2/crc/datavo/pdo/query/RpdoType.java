@@ -16,6 +16,8 @@ import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import java.util.Date;
 
 
@@ -61,6 +63,7 @@ public class RpdoType {
 
 
     @XmlElement(required = true)
+    @XmlJavaTypeAdapter(value=CDATAAdapter.class)
     protected String title;
     @XmlElement(name = "creator_id", required = true)
     protected String creatorId;

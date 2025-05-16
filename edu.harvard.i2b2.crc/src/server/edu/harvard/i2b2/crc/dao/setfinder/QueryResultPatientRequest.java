@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import edu.harvard.i2b2.crc.dao.xml.ValueExporter;
 import edu.harvard.i2b2.crc.dao.EmailUtil;
+import edu.harvard.i2b2.crc.dao.RPDODao;
 
 /**
  * To add Length of Stay (This is for Oracle and Postgresl)  For Sql Server change the sql statement from (DX to #DX)
@@ -73,15 +74,19 @@ import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
+import edu.harvard.i2b2.crc.dao.pdo.RpdoTable;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
+import edu.harvard.i2b2.crc.datavo.pdo.query.ConceptTableType;
+import edu.harvard.i2b2.crc.datavo.pdo.query.RpdoType;
 import edu.harvard.i2b2.crc.datavo.pm.UserType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
@@ -223,9 +228,80 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 			valueExport = new ValueExporter();
 
 
+			if (exportItemXml != null)
+				valueExport = JaxbXmlToObj(exportItemXml);
 
-			valueExport = JaxbXmlToObj(exportItemXml);
 
+			// Create RPDO if no RPDO in the results
+
+			boolean hasRPDO = false;
+			boolean hasRPDOSecond = false;
+
+			for (ResultOutputOptionType r : resultOptionList)
+			{
+				if (r.getName().toUpperCase().startsWith("RPDO_"))
+				{
+					hasRPDO = true;
+					break;
+				}
+			}
+
+			if (hasRPDO == false) {
+				RPDODao RPDODao = new RPDODao(user.getDomain(), user.getUserName(), queryMaster.getGroupId());
+				RpdoType rpdoType = new RpdoType();
+
+
+				// Find if default already exists
+				int tableInstanceID = -1;
+				for (RpdoType rpdoTable : RPDODao.findRPDOs())
+				{
+					if (rpdoTable.getTitle().equalsIgnoreCase("Default Table " + user.getUserName()))
+						tableInstanceID = rpdoTable.getId();
+				}
+
+
+				if (tableInstanceID == -1) {
+					rpdoType.setCreatorId(user.getUserName());
+					rpdoType.setShared(false);
+					List<RpdoTable> rpdoTableList = RPDODao.getRPDO(-1);
+					for (RpdoTable rpdoTable :  rpdoTableList) 
+					{
+						ConceptTableType concept =  new ConceptTableType();
+						concept.setId(rpdoTable.getId());
+						concept.setRequired(true);
+						concept.setName(rpdoTable.getColumnName());
+						concept.setDisplay(true);
+						concept.setData("[{\"dataOption\":\"Value\",\"index\":1,\"sdxData\":{}}]");
+
+						rpdoType.getConcept().add(concept);
+					}
+					rpdoType.setTitle("Default Table " + user.getUserName());
+					tableInstanceID = RPDODao.setRPDO(rpdoType);
+
+				}
+
+				//run QueryResultUserCreated
+				IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
+						.getPatientSetResultDAO();
+
+				if (resultOptionList.size() == (resultInstanceDao.getResultInstanceList(queryInstanceId)).size())
+				{
+					String resultInstanceIdNew = resultInstanceDao.createPatientSet(queryInstanceId, "RPDO_"+tableInstanceID);
+
+					/*
+				QtQueryResultInstance resultInstance = resultInstanceDao
+						.getResultInstanceByQueryInstanceIdAndName(queryInstanceId,
+								"RPDO_"+tableInstanceID);
+				String resultInstanceIdNew =  resultInstance.getResultInstanceId();
+					 */
+
+					param.put("ResultInstanceId", resultInstanceIdNew);
+					param.put("ResultOptionName", "RPDO_"+tableInstanceID);
+
+					QueryResultUserCreated userCreated = new QueryResultUserCreated();
+					userCreated.generateResult(param);
+				}
+			}
 
 			//JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
 			//ValueExport valueExport = (ValueExport) jaxbUtil
@@ -321,7 +397,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 								if (letter != null) {
 
 									letter = processFilename(letter, param);
-			
+
 									requesterMessage = processFilename(requesterMessage, param);
 									for (ResultOutputOptionType resultOutputOption : resultOptionList) {
 										String resultName = resultOutputOption.getName()
@@ -376,12 +452,12 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 									if (resultInstanceId != null)
 										xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
 												.toString());
-//qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.subject")
+									//qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.subject")
 
 									if (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) {
 										EmailUtil email = new EmailUtil();
 										try {
-											
+
 											if (resultTypeName.equals(finalResultOutput)) {
 												email.email(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"),  "i2b2 Data Request", letter);
 												if (user.getEmail()!= null &&  !user.getEmail().equals("") && requesterMessage != null)

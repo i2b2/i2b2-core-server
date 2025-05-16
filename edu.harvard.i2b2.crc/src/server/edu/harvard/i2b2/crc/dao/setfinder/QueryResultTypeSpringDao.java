@@ -84,6 +84,25 @@ IQueryResultTypeDao {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
+	public QtQueryResultType getQueryResultTypeByName(String resultName) {
+
+		String sql = "select * from " + getDbSchemaName()
+		+ "qt_query_result_type where name = ?";
+		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
+				.queryForObject(sql, new Object[] { resultName },
+						queryResultTypeMapper);
+		return queryResultType;
+	}
+
+	
+	/**
+	 * Returns list of query master by user id
+	 * 
+	 * @param userId
+	 * @return List<QtQueryMaster>
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
 	public String getQueryResultTypeClassname(String resultName) {
 
 		String sql = "select * from " + getDbSchemaName()
