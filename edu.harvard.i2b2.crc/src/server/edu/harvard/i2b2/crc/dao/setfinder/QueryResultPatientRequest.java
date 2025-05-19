@@ -430,6 +430,11 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 									mdataType.setColumn("DataManagerEmail");
 									mdataType.setType("string");
 									resultType.getData().add(mdataType);
+									mdataType = new DataType();
+									mdataType.setValue( queryDef.getEmail());
+									mdataType.setColumn("EMAIL");
+									mdataType.setType("string");
+									resultType.getData().add(mdataType);
 
 									edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 									BodyType bodyType = new BodyType();

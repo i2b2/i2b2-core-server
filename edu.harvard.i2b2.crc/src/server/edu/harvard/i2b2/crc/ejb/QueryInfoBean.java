@@ -682,7 +682,8 @@ public class QueryInfoBean { //implements SessionBean {
 					queryResultInstance.setDescription(b.getDescription());
 					queryResultInstance.setStartDate(dtoFactory
 							.getXMLGregorianCalendar(b.getStartDate().getTime()));
-					queryResultInstance.setEndDate(dtoFactory
+					if ( b.getEndDate() != null)
+						queryResultInstance.setEndDate(dtoFactory
 							.getXMLGregorianCalendar(b.getEndDate().getTime()));
 					QueryResultTypeType queryResultType = new QueryResultTypeType();
 					queryResultType.setVisualAttributeType(b.getQtQueryResultType().getVisualAttributeType());

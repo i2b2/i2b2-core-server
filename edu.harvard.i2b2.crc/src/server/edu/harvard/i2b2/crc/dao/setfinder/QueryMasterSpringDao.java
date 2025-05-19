@@ -125,7 +125,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		// jdbcTemplate.update(sql);
 	}
 
-	
+
 	/**
 	 * Returns list of query master by find search
 	 * 
@@ -460,11 +460,13 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				{
 					QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(dataSource, dataSourceLookup);
 					Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
-					for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(t.getQueryInstanceId()))
-					{
+					try {
+						for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(t.getQueryInstanceId()))
+						{
 
-						setResult.add(r);
-					}
+							setResult.add(r);
+						}
+					} catch (Exception e) {}
 					t.setQtQueryResultInstances(setResult);
 					set.add(t); 
 
@@ -531,14 +533,14 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				for (QtQueryInstance t : instanceDao.getQueryInstanceByMasterId(qtMaster.getQueryMasterId())) 
 				{
 					try {
-					QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(dataSource, dataSourceLookup);
-					Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
-					for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(t.getQueryInstanceId()))
-					{
-						setResult.add(r);
-					}
-					t.setQtQueryResultInstances(setResult);
-					set.add(t); 
+						QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(dataSource, dataSourceLookup);
+						Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
+						for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(t.getQueryInstanceId()))
+						{
+							setResult.add(r);
+						}
+						t.setQtQueryResultInstances(setResult);
+						set.add(t); 
 					} catch (Exception e)
 					{
 						e.printStackTrace();
