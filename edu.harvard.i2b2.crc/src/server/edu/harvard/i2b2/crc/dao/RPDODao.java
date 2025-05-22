@@ -274,7 +274,7 @@ public class RPDODao extends JdbcDaoSupport {
 				String c_operator  = " ";
 				String c_dimcode  = " ";
 				String aggType = " ";
-				
+
 				String valueType = null;
 				String valueOperator = null;
 				String value = null;
@@ -302,7 +302,7 @@ public class RPDODao extends JdbcDaoSupport {
 					c_tablename  = jobject.get("table_name").getAsString(); 
 					c_operator  = jobject.get("operator").getAsString(); 
 					c_dimcode  = jobject.get("dim_code").getAsString(); 
-					
+
 					//Get lab values
 					JsonElement jObj3 = jObj.get("LabValues");
 					if (jObj3 != null)
@@ -311,11 +311,30 @@ public class RPDODao extends JdbcDaoSupport {
 
 						valueType = jobject.get("ValueType").getAsString(); 
 						valueOperator = jobject.get("ValueOperator").getAsString(); 
-						value = jobject.get("Value").getAsString(); 
-						valueUnit = jobject.get("ValueUnit").getAsString(); 
-						
+
+						if (valueOperator.equals("IN"))
+						{
+
+							JsonElement jObj3a = jobject.get("Value");
+							value = jObj3a.getAsJsonArray().toString();
+							if (value.length() > 0) {
+								value = value.replace("\"", "'");
+								value = value.substring(1,value.length()-1);
+							}
+						} else if (valueOperator.equals("FLAG"))
+						{
+							value = jobject.get("ValueFlag").getAsString();
+						} else if (valueOperator.equals("BETWEEN"))
+						{
+							value = jobject.get("ValueLow").getAsString() + " AND " + jobject.get("ValueHigh").getAsString();
+						} else {
+							value = jobject.get("Value").getAsString(); 
+						}
+						if (jobject.get("ValueUnit") != null)
+							valueUnit = jobject.get("ValueUnit").getAsString(); 
+
 					}
-					
+
 					//Get date range
 					JsonElement jObj4 = jObj.get("dateRange");
 					if (jObj4 != null)
@@ -330,7 +349,7 @@ public class RPDODao extends JdbcDaoSupport {
 							dateTo = null;
 
 					}
-					
+
 				} catch (Exception e) {}
 
 				if (rpdoType.isVisible() == null) 
@@ -355,14 +374,14 @@ public class RPDODao extends JdbcDaoSupport {
 						c_tablename,
 						c_operator,
 						c_dimcode,
-						
+
 						dateTo,
 						dateFrom,
 						valueOperator,
 						value, 
 						valueUnit,
 						valueType,
-						
+
 						userId,
 						projectPath,
 						i,
@@ -438,11 +457,11 @@ public class RPDODao extends JdbcDaoSupport {
 
 		log.info(sql);
 		try {
-		numRowsAdded = jt.update(sql, 
-				naxtTableInstanceID);
+			numRowsAdded = jt.update(sql, 
+					naxtTableInstanceID);
 
-		
-		//Remove existing
+
+			//Remove existing
 			sql = "DELETE FROM  " + breakdownTable +
 					" WHERE NAME = ?";
 
@@ -483,10 +502,10 @@ public class RPDODao extends JdbcDaoSupport {
 
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 			{
-				value = "SELECT " + dataSchema + ".usp_rpdo2 ('" + naxtTableInstanceID
-						+ "','{{{RESULT_INSTANCE_ID}}}" 
-						+ "','0"
-						+ "','10000')";
+				value = "{ ? = call " + dataSchema + ".usp_rpdo2 (" + naxtTableInstanceID
+						+ ",{{{RESULT_INSTANCE_ID}}}" 
+						+ ",0"
+						+ ",10000) }";
 
 			}
 
@@ -527,18 +546,31 @@ public class RPDODao extends JdbcDaoSupport {
 	public int getRPDORename(Integer id, String title) {
 		int numRowsAdded = 0;
 
-		String sql = "UPDATE " + dbluTable +
-				" SET  TABLE_INSTANCE_NAME = ? WHERE TABLE_INSTANCE_ID = ? and GROUP_ID = ?";		
-		numRowsAdded = jt.update(sql, 
-				title,
-				id,
-				projectPath
-				);
 
-		if (numRowsAdded > 0) {
-			sql = "UPDATE " + resultTypeTable +
-					" SET  DESCRIPTION = ? WHERE NAME = ?";		
+		if (isAdmin)
+		{
+
+			String sql = "UPDATE " + dbluTable +
+					" SET  TABLE_INSTANCE_NAME = ? WHERE TABLE_INSTANCE_ID = ?";		
 			numRowsAdded = jt.update(sql, 
+					title,
+					id
+					);
+
+		} else {
+			String sql = "UPDATE " + dbluTable +
+					" SET  TABLE_INSTANCE_NAME = ? WHERE TABLE_INSTANCE_ID = ? and GROUP_ID = ?";		
+			numRowsAdded = jt.update(sql, 
+					title,
+					id,
+					projectPath
+					);
+
+		}		
+		if (numRowsAdded > 0) {
+			String sql = "UPDATE " + resultTypeTable +
+					" SET  DESCRIPTION = ? WHERE NAME = ?";		
+			jt.update(sql, 
 					title,
 					"RPDO_" + id
 					);

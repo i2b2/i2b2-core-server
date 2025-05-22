@@ -45,6 +45,7 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -135,7 +136,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 
 		// mm create a csv in a folder
-
+log.info("MM 1");
 
 		SetFinderConnection sfConn = (SetFinderConnection) param
 				.get("SetFinderConnection");
@@ -196,8 +197,10 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		if (resultPriority == 999)
 		{
 
+			log.info("MM 2");
 
 		} else {
+			log.info("MM 3");
 
 			try {
 				LogTimingUtil logTimingUtil = new LogTimingUtil();
@@ -296,8 +299,11 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 				}
 
+				
+				log.info("here1");
 				for (edu.harvard.i2b2.crc.dao.xml.File item: valueExport.getFile()) {
 
+					log.info("here2");
 
 					Path p = Paths.get(item.getFilename());
 					letterFilename =  p.getParent() + File.separator + "Letter.txt";
@@ -305,6 +311,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					letterFilename = processFilename(letterFilename, param);
 
 
+					log.info("here3");
 
 					if (item.getQuery().contains("{{{DX}}}") && PSetResultInstanceId != null)
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{DX\\}\\}\\}", " (SELECT PATIENT_NUM FROM " +this.getDbSchemaName() +  "QT_PATIENT_SET_COLLECTION WHERE RESULT_INSTANCE_ID = " + PSetResultInstanceId + ") "));
@@ -315,10 +322,15 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (item.getQuery().contains("{{{RESULT_INSTANCE_ID}}}"))
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", PSetResultInstanceId));  //use the patient set
 
+					log.info("here4");
 
 					ResultSet resultSet = null;
 
+					
+					log.info("my db: " + sfDAOFactory.getDataSourceLookup().getServerType());
+					log.info("my sql: " + item.getQuery());
 
+					
 					if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE) &&
 							item.getQuery().startsWith("{ call")) {
 
@@ -327,11 +339,20 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						callStmt.execute();
 						resultSet = (ResultSet) callStmt.getObject(1);
 
-					} else 
+					} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) &&
+							item.getQuery().startsWith("{ ?")) {
 
-						//					if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
-						//							sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
-					{
+						log.info("In Postgrsqk");
+						CallableStatement callStmt = sfDAOFactory.getDataSource().getConnection().prepareCall(item.getQuery());
+						callStmt.registerOutParameter(1, Types.OTHER);
+						log.info("exec Postgrsqk");
+						callStmt.execute();
+						log.info("getv resultset");
+
+						resultSet = (ResultSet) callStmt.getObject(1);
+						log.info("end Postgrsqk");
+
+					} else 	{
 						stmt = sfConn.prepareStatement(item.getQuery());
 						stmt.setQueryTimeout(transactionTimeout);
 						logesapi.debug("Executing count sql [" + item.getQuery() + "]");

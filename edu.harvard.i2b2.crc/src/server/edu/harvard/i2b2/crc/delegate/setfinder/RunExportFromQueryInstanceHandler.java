@@ -103,6 +103,7 @@ public class RunExportFromQueryInstanceHandler extends RequestHandler {
             String userId = headerType.getUser().getLogin();
             String instanceId = instanceMessageRequestType.getQueryInstanceId();
 
+            log.info("MM55");
         	//TODO removed ejbs
 //            QueryManagerLocalHome queryManagerLocalHome = qpUtil.getQueryManagerLocalHome();
  //           QueryManagerLocal queryManagerLocal = queryManagerLocalHome.create();
