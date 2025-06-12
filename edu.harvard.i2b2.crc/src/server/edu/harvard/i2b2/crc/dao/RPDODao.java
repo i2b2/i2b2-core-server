@@ -520,7 +520,7 @@ public class RPDODao extends JdbcDaoSupport {
 				value = "call " + dataSchema + ".usp_rpdo2 (" + naxtTableInstanceID
 						+ ",{{{RESULT_INSTANCE_ID}}}" 
 						+ ",0"
-						+ ",10000)";
+						+ ",10000,?)";
 
 			}
 
