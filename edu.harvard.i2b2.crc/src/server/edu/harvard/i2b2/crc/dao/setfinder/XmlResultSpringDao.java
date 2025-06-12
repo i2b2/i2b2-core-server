@@ -191,9 +191,10 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 
 
 	@Override
-	public void deleteQueryXmlResult(String resultInstanceId) {
+	public void deleteQueryXmlResult(String resultInstanceIdStr) {
 		//TODO mm remove
 		try {
+			int resultInstanceId = Integer.parseInt(resultInstanceIdStr);
 			String sql = "DELETE FROM " + getDbSchemaName() + "QT_XML_RESULT where result_instance_id = ?";
 			jdbcTemplate.update(sql, new Object[]{resultInstanceId});
 		} catch (Exception e)

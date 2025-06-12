@@ -42,9 +42,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -136,7 +138,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 
 		// mm create a csv in a folder
-log.info("MM 1");
+		log.info("MM 1");
 
 		SetFinderConnection sfConn = (SetFinderConnection) param
 				.get("SetFinderConnection");
@@ -299,19 +301,14 @@ log.info("MM 1");
 
 				}
 
-				
-				log.info("here1");
-				for (edu.harvard.i2b2.crc.dao.xml.File item: valueExport.getFile()) {
 
-					log.info("here2");
+				for (edu.harvard.i2b2.crc.dao.xml.File item: valueExport.getFile()) {
 
 					Path p = Paths.get(item.getFilename());
 					letterFilename =  p.getParent() + File.separator + "Letter.txt";
 
 					letterFilename = processFilename(letterFilename, param);
 
-
-					log.info("here3");
 
 					if (item.getQuery().contains("{{{DX}}}") && PSetResultInstanceId != null)
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{DX\\}\\}\\}", " (SELECT PATIENT_NUM FROM " +this.getDbSchemaName() +  "QT_PATIENT_SET_COLLECTION WHERE RESULT_INSTANCE_ID = " + PSetResultInstanceId + ") "));
@@ -322,36 +319,59 @@ log.info("MM 1");
 					if (item.getQuery().contains("{{{RESULT_INSTANCE_ID}}}"))
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", PSetResultInstanceId));  //use the patient set
 
-					log.info("here4");
-
 					ResultSet resultSet = null;
 
-					
-					log.info("my db: " + sfDAOFactory.getDataSourceLookup().getServerType());
-					log.info("my sql: " + item.getQuery());
+					CallableStatement callStmt = null;
 
-					
 					if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE) &&
 							item.getQuery().startsWith("{ call")) {
 
-						CallableStatement callStmt = sfDAOFactory.getDataSource().getConnection().prepareCall(item.getQuery());
+						 callStmt = sfDAOFactory.getDataSource().getConnection().prepareCall(item.getQuery());
 						callStmt.registerOutParameter(1, OracleTypes.CURSOR);
 						callStmt.execute();
 						resultSet = (ResultSet) callStmt.getObject(1);
 
 					} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) &&
-							item.getQuery().startsWith("{ ?")) {
+							item.getQuery().startsWith("call ")) {
 
-						log.info("In Postgrsqk");
-						CallableStatement callStmt = sfDAOFactory.getDataSource().getConnection().prepareCall(item.getQuery());
+					    log.info("In PostgreSQL");
+					 
+					    
+					    Connection conn = sfDAOFactory.getDataSource().getConnection();
+					    conn.setAutoCommit(false); // Step 1: start transaction
+					 
+					    
+					     callStmt = conn.prepareCall(item.getQuery());
+					    callStmt.registerOutParameter(1, Types.OTHER); // refcursor out param
+					 
+					    log.info("Calling stored procedure" + item.getQuery());
+					    callStmt.execute(); // Step 2: call procedure
+					 
+					    String cursorName = (String) callStmt.getObject(1); // Step 3: get cursor name
+					    log.info("Cursor name returned: " + cursorName);
+					 
+					    // Step 4: Fetch from the cursor
+					    Statement fetchStmt = sfConn.createStatement();
+					    resultSet = fetchStmt.executeQuery("FETCH ALL FROM \"" + cursorName + "\"");
+					 
+					    log.info("Fetched cursor from PostgreSQL");
+					 
+					    // Note: do not commit here if the caller expects to process the resultSet
+					    // conn.commit(); // optionally close the transaction when done processing
+					 
+					    // Optionally: close cursor if needed (or rely on end-of-transaction cleanup)
+					    // fetchStmt.execute("CLOSE \"" + cursorName + "\"");
+						/* orig
+						 callStmt = sfDAOFactory.getDataSource().getConnection().prepareCall(item.getQuery());
 						callStmt.registerOutParameter(1, Types.OTHER);
-						log.info("exec Postgrsqk");
 						callStmt.execute();
-						log.info("getv resultset");
 
-						resultSet = (ResultSet) callStmt.getObject(1);
-						log.info("end Postgrsqk");
+						String cursorName = (String) callStmt.getObject(5);
 
+						stmt = sfConn.prepareStatement("FETCH ALL FROM \"" + cursorName + "\"") ;
+
+						resultSet = stmt.executeQuery();
+						*/
 					} else 	{
 						stmt = sfConn.prepareStatement(item.getQuery());
 						stmt.setQueryTimeout(transactionTimeout);
@@ -471,8 +491,11 @@ log.info("MM 1");
 							rowCount = writer.writeAll(resultSet, true);
 
 							logFile += writer.getLog();
-							resultSet.close();
+							if (resultSet != null)
+								resultSet.close();
 
+							if (stmt != null)
+								stmt.close();
 						}
 						if (csr.getSqlFinishedFlag()) {
 							timeoutFlag = true;
@@ -529,7 +552,10 @@ log.info("MM 1");
 
 								//logFile += writer.getLog();
 								resultSet.close();
-								stmt.close();
+								if (stmt != null)
+									stmt.close();
+								if (callStmt != null)
+									callStmt.close();
 							}
 						}
 						if (csr.getSqlFinishedFlag()) {

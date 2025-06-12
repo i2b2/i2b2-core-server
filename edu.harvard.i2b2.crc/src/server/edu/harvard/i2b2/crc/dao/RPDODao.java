@@ -32,6 +32,7 @@ import edu.harvard.i2b2.crc.loader.ejb.DataMartLoaderAsyncBean;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 import edu.harvard.i2b2.crc.dao.pdo.RpdoTable;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -274,13 +275,15 @@ public class RPDODao extends JdbcDaoSupport {
 				String c_operator  = " ";
 				String c_dimcode  = " ";
 				String aggType = " ";
+				String c_facttablecolumn = "concept_cd";
+				String c_columndatatype = "@";
 
 				String valueType = null;
 				String valueOperator = null;
 				String value = null;
 				String valueUnit = null;
-				String dateTo = null;
-				String dateFrom = null;
+				Date dateTo = null;
+				Date dateFrom = null;
 
 				try {
 					json = json.trim();
@@ -302,7 +305,11 @@ public class RPDODao extends JdbcDaoSupport {
 					c_tablename  = jobject.get("table_name").getAsString(); 
 					c_operator  = jobject.get("operator").getAsString(); 
 					c_dimcode  = jobject.get("dim_code").getAsString(); 
+					if (!c_tablename.equalsIgnoreCase("concept_dimension"))
+						c_facttablecolumn = "patient_num";
 
+					if (c_dimcode.contains("("))
+						c_columndatatype = "N";
 					//Get lab values
 					JsonElement jObj3 = jObj.get("LabValues");
 					if (jObj3 != null)
@@ -321,9 +328,11 @@ public class RPDODao extends JdbcDaoSupport {
 								value = value.replace("\"", "'");
 								value = value.substring(1,value.length()-1);
 							}
-						} else if (valueOperator.equals("FLAG"))
+							valueType = "ENUM";
+						} else if (valueType.equals("FLAG"))
 						{
 							value = jobject.get("ValueFlag").getAsString();
+							valueOperator = "LIKE";
 						} else if (valueOperator.equals("BETWEEN"))
 						{
 							value = jobject.get("ValueLow").getAsString() + " AND " + jobject.get("ValueHigh").getAsString();
@@ -341,13 +350,18 @@ public class RPDODao extends JdbcDaoSupport {
 					{
 						jobject =jObj4.getAsJsonObject();
 
-						dateFrom = jobject.get("start").getAsString(); 
-						if (dateFrom.equals(""))
-							dateFrom = null;
-						dateTo = jobject.get("end").getAsString(); 
-						if (dateTo.equals(""))
-							dateTo = null;
-
+						if (jobject.get("start").getAsString() != null && jobject.get("start").getAsString() != "")
+						{
+							SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
+							java.util.Date date = sdf1.parse(jobject.get("start").getAsString());
+							dateFrom = new java.sql.Date(date.getTime()); 
+						}
+						if (jobject.get("end").getAsString() != null && jobject.get("end").getAsString() != "")
+						{
+							SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
+							java.util.Date date = sdf1.parse(jobject.get("end").getAsString());
+							dateTo = new java.sql.Date(date.getTime()); 
+						}
 					}
 
 				} catch (Exception e) {}
@@ -361,19 +375,20 @@ public class RPDODao extends JdbcDaoSupport {
 					rpdoType.setTitle(rpdoType.getTitle().substring(0, 199));
 
 				sql = "INSERT INTO " + dbluTable +
-						"(TABLE_INSTANCE_ID, TABLE_INSTANCE_NAME, COLUMN_NAME, C_FACTTABLECOLUMN, C_FULLPATH, AGG_TYPE,C_COLUMNNAME,C_TABLENAME,C_OPERATOR,C_DIMCODE,CONSTRAIN_BY_DATE_TO, CONSTRAIN_BY_DATE_FROM, CONSTRAIN_BY_VALUE_OPERATOR, CONSTRAIN_BY_VALUE_CONSTRAINT, CONSTRAIN_BY_VALUE_UNIT_OF_MEASURE, CONSTRAIN_BY_VALUE_TYPE,USER_ID ,GROUP_ID ,SET_INDEX,JSON_DATA,CREATE_DATE,UPDATE_DATE,DELETE_FLAG,USE_AS_COHORT,REQUIRED,SHARED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'N',?,?)";		
+						"(TABLE_INSTANCE_ID, TABLE_INSTANCE_NAME, COLUMN_NAME, C_FACTTABLECOLUMN, C_FULLPATH, AGG_TYPE,C_COLUMNNAME,C_TABLENAME,C_OPERATOR,C_DIMCODE,c_columndatatype,CONSTRAIN_BY_DATE_TO, CONSTRAIN_BY_DATE_FROM, CONSTRAIN_BY_VALUE_OPERATOR, CONSTRAIN_BY_VALUE_CONSTRAINT, CONSTRAIN_BY_VALUE_UNIT_OF_MEASURE, CONSTRAIN_BY_VALUE_TYPE,USER_ID ,GROUP_ID ,SET_INDEX,JSON_DATA,CREATE_DATE,UPDATE_DATE,DELETE_FLAG,USE_AS_COHORT,REQUIRED,SHARED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'N',?,?)";		
 
 				numRowsAdded = jt.update(sql, 
 						naxtTableInstanceID,
 						rpdoType.getTitle(),
 						rpdoType.getConcept().get(i).getName(),
-						"concept_cd",
+						c_facttablecolumn,
 						c_fullpath,
 						aggType,
 						c_columnname,
 						c_tablename,
 						c_operator,
 						c_dimcode,
+						c_columndatatype,
 
 						dateTo,
 						dateFrom,
@@ -502,10 +517,10 @@ public class RPDODao extends JdbcDaoSupport {
 
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 			{
-				value = "{ ? = call " + dataSchema + ".usp_rpdo2 (" + naxtTableInstanceID
+				value = "call " + dataSchema + ".usp_rpdo2 (" + naxtTableInstanceID
 						+ ",{{{RESULT_INSTANCE_ID}}}" 
 						+ ",0"
-						+ ",10000) }";
+						+ ",10000)";
 
 			}
 
