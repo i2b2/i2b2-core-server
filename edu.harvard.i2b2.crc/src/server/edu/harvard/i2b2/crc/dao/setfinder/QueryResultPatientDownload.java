@@ -342,12 +342,12 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					 
 					    
 					     callStmt = conn.prepareCall(item.getQuery());
-					    callStmt.registerOutParameter(1, Types.OTHER); // refcursor out param
+					    callStmt.registerOutParameter(5, Types.OTHER); // refcursor out param
 					 
 					    log.info("Calling stored procedure" + item.getQuery());
 					    callStmt.execute(); // Step 2: call procedure
 					 
-					    String cursorName = (String) callStmt.getObject(1); // Step 3: get cursor name
+					    String cursorName = (String) callStmt.getObject(5); // Step 3: get cursor name
 					    log.info("Cursor name returned: " + cursorName);
 					 
 					    // Step 4: Fetch from the cursor
@@ -556,6 +556,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 									stmt.close();
 								if (callStmt != null)
 									callStmt.close();
+								sfDAOFactory.getDataSource().getConnection().commit(); // Close the transaction (needed for Oracle and Postgres)
 							}
 						}
 						if (csr.getSqlFinishedFlag()) {
