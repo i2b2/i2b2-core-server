@@ -203,8 +203,15 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 		} else {
 			log.info("MM 3");
+			Connection conn = null;
 
+			ResultSet resultSet = null;
+
+			CallableStatement callStmt = null;
+			
 			try {
+				QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+
 				LogTimingUtil logTimingUtil = new LogTimingUtil();
 				logTimingUtil.setStartTime();
 
@@ -218,7 +225,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				param.put("UserName", user.getUserName());
 				param.put("resultInstanceId", resultInstanceId);
 				param.put("QueryMasterId", queryMaster.getQueryMasterId());
-				param.put("ResultNameDescription", sanitizeFilename(getResultTypeDescrption(sfDAOFactory, resultTypeName)));
+				param.put("ResultNameDescription", qpUtil.sanitizeFilename(getResultTypeDescrption(sfDAOFactory, resultTypeName)));
 
 				String exportItemXml = getItemKeyFromResultType(sfDAOFactory, resultTypeName);
 
@@ -228,13 +235,13 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				//resultType.setName(resultTypeName);
 				//stmt = sfConn.prepareStatement(itemCountSql);
 
+				/*
 				CancelStatementRunner csr = new CancelStatementRunner(stmt,
 						transactionTimeout);
 				Thread csrThread = new Thread(csr);
 				csrThread.start();
-
+*/
 				//String sqlFinal = "";
-				QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 
 				valueExport = new ValueExporter();
 
@@ -257,7 +264,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						String newWorkDir = workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename");
 						newWorkDir = newWorkDir.substring(0,newWorkDir.lastIndexOf('/'));
 						item.setFilename(newWorkDir + xmlFilename);
-						item.setFilename(processFilename(item.getFilename(), param));
+						item.setFilename(qpUtil.processFilename(item.getFilename(), param));
 
 					} else {
 						item.setFilename(workDir + item.getFilename());
@@ -267,12 +274,12 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					edu.harvard.i2b2.crc.dao.xml.File item = new edu.harvard.i2b2.crc.dao.xml.File();
 					if (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename").endsWith(".zip")) {
 						item.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename").replace(".zip", ".csv"));
-						item.setFilename(processFilename(item.getFilename(), param));
+						item.setFilename(qpUtil.processFilename(item.getFilename(), param));
 
-						valueExport.setZipFilename(processFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"), param));
+						valueExport.setZipFilename(qpUtil.processFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"), param));
 					}else {
 						item.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"));
-						item.setFilename(processFilename(item.getFilename(), param));
+						item.setFilename(qpUtil.processFilename(item.getFilename(), param));
 					}
 					item.setQuery(exportItemXml);
 					item.setSeperatorCharacter(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultseperator"));
@@ -296,7 +303,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 					zipFileName = workDirStr + zipFileNameStr;
 
-					zipFileName = processFilename(zipFileName, param);
+					zipFileName = qpUtil.processFilename(zipFileName, param);
 
 
 				}
@@ -307,7 +314,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					Path p = Paths.get(item.getFilename());
 					letterFilename =  p.getParent() + File.separator + "Letter.txt";
 
-					letterFilename = processFilename(letterFilename, param);
+					letterFilename = qpUtil.processFilename(letterFilename, param);
 
 
 					if (item.getQuery().contains("{{{DX}}}") && PSetResultInstanceId != null)
@@ -319,9 +326,6 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (item.getQuery().contains("{{{RESULT_INSTANCE_ID}}}"))
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", PSetResultInstanceId));  //use the patient set
 
-					ResultSet resultSet = null;
-
-					CallableStatement callStmt = null;
 
 					if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE) &&
 							item.getQuery().startsWith("{ call")) {
@@ -336,26 +340,28 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 					    log.info("In PostgreSQL");
 					 
-					    
-					    Connection conn = sfDAOFactory.getDataSource().getConnection();
+
+					     conn = sfDAOFactory.getDataSource().getConnection();
 					    conn.setAutoCommit(false); // Step 1: start transaction
 					 
 					    
 					     callStmt = conn.prepareCall(item.getQuery());
-					    callStmt.registerOutParameter(5, Types.OTHER); // refcursor out param
+					    callStmt.registerOutParameter(1, Types.OTHER); // refcursor out param
 					 
 					    log.info("Calling stored procedure" + item.getQuery());
 					    callStmt.execute(); // Step 2: call procedure
 					 
-					    String cursorName = (String) callStmt.getObject(5); // Step 3: get cursor name
-					    log.info("Cursor name returned: " + cursorName);
+					    // String cursorName = (String) callStmt.getObject(1); // Step 3: get cursor name
+					    resultSet  = (ResultSet) callStmt.getObject(1); 
+					    log.info("Cursor name returned: " );
 					 
 					    // Step 4: Fetch from the cursor
+					    /*
 					    Statement fetchStmt = sfConn.createStatement();
 					    resultSet = fetchStmt.executeQuery("FETCH ALL FROM \"" + cursorName + "\"");
 					 
 					    log.info("Fetched cursor from PostgreSQL");
-					 
+					 */
 					    // Note: do not commit here if the caller expects to process the resultSet
 					    // conn.commit(); // optionally close the transaction when done processing
 					 
@@ -428,7 +434,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						maxFetchRows =  Integer.parseInt(maxFetchRowsStr);
 					}
 
-					fileName = processFilename(fileName, param);
+					fileName = qpUtil.processFilename(fileName, param);
 
 
 					//Update XML Value
@@ -497,10 +503,12 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 							if (stmt != null)
 								stmt.close();
 						}
+						/*
 						if (csr.getSqlFinishedFlag()) {
 							timeoutFlag = true;
 							throw new CRCTimeOutException("The query was canceled.");
 						}
+						*/
 
 						// if RPDO than save the RPDO table
 						if (resultTypeName.startsWith("RPDO_")) {
@@ -530,7 +538,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 									+ "  order by set_index asc ";
 							log.info(sql);
 							stmt = sfConn.prepareStatement(sql);
-							stmt.setQueryTimeout(transactionTimeout);
+							//stmt.setQueryTimeout(transactionTimeout);
 
 							resultSet = stmt.executeQuery();
 
@@ -556,13 +564,15 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 									stmt.close();
 								if (callStmt != null)
 									callStmt.close();
-								sfDAOFactory.getDataSource().getConnection().commit(); // Close the transaction (needed for Oracle and Postgres)
+								//sfDAOFactory.getDataSource().getConnection().commit(); // Close the transaction (needed for Oracle and Postgres)
 							}
 						}
+						/*
 						if (csr.getSqlFinishedFlag()) {
 							timeoutFlag = true;
 							throw new CRCTimeOutException("The query was canceled.");
 						}
+						*/
 					}
 				}
 
@@ -617,7 +627,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						letter = letter.replaceAll("\\{\\{\\{ZIP_PASSWORD\\}\\}\\}", valueExport.getZipPassword());	
 					}
 					// Now calling writer() method with string
-					pw.write(processFilename(letter, param  ));
+					pw.write(qpUtil.processFilename(letter, param  ));
 
 					// Flushing the print writer
 					pw.flush();
@@ -633,7 +643,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 				if (letter != null && qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail") != null) {
 
-					letter = processFilename(letter, param);
+					letter = qpUtil.processFilename(letter, param);
 
 					//Send out email letter
 					EmailUtil email = new EmailUtil();
@@ -737,6 +747,35 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				//					+ sqlEx.getMessage(), sqlEx);
 			} finally {
 
+				 if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+				 {
+						    try {
+						    	if (conn != null)
+								conn.setAutoCommit(true);
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} // Step 1: start transaction
+				 }	
+				 
+
+					if ( resultSet != null)
+						try {
+							resultSet.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					if (callStmt != null)
+						try {
+							callStmt.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				
+				
 				if (resultInstanceId != null) {
 					IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
 							.getPatientSetResultDAO();
@@ -876,24 +915,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 		return resultDataSet;
 	}
-	private String sanitizeFilename(String filename)
-	{
 
-		return filename.replaceAll("[^a-zA-Z0-9.-]", "_");
-	}
-	/*
-	private static final Pattern TAG_REGEX = Pattern.compile("{{{(.+?)}}}", Pattern.DOTALL);
-
-
-	private static List<String> getTagValues(final String str) {
-		final List<String> tagValues = new ArrayList<String>();
-		final Matcher matcher = TAG_REGEX.matcher(str);
-		while (matcher.find()) {
-			tagValues.add(matcher.group(1));
-		}
-		return tagValues;
-	}
-	 */
 	private char getChar(String sTerminatedBy)
 	{
 		if ("\\t".equals(sTerminatedBy)) {
@@ -912,69 +934,6 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 	}
 
-	private String processFilename(String fileName, Map param)
-	{
-
-		String projectId = (String) param.get("projectId");
-		String queryInstanceId = (String) param.get("QueryInstanceId");
-		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
-		String resultFullName = queryDef.getQueryName();
-
-		fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}",(String) param.get("UserName"));//queryDef.getUserId());
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_STARTDATE\\}\\}\\}", ((java.sql.Timestamp) param.get("QueryStartDate")).toLocalDateTime().format( DateTimeFormatter.ofPattern("MMddyyyy")));
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_ENDDATE\\}\\}\\}", new Date().toLocaleString());
-
-		//MM Figue out why failing.
-		//fileName = fileName.replaceAll("\\{\\{\\{QUERY_RUNTIME\\}\\}\\}", Integer.toString(Math.toIntExact(new Date().getTime() - ((java.sql.Timestamp) param.get("QueryStartDate")).getTime())/1000));
-
-		fileName = fileName.replaceAll("\\{\\{\\{PATIENT_COUNT\\}\\}\\}", param.get("RecordCount").toString());		
-		fileName = fileName.replaceAll("\\{\\{\\{FULL_NAME\\}\\}\\}", (String) param.get("FullName"));			
-		fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId);
-		fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", (String) param.get("ResultInstanceId"));
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", sanitizeFilename(resultFullName));
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_INSTANCE_ID\\}\\}\\}", sanitizeFilename(queryInstanceId)); //qtMaster.getQueryMasterId()));
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_MASTER_ID\\}\\}\\}", param.get("QueryMasterId").toString()); //qtMaster.getQueryMasterId()));
-		fileName = fileName.replaceAll("\\{\\{\\{RESULT_OPTION_NAME\\}\\}\\}", (String) param.get("ResultOptionName"));			
-		fileName = fileName.replaceAll("\\{\\{\\{RESULT_NAME\\}\\}\\}", (String) param.get("ResultNameDescription"));			
-
-		if (fileName.contains("{{{RANDOM_"))
-		{
-
-			try {
-				int start = fileName.indexOf("{{{RANDOM_");
-				int end = fileName.indexOf("}}}", start);
-				int size = Integer.parseInt(fileName.substring(start+10, end));
-
-				//SecureRandom random = new SecureRandom();
-				//fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", String.valueOf(random.nextInt(size)));
-				fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", (String) param.get("ResultRandom"));
-
-			} catch (Exception e) {}
-
-		}
-		// Deal with dates
-		if (fileName.contains("{{{DATE_"))
-		{
-
-			try {
-				int start = fileName.indexOf("{{{DATE_");
-				int end = fileName.indexOf("}}}", start);
-				String date = fileName.substring(start+8, end);
-
-				//DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
-				//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
-
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
-				fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}",  ((LocalDate) param.get("ResultDate")).format(formatter));
-				//(String) param.get("ResultDate"));
-
-			} catch (Exception e) {}
-
-		}
-
-
-		return fileName;
-	}
 
 	private String getResultTypeDescrption(SetFinderDAOFactory sfDAOFactory,
 			String resultTypeName) {
