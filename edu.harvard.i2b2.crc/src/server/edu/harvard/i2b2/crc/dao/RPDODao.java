@@ -501,26 +501,32 @@ public class RPDODao extends JdbcDaoSupport {
 					"(NAME, VALUE, CREATE_DATE, UPDATE_DATE, USER_ID, GROUP_ID) VALUES (?,?,?,?,?,?) ";
 
 			String value = "RPDO()";
+
+			QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+			String maxFetchRowsStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.maxfetchrows");
+			if (maxFetchRowsStr != null || maxFetchRowsStr.equals("-1")) {
+				maxFetchRowsStr = "99999999";
+			}
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER))
 			{
 				value = "EXEC " + dataSchema + ".usp_rpdo2 @TABLE_INSTANCE_ID=" + naxtTableInstanceID
 						+ ", @RESULT_INSTANCE_ID={{{RESULT_INSTANCE_ID}}}" 
 						+ ", @MIN_ROW=0"
-						+ ", @MAX_ROW=10000";
+						+ ", @MAX_ROW=" + maxFetchRowsStr;
 
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE))
 			{
 				value = "{ call " + dataSchema + ".usp_rpdo2 ('" + naxtTableInstanceID
 						+ "','{{{RESULT_INSTANCE_ID}}}" 
 						+ "','0"
-						+ "','10000',?)}";
+						+ "','" + maxFetchRowsStr + "',?)}";
 
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 			{
 				value = "call " + dataSchema + ".usp_rpdo2 (" + naxtTableInstanceID
 						+ ",{{{RESULT_INSTANCE_ID}}}" 
 						+ ",0"
-						+ ",10000,?)";
+						+ "," + maxFetchRowsStr + ",?)";
 
 			}
 

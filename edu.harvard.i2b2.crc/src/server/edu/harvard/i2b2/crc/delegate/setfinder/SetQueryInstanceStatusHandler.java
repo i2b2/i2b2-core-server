@@ -33,8 +33,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 public class SetQueryInstanceStatusHandler extends RequestHandler {
 	private InstanceStatusRequestType instanceMessageRequestType = null;
 
-	private boolean isManager = false;
-	private boolean isAdmin = false;
+	private boolean isAdminManager = false;
 	private String userId = null;
 
 
@@ -43,9 +42,9 @@ public class SetQueryInstanceStatusHandler extends RequestHandler {
 	 * @param requestXml
 	 * @throws I2B2Exception
 	 */
-	public SetQueryInstanceStatusHandler(String requestXml, boolean isMgr, String username)
+	public SetQueryInstanceStatusHandler(String requestXml, boolean isAdminMgr, String username)
 			throws I2B2Exception {
-		isManager = isMgr;
+		isAdminManager = isAdminMgr;
 		userId = username;
 		try {
 			instanceMessageRequestType = (InstanceStatusRequestType) this.getRequestType(requestXml,
@@ -79,7 +78,7 @@ public class SetQueryInstanceStatusHandler extends RequestHandler {
 			String statusName = instanceMessageRequestType.getStatusName();
 			QueryInfoBean query = new QueryInfoBean();
 			query.setQueryInstanceStatus(this.getDataSourceLookup(),
-					instanceId, statusName, isManager, userId);
+					instanceId, statusName, isAdminManager, userId);
 			masterResponseType = new InstanceResponseType();
 			masterResponseType.setStatus(this.buildCRCStausType(RequestHandlerDelegate.DONE_TYPE, "DONE"));
 

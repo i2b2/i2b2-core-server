@@ -399,12 +399,14 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_UPDATE_QUERY_INSTANCE_STATUS)) {
-				boolean isManager = false;
+				boolean isAdminManager = false;
 				if (projectType != null && projectType.getRole().size() > 0 && projectType.getRole().contains("MANAGER"))
-					isManager = true;
+					isAdminManager = true;
+				if (projectType != null && projectType.getRole().size() > 0 && projectType.getRole().contains("ADMIN"))
+					isAdminManager = true;
 
 				SetQueryInstanceStatusHandler handler = new SetQueryInstanceStatusHandler(
-						requestXml, isManager, projectType.getUserName());
+						requestXml, isAdminManager, projectType.getUserName());
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_GET_ANALYSIS_PLUGIN_METADATA)) {

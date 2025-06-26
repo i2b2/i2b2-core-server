@@ -433,7 +433,7 @@ public class QueryInfoBean { //implements SessionBean {
 
 
 	public InstanceResponseType setQueryInstanceStatus(DataSourceLookup dataSourceLookup, String queryInstanceId,
-			String statusName, boolean isManager, String userId) throws I2B2Exception {
+			String statusName, boolean isAdminManager, String userId) throws I2B2Exception {
 
 		SetFinderDAOFactory sfDaoFactory = this.getSetFinderDaoFactory(
 				dataSourceLookup.getDomainId(), dataSourceLookup
@@ -443,7 +443,7 @@ public class QueryInfoBean { //implements SessionBean {
 
 		QtQueryInstance queryInstance = queryResultInstanceDao
 				.getQueryInstanceByInstanceId(queryInstanceId);
-		if (isManager == false) {
+		if (isAdminManager == false ) {
 			if (!userId.equalsIgnoreCase(queryInstance.getUserId()))
 				throw new I2B2Exception("Access Denied");
 

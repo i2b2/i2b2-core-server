@@ -377,6 +377,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 									//obsfcTotal, 
 									obfuscatedRecordCount, recordCount, obfusMethod);
 
+							/*
 							if (recordCount == 0)
 								description = "0 patients, no email sent";
 							else
@@ -479,10 +480,12 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 											e.printStackTrace();
 										}
 									}
+									
 								}
 
-
 							}
+							*/
+
 						} catch (SecurityException e) {
 							throw new I2B2DAOException(
 									"Failed to write obfuscated description "
@@ -523,24 +526,6 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 		}
 		return resultDataSet;
 	}
-	private String sanitizeFilename(String filename)
-	{
-
-		return filename.replaceAll("[^a-zA-Z0-9.-]", "_");
-	}
-	/*
-	private static final Pattern TAG_REGEX = Pattern.compile("{{{(.+?)}}}", Pattern.DOTALL);
-
-
-	private static List<String> getTagValues(final String str) {
-		final List<String> tagValues = new ArrayList<String>();
-		final Matcher matcher = TAG_REGEX.matcher(str);
-		while (matcher.find()) {
-			tagValues.add(matcher.group(1));
-		}
-		return tagValues;
-	}
-	 */
 	private char getChar(String sTerminatedBy)
 	{
 		if ("\\t".equals(sTerminatedBy)) {
@@ -557,74 +542,6 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 			return  ( sTerminatedBy.charAt(0));
 		}
 
-	}
-
-	private String processFilename(String fileName, Map param)
-	{
-
-
-		//		SetFinderDAOFactory sfDAOFactory = (SetFinderDAOFactory) param
-		//				.get("SetFinderDAOFactory");
-
-		String projectId = (String) param.get("projectId");
-		String queryInstanceId = (String) param.get("QueryInstanceId");
-		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
-		String resultFullName = queryDef.getQueryName();
-		//queryDef.getQueryId()
-
-		//		String resultFullName =  sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-		//				sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
-		//		QtQueryMaster qtMaster =  sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster();
-
-		fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}",(String) param.get("UserName"));//queryDef.getUserId());
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_STARTDATE\\}\\}\\}", ((java.sql.Timestamp) param.get("QueryStartDate")).toLocaleString());//sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getStartDate().toLocaleString());
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_ENDDATE\\}\\}\\}", new Date().toLocaleString());
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_RUNTIME\\}\\}\\}", Integer.toString(Math.toIntExact(new Date().getTime() - ((java.sql.Timestamp) param.get("QueryStartDate")).getTime())/1000));
-
-		fileName = fileName.replaceAll("\\{\\{\\{PATIENT_COUNT\\}\\}\\}", param.get("RecordCount").toString());		
-		fileName = fileName.replaceAll("\\{\\{\\{FULL_NAME\\}\\}\\}", (String) param.get("FullName"));			
-		fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId.substring(1, projectId.length()-1));
-		//fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", resultInstanceId);
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", sanitizeFilename(resultFullName));
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_MASTER_ID\\}\\}\\}", sanitizeFilename(queryInstanceId)); //qtMaster.getQueryMasterId()));
-
-		while (fileName.contains("{{{RANDOM_"))
-		{
-
-			try {
-				int start = fileName.indexOf("{{{RANDOM_");
-				int end = fileName.indexOf("}}}", start);
-				int size = Integer.parseInt(fileName.substring(start+10, end));
-
-				//SecureRandom random = new SecureRandom();
-				//fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", String.valueOf(random.nextInt(size)));
-				fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", (String) param.get("ResultRandom"));
-
-			} catch (Exception e) {}
-
-		}
-		// Deal with dates
-		while (fileName.contains("{{{DATE_"))
-		{
-
-			try {
-				int start = fileName.indexOf("{{{DATE_");
-				int end = fileName.indexOf("}}}", start);
-				String date = fileName.substring(start+8, end);
-
-				//DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
-				//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
-
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
-				fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}",  ((LocalDate) param.get("ResultDate")).format(formatter));
-				//(String) param.get("ResultDate"));
-
-			} catch (Exception e) {}
-
-		}
-
-
-		return fileName;
 	}
 
 	private String getItemKeyFromResultType(SetFinderDAOFactory sfDAOFactory,

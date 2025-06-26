@@ -654,7 +654,7 @@ public class QueryManagerBean{ // implements SessionBean {
 			log.debug("Got an error in QueryManagerBean, thropwing: " + ex.getMessage());
 			ex.printStackTrace();
 
-			queryInstance.setBatchMode(QueryManagerBeanUtil.PROCESSING);
+			queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
 			queryInstance.setEndDate(new Date(System
 					.currentTimeMillis()));
 			queryInstanceDao.update(queryInstance, false);

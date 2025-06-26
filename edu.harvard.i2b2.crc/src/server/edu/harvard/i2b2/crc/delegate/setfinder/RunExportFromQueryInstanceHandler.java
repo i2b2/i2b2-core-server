@@ -25,6 +25,7 @@ import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
+import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
@@ -55,9 +56,9 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
  */
 public class RunExportFromQueryInstanceHandler extends RequestHandler {
 	private InstanceMessageRequestType instanceMessageRequestType = null;
-    private PsmQryHeaderType headerType = null;
+	private PsmQryHeaderType headerType = null;
 
-	
+
 	String requestXml = null;
 	//boolean lockedoutFlag = false
 	boolean errorFlag = false;
@@ -74,8 +75,8 @@ public class RunExportFromQueryInstanceHandler extends RequestHandler {
 		try {
 			instanceMessageRequestType = (InstanceMessageRequestType) this.getRequestType(requestXml,
 					edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceMessageRequestType.class);
-            headerType = (PsmQryHeaderType) this.getRequestType(requestXml,
-                    edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType.class);
+			headerType = (PsmQryHeaderType) this.getRequestType(requestXml,
+					edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType.class);
 			this.requestXml = requestXml;
 			this.setDataSourceLookup(requestXml);
 		} catch (JAXBUtilException jaxbUtilEx) {
@@ -91,28 +92,39 @@ public class RunExportFromQueryInstanceHandler extends RequestHandler {
 	 * @see edu.harvard.i2b2.crc.delegate.RequestHandler#execute()
 	 */
 	@Override	public BodyType execute() throws I2B2Exception {
-        QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-        String response = null;
-        BodyType bodyType = new BodyType();
-        InstanceResponseType masterResponseType = null;
-        try {
-            //get userId and timeout from request xml
-            RequestMessageType requestMessageType = getI2B2RequestMessageType(requestXml);
-            long timeout = requestMessageType.getRequestHeader()
-                                             .getResultWaittimeMs();
-            String userId = headerType.getUser().getLogin();
-            String instanceId = instanceMessageRequestType.getQueryInstanceId();
+		QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
+		String response = null;
+		BodyType bodyType = new BodyType();
+		InstanceResponseType masterResponseType = null;
+		try {
+			//get userId and timeout from request xml
+			RequestMessageType requestMessageType = getI2B2RequestMessageType(requestXml);
+			long timeout = requestMessageType.getRequestHeader()
+					.getResultWaittimeMs();
+			String userId = headerType.getUser().getLogin();
+			DataSourceLookup dataSource = this.getDataSourceLookup();
+			String instanceId = instanceMessageRequestType.getQueryInstanceId();
 
-            log.info("MM55");
-        	//TODO removed ejbs
-//            QueryManagerLocalHome queryManagerLocalHome = qpUtil.getQueryManagerLocalHome();
- //           QueryManagerLocal queryManagerLocal = queryManagerLocalHome.create();
-            QueryManagerBean query = new QueryManagerBean();
-            query.runExportQueryInstance(this.getDataSourceLookup(),userId,
-            		instanceId, requestXml);
-            masterResponseType = new InstanceResponseType();
+			QueryManagerBean query = new QueryManagerBean();
+
+			Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						query.runExportQueryInstance(dataSource,userId,
+								instanceId, requestXml);
+					} catch (Exception e) {
+						log.error("i2b2 exception", e);
+					} catch (Throwable e) {
+						log.error("Throwable", e);
+					}
+				}
+			});
+			t.setDaemon(true);
+			t.start();
+			masterResponseType = new InstanceResponseType();
 			masterResponseType.setStatus(this.buildCRCStausType(RequestHandlerDelegate.DONE_TYPE, "DONE"));
-        } catch (Exception e) {
+		} catch (Exception e) {
 			masterResponseType = new InstanceResponseType();
 			masterResponseType.setStatus(this.buildCRCStausType(RequestHandlerDelegate.ERROR_TYPE, e.getMessage()));
 		} finally { 
@@ -121,7 +133,7 @@ public class RunExportFromQueryInstanceHandler extends RequestHandler {
 
 		}
 		return bodyType;
-    }
+	}
 
 
 

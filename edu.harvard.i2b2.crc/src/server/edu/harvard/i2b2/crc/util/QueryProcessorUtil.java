@@ -19,8 +19,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
@@ -48,6 +52,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.ApplicationType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.crc.datavo.pm.ParamType;
 import edu.harvard.i2b2.crc.datavo.pm.ParamsType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.ejb.ProcessQueue;
 import edu.harvard.i2b2.crc.ejb.QueryManagerBeanUtil;
 import edu.harvard.i2b2.crc.ejb.analysis.AnalysisPluginInfoLocal;
@@ -382,6 +387,76 @@ public class QueryProcessorUtil {
 	}
 
 
+	public String sanitizeFilename(String filename)
+	{
+
+		return filename.replaceAll("[^a-zA-Z0-9.-]", "_");
+	}
+
+
+	public String processFilename(String fileName, Map param)
+	{
+
+		String projectId = (String) param.get("projectId");
+		String queryInstanceId = (String) param.get("QueryInstanceId");
+		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
+		String resultFullName = queryDef.getQueryName();
+
+		fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}",(String) param.get("UserName"));//queryDef.getUserId());
+		fileName = fileName.replaceAll("\\{\\{\\{QUERY_STARTDATE\\}\\}\\}", ((java.sql.Timestamp) param.get("QueryStartDate")).toLocalDateTime().format( DateTimeFormatter.ofPattern("MMddyyyy")));
+		fileName = fileName.replaceAll("\\{\\{\\{QUERY_ENDDATE\\}\\}\\}", new Date().toLocaleString());
+
+		//MM Figue out why failing.
+		//fileName = fileName.replaceAll("\\{\\{\\{QUERY_RUNTIME\\}\\}\\}", Integer.toString(Math.toIntExact(new Date().getTime() - ((java.sql.Timestamp) param.get("QueryStartDate")).getTime())/1000));
+
+		fileName = fileName.replaceAll("\\{\\{\\{PATIENT_COUNT\\}\\}\\}", param.get("RecordCount").toString());		
+		fileName = fileName.replaceAll("\\{\\{\\{FULL_NAME\\}\\}\\}", (String) param.get("FullName"));			
+		fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId);
+		fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", (String) param.get("ResultInstanceId"));
+		fileName = fileName.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", sanitizeFilename(resultFullName));
+		fileName = fileName.replaceAll("\\{\\{\\{QUERY_INSTANCE_ID\\}\\}\\}", sanitizeFilename(queryInstanceId)); //qtMaster.getQueryMasterId()));
+		fileName = fileName.replaceAll("\\{\\{\\{QUERY_MASTER_ID\\}\\}\\}", param.get("QueryMasterId").toString()); //qtMaster.getQueryMasterId()));
+		fileName = fileName.replaceAll("\\{\\{\\{RESULT_OPTION_NAME\\}\\}\\}", (String) param.get("ResultOptionName"));			
+		fileName = fileName.replaceAll("\\{\\{\\{RESULT_NAME\\}\\}\\}", (String) param.get("ResultNameDescription"));			
+
+		if (fileName.contains("{{{RANDOM_"))
+		{
+
+			try {
+				int start = fileName.indexOf("{{{RANDOM_");
+				int end = fileName.indexOf("}}}", start);
+				int size = Integer.parseInt(fileName.substring(start+10, end));
+
+				//SecureRandom random = new SecureRandom();
+				//fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", String.valueOf(random.nextInt(size)));
+				fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", (String) param.get("ResultRandom"));
+
+			} catch (Exception e) {}
+
+		}
+		// Deal with dates
+		if (fileName.contains("{{{DATE_"))
+		{
+
+			try {
+				int start = fileName.indexOf("{{{DATE_");
+				int end = fileName.indexOf("}}}", start);
+				String date = fileName.substring(start+8, end);
+
+				//DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
+				//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
+
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
+				fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}",  ((LocalDate) param.get("ResultDate")).format(formatter));
+				//(String) param.get("ResultDate"));
+
+			} catch (Exception e) {}
+
+		}
+
+
+		return fileName;
+	}
 
 
 	/**

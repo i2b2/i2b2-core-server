@@ -2661,6 +2661,7 @@ class getParam implements RowMapper<ParamType> {
 		ParamType eData = new ParamType();
 		eData.setName(rs.getString("param_name_cd"));
 		eData.setValue(rs.getString("value"));
+		eData.setStatus(rs.getString("status_cd"));
 		eData.setId(rs.getInt("id"));
 		eData.setDatatype(rs.getString("datatype_cd"));
 		return eData;
@@ -2735,6 +2736,7 @@ class getProjectParams implements RowMapper<ParamType> {
 		//eData.setProject(rs.getString("project_path"));
 		eData.setName(rs.getString("param_name_cd"));
 		eData.setValue(rs.getString("value"));
+		eData.setStatus(rs.getString("status_cd"));
 
 		return eData;
 	} 
