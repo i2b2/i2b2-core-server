@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
@@ -44,6 +45,7 @@ IQueryResultTypeDao {
 
 	JdbcTemplate jdbcTemplate = null;
 	NamedParameterJdbcTemplate namedParameterJdbcTemplate = null;
+	private static final ConcurrentHashMap<Integer, QtQueryResultType> queryResultTypeCache = new ConcurrentHashMap<>();
 
 	QtResultTypeRowMapper queryResultTypeMapper = new QtResultTypeRowMapper();
 
@@ -55,7 +57,6 @@ IQueryResultTypeDao {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 		namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.dataSourceLookup = dataSourceLookup;
-
 	}
 
 	/**
@@ -68,12 +69,12 @@ IQueryResultTypeDao {
 	@SuppressWarnings("unchecked")
 	public QtQueryResultType getQueryResultTypeById(int resultTypeId) {
 
-		String sql = "select * from " + getDbSchemaName()
-		+ "qt_query_result_type where result_type_id = ?";
-		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
-				.queryForObject(sql, new Object[] { resultTypeId },
-						queryResultTypeMapper);
-		return queryResultType;
+		//this is a cache to avoid multiple database calls for the same status type
+		return queryResultTypeCache.computeIfAbsent(resultTypeId, id -> {
+			String sql = "select * from " + getDbSchemaName() + "qt_query_result_type where result_type_id = ?";
+			QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate.queryForObject(sql, new Object[] { id }, queryResultTypeMapper);
+			return queryResultType;
+		});
 	}
 
 	/**

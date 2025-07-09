@@ -14,6 +14,8 @@
  */
 package edu.harvard.i2b2.crc.dao.setfinder;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
@@ -24,6 +26,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+
 
 
 /**
@@ -38,13 +41,9 @@ public class QueryStatusTypeSpringDao extends CRCDAO implements IQueryStatusType
 	JdbcTemplate jdbcTemplate = null;
 	
 	QtStatusTypeRowMapper queryStatusTypeMapper = new QtStatusTypeRowMapper();
-	
-
-	
-
 	private DataSourceLookup dataSourceLookup = null;
-	
-	
+	private static final ConcurrentHashMap<Integer, QtQueryStatusType> queryStatusTypeCache = new ConcurrentHashMap<>();
+
 	public QueryStatusTypeSpringDao(DataSource dataSource,DataSourceLookup dataSourceLookup) { 
 		setDataSource(dataSource);
 		setDbSchemaName(dataSourceLookup.getFullSchema());
@@ -61,10 +60,13 @@ public class QueryStatusTypeSpringDao extends CRCDAO implements IQueryStatusType
     @Override
 	@SuppressWarnings("unchecked")
     public QtQueryStatusType getQueryStatusTypeById(int statusTypeId) {
-    	
-        String sql = "select * from " + getDbSchemaName() + "qt_query_status_type where status_type_id = ?" ;
-        QtQueryStatusType queryStatusType = (QtQueryStatusType)jdbcTemplate.queryForObject(sql,new Object[]{statusTypeId},queryStatusTypeMapper );
-        return queryStatusType;
+
+		//this is a cache to avoid multiple database calls for the same status type
+		return queryStatusTypeCache.computeIfAbsent(statusTypeId, id -> {
+			String sql = "select * from " + getDbSchemaName() + "qt_query_status_type where status_type_id = ?" ;
+			QtQueryStatusType queryStatusType = (QtQueryStatusType)jdbcTemplate.queryForObject(sql,new Object[]{id},queryStatusTypeMapper );
+			return queryStatusType;
+		});
     }
    
   private static class QtStatusTypeRowMapper implements RowMapper {
