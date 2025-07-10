@@ -49,8 +49,8 @@ public class EmailUtil {
 			session = Session.getDefaultInstance(props, null);
 		else
 			session = Session.getDefaultInstance(props, auth);
-		sendEmail(session, toEmail, subject, body, qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.from.email"),
-				qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.from.fullname"));
+		sendEmail(session, toEmail, subject, body, fromEmail,
+				fromEmail);
 
 
 	}

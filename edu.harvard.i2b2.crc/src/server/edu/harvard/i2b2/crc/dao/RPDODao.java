@@ -295,16 +295,16 @@ public class RPDODao extends JdbcDaoSupport {
 
 
 
-					aggType = jobject.get("dataOption").getAsString();
+					aggType = unparseXML(jobject.get("dataOption").getAsString());
 
 					JsonObject jObj= jobject.get("sdxData").getAsJsonObject();
 					JsonElement jObj2 = jObj.get("origData");
 					jobject =jObj2.getAsJsonObject();
-					c_fullpath = jobject.get("key").getAsString(); 
-					c_columnname  = jobject.get("column_name").getAsString(); 
-					c_tablename  = jobject.get("table_name").getAsString(); 
-					c_operator  = jobject.get("operator").getAsString(); 
-					c_dimcode  = jobject.get("dim_code").getAsString(); 
+					c_fullpath = unparseXML(jobject.get("key").getAsString()); 
+					c_columnname  = unparseXML(jobject.get("column_name").getAsString());
+					c_tablename  = unparseXML(jobject.get("table_name").getAsString());
+					c_operator  = unparseXML(jobject.get("operator").getAsString());
+					c_dimcode  = unparseXML(jobject.get("dim_code").getAsString());
 					if (!c_tablename.equalsIgnoreCase("concept_dimension"))
 						c_facttablecolumn = "patient_num";
 
@@ -316,8 +316,8 @@ public class RPDODao extends JdbcDaoSupport {
 					{
 						jobject =jObj3.getAsJsonObject();
 
-						valueType = jobject.get("ValueType").getAsString(); 
-						valueOperator = jobject.get("ValueOperator").getAsString(); 
+						valueType = unparseXML(jobject.get("ValueType").getAsString()); 
+						valueOperator = unparseXML(jobject.get("ValueOperator").getAsString()); 
 
 						if (valueOperator.equals("IN"))
 						{
@@ -327,6 +327,7 @@ public class RPDODao extends JdbcDaoSupport {
 							if (value.length() > 0) {
 								value = value.replace("\"", "'");
 								value = value.substring(1,value.length()-1);
+								value = "(" + value + ")";
 							}
 							valueType = "ENUM";
 						} else if (valueType.equals("FLAG"))
@@ -340,7 +341,7 @@ public class RPDODao extends JdbcDaoSupport {
 							value = jobject.get("Value").getAsString(); 
 						}
 						if (jobject.get("ValueUnit") != null)
-							valueUnit = jobject.get("ValueUnit").getAsString(); 
+							valueUnit = unparseXML(jobject.get("ValueUnit").getAsString()); 
 
 					}
 
@@ -492,8 +493,15 @@ public class RPDODao extends JdbcDaoSupport {
 					"RPDO_" + naxtTableInstanceID);
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			
+			sql = "UPDATE " + resultTypeTable +
+					" SET VISUAL_ATTRIBUTE_TYPE_ID = 'LH' WHERE NAME = ? and CLASSNAME = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated' ";
+
+			jt.update(sql, 
+					"RPDO_" + naxtTableInstanceID);
+			//e.printStackTrace();
 		}
+		
 		//Insert
 
 		if (!userId.equals("@")) {
@@ -561,6 +569,16 @@ public class RPDODao extends JdbcDaoSupport {
 		}
 		//}
 		return naxtTableInstanceID;
+	}
+
+
+	private String unparseXML(String asString) {
+		asString = asString.replace("&quot;", "\"");
+		asString = asString.replace("&apos;", "'");
+		asString = asString.replace("&lt;", "<");
+		asString = asString.replace("&gt;", ">");
+		asString = asString.replace("&amp;", "&");
+		return asString;
 	}
 
 

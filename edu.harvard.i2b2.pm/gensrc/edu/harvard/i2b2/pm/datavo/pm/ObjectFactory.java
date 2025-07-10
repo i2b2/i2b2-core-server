@@ -568,8 +568,8 @@ public class ObjectFactory {
      * 
      */
     @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_all_global")
-    public JAXBElement<String> createGetAllGlobal(String value) {
-        return new JAXBElement<String>(_GetAllGlobal_QNAME, String.class, null, value);
+    public JAXBElement<ParamType> createGetAllGlobal(ParamType value) {
+        return new JAXBElement<ParamType>(_GetAllGlobal_QNAME, ParamType.class, null, value);
     }
 
     /**
@@ -847,8 +847,8 @@ public class ObjectFactory {
      * 
      */
     @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_all_project_param")
-    public JAXBElement<String> createGetAllProjectParam(String value) {
-        return new JAXBElement<String>(_GetAllProjectParam_QNAME, String.class, null, value);
+    public JAXBElement<ParamType> createGetAllProjectParam(ParamType value) {
+        return new JAXBElement<ParamType>(_GetAllProjectParam_QNAME, ParamType.class, null, value);
     }
 
     /**

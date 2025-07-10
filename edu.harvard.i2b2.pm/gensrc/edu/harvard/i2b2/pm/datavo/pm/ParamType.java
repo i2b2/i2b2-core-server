@@ -50,8 +50,17 @@ public class ParamType {
     protected String datatype;
     @XmlAttribute(name = "status")
     protected String status;
+    @XmlAttribute(name = "hidden")
+    protected Boolean hidden;
+    public Boolean getHidden() {
+		return hidden;
+	}
 
-    /**
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
+	}
+
+	/**
      * Gets the value of the value property.
      * 
      * @return

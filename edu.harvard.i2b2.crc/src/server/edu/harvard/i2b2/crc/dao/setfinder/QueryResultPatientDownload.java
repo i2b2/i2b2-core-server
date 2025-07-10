@@ -89,6 +89,8 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
+import edu.harvard.i2b2.crc.datavo.pm.ParamType;
+import edu.harvard.i2b2.crc.datavo.pm.ProjectType;
 import edu.harvard.i2b2.crc.datavo.pm.UserType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
@@ -208,7 +210,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 			ResultSet resultSet = null;
 
 			CallableStatement callStmt = null;
-			
+
 			try {
 				QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
 
@@ -220,6 +222,13 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 				user = CallPMUtil.getUserFromResponse(queryMaster.getPmXml());
 
+				//Get projectParams
+				List<ParamType> projectParam = null;
+				for (ProjectType project : user.getProject())
+				{
+					if (project.getId().equals((String) param.get("projectId")))
+						projectParam = project.getParam();
+				}
 				param.put("QueryStartDate", queryMaster.getCreateDate());
 				param.put("FullName", user.getFullName());
 				param.put("UserName", user.getUserName());
@@ -240,7 +249,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						transactionTimeout);
 				Thread csrThread = new Thread(csr);
 				csrThread.start();
-*/
+				 */
 				//String sqlFinal = "";
 
 				valueExport = new ValueExporter();
@@ -330,7 +339,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE) &&
 							item.getQuery().startsWith("{ call")) {
 
-						 callStmt = sfDAOFactory.getDataSource().getConnection().prepareCall(item.getQuery());
+						callStmt = sfDAOFactory.getDataSource().getConnection().prepareCall(item.getQuery());
 						callStmt.registerOutParameter(1, OracleTypes.CURSOR);
 						callStmt.execute();
 						resultSet = (ResultSet) callStmt.getObject(1);
@@ -338,35 +347,35 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) &&
 							item.getQuery().startsWith("call ")) {
 
-					    log.info("In PostgreSQL");
-					 
+						log.info("In PostgreSQL");
 
-					     conn = sfDAOFactory.getDataSource().getConnection();
-					    conn.setAutoCommit(false); // Step 1: start transaction
-					 
-					    
-					     callStmt = conn.prepareCall(item.getQuery());
-					    callStmt.registerOutParameter(1, Types.OTHER); // refcursor out param
-					 
-					    log.info("Calling stored procedure" + item.getQuery());
-					    callStmt.execute(); // Step 2: call procedure
-					 
-					    // String cursorName = (String) callStmt.getObject(1); // Step 3: get cursor name
-					    resultSet  = (ResultSet) callStmt.getObject(1); 
-					    log.info("Cursor name returned: " );
-					 
-					    // Step 4: Fetch from the cursor
-					    /*
+
+						conn = sfDAOFactory.getDataSource().getConnection();
+						conn.setAutoCommit(false); // Step 1: start transaction
+
+
+						callStmt = conn.prepareCall(item.getQuery());
+						callStmt.registerOutParameter(1, Types.OTHER); // refcursor out param
+
+						log.info("Calling stored procedure" + item.getQuery());
+						callStmt.execute(); // Step 2: call procedure
+
+						// String cursorName = (String) callStmt.getObject(1); // Step 3: get cursor name
+						resultSet  = (ResultSet) callStmt.getObject(1); 
+						log.info("Cursor name returned: " );
+
+						// Step 4: Fetch from the cursor
+						/*
 					    Statement fetchStmt = sfConn.createStatement();
 					    resultSet = fetchStmt.executeQuery("FETCH ALL FROM \"" + cursorName + "\"");
-					 
+
 					    log.info("Fetched cursor from PostgreSQL");
-					 */
-					    // Note: do not commit here if the caller expects to process the resultSet
-					    // conn.commit(); // optionally close the transaction when done processing
-					 
-					    // Optionally: close cursor if needed (or rely on end-of-transaction cleanup)
-					    // fetchStmt.execute("CLOSE \"" + cursorName + "\"");
+						 */
+						// Note: do not commit here if the caller expects to process the resultSet
+						// conn.commit(); // optionally close the transaction when done processing
+
+						// Optionally: close cursor if needed (or rely on end-of-transaction cleanup)
+						// fetchStmt.execute("CLOSE \"" + cursorName + "\"");
 						/* orig
 						 callStmt = sfDAOFactory.getDataSource().getConnection().prepareCall(item.getQuery());
 						callStmt.registerOutParameter(1, Types.OTHER);
@@ -377,7 +386,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						stmt = sfConn.prepareStatement("FETCH ALL FROM \"" + cursorName + "\"") ;
 
 						resultSet = stmt.executeQuery();
-						*/
+						 */
 					} else 	{
 						stmt = sfConn.prepareStatement(item.getQuery());
 						stmt.setQueryTimeout(transactionTimeout);
@@ -484,6 +493,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 							//CSVWriter(fileName)) {
 
 
+							if (resultSet == null)
+								throw new Exception("Empty Resultset");
+
 							//Define fetch size(default as 30000 rows), higher to be faster performance but takes more memory
 							ResultSetHelperService.RESULT_FETCH_SIZE=fetchSize;
 							//Define MAX extract rows, -1 means unlimited.
@@ -508,7 +520,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 							timeoutFlag = true;
 							throw new CRCTimeOutException("The query was canceled.");
 						}
-						*/
+						 */
 
 						// if RPDO than save the RPDO table
 						if (resultTypeName.startsWith("RPDO_")) {
@@ -572,7 +584,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 							timeoutFlag = true;
 							throw new CRCTimeOutException("The query was canceled.");
 						}
-						*/
+						 */
 					}
 				}
 
@@ -611,6 +623,11 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				//}
 				//tm.commit();
 
+
+				if (letter==null)
+					letter = getProjectParam(projectParam, "Letter");
+
+
 				//Process XIP File 
 				if (letter != null && letterFilename != null) {
 
@@ -641,7 +658,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				//String requesterLetter = valueExport.getDataManagerEmailMessage();
 
 
-				if (letter != null && qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail") != null) {
+				if (letter != null) { // && qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail") != null) {
 
 					letter = qpUtil.processFilename(letter, param);
 
@@ -707,7 +724,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if ((resultTypeName.equals(finalResultOutput))
 							&& (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) )
 
-						email.email(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), "i2b2 Data Export - " + queryDef.getQueryName(), letter);
+						email.email(getProjectParam(projectParam, "Data Manager Email"), getProjectParam(projectParam, "Data Manager Email"), "i2b2 Data Export - " + queryDef.getQueryName(), letter);
 				}
 
 
@@ -747,35 +764,35 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				//					+ sqlEx.getMessage(), sqlEx);
 			} finally {
 
-				 if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
-				 {
-						    try {
-						    	if (conn != null)
-								conn.setAutoCommit(true);
-							} catch (SQLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} // Step 1: start transaction
-				 }	
-				 
+				if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+				{
+					try {
+						if (conn != null)
+							conn.setAutoCommit(true);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} // Step 1: start transaction
+				}	
 
-					if ( resultSet != null)
-						try {
-							resultSet.close();
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 
-					if (callStmt != null)
-						try {
-							callStmt.close();
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-				
-				
+				if ( resultSet != null)
+					try {
+						resultSet.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				if (callStmt != null)
+					try {
+						callStmt.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+
 				if (resultInstanceId != null) {
 					IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
 							.getPatientSetResultDAO();
@@ -893,9 +910,20 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						}
 					}
 				}
+				throw new I2B2DAOException(
+						"Failed to create file");
 			}
 		}
 
+	}
+
+
+	private String getProjectParam(List<ParamType> projectParam, String string) {
+		if (projectParam != null)
+			for (ParamType param: projectParam)
+				if (param.getName().equals(string))
+					return param.getValue();
+		return null;
 	}
 
 

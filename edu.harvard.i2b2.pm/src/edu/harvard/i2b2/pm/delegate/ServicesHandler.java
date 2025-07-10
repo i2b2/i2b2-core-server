@@ -552,7 +552,7 @@ public class ServicesHandler extends RequestHandler {
 				else if (name.equals("delete_role"))
 					return runDeleteParam(pmDb, project, rmt.getUsername(),  (RoleType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_role"))
-					return runGetParam(pmDb, project, rmt.getUsername(),  (RoleType) ((JAXBElement) obj).getValue()  );
+					return runGetParam(pmDb, project, rmt.getUsername(),  (RoleType) ((JAXBElement) obj).getValue() , false );
 				else if (name.equals("set_hive"))
 					return runSetParam(pmDb, project, name, rmt.getUsername(), (ConfigureType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_hive"))
@@ -560,7 +560,7 @@ public class ServicesHandler extends RequestHandler {
 				else if (name.equals("delete_hive"))
 					return runDeleteParam(pmDb, project, rmt.getUsername(),  (ConfigureType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_hive"))
-					return runGetParam(pmDb, project, rmt.getUsername(),  (ConfigureType) ((JAXBElement) obj).getValue()  );
+					return runGetParam(pmDb, project, rmt.getUsername(),  (ConfigureType) ((JAXBElement) obj).getValue() ,false );
 				else if (name.equals("delete_project"))
 					return runDeleteProject(pmDb, rmt.getUsername(),  (ProjectType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_project"))
@@ -571,7 +571,122 @@ public class ServicesHandler extends RequestHandler {
 					return runGetAllDatasource(pmDb, project, rmt.getUsername() );
 				else if (name.equals("get_user_login"))
 					return runUserLogin(pmDb, rmt.getUsername(),  (UserLoginType) ((JAXBElement) obj).getValue()  );
+				else if (name.equals("get_all_project_param"))
+				{
+					ProjectType pType = new ProjectType();
+					pType.setId( ((ParamType)((JAXBElement) obj).getValue()).getValue());
+					boolean showDeleted = false;
+					if (((ParamType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((ParamType)((JAXBElement) obj).getValue()).getHidden();
+					return runGetAllParam(pmDb, project, rmt.getUsername(),  pType , ((JAXBElement) obj).getName().getLocalPart() , showDeleted);
+				}
+				else if (name.equals("get_all_global"))
+				{
+					GlobalDataType global = new GlobalDataType ();
+					global.setProjectPath(((ParamType)((JAXBElement) obj).getValue()).getValue());
 
+					boolean showDeleted = false;
+					if (((ParamType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((ParamType)((JAXBElement) obj).getValue()).getHidden();
+					return runGetAllParam(pmDb, project, rmt.getUsername(), global , ((JAXBElement) obj).getName().getLocalPart(), showDeleted);
+				}				
+
+				else if (name.equals("get_all_hive_param"))
+				{
+					ConfigureType lcType = new ConfigureType();
+					lcType.setDomainId(((ParamType)((JAXBElement) obj).getValue()).getValue());
+
+					boolean showDeleted = false;
+					if (((ParamType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((ParamType)((JAXBElement) obj).getValue()).getHidden();
+					return runGetAllParam(pmDb, project, rmt.getUsername(),lcType, ((JAXBElement) obj).getName().getLocalPart(), showDeleted);
+				}
+				else if (name.equals("get_project_user_param"))
+				{
+					ParamType param = new ParamType();
+					param.setId(Integer.valueOf(((ParamType)((JAXBElement) obj).getValue()).getValue()));
+
+					boolean showDeleted = false;
+					if (((ParamType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((ParamType)((JAXBElement) obj).getValue()).getHidden();
+					ProjectType global = new ProjectType();
+					global.setUserName("USER");
+					global.getParam().add(param);
+
+					return runGetParam(pmDb, project, rmt.getUsername(), global,  showDeleted);
+
+					//					return runGetParam(pmDb, project, rmt.getUsername(), (ProjectType) ((JAXBElement) obj).getValue() );
+				}
+				else if (name.equals("get_project_param"))
+				{
+					ParamType param = new ParamType();
+					param.setId(Integer.valueOf(((ParamType)((JAXBElement) obj).getValue()).getValue()));
+
+					boolean showDeleted = false;
+					if (((ParamType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((ParamType)((JAXBElement) obj).getValue()).getHidden();
+					ProjectType global = new ProjectType();
+					global.getParam().add(param);
+
+					return runGetParam(pmDb, project, rmt.getUsername(), global  ,  showDeleted);
+				}
+				else if (name.equals("get_cell_param"))
+				{
+					ParamType param = new ParamType();
+					param.setId(Integer.valueOf(((ParamType)((JAXBElement) obj).getValue()).getValue()));
+
+					boolean showDeleted = false;
+					if (((ParamType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((ParamType)((JAXBElement) obj).getValue()).getHidden();
+					CellDataType global = new CellDataType();
+					global.getParam().add(param);
+
+					return runGetParam(pmDb, project, rmt.getUsername(), global ,  showDeleted);
+				}
+				else if (name.equals("get_user_param"))
+				{
+					ParamType param = new ParamType();
+					param.setId(Integer.valueOf(((ParamType)((JAXBElement) obj).getValue()).getValue()));
+
+					boolean showDeleted = false;
+					if (((ParamType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((ParamType)((JAXBElement) obj).getValue()).getHidden();
+					UserType global = new UserType();
+					global.getParam().add(param);
+
+					return runGetParam(pmDb, project, rmt.getUsername(), global ,  showDeleted);
+				}
+				else if (name.equals("get_hive_param"))
+				{
+					ParamType param = new ParamType();
+					param.setId(Integer.valueOf(((ParamType)((JAXBElement) obj).getValue()).getValue()));
+
+					boolean showDeleted = false;
+					if (((ParamType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((ParamType)((JAXBElement) obj).getValue()).getHidden();
+					ConfigureType global = new ConfigureType();
+					global.getParam().add(param);
+
+					return runGetParam(pmDb, project, rmt.getUsername(), global ,  showDeleted);
+				}
+				else if (name.equals("get_global"))
+				{
+					ParamType param = new ParamType();
+					param.setId(Integer.valueOf(((ParamType)((JAXBElement) obj).getValue()).getValue()));
+					boolean showDeleted = false;
+					if (((ParamType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((ParamType)((JAXBElement) obj).getValue()).getHidden();
+					GlobalDataType global = new GlobalDataType();
+					global.getParam().add(param);
+					return runGetParam(pmDb, project, rmt.getUsername(), global ,  showDeleted);	
+				}
+				/*				else if (name.equals("get_all_user_param"))
+				{
+					UserType pType = new UserType();
+					pType.setUserName(value);
+					return runGetAllParam(pmDb, project, rmt.getUsername(), pType );
+				}
+				 */
 
 				log.debug("working on value");
 				value  = ((String) ((JAXBElement) obj).getValue()).trim();
@@ -584,20 +699,8 @@ public class ServicesHandler extends RequestHandler {
 					return runSetPassword(pmDb, rmt.getUsername(), value );
 				else if (name.equals("get_user"))
 					return runGetUser(pmDb, project, rmt.getUsername(), value );
-				else if (name.equals("get_global"))
-				{
-					ParamType param = new ParamType();
-					param.setId(Integer.valueOf(value));
-					GlobalDataType global = new GlobalDataType();
-					global.getParam().add(param);
-					return runGetParam(pmDb, project, rmt.getUsername(), global  );				
-				}
-				else if (name.equals("get_all_global"))
-				{
-					GlobalDataType global = new GlobalDataType ();
-					global.setProjectPath(value);
-					return runGetAllParam(pmDb, project, rmt.getUsername(), global );
-				}
+
+
 				else if (name.equals("delete_global"))
 				{
 					ParamType param = new ParamType();
@@ -649,73 +752,6 @@ public class ServicesHandler extends RequestHandler {
 					return runDeleteParam(pmDb, project, rmt.getUsername(), global);
 				}					
 
-				else if (name.equals("get_all_hive_param"))
-				{
-					ConfigureType lcType = new ConfigureType();
-					lcType.setDomainId(value);
-					return runGetAllParam(pmDb, project, rmt.getUsername(),lcType);//(CellDataType) ((JAXBElement) obj).getValue() );
-				}
-				else if (name.equals("get_all_project_param"))
-				{
-					ProjectType pType = new ProjectType();
-					pType.setId(value);
-					return runGetAllParam(pmDb, project, rmt.getUsername(), pType );
-				}
-				/*				else if (name.equals("get_all_user_param"))
-				{
-					UserType pType = new UserType();
-					pType.setUserName(value);
-					return runGetAllParam(pmDb, project, rmt.getUsername(), pType );
-				}
-				 */
-				else if (name.equals("get_project_user_param"))
-				{
-					ParamType param = new ParamType();
-					param.setId(Integer.valueOf(value));
-					ProjectType global = new ProjectType();
-					global.setUserName("USER");
-					global.getParam().add(param);
-
-					return runGetParam(pmDb, project, rmt.getUsername(), global  );
-
-					//					return runGetParam(pmDb, project, rmt.getUsername(), (ProjectType) ((JAXBElement) obj).getValue() );
-				}
-				else if (name.equals("get_project_param"))
-				{
-					ParamType param = new ParamType();
-					param.setId(Integer.valueOf(value));
-					ProjectType global = new ProjectType();
-					global.getParam().add(param);
-
-					return runGetParam(pmDb, project, rmt.getUsername(), global  );
-				}
-				else if (name.equals("get_cell_param"))
-				{
-					ParamType param = new ParamType();
-					param.setId(Integer.valueOf(value));
-					CellDataType global = new CellDataType();
-					global.getParam().add(param);
-
-					return runGetParam(pmDb, project, rmt.getUsername(), global  );
-				}
-				else if (name.equals("get_user_param"))
-				{
-					ParamType param = new ParamType();
-					param.setId(Integer.valueOf(value));
-					UserType global = new UserType();
-					global.getParam().add(param);
-
-					return runGetParam(pmDb, project, rmt.getUsername(), global  );
-				}
-				else if (name.equals("get_hive_param"))
-				{
-					ParamType param = new ParamType();
-					param.setId(Integer.valueOf(value));
-					ConfigureType global = new ConfigureType();
-					global.getParam().add(param);
-
-					return runGetParam(pmDb, project, rmt.getUsername(), global  );
-				}
 				else if (name.equals("get_all_project_request"))
 				{
 					return runGetAllProjectRequest(pmDb, project, rmt.getUsername()  );
@@ -1230,8 +1266,11 @@ public class ServicesHandler extends RequestHandler {
 		}
 		return responseVdo;
 	}
-
-	private String runGetAllParam(PMDbDao pmDb, String project, String caller, Object utype) {
+	private String runGetAllParam(PMDbDao pmDb, String project, String caller, Object utypem) {
+		return runGetAllParam( pmDb,  project,  caller,  utypem, null, false) ;
+	}
+	
+	private String runGetAllParam(PMDbDao pmDb, String project, String caller, Object utype, String localPart, boolean showDeleted) {
 		ResponseMessageType responseMessageType = null;
 
 		//ParamsType users = new ParamsType();;
@@ -1250,7 +1289,7 @@ public class ServicesHandler extends RequestHandler {
 
 				if (utype instanceof RoleType)
 				{
-					response = pmDb.getAllParam(utype,project, caller);
+					response = pmDb.getAllParam(utype,project, caller, showDeleted);
 
 					log.debug("Records returned: " + response.size());
 					Iterator it = response.iterator();
@@ -1267,7 +1306,7 @@ public class ServicesHandler extends RequestHandler {
 				} else if ((utype instanceof ConfigureType) &&
 						((((ConfigureType) utype).getDomainId() == null)))
 				{
-					response = pmDb.getAllParam(utype,project, caller);
+					response = pmDb.getAllParam(utype,project, caller,showDeleted);
 
 					log.debug("Records returned: " + response.size());
 					Iterator it = response.iterator();
@@ -1280,7 +1319,7 @@ public class ServicesHandler extends RequestHandler {
 					}
 				} else  if (utype instanceof UserType)
 				{
-					response = pmDb.getAllParam(utype,project, caller);
+					response = pmDb.getAllParam(utype,project, caller, showDeleted);
 
 					log.debug("Records returned: " + response.size());
 					Iterator it = response.iterator();
@@ -1303,6 +1342,7 @@ public class ServicesHandler extends RequestHandler {
 						ParamType param = new ParamType();
 						param.setName(user.getName());
 						param.setId(user.getId());
+						param.setStatus(user.getStatus());
 						param.setDatatype(user.getDatatype());
 						param.setValue(user.getValue());
 						((UserType)userType).setUserName(user.getUser());
@@ -1313,7 +1353,7 @@ public class ServicesHandler extends RequestHandler {
 					//	}
 				} else 
 				{
-					response = pmDb.getAllParam(utype,project, caller);
+					response = pmDb.getAllParam(utype,project, caller, showDeleted);
 
 					log.debug("Records returned: " + response.size());
 					Iterator it = response.iterator();
@@ -1363,7 +1403,7 @@ public class ServicesHandler extends RequestHandler {
 	}
 
 	private String runGetParam(PMDbDao pmDb, String project, String caller,
-			Object utype) {
+			Object utype, boolean showDeleted) {
 		ResponseMessageType responseMessageType = null;
 
 		Object users = null;
@@ -1376,7 +1416,7 @@ public class ServicesHandler extends RequestHandler {
 				int result = -1;
 				if (utype instanceof RoleType)
 				{
-					response = pmDb.getParam(utype, true);
+					response = pmDb.getParam(utype,  showDeleted);
 
 					Iterator it = response.iterator();
 					//ParamsType user = null;
@@ -1388,7 +1428,7 @@ public class ServicesHandler extends RequestHandler {
 					}
 				} else if (utype instanceof ConfigureType)
 				{
-					response = pmDb.getParam(utype, true);
+					response = pmDb.getParam(utype, showDeleted);
 
 					Iterator it = response.iterator();
 					//ParamsType user = null;
@@ -1396,14 +1436,14 @@ public class ServicesHandler extends RequestHandler {
 						users = (ConfigureType)it.next();
 				} else if (utype instanceof GlobalDataType)
 				{
-					response = pmDb.getParam(utype, true);
+					response = pmDb.getParam(utype,  showDeleted);
 
 					Iterator it = response.iterator();
 					//ParamsType user = null;
 					while (it.hasNext())
 						users = (GlobalDataType)it.next();
 				} else {
-					response = pmDb.getParam(utype, true);
+					response = pmDb.getParam(utype,   showDeleted);
 
 					Iterator it = response.iterator();
 					//ParamsType user = null;
