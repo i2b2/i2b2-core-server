@@ -52,6 +52,7 @@ import java.util.Date;
 @XmlType(name = "rpdoType", propOrder = {
     "title",
     "creatorId",
+    "requestId",
     "shared",
     "concept",
     "columnCount",
@@ -67,7 +68,8 @@ public class RpdoType {
     protected String title;
     @XmlElement(name = "creator_id", required = true)
     protected String creatorId;
-    protected Boolean shared = null;
+    protected Integer requestId;
+	protected Boolean shared = null;
     protected Boolean visible = null;
     @XmlElement(name = "column_count", required = true)
     protected String columnCount;
@@ -81,6 +83,16 @@ public class RpdoType {
     protected Date updateDate;
     @XmlAttribute(name = "id")
     protected Integer id;
+
+    
+    public Integer getRequestId() {
+		return requestId;
+	}
+
+	public void setRequestId(Integer requestId) {
+		this.requestId = requestId;
+	}
+
 
     /**
      * Gets the value of the title property.

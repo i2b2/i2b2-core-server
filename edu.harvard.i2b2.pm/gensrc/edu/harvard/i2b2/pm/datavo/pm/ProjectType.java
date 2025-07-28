@@ -70,7 +70,15 @@ public class ProjectType {
     protected List<ParamType> param;
     @XmlAttribute(name = "id", required = true)
     protected String id;
+    @XmlAttribute(name = "hidden")
+    protected Boolean hidden;
+    public Boolean getHidden() {
+		return hidden;
+	}
 
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
+	}
     /**
      * Gets the value of the name property.
      * 

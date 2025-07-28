@@ -533,16 +533,10 @@ public class ServicesHandler extends RequestHandler {
 					return runSetParam(pmDb, project, name, rmt.getUsername(), (ProjectType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("set_project_user_param"))
 					return runSetParam(pmDb, ((ProjectType) ((JAXBElement) obj).getValue()).getId(), name, rmt.getUsername(), (ProjectType) ((JAXBElement) obj).getValue() );
-				else if (name.equals("get_all_project_user_param"))
-					return runGetAllParam(pmDb, project,  rmt.getUsername(), (ProjectType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("set_user_param"))
 					return runSetParam(pmDb, project, name, rmt.getUsername(), (UserType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("set_cell_param"))
 					return runSetParam(pmDb, project, name, rmt.getUsername(), (CellDataType) ((JAXBElement) obj).getValue() );
-				else if (name.equals("get_all_cell_param"))
-					return runGetAllParam(pmDb, project, rmt.getUsername(),  (CellDataType) ((JAXBElement) obj).getValue() );
-				else if (name.equals("get_all_user_param"))
-					return runGetAllParam(pmDb, project, rmt.getUsername(),  (UserType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("set_hive_param"))
 					return runSetParam(pmDb, project, name, rmt.getUsername(), (ConfigureType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("set_role"))
@@ -571,6 +565,32 @@ public class ServicesHandler extends RequestHandler {
 					return runGetAllDatasource(pmDb, project, rmt.getUsername() );
 				else if (name.equals("get_user_login"))
 					return runUserLogin(pmDb, rmt.getUsername(),  (UserLoginType) ((JAXBElement) obj).getValue()  );
+				else if (name.equals("get_all_project_user_param")) {
+					ProjectType pType =  ((ProjectType)((JAXBElement) obj).getValue());
+					boolean showDeleted = false;
+					if (((ProjectType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((ProjectType)((JAXBElement) obj).getValue()).getHidden();
+					return runGetAllParam(pmDb, project, rmt.getUsername(),  pType , ((JAXBElement) obj).getName().getLocalPart() , showDeleted);
+				}
+//					return runGetAllParam(pmDb, project,  rmt.getUsername(), (ProjectType) ((JAXBElement) obj).getValue() );
+				else if (name.equals("get_all_cell_param")) {
+					CellDataType pType =  ((CellDataType)((JAXBElement) obj).getValue());
+					boolean showDeleted = false;
+					if (((CellDataType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((CellDataType)((JAXBElement) obj).getValue()).getHidden();
+					return runGetAllParam(pmDb, project, rmt.getUsername(),  pType , ((JAXBElement) obj).getName().getLocalPart() , showDeleted);
+				}
+//					return runGetAllParam(pmDb, project, rmt.getUsername(),  (CellDataType) ((JAXBElement) obj).getValue() );
+				else if (name.equals("get_all_user_param"))
+				{
+					UserType pType =  ((UserType)((JAXBElement) obj).getValue());
+					boolean showDeleted = false;
+					if (((UserType)((JAXBElement) obj).getValue()).getHidden() != null)
+						showDeleted = ((UserType)((JAXBElement) obj).getValue()).getHidden();
+					return runGetAllParam(pmDb, project, rmt.getUsername(),  pType , ((JAXBElement) obj).getName().getLocalPart() , showDeleted);
+				}
+					
+					//return runGetAllParam(pmDb, project, rmt.getUsername(),  (UserType) ((JAXBElement) obj).getValue() );				
 				else if (name.equals("get_all_project_param"))
 				{
 					ProjectType pType = new ProjectType();

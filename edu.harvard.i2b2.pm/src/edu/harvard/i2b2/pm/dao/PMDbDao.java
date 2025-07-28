@@ -1472,7 +1472,7 @@ public class PMDbDao extends JdbcDaoSupport {
 			{
 				ArrayList al = new ArrayList();
 
-				sql = "select * from pm_project_user_params where " + 	(showDeleted ? "" :" status_cd<>'D' ");
+				sql = "select * from pm_project_user_params where " + 	(showDeleted ? " 1=1 " :" status_cd<>'D' ");
 
 				if (((ProjectType) utype).getUserName() != null) // || !((UserType) utype).getUserName().equals(""))
 				{
@@ -1525,7 +1525,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		{
 			ArrayList al = new ArrayList();
 
-			sql = "select * from pm_user_params where " + 	(showDeleted ? "" :" status_cd<>'D' ");
+			sql = "select * from pm_user_params where " + 	(showDeleted ? " 1=1 " :" status_cd<>'D' ");
 
 			if (((UserType) utype).getUserName() != null) // || !((UserType) utype).getUserName().equals(""))
 			{
@@ -2763,6 +2763,7 @@ class getProjectParams implements RowMapper<ParamType> {
 	public ParamType mapRow(ResultSet rs, int rowNum) throws SQLException {
 		ParamType eData = new ParamType();
 		//eData.setProject(rs.getString("project_path"));
+		eData.setId(rs.getInt("id"));
 		eData.setName(rs.getString("param_name_cd"));
 		eData.setValue(rs.getString("value"));
 		eData.setStatus(rs.getString("status_cd"));

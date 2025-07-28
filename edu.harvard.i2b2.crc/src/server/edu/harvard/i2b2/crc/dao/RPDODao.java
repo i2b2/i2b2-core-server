@@ -180,7 +180,7 @@ public class RPDODao extends JdbcDaoSupport {
 		//String sql = "SELECT * FROM " +  dbluTable + " WHERE" + keyOrder;		
 		String sql = "select distinct table_instance_id, table_instance_name, max(set_index) as set_index, user_id, shared, create_date, update_date "
 				+ "  FROM " +  dbluTable 
-				+ " WHERE " + keyOrderRegular
+				+ " WHERE (delete_flag != 'Y' OR  delete_flag is null) and " + keyOrderRegular
 				+ "  group by  table_instance_id, table_instance_name, user_id, shared, create_date, update_date";
 
 		/*	if (isAdmin || isManager)
@@ -211,7 +211,7 @@ public class RPDODao extends JdbcDaoSupport {
 	}
 
 	public List<RpdoTable> getRPDO( int tableID) throws DataAccessException, I2B2Exception {
-		String sql = "SELECT table_instance_id, table_instance_name, column_name, user_id, set_index, json_data, required, shared, create_date, update_date, delete_flag FROM " +  dbluTable + " WHERE " + getTable;		
+		String sql = "SELECT table_request_id, table_instance_id, table_instance_name, column_name, user_id, set_index, json_data, required, shared, create_date, update_date, delete_flag, C_VISUALATTRIBUTES FROM " +  dbluTable + " WHERE (delete_flag != 'Y' OR  delete_flag is null) and " + getTable;		
 		List<RpdoTable> queryResult = null;
 		try {
 			queryResult = jt.query(sql, new getMapperRPDO(), projectPath,tableID);
@@ -238,17 +238,17 @@ public class RPDODao extends JdbcDaoSupport {
 		int naxtTableInstanceID = 0;
 		int numRowsAdded = 0;
 		String sql = "SELECT MAX(TABLE_INSTANCE_ID) from " + dbluTable;
-
 		naxtTableInstanceID = jt.queryForObject(sql, Integer.class) + 1;
-
 		java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 		java.sql.Timestamp create = now;
+		
 		if (rpdoType.getId() != null)
 		{
+			log.info("done");
 
 			origRpdo = getRPDO(rpdoType.getId()).get(0);
-			sql = "DELETE FROM  " + dbluTable +
-					" WHERE TABLE_INSTANCE_ID = ?";
+			sql = "UPDATE " + dbluTable +
+					" SET DELETE_FLAG = 'Y' WHERE TABLE_INSTANCE_ID = ?";
 
 			jt.update(sql, 
 					rpdoType.getId());
@@ -257,7 +257,7 @@ public class RPDODao extends JdbcDaoSupport {
 			create = new java.sql.Timestamp(origRpdo.getCreateDate().getTime());
 			userId = origRpdo.getCreatorId();
 		} 
-
+		 
 		for(int i=0; i < rpdoType.getConcept().size(); i++)
 		{
 			//
@@ -305,8 +305,11 @@ public class RPDODao extends JdbcDaoSupport {
 					c_tablename  = unparseXML(jobject.get("table_name").getAsString());
 					c_operator  = unparseXML(jobject.get("operator").getAsString());
 					c_dimcode  = unparseXML(jobject.get("dim_code").getAsString());
-					if (!c_tablename.equalsIgnoreCase("concept_dimension"))
-						c_facttablecolumn = "patient_num";
+					
+					String xmlOrig = unparseXML(jobject.get("xmlOrig").getAsString());
+					//if (!c_tablename.equalsIgnoreCase("concept_dimension"))
+					if (xmlOrig != null)
+						c_facttablecolumn = xmlOrig.substring(xmlOrig.indexOf("<facttablecolumn>")+17, xmlOrig.indexOf("</facttablecolumn>"));   //"patient_num";
 
 					if (c_dimcode.contains("("))
 						c_columndatatype = "N";
@@ -374,9 +377,49 @@ public class RPDODao extends JdbcDaoSupport {
 
 				if (rpdoType.getTitle().length() > 199)
 					rpdoType.setTitle(rpdoType.getTitle().substring(0, 199));
+				/*
+				if (rpdoType.getId() != null)
+				{
+					sql = "UPDATE  " + dbluTable +
+							" SET TABLE_INSTANCE_NAME = ?, COLUMN_NAME = ?, C_FACTTABLECOLUMN = ?, C_FULLPATH = ?, AGG_TYPE = ?,"
+							+ "C_COLUMNNAME = ?,C_TABLENAME = ?,C_OPERATOR = ?,C_DIMCODE = ?,c_columndatatype = ?,CONSTRAIN_BY_DATE_TO = ?, "
+							+ "CONSTRAIN_BY_DATE_FROM = ?, CONSTRAIN_BY_VALUE_OPERATOR = ?, CONSTRAIN_BY_VALUE_CONSTRAINT = ?, "
+							+ "CONSTRAIN_BY_VALUE_UNIT_OF_MEASURE = ?, CONSTRAIN_BY_VALUE_TYPE = ?,USER_ID  = ? ,GROUP_ID = ?, "
+							+ "SET_INDEX = ?,JSON_DATA  = ?,UPDATE_DATE = ?,DELETE_FLAG = 'N',USE_AS_COHORT = ?,REQUIRED,SHARED = ? where TABLE_INSTANCE_ID "
+							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'N',?,?)";		
 
+					numRowsAdded = jt.update(sql, 
+							rpdoType.getTitle(),
+							rpdoType.getConcept().get(i).getName(),
+							c_facttablecolumn,
+							c_fullpath,
+							aggType,
+							c_columnname,
+							c_tablename,
+							c_operator,
+							c_dimcode,
+							c_columndatatype,
+
+							dateTo,
+							dateFrom,
+							valueOperator,
+							value, 
+							valueUnit,
+							valueType,
+
+							userId,
+							projectPath,
+							i,
+							json,
+							now,
+							(rpdoType.getConcept().get(i).isDisplay() == false?"Y":"N"),
+							(rpdoType.getConcept().get(i).isRequired()== true?"Y":"N"),
+							(rpdoType.isShared() == true?"Y":"N")
+							);
+				} else {  C_VISUALATTRIBUTES
+				 */
 				sql = "INSERT INTO " + dbluTable +
-						"(TABLE_INSTANCE_ID, TABLE_INSTANCE_NAME, COLUMN_NAME, C_FACTTABLECOLUMN, C_FULLPATH, AGG_TYPE,C_COLUMNNAME,C_TABLENAME,C_OPERATOR,C_DIMCODE,c_columndatatype,CONSTRAIN_BY_DATE_TO, CONSTRAIN_BY_DATE_FROM, CONSTRAIN_BY_VALUE_OPERATOR, CONSTRAIN_BY_VALUE_CONSTRAINT, CONSTRAIN_BY_VALUE_UNIT_OF_MEASURE, CONSTRAIN_BY_VALUE_TYPE,USER_ID ,GROUP_ID ,SET_INDEX,JSON_DATA,CREATE_DATE,UPDATE_DATE,DELETE_FLAG,USE_AS_COHORT,REQUIRED,SHARED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'N',?,?)";		
+						"(TABLE_INSTANCE_ID, TABLE_INSTANCE_NAME, COLUMN_NAME, C_FACTTABLECOLUMN, C_FULLPATH, AGG_TYPE,C_COLUMNNAME,C_TABLENAME,C_OPERATOR,C_DIMCODE,c_columndatatype,CONSTRAIN_BY_DATE_TO, CONSTRAIN_BY_DATE_FROM, CONSTRAIN_BY_VALUE_OPERATOR, CONSTRAIN_BY_VALUE_CONSTRAINT, CONSTRAIN_BY_VALUE_UNIT_OF_MEASURE, CONSTRAIN_BY_VALUE_TYPE,USER_ID ,GROUP_ID ,SET_INDEX,JSON_DATA,CREATE_DATE,UPDATE_DATE,DELETE_FLAG,USE_AS_COHORT,REQUIRED,SHARED,C_VISUALATTRIBUTES) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'N',?,?,?)";		
 
 				numRowsAdded = jt.update(sql, 
 						naxtTableInstanceID,
@@ -404,9 +447,10 @@ public class RPDODao extends JdbcDaoSupport {
 						json,
 						create,
 						now,
-						(rpdoType.getConcept().get(i).isDisplay() == false?"Y":"N"),
+						"N",
 						(rpdoType.getConcept().get(i).isRequired()== true?"Y":"N"),
-						(rpdoType.isShared() == true?"Y":"N")
+						(rpdoType.isShared() == true?"Y":"N"),
+						(rpdoType.getConcept().get(i).isDisplay() == false?"LH":"LA")
 						);
 
 				log.info("setRPDO - Number of rows added: " + numRowsAdded);
@@ -472,11 +516,11 @@ public class RPDODao extends JdbcDaoSupport {
 			+ "and RPDO_TABLE_REQUEST.REQUIRED = 'Y' ";
 
 		log.info(sql);
-		try {
+		//try {
 			numRowsAdded = jt.update(sql, 
 					naxtTableInstanceID);
 
-
+			/*
 			//Remove existing
 			sql = "DELETE FROM  " + breakdownTable +
 					" WHERE NAME = ?";
@@ -488,23 +532,29 @@ public class RPDODao extends JdbcDaoSupport {
 			//Remove existing
 			sql = "DELETE FROM  " + resultTypeTable +
 					" WHERE NAME = ? and CLASSNAME = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated' ";
-
-			jt.update(sql, 
-					"RPDO_" + naxtTableInstanceID);
-		} catch (Exception e)
-		{
 			
+
 			sql = "UPDATE " + resultTypeTable +
 					" SET VISUAL_ATTRIBUTE_TYPE_ID = 'LH' WHERE NAME = ? and CLASSNAME = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated' ";
 
 			jt.update(sql, 
 					"RPDO_" + naxtTableInstanceID);
-			//e.printStackTrace();
+			
+		} catch (Exception e)
+		{
+
+			sql = "UPDATE " + resultTypeTable +
+					" SET VISUAL_ATTRIBUTE_TYPE_ID = 'LH' WHERE NAME = ? and CLASSNAME = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated' ";
+
+			jt.update(sql, 
+					"RPDO_" + naxtTableInstanceID);
 		}
-		
+		*/
+
 		//Insert
 
-		if (!userId.equals("@")) {
+		if (!userId.equals("@") && rpdoType.getId() == null)
+		{
 			sql = "INSERT INTO " + breakdownTable +
 					"(NAME, VALUE, CREATE_DATE, UPDATE_DATE, USER_ID, GROUP_ID) VALUES (?,?,?,?,?,?) ";
 
@@ -625,15 +675,21 @@ public class RPDODao extends JdbcDaoSupport {
 
 		if (isManager || isAdmin)
 		{
-			sql = "DELETE FROM " + dbluTable +
-					" WHERE TABLE_INSTANCE_ID = ?";		
+			sql = "UPDATE " + dbluTable +
+					" SET DELETE_FLAG = 'Y' WHERE TABLE_INSTANCE_ID = ?";
+
+//			sql = "DELETE FROM " + dbluTable +
+//					" WHERE TABLE_INSTANCE_ID = ?";		
 			numRowsAdded = jt.update(sql, 
 					id
 					);
 
 		} else {
-			sql = "DELETE FROM " + dbluTable +
-					" WHERE TABLE_INSTANCE_ID = ? and GROUP_ID = ? and USER_ID != '@'";		
+			sql = "UPDATE " + dbluTable +
+					" SET DELETE_FLAG = 'Y' WHERE TABLE_INSTANCE_ID = ? and GROUP_ID = ? and USER_ID != '@'";
+
+//			sql = "DELETE FROM " + dbluTable +
+//					" WHERE TABLE_INSTANCE_ID = ? and GROUP_ID = ? and USER_ID != '@'";		
 			numRowsAdded = jt.update(sql, 
 					id,
 					projectPath
@@ -641,6 +697,7 @@ public class RPDODao extends JdbcDaoSupport {
 		}
 
 		if (numRowsAdded > 0) {
+			/*
 			sql = "DELETE FROM  " + breakdownTable +
 					" WHERE NAME = ?";
 
@@ -650,6 +707,10 @@ public class RPDODao extends JdbcDaoSupport {
 			//Remove existing
 			sql = "DELETE FROM  " + resultTypeTable +
 					" WHERE NAME = ? and CLASSNAME = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated' ";
+			*/
+			sql = "UPDATE " + resultTypeTable +
+					" SET VISUAL_ATTRIBUTE_TYPE_ID = 'LH' WHERE NAME = ? and CLASSNAME = 'edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated' ";
+
 
 			jt.update(sql, 
 					"RPDO_" + id);
@@ -669,6 +730,7 @@ class getMapperRPDOs implements RowMapper<RpdoType> {
 		//dblu.setDomainId(rs.getString("c_domain_id"));
 		//String sql = "select distinct table_instance_id, table_instance_name, max(set_index) as set_index, user_id, create_date "
 
+		//dblu.setRequestId(rs.getInt("table_request_id"));
 		dblu.setId(rs.getInt("table_instance_id"));
 		dblu.setTitle(rs.getString("table_instance_name"));
 		dblu.setCreatorId(rs.getString("user_id"));
@@ -696,6 +758,8 @@ class getMapperRPDO implements RowMapper<RpdoTable> {
 	public RpdoTable mapRow(ResultSet rs, int rowNum) throws SQLException {
 		RpdoTable dblu = new RpdoTable();
 		//dblu.setDomainId(rs.getString("c_domain_id"));
+
+		dblu.setRequestId(rs.getInt("table_request_id"));
 		dblu.setId(rs.getInt("table_instance_id"));
 		dblu.setTitle(rs.getString("table_instance_name"));
 		dblu.setColumnName(rs.getString("column_name"));
@@ -708,7 +772,7 @@ class getMapperRPDO implements RowMapper<RpdoTable> {
 		else
 			dblu.setRequired(false);
 
-		if ((rs.getString("delete_flag") != null && rs.getString("delete_flag").equals("Y")))
+		if ((rs.getString("C_VISUALATTRIBUTES") != null && rs.getString("C_VISUALATTRIBUTES").equals("LH")))
 			dblu.setVisible(false);
 		else
 			dblu.setVisible(true);

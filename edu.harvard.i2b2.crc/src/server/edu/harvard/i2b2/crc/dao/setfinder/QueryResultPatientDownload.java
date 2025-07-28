@@ -114,11 +114,7 @@ import oracle.jdbc.OracleTypes;
 import java.io.StringReader;
 
 /**
- * Setfinder's result genertor class. This class calculates patient break down
- * for the result type.
- * 
- * Calls the ontology to get the children for the result type and then
- * calculates the patient count for each child of the result type.
+ * Data export for 1.8.1 and also for the RPDO in 1.8.2
  */
 public class QueryResultPatientDownload extends CRCDAO implements IResultGenerator {
 
@@ -140,7 +136,6 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 
 		// mm create a csv in a folder
-		log.info("MM 1");
 
 		SetFinderConnection sfConn = (SetFinderConnection) param
 				.get("SetFinderConnection");
@@ -201,10 +196,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		if (resultPriority == 999)
 		{
 
-			log.info("MM 2");
 
 		} else {
-			log.info("MM 3");
 			Connection conn = null;
 
 			ResultSet resultSet = null;
@@ -547,7 +540,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 									+ "      ,CREATE_DATE	  "
 									+ "  FROM " + this.getDbSchemaName() + "RPDO_TABLE_REQUEST"
 									+ "   WHERE TABLE_INSTANCE_ID = " + resultTypeName.replace("RPDO_", "")
+									+ " AND C_VISUALATTRIBUTES NOT LIKE '_H%' AND DELETE_FLAG != 'Y' "
 									+ "  order by set_index asc ";
+							
 							log.info(sql);
 							stmt = sfConn.prepareStatement(sql);
 							//stmt.setQueryTimeout(transactionTimeout);
@@ -625,7 +620,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 
 				if (letter==null)
-					letter = getProjectParam(projectParam, "Letter");
+					letter = getProjectParam(projectParam, "Data Request Letter");
 
 
 				//Process XIP File 
@@ -724,7 +719,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if ((resultTypeName.equals(finalResultOutput))
 							&& (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) )
 
-						email.email(getProjectParam(projectParam, "Data Manager Email"), getProjectParam(projectParam, "Data Manager Email"), "i2b2 Data Export - " + queryDef.getQueryName(), letter);
+						email.email(getProjectParam(projectParam, "Data Request Email Address"), getProjectParam(projectParam, "Data Request Email Address"), "i2b2 Data Export - " + queryDef.getQueryName(), letter);
 				}
 
 
@@ -800,6 +795,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (errorFlag) {
 						resultInstanceDao.updatePatientSet(resultInstanceId,
 								QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
+						throw new I2B2DAOException(
+								"Failed to create file");						
 					} else {
 						// set the setsize and the description of the result instance if
 						// the user role is obfuscated
@@ -910,8 +907,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						}
 					}
 				}
-				throw new I2B2DAOException(
-						"Failed to create file");
+
 			}
 		}
 

@@ -380,12 +380,14 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_UPDATE_QUERY_INSTANCE_MESSAGE)) {
 				
-				boolean isManager = false;
+				boolean isAdminManager = false;
 				if (projectType != null && projectType.getRole().size() > 0 && projectType.getRole().contains("MANAGER"))
-					isManager = true;
+					isAdminManager = true;
+				if (projectType != null && projectType.getRole().size() > 0 && projectType.getRole().contains("ADMIN"))
+					isAdminManager = true;
 				
 				UpdateQueryInstanceMessageHandler handler = new UpdateQueryInstanceMessageHandler(
-						requestXml, isManager, projectType.getUserName());
+						requestXml, isAdminManager, projectType.getUserName());
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_RUN_EXPORT_FROM_QUERY_INSTANCE_ID)) {

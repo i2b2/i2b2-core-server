@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlType;
 
@@ -71,7 +72,15 @@ public class UserType {
     protected String key;
     protected List<ParamType> param;
     protected List<ProjectType> project;
+    @XmlAttribute(name = "hidden")
+    protected Boolean hidden;
+    public Boolean getHidden() {
+		return hidden;
+	}
 
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
+	}
     /**
      * Gets the value of the fullName property.
      * 

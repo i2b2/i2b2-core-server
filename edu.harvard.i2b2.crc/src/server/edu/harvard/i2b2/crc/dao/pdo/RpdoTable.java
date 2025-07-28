@@ -41,8 +41,17 @@ public class RpdoTable {
     protected Date createDate;
     protected Date updateDate;
     protected Integer id;
+    protected Integer requestId;
 
-    /**
+    public Integer getRequestId() {
+		return requestId;
+	}
+
+	public void setRequestId(Integer requestId) {
+		this.requestId = requestId;
+	}
+
+	/**
      * Gets the value of the title property.
      * 
      * @return

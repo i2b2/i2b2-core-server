@@ -70,7 +70,11 @@ public class CellDataType {
     protected List<ParamType> param;
     @XmlAttribute(name = "id", required = true)
     protected String id;
-
+    @XmlAttribute(name = "hidden")
+    protected Boolean hidden;
+    public Boolean getHidden() {
+		return hidden;
+	}
     /**
      * Gets the value of the name property.
      * 

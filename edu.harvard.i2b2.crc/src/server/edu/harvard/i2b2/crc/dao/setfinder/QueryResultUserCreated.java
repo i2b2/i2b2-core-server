@@ -65,6 +65,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
 import edu.harvard.i2b2.crc.datavo.pm.UserType;
+import edu.harvard.i2b2.crc.datavo.pm.ParamType;
 import edu.harvard.i2b2.crc.datavo.pm.ProjectType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
@@ -75,11 +76,7 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 import jakarta.mail.MessagingException;
 
 /**
- * Setfinder's result genertor class. This class calculates patient break down
- * for the result type.
- * 
- * Calls the ontology to get the children for the result type and then
- * calculates the patient count for each child of the result type.
+ * Request that is executed when a user creates a RPDO request from the Run Query.
  */
 public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 
@@ -129,7 +126,7 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 		String requestedData = "\n";
 		String finalResultOutput = "";
 		UserType user = null;
-		ProjectType project = null;
+		//ProjectType project = null;
 
 		this
 		.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
@@ -158,8 +155,17 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 			QtQueryMaster queryMaster = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId());
 
 			user = CallPMUtil.getUserFromResponse(queryMaster.getPmXml());
-			project = CallPMUtil.getUserProjectFromResponse(queryMaster.getPmXml(), securityType, queryMaster.getGroupId());
+			//project = CallPMUtil.getUserProjectFromResponse(queryMaster.getPmXml(), securityType, queryMaster.getGroupId());
 
+	
+			param.put("QueryStartDate", queryMaster.getCreateDate());
+			param.put("FullName", user.getFullName());
+			param.put("UserName", user.getUserName());
+			param.put("resultInstanceId", resultInstanceId);
+			param.put("QueryMasterId", queryMaster.getQueryMasterId());
+			//param.put("ResultNameDescription", qpUtil.sanitizeFilename(getResultTypeDescrption(sfDAOFactory, resultTypeName)));
+
+			
 			ResultType resultType = new ResultType();
 			resultType.setName(resultTypeName);
 
@@ -214,6 +220,9 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 						"EXPORT");
 
 			}
+			
+			
+			
 		} catch (Exception sqlEx) {
 
 			errorFlag = true;
@@ -258,13 +267,14 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 							String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
 									sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
 
-
+							
 
 							resultInstanceDao.updatePatientSet(resultInstanceId,
 									QueryStatusTypeId.STATUSTYPE_ID_FINISHED, null,
 									//obsfcTotal, 
 									obfuscatedRecordCount, recordCount, obfusMethod);
 
+							
 							description = resultTypeList.get(0)
 									.getDescription() + " for \"" + queryName +"\"";
 
@@ -289,16 +299,28 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 							//	tm.commit();
 
 
-							ValueExporter valueExport = null;
-							if ((valueExport != null) && (recordCount != 0)) {
+							//ValueExporter valueExport = null;
+							// Send out email
+	
+
+							if (recordCount != 0) {
+								
+								List<ParamType> projectParam = null;
+								for (ProjectType project : user.getProject())
+								{
+									if (project.getPath().replace("/", "").equals(((String) param.get("projectId")).replace("/", "")) )
+										projectParam = project.getParam();
+								}
+
+								
 								QueryProcessorUtil qpUtil = QueryProcessorUtil.getInstance();
-								String letter = valueExport.getDataManagerEmailMessage();
-								String requesterMessage = valueExport.getRequesterEmailMessage();
-								if (letter != null) {
+								String reuqestTemplate = getProjectParam(projectParam, "Data Request Template");
+								//String requesterMessage = valueExport.getRequesterEmailMessage();
+								if (reuqestTemplate != null) {
 
-									letter = qpUtil.processFilename(letter, param);
+									reuqestTemplate = qpUtil.processFilename(reuqestTemplate, param);
 
-									requesterMessage = qpUtil.processFilename(requesterMessage, param);
+									//requesterMessage = qpUtil.processFilename(requesterMessage, param);
 									for (ResultOutputOptionType resultOutputOption : resultOptionList) {
 										String resultName = resultOutputOption.getName()
 												.toUpperCase();
@@ -309,8 +331,8 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 											finalResultOutput = resultTypeList.get(0).getName().toUpperCase();
 										}
 									}
-									letter = letter.replaceAll("\\{\\{\\{REQUESTED_DATA_TYPE\\}\\}\\}",requestedData);
-									requesterMessage  = requesterMessage.replaceAll("\\{\\{\\{REQUESTED_DATA_TYPE\\}\\}\\}",requestedData);
+									reuqestTemplate = reuqestTemplate.replaceAll("\\{\\{\\{REQUESTED_DATA_TYPE\\}\\}\\}",requestedData);
+									//requesterMessage  = requesterMessage.replaceAll("\\{\\{\\{REQUESTED_DATA_TYPE\\}\\}\\}",requestedData);
 
 
 									ResultType resultType = new ResultType();
@@ -321,7 +343,7 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 									mdataType.setType("int");
 									resultType.getData().add(mdataType);	
 									mdataType = new DataType();
-									mdataType.setValue(letter);
+									mdataType.setValue(reuqestTemplate);
 									mdataType.setColumn("RequestEmail");
 									mdataType.setType("string");
 									resultType.getData().add(mdataType);
@@ -363,11 +385,19 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 										EmailUtil email = new EmailUtil();
 										try {
 
-											if (resultTypeName.equals(finalResultOutput)) {
+
+											if ((resultTypeName.equals(finalResultOutput))
+													&& (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) )
+
+												email.email(getProjectParam(projectParam, "Data Request Email Address"), getProjectParam(projectParam, "Data Request Email Address"), "i2b2 Data Export - " + queryDef.getQueryName(), reuqestTemplate);
+
+											/* if (resultTypeName.equals(finalResultOutput)) {
+												
 												email.email(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"),  "i2b2 Data Request", letter);
-												if (user.getEmail()!= null &&  !user.getEmail().equals("") && requesterMessage != null)
-													email.email(user.getEmail(), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"),  "i2b2 Data Request", requesterMessage);
+												if (user.getEmail()!= null &&  !user.getEmail().equals("") && reuqestTemplate != null)
+													email.email(user.getEmail(), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"),  "i2b2 Data Request", reuqestTemplate);
 											}
+											*/
 										} catch (UnsupportedEncodingException e) {
 											// TODO Auto-generated catch block
 											e.printStackTrace();
@@ -381,7 +411,7 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 									}
 								}
 							}
-
+							
 						} catch (SecurityException e) {
 							throw new I2B2DAOException(
 									"Failed to write obfuscated description "
@@ -400,6 +430,16 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 		}
 
 	}
+	
+
+	private String getProjectParam(List<ParamType> projectParam, String string) {
+		if (projectParam != null)
+			for (ParamType param: projectParam)
+				if (param.getName().equals(string))
+					return param.getValue();
+		return null;
+	}
+
 
 	private String getItemKeyFromResultType(SetFinderDAOFactory sfDAOFactory,
 			String resultTypeKey) {
