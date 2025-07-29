@@ -10,13 +10,6 @@ package edu.harvard.i2b2.crc.loader.util;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.datavo.i2b2message.PasswordType;
-/*
-import edu.sdsc.grid.io.GeneralFile;
-import edu.sdsc.grid.io.irods.IRODSAccount;
-import edu.sdsc.grid.io.irods.IRODSFile;
-import edu.sdsc.grid.io.irods.IRODSFileSystem;
-import edu.sdsc.grid.io.local.LocalFile;
-*/
 
 public class FileTransferUtil {
 	private final static String STORAGE_RESOURCE = "demoResc";

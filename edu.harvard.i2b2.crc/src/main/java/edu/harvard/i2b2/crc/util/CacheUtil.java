@@ -10,18 +10,6 @@ package edu.harvard.i2b2.crc.util;
 
 import java.util.Hashtable;
 
-/*
-import javax.management.MBeanServer;
-import javax.management.MBeanServerInvocationHandler;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-
-import org.jboss.cache.Cache;
-import org.jboss.cache.jmx.CacheJmxWrapperMBean;
-import org.jboss.mx.util.MBeanServerLocator;
-*/
-
-
 public class CacheUtil {
 
 	static Hashtable rootNode = new Hashtable();
