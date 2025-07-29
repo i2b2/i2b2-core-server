@@ -13,7 +13,7 @@
  * 		Mike Mendis
  * 		Raj Kuttan
  */
-package edu.harvard.i2b2.pm.ws;
+package edu.harvard.i2b2.ontologypm.ws;
 
 import jakarta.xml.bind.JAXBElement;
 
@@ -22,14 +22,12 @@ import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
-import edu.harvard.i2b2.im.datavo.i2b2message.BodyType;
-import edu.harvard.i2b2.im.datavo.i2b2message.ResponseHeaderType;
-import edu.harvard.i2b2.im.datavo.i2b2message.ResponseMessageType;
-import edu.harvard.i2b2.im.datavo.i2b2message.StatusType;
-import edu.harvard.i2b2.im.datavo.pm.ConfigureType;
-import edu.harvard.i2b2.im.datavo.pm.ProjectType;
-import edu.harvard.i2b2.im.datavo.pm.ProjectsType;
-import edu.harvard.i2b2.im.util.IMJAXBUtil;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.BodyType;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseHeaderType;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.StatusType;
+import edu.harvard.i2b2.ontology.datavo.pm.ConfigureType;
+import edu.harvard.i2b2.ontology.util.OntologyJAXBUtil;
 
 
 public class PMResponseMessage {
@@ -40,34 +38,31 @@ public class PMResponseMessage {
     
 	public PMResponseMessage() {}
 	
-	public StatusType processResult(String response) {	
+	public StatusType processResult(String response){	
 		StatusType status = null;
-		
-		JAXBElement jaxbElement;
 		try {
-			jaxbElement = IMJAXBUtil.getJAXBUtil().unMashallFromString(response);
+			JAXBElement jaxbElement = OntologyJAXBUtil.getJAXBUtil().unMashallFromString(response);
+			pmRespMessageType  = (ResponseMessageType) jaxbElement.getValue();
+			
+			// Get response message status 
+			ResponseHeaderType responseHeader = pmRespMessageType.getResponseHeader();
+			status = responseHeader.getResultStatus().getStatus();
+			String procStatus = status.getType();
+			String procMessage = status.getValue();
+			
+			if(procStatus.equals("ERROR")){
+				log.error("Error reported by Ont web Service " + procMessage);				
+			}
+			else if(procStatus.equals("WARNING")){
+				log.debug("Warning reported by Ont web Service" + procMessage);
+			}	
+			
 		} catch (JAXBUtilException e) {
-			return status;
+			log.error(e.getMessage());
 		}
-
-		pmRespMessageType  = (ResponseMessageType) jaxbElement.getValue();
-
-		// Get response message status 
-		ResponseHeaderType responseHeader = pmRespMessageType.getResponseHeader();
-		status = responseHeader.getResultStatus().getStatus();
-
 		return status;
 	}
 	
-	public ProjectsType readProjectsInfo() throws Exception {
-		ProjectsType pmResponse = null;
-			
-			BodyType bodyType = pmRespMessageType.getMessageBody();
-			JAXBUnWrapHelper helper = new JAXBUnWrapHelper(); 
-			pmResponse = (ProjectsType)helper.getObjectByClass(bodyType.getAny(), ProjectsType.class);
-		
-		return pmResponse;
-	}
 	
 	public ConfigureType readUserInfo() throws Exception {
 		ConfigureType pmResponse = null;

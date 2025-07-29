@@ -30,10 +30,10 @@ import edu.harvard.i2b2.workplace.datavo.pm.ConfigureType;
 import edu.harvard.i2b2.workplace.datavo.pm.GetUserConfigurationType;
 import edu.harvard.i2b2.workplace.datavo.pm.ProjectType;
 import edu.harvard.i2b2.workplace.dao.DataSourceLookupHelper;
-import edu.harvard.i2b2.pm.ws.PMResponseMessage;
-import edu.harvard.i2b2.pm.ws.PMServiceDriver;
 import edu.harvard.i2b2.workplace.ejb.DBInfoType;
 import edu.harvard.i2b2.workplace.util.WorkplaceUtil;
+import edu.harvard.i2b2.workplacepm.ws.PMResponseMessage;
+import edu.harvard.i2b2.workplacepm.ws.PMServiceDriver;
 
 public abstract class RequestHandler {
     protected final Log log = LogFactory.getLog(getClass());

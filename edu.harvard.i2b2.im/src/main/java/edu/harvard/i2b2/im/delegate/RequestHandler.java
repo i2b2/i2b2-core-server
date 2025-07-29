@@ -26,8 +26,6 @@ import org.apache.commons.logging.LogFactory;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.im.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.im.datavo.i2b2message.SecurityType;
-import edu.harvard.i2b2.pm.ws.PMResponseMessage;
-import edu.harvard.i2b2.pm.ws.PMServiceDriver;
 import edu.harvard.i2b2.im.dao.DataSourceLookupHelper;
 import edu.harvard.i2b2.im.ejb.DBInfoType;
 import edu.harvard.i2b2.im.datavo.i2b2message.StatusType;
@@ -37,6 +35,8 @@ import edu.harvard.i2b2.im.datavo.pm.GetUserConfigurationType;
 import edu.harvard.i2b2.im.datavo.pm.ProjectType;
 import edu.harvard.i2b2.im.datavo.pm.ProjectsType;
 import edu.harvard.i2b2.im.util.IMUtil;
+import edu.harvard.i2b2.impm.ws.PMResponseMessage;
+import edu.harvard.i2b2.impm.ws.PMServiceDriver;
 
 public abstract class RequestHandler {
 	protected final Log log = LogFactory.getLog(getClass());

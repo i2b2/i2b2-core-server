@@ -13,25 +13,24 @@
  * 		Mike Mendis
  * 		Raj Kuttan
  */
-package edu.harvard.i2b2.pm.ws;
+package edu.harvard.i2b2.workplacepm.ws;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
-import java.security.SecureRandom;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
-import edu.harvard.i2b2.im.datavo.i2b2message.ApplicationType;
-import edu.harvard.i2b2.im.datavo.i2b2message.BodyType;
-import edu.harvard.i2b2.im.datavo.i2b2message.FacilityType;
-import edu.harvard.i2b2.im.datavo.i2b2message.MessageControlIdType;
-import edu.harvard.i2b2.im.datavo.i2b2message.MessageHeaderType;
-import edu.harvard.i2b2.im.datavo.i2b2message.ProcessingIdType;
-import edu.harvard.i2b2.im.datavo.i2b2message.RequestHeaderType;
-import edu.harvard.i2b2.im.datavo.i2b2message.RequestMessageType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.ApplicationType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.BodyType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.FacilityType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.MessageControlIdType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.MessageHeaderType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.ProcessingIdType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.RequestHeaderType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.RequestMessageType;
 
 abstract public class ProjectManagementRequestData {
 
@@ -63,8 +62,8 @@ abstract public class ProjectManagementRequestData {
 		messageHeader.setHl7VersionCompatible(new BigDecimal("2.4"));
 		
 		ApplicationType appType = new ApplicationType();
-		appType.setApplicationName("IM Cell");
-		appType.setApplicationVersion("1.700"); 
+		appType.setApplicationName("Workplace Cell");
+		appType.setApplicationVersion("1.701"); 
 		messageHeader.setSendingApplication(appType);
 		
 		FacilityType facility = new FacilityType();
@@ -72,7 +71,7 @@ abstract public class ProjectManagementRequestData {
 		messageHeader.setSendingFacility(facility);
 		
 		ApplicationType appType2 = new ApplicationType();
-		appType2.setApplicationVersion("1.700");
+		appType2.setApplicationVersion("1.701");
 		appType2.setApplicationName("Project Management Cell");		
 		messageHeader.setReceivingApplication(appType2);
 	
@@ -123,9 +122,7 @@ abstract public class ProjectManagementRequestData {
 	private int getValidAcsiiValue() {
 		int number = 48;
 		while(true) {
-			SecureRandom random = new SecureRandom();
-
-			number = 48+(int) Math.round(random.nextDouble() * 74);
+			number = 48+(int) Math.round(Math.random() * 74);
 			if((number > 47 && number < 58) || (number > 64 && number < 91) 
 				|| (number > 96 && number < 123)) {
 					break;

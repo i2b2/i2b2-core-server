@@ -30,7 +30,7 @@ import edu.harvard.i2b2.im.datavo.pdo.query.PdoRequestTypeType;
 import edu.harvard.i2b2.im.datavo.pdo.query.RequestType;
 import edu.harvard.i2b2.im.datavo.pm.GetUserConfigurationType;
 import edu.harvard.i2b2.im.util.IMJAXBUtil;
-import edu.harvard.i2b2.pm.ws.ProjectManagementRequestData;
+import edu.harvard.i2b2.impm.ws.ProjectManagementRequestData;
 
 
 /**

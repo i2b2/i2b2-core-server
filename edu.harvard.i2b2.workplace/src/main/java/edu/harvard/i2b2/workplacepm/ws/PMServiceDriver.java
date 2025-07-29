@@ -14,45 +14,28 @@
  * 		Raj Kuttan
  * 		Lori Phillips
  */
-package edu.harvard.i2b2.pm.ws;
+package edu.harvard.i2b2.workplacepm.ws;
 
 import java.io.StringReader;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.soap.SOAPEnvelope;
-import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
-import org.apache.axis2.Constants;
-import org.apache.axis2.addressing.EndpointReference;
-import org.apache.axis2.client.OperationClient;
-import org.apache.axis2.client.Options;
-import edu.harvard.i2b2.common.util.axis2.ServiceClient;
-import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.context.ServiceContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.exception.StackTraceUtil;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
-import edu.harvard.i2b2.ontology.datavo.i2b2message.MessageHeaderType;
-import edu.harvard.i2b2.ontology.datavo.pm.GetUserConfigurationType;
-import edu.harvard.i2b2.ontology.util.OntologyUtil;
+import edu.harvard.i2b2.common.util.axis2.ServiceClient;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.MessageHeaderType;
+import edu.harvard.i2b2.workplace.datavo.pm.GetUserConfigurationType;
+import edu.harvard.i2b2.workplace.util.WorkplaceUtil;
 
 public class PMServiceDriver {
 	private static Log log = LogFactory.getLog(PMServiceDriver.class.getName());
-
-	protected static Log logesapi = LogFactory.getLog(PMServiceDriver.class);
-
+	//private static ServiceClient serviceClient = null;
 
 	/**
 	 * Function to send getRoles request to PM web service
@@ -66,31 +49,28 @@ public class PMServiceDriver {
 		try {
 			GetUserConfigurationRequestMessage reqMsg = new GetUserConfigurationRequestMessage();
 			String getRolesRequestString = reqMsg.doBuildXML(userConfig, header);
-			//			OMElement getPm = getPmPayLoad(getRolesRequestString);
+//			OMElement getPm = getPmPayLoad(getRolesRequestString);
 
 
 			// First step is to get PM endpoint reference from properties file.
 			String pmEPR = "";
-		//	String pmMethod = "";
 			try {
-				pmEPR = OntologyUtil.getInstance().getPmEndpointReference();
-		//		pmMethod = OntologyUtil.getInstance().getPmWebServiceMethod();
+				pmEPR = WorkplaceUtil.getInstance().getPmEndpointReference();
 			} catch (I2B2Exception e1) {
 				log.error(e1.getMessage());
 				throw e1;
 			}
+				 response = ServiceClient.sendREST(pmEPR, getRolesRequestString);
 
-		
-				response = ServiceClient.sendREST(pmEPR, getRolesRequestString);
-			
-
-			logesapi.debug("PM response = " + response);
+		} catch (AxisFault e) {
+			log.error(e.getMessage());
+			throw e; 
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			throw new Exception(e);
-		}
+			throw e;
+		} 
 		return response;
 	}
-
-
+	
+	
 }

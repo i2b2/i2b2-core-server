@@ -13,7 +13,7 @@
  * 		Mike Mendis
  * 		Raj Kuttan
  */
-package edu.harvard.i2b2.pm.ws;
+package edu.harvard.i2b2.ontologypm.ws;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;

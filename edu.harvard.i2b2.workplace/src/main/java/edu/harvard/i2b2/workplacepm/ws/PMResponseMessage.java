@@ -13,7 +13,7 @@
  * 		Mike Mendis
  * 		Raj Kuttan
  */
-package edu.harvard.i2b2.pm.ws;
+package edu.harvard.i2b2.workplacepm.ws;
 
 import jakarta.xml.bind.JAXBElement;
 

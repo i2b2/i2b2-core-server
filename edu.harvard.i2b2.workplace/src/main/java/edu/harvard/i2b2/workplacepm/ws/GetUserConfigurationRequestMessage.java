@@ -13,7 +13,7 @@
  * 		Mike Mendis
  * 		Raj Kuttan
  */
-package edu.harvard.i2b2.pm.ws;
+package edu.harvard.i2b2.workplacepm.ws;
 
 import java.io.StringWriter;
 
@@ -22,13 +22,12 @@ import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 
-import edu.harvard.i2b2.im.datavo.i2b2message.BodyType;
-import edu.harvard.i2b2.im.datavo.i2b2message.MessageHeaderType;
-import edu.harvard.i2b2.im.datavo.i2b2message.RequestHeaderType;
-import edu.harvard.i2b2.im.datavo.i2b2message.RequestMessageType;
-import edu.harvard.i2b2.im.datavo.i2b2message.SecurityType;
-import edu.harvard.i2b2.im.datavo.pm.GetUserConfigurationType;
-import edu.harvard.i2b2.im.util.IMJAXBUtil;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.BodyType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.MessageHeaderType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.RequestHeaderType;
+import edu.harvard.i2b2.workplace.datavo.i2b2message.RequestMessageType;
+import edu.harvard.i2b2.workplace.datavo.pm.GetUserConfigurationType;
+import edu.harvard.i2b2.workplace.util.WorkplaceJAXBUtil;
 
 public class GetUserConfigurationRequestMessage extends ProjectManagementRequestData {
 		
@@ -47,7 +46,7 @@ public class GetUserConfigurationRequestMessage extends ProjectManagementRequest
 		 */
 		
 		public BodyType getBodyType(GetUserConfigurationType userConfigurationType) {
-			edu.harvard.i2b2.im.datavo.pm.ObjectFactory of = new edu.harvard.i2b2.im.datavo.pm.ObjectFactory();
+			edu.harvard.i2b2.workplace.datavo.pm.ObjectFactory of = new edu.harvard.i2b2.workplace.datavo.pm.ObjectFactory();
 			
 			BodyType bodyType = new BodyType();
 			bodyType.getAny().add(of.createGetUserConfiguration(userConfigurationType));
@@ -89,8 +88,8 @@ public class GetUserConfigurationRequestMessage extends ProjectManagementRequest
 			StringWriter strWriter = null;
 			try {
 				strWriter = new StringWriter();
-				edu.harvard.i2b2.im.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.im.datavo.i2b2message.ObjectFactory();
-				IMJAXBUtil.getJAXBUtil().marshaller(of.createRequest(reqMessageType), strWriter);
+				edu.harvard.i2b2.workplace.datavo.i2b2message.ObjectFactory of = new edu.harvard.i2b2.workplace.datavo.i2b2message.ObjectFactory();
+				WorkplaceJAXBUtil.getJAXBUtil().marshaller(of.createRequest(reqMessageType), strWriter);
 			} catch (JAXBUtilException e) {
 				log.error("Error marshalling Ont request message");
 				throw e;
