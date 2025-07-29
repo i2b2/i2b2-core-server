@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>edu.harvard.i2b2</groupId>
+        <artifactId>i2b2-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <artifactId>i2b2</artifactId>
+    <packaging>war</packaging>
+    <name>i2b2</name>
+    
+    <!--<build>
+	    <plugins>
+	    	<plugin>
+			    <groupId>org.codehaus.mojo</groupId>
+			    <artifactId>build-helper-maven-plugin</artifactId>
+			    <version>3.0.0</version>
+			    <executions>
+			        <execution>
+			            <phase>generate-sources</phase>
+			            <goals>
+			                <goal>add-source</goal>
+			            </goals>
+			            <configuration>
+			                <sources>
+			                    <source>gensrc</source>
+			                </sources>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+    	</plugins>
+    </build> -->
+    
+    <build>
+	    <finalName>i2b2</finalName>
+	    <plugins>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-war-plugin</artifactId>
+	        <configuration>
+	          <!-- You can also set the warName here, which overrides finalName for the WAR file specifically -->
+	          	<warName>i2b2</warName>
+	        </configuration>
+	      </plugin>
+	    </plugins>
+	  </build>
+	
+	<dependencies>
+    
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.server-common</artifactId>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.crc</artifactId>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.ontology</artifactId>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.workplace</artifactId>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.im</artifactId>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.pm</artifactId>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.fr</artifactId>
+            </dependency>
+            
+            <!--<dependency>
+			    <groupId>org.apache.axis2</groupId>
+			    <artifactId>axis2-webapp</artifactId>
+			    <type>war</type>
+			</dependency> -->
+
+        
+    </dependencies>
+</project>

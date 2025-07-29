@@ -13,6 +13,7 @@
         <module>edu.harvard.i2b2.im</module>
         <module>edu.harvard.i2b2.pm</module>
 		<module>edu.harvard.i2b2.fr</module>
+		<module>i2b2</module>
     </modules>
 
     <properties>
@@ -33,6 +34,42 @@
             <dependency>
                 <groupId>edu.harvard.i2b2</groupId>
                 <artifactId>edu.harvard.i2b2.server-common</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.crc</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.ontology</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.workplace</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.im</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.pm</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>edu.harvard.i2b2</groupId>
+                <artifactId>edu.harvard.i2b2.fr</artifactId>
                 <version>1.0.0</version>
             </dependency>
 
@@ -71,11 +108,32 @@
                 <artifactId>spring-context</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+            
             <dependency>
                 <groupId>org.apache.axis2</groupId>
                 <artifactId>axis2-adb</artifactId>
                 <version>${axis2.version}</version>
             </dependency>
+            
+            <dependency>
+			    <groupId>org.apache.axis2</groupId>
+			    <artifactId>axis2-transport-http</artifactId>
+			    <version>${axis2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.apache.axis2</groupId>
+			    <artifactId>axis2-transport-local</artifactId>
+			    <version>${axis2.version}</version>
+			</dependency>
+			
+			<!--<dependency>
+		        <groupId>org.apache.axis2</groupId>
+		    	<artifactId>axis2-webapp</artifactId>
+			    <version>${axis2.version}</version>
+			    <type>war</type>
+		    </dependency> -->
+            
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
