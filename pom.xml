@@ -26,6 +26,10 @@
         <log4j.version>2.17.2</log4j.version>
         <junit.version>4.13.2</junit.version>
         <commons-logging.version>1.2</commons-logging.version>
+        
+        <spotless_version>2.46.1</spotless_version>
+		<spotless.exclude.pattern>**/test/**/*.java</spotless.exclude.pattern>
+        
     </properties>
 
     <dependencyManagement>
@@ -193,6 +197,60 @@
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>3.5.1</version>
                 </plugin>
+                
+                <plugin>
+					<groupId>com.diffplug.spotless</groupId>
+					<artifactId>spotless-maven-plugin</artifactId>
+					<version>${spotless_version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>apply</goal>
+								<goal>check</goal>
+							</goals>
+							<phase>compile</phase>
+						</execution>
+					</executions>
+					<configuration>
+						<java>
+							<excludes>
+								<exclude>${spotless.exclude.pattern}</exclude>
+							</excludes>
+							<!--This does the actual code reformatting-->
+							<palantirJavaFormat>
+								<!-- NOTE: specifying the version here because compiling with JDK 17 breaks with higher versions -->
+								<!--<version>2.28.0</version> -->
+							</palantirJavaFormat>
+							<!--After formatting, replace the default 4-space indentation with tabs as per our editorconfig-->
+							<indent>
+								<tabs>true</tabs>
+								<spacesPerTab>4</spacesPerTab>
+							</indent>
+							<!--Just removes unused imports-->
+							<removeUnusedImports/>
+							<!--Follow the editorconfig-defined order of imports-->
+							<importOrder>
+								<wildcardsLast>true</wildcardsLast>
+								<order>,java|javax,\#</order>
+							</importOrder>
+						</java>
+
+						<!--This does basic formatting of trailing whitespace and newlines-->
+						<formats>
+							<format>
+								<includes>
+									<include>*.md</include>
+									<include>.gitignore</include>
+									<include>*.java</include>
+								</includes>
+								<trimTrailingWhitespace/>
+								<endWithNewline/>
+							</format>
+						</formats>
+
+					</configuration>
+				</plugin>
+                
             </plugins>
         </pluginManagement>
     </build>
