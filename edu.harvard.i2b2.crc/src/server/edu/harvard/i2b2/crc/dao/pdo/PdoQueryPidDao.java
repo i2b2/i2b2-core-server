@@ -332,7 +332,7 @@ public class PdoQueryPidDao extends CRCDAO implements IPdoQueryPidDao {
 			if (pidSet.getPid()!=null) { 
 				logesapi.debug("pid set size " + pidSet.getPid().size());
 				if (pidSet.getPid().size()>0) {
-					logesapi.debug("pid set size " + pidSet.getPid().get(0).getPatientId().getValue());
+					//logesapi.debug("pid set size " + pidSet.getPid().get(0).getPatientId().getValue());
 				}
 			}
 

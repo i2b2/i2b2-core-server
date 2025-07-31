@@ -174,7 +174,7 @@ public class QueryManagerBean{ // implements SessionBean {
 					queryMasterId, userId, groupId,
 					"QUEUED", 5);
 			//					QueryExecutorMDB.SMALL_QUEUE, 5);
-			log.debug("New Query instance id " + queryInstanceId);
+			//log.debug("New Query instance id " + queryInstanceId);
 
 			IQueryResultInstanceDao patientSetResultDao = sfDAOFactory
 					.getPatientSetResultDAO();
@@ -191,8 +191,8 @@ public class QueryManagerBean{ // implements SessionBean {
 
 					patientSetId = patientSetResultDao.createPatientSet(
 							queryInstanceId, resultOption.getName());
-					logesapi.debug("Patient Set ID [" + patientSetId
-							+ "] for query instance= " + queryInstanceId);
+				//	logesapi.debug("Patient Set ID [" + patientSetId
+				//			+ "] for query instance= " + queryInstanceId);
 				}
 			} else {
 				QueryProcessorUtil qp = QueryProcessorUtil.getInstance();
@@ -200,8 +200,8 @@ public class QueryManagerBean{ // implements SessionBean {
 				String defaultResultType = "PATIENTSET";
 				patientSetId = patientSetResultDao.createPatientSet(
 						queryInstanceId, defaultResultType);
-				logesapi.debug("Patient Set ID [" + patientSetId
-						+ "] for query instance= " + queryInstanceId);
+				//logesapi.debug("Patient Set ID [" + patientSetId
+				//		+ "] for query instance= " + queryInstanceId);
 			}
 
 			// tm.commit();

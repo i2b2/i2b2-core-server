@@ -57,10 +57,10 @@ public class PMResponseMessage {
 			String procMessage = status.getValue();
 			
 			if(procStatus.equals("ERROR")){
-				logesapi.info("Error reported by CRC web Service " + procMessage);				
+				//logesapi.info("Error reported by CRC web Service " + procMessage);				
 			}
 			else if(procStatus.equals("WARNING")){
-				logesapi.info("Warning reported by CRC web Service" + procMessage);
+				//logesapi.info("Warning reported by CRC web Service" + procMessage);
 			}	
 			
 		} catch (JAXBUtilException e) {

@@ -157,8 +157,8 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			logTimingUtil.setStartTime();
 			itemKey = getItemKeyFromResultType(sfDAOFactory, resultTypeName, roles);
 
-			log.debug("Result type's " + resultTypeName + " item key value "
-					+ itemKey);
+			//log.debug("Result type's " + resultTypeName + " item key value "
+			//		+ itemKey);
 
 			LogTimingUtil subLogTimingUtil = new LogTimingUtil();
 			subLogTimingUtil.setStartTime();
@@ -295,7 +295,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				itemCountSql = itemCountSql.substring(0,itemCountSql.length()-5) + "  ) a ";
 				stmt = sfConn.prepareStatement(itemCountSql);
 				stmt.setQueryTimeout(transactionTimeout);
-				log.debug("Executing count sql [" + itemCountSql + "]");
+				//log.debug("Executing count sql [" + itemCountSql + "]");
 
 				//
 				subLogTimingUtil.setStartTime();

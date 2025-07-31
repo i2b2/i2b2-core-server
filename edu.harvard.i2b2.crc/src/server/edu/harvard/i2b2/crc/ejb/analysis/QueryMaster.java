@@ -40,7 +40,7 @@ public class QueryMaster {
 
 	public QtAnalysisPlugin lookupAnalysisPlugin(String analysisName,
 			String version, String projectId) throws I2B2Exception {
-		logesapi.debug("looking for: " + analysisName +":" + version + ":" + projectId);
+		//logesapi.debug("looking for: " + analysisName +":" + version + ":" + projectId);
 		IAnalysisPluginDao analysisPluginDao = sfDAOFactory
 				.getAnalysisPluginDao();
 		log.debug("getting QtAnalysisPlugin");

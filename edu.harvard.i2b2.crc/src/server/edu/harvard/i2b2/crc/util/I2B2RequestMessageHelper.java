@@ -61,8 +61,8 @@ public class I2B2RequestMessageHelper {
 			requestMessageType = (RequestMessageType) jaxbElement
 			.getValue();
 		} catch (JAXBUtilException jaxbUtilEx) {
-			logesapi.error("Error processing request xml [" + requestXml + "]",
-					jaxbUtilEx);
+			//logesapi.error("Error processing request xml [" + requestXml + "]",
+			//		jaxbUtilEx);
 			throw new I2B2Exception(jaxbUtilEx.getMessage());
 		}
 	}

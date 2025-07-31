@@ -74,7 +74,7 @@ public class DataSourceLookupHelper {
 			 String parentProjectId=null;
 			while ((projectLevel=projectId.lastIndexOf('/', projectLevel))>0) {
 			    parentProjectId = projectId.substring(0, projectLevel+1);
-				logesapi.debug("Trying with project id :" + parentProjectId);
+				//logesapi.debug("Trying with project id :" + parentProjectId);
 				matchedDataSource = match(parentProjectId,ownerId,dataSourceLookupList);
 				if (matchedDataSource != null) {
 					matchedFlag = true;
@@ -85,25 +85,25 @@ public class DataSourceLookupHelper {
 			}
 			if (matchedFlag) { 
 					if (ownerId.equalsIgnoreCase(matchedDataSource.getOwnerId())) { 
-						logesapi.info("Located DataSource for hiveId=[" + hiveId + 
-								"] projectId=[" + parentProjectId + "] and ownerId =[" + 
-								ownerId + "]");
+						//logesapi.info("Located DataSource for hiveId=[" + hiveId + 
+						//		"] projectId=[" + parentProjectId + "] and ownerId =[" + 
+						//		ownerId + "]");
 					} else { 
-						logesapi.info("Located DataSource for hiveId=[" + hiveId + 
-								"] projectId=[" + parentProjectId + "]");
+						//logesapi.info("Located DataSource for hiveId=[" + hiveId + 
+						//		"] projectId=[" + parentProjectId + "]");
 						
 					}
 				return matchedDataSource;
 				
 			}
 			else { 
-				logesapi.info("Could not match Project id=[" + projectId+"] Trying with hive =" + hiveId);
+				//logesapi.info("Could not match Project id=[" + projectId+"] Trying with hive =" + hiveId);
 				matchedDataSourceLookup = matchHiveOwner(hiveId,ownerId);
 				return matchedDataSourceLookup;
 			}
 			
 		} else { 
-			logesapi.info("Could not match Project id=[" + projectId+"] Trying with hive =" + hiveId);
+			//logesapi.info("Could not match Project id=[" + projectId+"] Trying with hive =" + hiveId);
 			matchedDataSourceLookup = matchHiveOwner(hiveId,ownerId);
 			return matchedDataSourceLookup;
 		}
@@ -133,9 +133,9 @@ public class DataSourceLookupHelper {
 				}
 			}
 			if (matchedFlag) { 
-				logesapi.info("Located Datasource matching hive=[" + hiveId + "] and owner=[" + ownerId + "]");
+				//logesapi.info("Located Datasource matching hive=[" + hiveId + "] and owner=[" + ownerId + "]");
 			} else if (matchedDataSourceLookup != null) { 
-				logesapi.info("Located Datasource matching hive=[" + hiveId + " and owner =[@]");
+				//logesapi.info("Located Datasource matching hive=[" + hiveId + " and owner =[@]");
 			} else { 
 				throw new I2B2Exception("Could not locate Datasource matching hive=[" + hiveId + "] and owner=["+ ownerId + " or @]");
 			}

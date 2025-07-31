@@ -176,6 +176,7 @@ public class ObservationFactCSV2XmlBuilder {
 			}
 			observationFactWriter.write("</ns2:observation_set>\n");
 			writeEndDocument(observationFactWriter);
+			csvReader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new I2B2Exception("Build XML failed ", ex);

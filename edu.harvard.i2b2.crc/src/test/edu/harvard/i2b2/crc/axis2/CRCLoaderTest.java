@@ -136,6 +136,7 @@ public class CRCLoaderTest  extends CRCAxisAbstract {
 
 //        System.out.println("queryStr " + queryStr);
 
+        reader.close();
         return queryStr.toString();
     }
     

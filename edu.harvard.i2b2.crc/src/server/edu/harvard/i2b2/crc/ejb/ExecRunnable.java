@@ -143,15 +143,15 @@ public class ExecRunnable implements Runnable{
 					SetFinderDAOFactory sfDAOFactory = daoFactory
 							.getSetFinderDAOFactory();
 					DataSourceLookup dsLookup = sfDAOFactory.getDataSourceLookup();
-					logesapi.debug("ORIG domain id"
-							+ sfDAOFactory.getOriginalDataSourceLookup()
-							.getDomainId()
-							+ " ORIG "
-							+ sfDAOFactory.getOriginalDataSourceLookup()
-							.getProjectPath()
-							+ " ORIG "
-							+ sfDAOFactory.getOriginalDataSourceLookup()
-							.getOwnerId());
+					//logesapi.debug("ORIG domain id"
+					//		+ sfDAOFactory.getOriginalDataSourceLookup()
+					//		.getDomainId()
+					//		+ " ORIG "
+					//		+ sfDAOFactory.getOriginalDataSourceLookup()
+					//		.getProjectPath()
+					//		+ " ORIG "
+					//		+ sfDAOFactory.getOriginalDataSourceLookup()
+					//		.getOwnerId());
 
 					try { 
 						AuthrizationHelper authHelper = new AuthrizationHelper(dsLookupDomainId, dsLookupProjectId, dsLookupOwnerId, daoFactory);

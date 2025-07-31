@@ -258,8 +258,8 @@ public class QueryInfoBean { //implements SessionBean {
 
 					doc = edu.harvard.i2b2.common.util.xml.XMLUtil
 							.convertStringToDOM(requestXml);
-					logesapi.debug("query definition xml prefix "
-							+ doc.getDocumentElement().getPrefix());
+					//logesapi.debug("query definition xml prefix "
+					//		+ doc.getDocumentElement().getPrefix());
 					requestXmlType.getContent().add(doc.getDocumentElement());
 				} catch (Exception i2b2) {
 					i2b2.printStackTrace();

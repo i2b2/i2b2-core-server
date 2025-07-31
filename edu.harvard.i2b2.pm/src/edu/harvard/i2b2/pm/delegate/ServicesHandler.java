@@ -304,7 +304,7 @@ public class ServicesHandler extends RequestHandler {
 				e1.printStackTrace();
 				throw new Exception ("Database error in getting environment data");
 			}
-			logesapi.debug("Start parsing environment results of: " + response);
+			//logesapi.debug("Start parsing environment results of: " + response);
 
 			Iterator it = response.iterator();
 			while (it.hasNext())

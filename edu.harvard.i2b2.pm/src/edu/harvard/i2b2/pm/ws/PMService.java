@@ -77,7 +77,7 @@ public class PMService {
 		p = Pattern.compile(">.+</ns9:set_password>");
 		m = p.matcher(outString);
 		outString = m.replaceAll(">*********</ns9:set_password>");
-		logesapi.debug("Received Request PM Element " + outString);
+		//logesapi.debug("Received Request PM Element " + outString);
 
 		OMElement returnElement = null;
 
@@ -253,7 +253,7 @@ public class PMService {
 		p = Pattern.compile(">.+</ns9:set_password>");
 		m = p.matcher(outString);
 		outString = m.replaceAll(">*********</ns9:set_password>");
-		logesapi.debug("Received Request PM Element " + outString);
+		//logesapi.debug("Received Request PM Element " + outString);
 
 
 		log.debug("Begin getting servicesMsg");

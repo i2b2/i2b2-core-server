@@ -390,7 +390,7 @@ public class FolderDao extends JdbcDaoSupport {
 				//CallCRCUtil callCRC = new CallCRCUtil(securityType, projectInfo.getId());
 				log.debug("getting Response");
 				queryResult =  CallCRCUtil.callCRCQueryRequestXML(childrenType.getNode(), securityType, projectInfo.getId());
-				logesapi.debug("got response: " + queryResult);
+				//logesapi.debug("got response: " + queryResult);
 				//if (masterInstanceResultResponseType != null && masterInstanceResultResponseType.getQueryMaster().size() > 0)
 				//	queryResult =XMLUtil.convertDOMElementToString((Element) masterInstanceResultResponseType.getQueryMaster().get(0).getRequestXml().getContent().get(0)); ;  //respoonseType.getQueryResultInstance();
 			} catch (Exception e) {
@@ -405,7 +405,7 @@ public class FolderDao extends JdbcDaoSupport {
 				//CallCRCUtil callCRC = new CallCRCUtil(securityType, projectInfo.getId());
 				log.debug("getting Response");
 				queryResult =  CallCRCUtil.callCRCResultInstanceXML(childrenType.getNode(), securityType, projectInfo.getId());
-				logesapi.debug("got response: " + queryResult);
+				//logesapi.debug("got response: " + queryResult);
 				//if (masterInstanceResultResponseType != null)
 				//	queryResult = (String) masterInstanceResultResponseType.getCrcXmlResult().getXmlValue().getContent().get(0);
 				//XMLUtil.convertDOMElementToString((Element) masterInstanceResultResponseType.getCrcXmlResult().getXmlValue().getContent().get(0));  //respoonseType.getQueryResultInstance();
@@ -416,7 +416,7 @@ public class FolderDao extends JdbcDaoSupport {
 			}
 			//log.debug("result size = " + queryResult.size());
 		}
-		logesapi.debug("result is: " + queryResult);
+		//logesapi.debug("result is: " + queryResult);
 		return queryResult;
 
 	}

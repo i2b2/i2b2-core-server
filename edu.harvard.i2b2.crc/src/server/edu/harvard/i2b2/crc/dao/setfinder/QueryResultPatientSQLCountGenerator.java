@@ -157,7 +157,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 
 				stmt = sfConn.prepareStatement(sqls[count]);
 				stmt.setQueryTimeout(transactionTimeout);
-				logesapi.debug("Executing count sql [" + sqls[count] + "]");
+				//logesapi.debug("Executing count sql [" + sqls[count] + "]");
 
 				//
 				subLogTimingUtil.setStartTime();
@@ -173,7 +173,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 
 			stmt = sfConn.prepareStatement(sqls[count]);
 			stmt.setQueryTimeout(transactionTimeout);
-			logesapi.debug("Executing count sql [" + sqls[count] + "]");
+			//logesapi.debug("Executing count sql [" + sqls[count] + "]");
 
 			//
 			subLogTimingUtil.setStartTime();

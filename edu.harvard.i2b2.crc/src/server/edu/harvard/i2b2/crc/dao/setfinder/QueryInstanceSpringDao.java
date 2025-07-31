@@ -476,7 +476,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 		if (serverType.equalsIgnoreCase(DataSourceLookupDAOFactory.SQLSERVER)) {
 			String errorMsg = callStmt.getString(outParamIndex);
 			if (errorMsg != null) {
-				logesapi.debug("error codde" + errorMsg);
+				//logesapi.debug("error codde" + errorMsg);
 				throw new I2B2Exception("Error from stored procedure ["
 						+ errorMsg + "]");
 			}

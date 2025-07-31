@@ -144,7 +144,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				+ userRequestType.getUsername();
 
 		//List<String> roles = (List<String>) cache.getRoot().get(rolePath);
-		logesapi.debug("Roles from get " + rolePath);
+		//logesapi.debug("Roles from get " + rolePath);
 		List<String> roles = (List<String>) CacheUtil.get(rolePath);
 
 		String sql = "select ";
@@ -521,7 +521,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		List<QtQueryMaster> queryMasterList = jdbcTemplate.query(sql,
 				obj, queryMasterMapper);
 
-		log.info(queryMasterList);
+		//log.info(queryMasterList);
 		if (includeQueryInstance) {
 			QueryInstanceSpringDao instanceDao = new QueryInstanceSpringDao(dataSource, dataSourceLookup);
 

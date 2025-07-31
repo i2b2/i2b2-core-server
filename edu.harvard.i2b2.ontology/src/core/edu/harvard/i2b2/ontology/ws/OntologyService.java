@@ -416,7 +416,7 @@ public class OntologyService {
 		}
 
 		String requestElementString = getDerivedFactColumnsElement.toString();
-		logesapi.debug("ONT derivedFactCol request " + requestElementString);
+		//logesapi.debug("ONT derivedFactCol request " + requestElementString);
 		GetTermInfoDataMessage dataMsg = new GetTermInfoDataMessage(
 				requestElementString);
 
@@ -579,7 +579,7 @@ public class OntologyService {
 					.createResponseOMElementFromString(ontologyDataResponse);
 		}
 		String requestElementString = modifyChildElement.toString();
-		logesapi.debug(requestElementString);
+		//logesapi.debug(requestElementString);
 		ModifyChildDataMessage childDataMsg = new ModifyChildDataMessage(
 				requestElementString);
 		long waitTime = 0;
@@ -1114,11 +1114,11 @@ public class OntologyService {
 		// service could sends back message with timeout error.
 		// ExecutorRunnable er = new ExecutorRunnable();
 		if(loadDataMsg.getMetadataLoad().getTableName().equalsIgnoreCase("SCHEMES")) {
-			logesapi.info(requestElementString);
+			//logesapi.info(requestElementString);
 			return execute(new LoadSchemesHandler(loadDataMsg), waitTime);
 		}
 		else if(loadDataMsg.getMetadataLoad().getTableName().equalsIgnoreCase("TABLE_ACCESS")) {
-			logesapi.info(requestElementString);
+			//logesapi.info(requestElementString);
 			return execute(new LoadTableAccessHandler(loadDataMsg), waitTime);
 		}
 		else

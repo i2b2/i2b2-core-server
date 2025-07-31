@@ -205,7 +205,7 @@ public class SchedulerStoredProcedure extends CRCDAO implements IResultGenerator
 
 				stmt = sfConn.prepareStatement(itemCountSql);
 				stmt.setQueryTimeout(transactionTimeout);
-				logesapi.debug("Executing count sql [" + itemCountSql + "]");
+				//logesapi.debug("Executing count sql [" + itemCountSql + "]");
 
 				//
 				subLogTimingUtil.setStartTime();

@@ -354,13 +354,13 @@ public class RPDODao extends JdbcDaoSupport {
 					{
 						jobject =jObj4.getAsJsonObject();
 
-						if (jobject.get("start").getAsString() != null && jobject.get("start").getAsString() != "")
+						if (jobject.get("start").getAsString() != null && !jobject.get("start").getAsString().equals(""))
 						{
 							SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
 							java.util.Date date = sdf1.parse(jobject.get("start").getAsString());
 							dateFrom = new java.sql.Date(date.getTime()); 
 						}
-						if (jobject.get("end").getAsString() != null && jobject.get("end").getAsString() != "")
+						if (jobject.get("end").getAsString() != null && !jobject.get("end").getAsString().equals(""))
 						{
 							SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
 							java.util.Date date = sdf1.parse(jobject.get("end").getAsString());

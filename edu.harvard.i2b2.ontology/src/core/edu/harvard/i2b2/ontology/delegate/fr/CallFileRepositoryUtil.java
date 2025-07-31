@@ -203,8 +203,8 @@ public class CallFileRepositoryUtil {
 
 			response = mepClient
 					.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
-			logesapi.debug("File Repository response envelope: "
-					+ response.toString() + "]");
+			//logesapi.debug("File Repository response envelope: "
+			//		+ response.toString() + "]");
 			OMElement frResponse = (OMElement) response.getEnvelope().getBody()
 					.getFirstOMChild();
 			log.debug("File Repository response body [: " + frResponse + "]");

@@ -95,7 +95,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 					+ getDataSourceLookup().getOwnerId();
 
 			//List<String> roles = (List<String>) cache.getRoot().get(rolePath);
-			logesapi.debug("Roles from get " + rolePath);
+			//logesapi.debug("Roles from get " + rolePath);
 			List<String> roles = (List<String>) CacheUtil.get(rolePath);
 			if (roles != null) {
 				log.debug("Roles from size " + roles.size());

@@ -104,8 +104,8 @@ public class QueryResultPatientSetGenerator extends CRCDAO implements
 			loadCount = ps.executeUpdate();
 			ps.close();
 			logTimingUtil.setEndTime();
-			logesapi.debug("Total patients loaded for query instance ="
-					+ queryInstanceId + " is [" + loadCount + "]");
+			//logesapi.debug("Total patients loaded for query instance ="
+			//		+ queryInstanceId + " is [" + loadCount + "]");
 			////
 			if (processTimingFlag != null) {
 				if (!processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.NONE) ) {

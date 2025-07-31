@@ -41,7 +41,18 @@ import edu.harvard.i2b2.common.util.axis2.ServiceClient;
 import edu.harvard.i2b2.im.datavo.pdo.ParamType;
 import edu.harvard.i2b2.im.datavo.pdo.PatientType;
 import edu.harvard.i2b2.im.datavo.pdo.PidType;
-
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 public  class EMPIOpenEMPI  implements EMPI {
 	private static Log log = LogFactory.getLog(EMPIOpenEMPI.class.getName());
@@ -95,7 +106,12 @@ public  class EMPIOpenEMPI  implements EMPI {
 			httpCon.addRequestProperty("OPENEMPI_SESSION_KEY", authenticate);
 			OutputStreamWriter out = new OutputStreamWriter(
 					httpCon.getOutputStream());
-			out.write(getRequestString);
+			
+		    // String to XML Document
+	        Document document = convertStringToXml(getRequestString);
+
+	        // XML Document to String
+	        out.write(convertXmlToString(document));
 			out.close();
 			return IOUtils.toString(httpCon.getInputStream());
 		} catch (Exception e) {
@@ -111,6 +127,9 @@ public  class EMPIOpenEMPI  implements EMPI {
 	    factory.setExpandEntityReferences(false);
 	    factory.setXIncludeAware(false);
 
+	    String FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+	    factory.setFeature(FEATURE, true);
+	    
 		DocumentBuilder builder = factory.newDocumentBuilder();
 
 		Document document =
@@ -139,6 +158,50 @@ public  class EMPIOpenEMPI  implements EMPI {
 		//return paramList;
 
 	}
+	
+    private static String convertXmlToString(Document doc) {
+        DOMSource domSource = new DOMSource(doc);
+        StringWriter writer = new StringWriter();
+        StreamResult result = new StreamResult(writer);
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = null;
+        try {
+            transformer = tf.newTransformer();
+            tf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+           // tf.setXIncludeAware(false);
+
+            transformer.transform(domSource, result);
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
+        }
+        return writer.toString();
+    }
+
+    private static Document convertStringToXml(String xmlString) {
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        try {
+
+            // optional, but recommended
+            // process XML securely, avoid attacks like XML External Entities (XXE)
+            //dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+    	    String FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+    	    dbf.setFeature(FEATURE, true);
+    	    dbf.setXIncludeAware(false);
+            DocumentBuilder builder = dbf.newDocumentBuilder();
+
+            Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
+
+            return doc;
+
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 
 	private void Authenticate() throws Exception {
 		// TODO Auto-generated method stub
@@ -183,6 +246,9 @@ public  class EMPIOpenEMPI  implements EMPI {
 
 		DocumentBuilder builder = factory.newDocumentBuilder();
 
+	    String FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+	    factory.setFeature(FEATURE, true);
+	    
 		Document document =
 				builder.parse((new InputSource(new StringReader(person))));
 		List<ParamType> paramList = new ArrayList<ParamType>();

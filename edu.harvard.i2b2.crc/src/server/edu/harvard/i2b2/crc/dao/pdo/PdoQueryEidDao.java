@@ -352,9 +352,9 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		while (resultSet.next()) {
 			singleEidType = eidBuilder.buildEidSet(resultSet);
 			eidMapId = singleEidType.getEventMapId().get(0);
-			log.debug("Building  pidMapId " + eidMapId.getValue()
-					+ "   " + singleEidType.getEventId().getValue() + " "
-					+ eidMapId.getSource());
+			//log.debug("Building  pidMapId " + eidMapId.getValue()
+			//		+ "   " + singleEidType.getEventId().getValue() + " "
+			//		+ eidMapId.getSource());
 			tempSinglePidType = singleEidType.getEventId().getValue();
 
 			if (prevPatientNum.equals(singleEidType.getEventId().getValue())) {

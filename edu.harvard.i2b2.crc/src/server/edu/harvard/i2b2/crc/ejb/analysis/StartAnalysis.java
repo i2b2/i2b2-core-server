@@ -86,7 +86,7 @@ public class StartAnalysis implements StartAnalysisLocal {
 			log.debug("plugin Name: " + analysisDefType.getAnalysisPluginName());
 			log.debug("plugin version: " +  analysisDefType
 					.getVersion());
-			logesapi.debug("plugin projectid" + msgHelper.getProjectId());
+			//logesapi.debug("plugin projectid" + msgHelper.getProjectId());
 			QtAnalysisPlugin analysisPlugin = queryMaster.lookupAnalysisPlugin(
 					analysisDefType.getAnalysisPluginName(), analysisDefType
 							.getVersion(), msgHelper.getProjectId());

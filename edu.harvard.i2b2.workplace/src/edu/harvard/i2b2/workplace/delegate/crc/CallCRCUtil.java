@@ -90,7 +90,7 @@ public class CallCRCUtil {
 			logesapi.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's request xml "
 					+ requestElement);
 			response = ServiceClient.sendREST(workplaceUtil.getCRCUrl() + "/request", requestElement).toString();
-			logesapi.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's response xml " + response.toString());
+			//logesapi.debug("callCRCQueryRequestXML - CRC setfinder query request XML call's response xml " + response.toString());
 			//resultResponseType = getResultResponseMessage(response.toString());
 			//masterInstanceResultResponseType = getResponseMessage(response
 			//		.toString());

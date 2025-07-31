@@ -132,7 +132,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				}
 
 				log.debug("project name from PM " + projectType.getName());
-				logesapi.debug("project id from PM " + projectType.getId());
+				//logesapi.debug("project id from PM " + projectType.getId());
 
 			
 				
@@ -173,12 +173,12 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 							//this.putPocessTiming(projectId, securityType.getUsername(), securityType.getDomain(), param);
 							LogTimingUtil.putPocessTiming(projectId, securityType.getUsername(), securityType.getDomain(), param);
 							String cacheValue = LogTimingUtil.getPocessTiming(projectId, securityType.getUsername(), securityType.getDomain());
-							logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.PM_ENABLE_PROCESS_TIMING  + "[" + cacheValue + "]" );
+							//logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.PM_ENABLE_PROCESS_TIMING  + "[" + cacheValue + "]" );
 
 						} else if (param.getName() != null && param.getName().trim().equalsIgnoreCase(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION))  {
 							paramUtil.putParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION,param);
 							String unitCdCache = paramUtil.getParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
-							logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
+							//logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
 						}
 					}
 				}
@@ -337,7 +337,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 					PsmRequestTypeType.CRC_QRY_DELETE_QUERY_MASTER)) {
 				DeleteQueryMasterHandler handler = new DeleteQueryMasterHandler(
 						requestXml);
-				logesapi.info("DELETE QUERY MASTER: " + requestXml);
+				//logesapi.info("DELETE QUERY MASTER: " + requestXml);
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_RENAME_QUERY_MASTER)) {

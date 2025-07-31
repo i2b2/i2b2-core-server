@@ -115,7 +115,7 @@ public class QueryService {
 	public OMElement request(OMElement omElement) {
 		Assert.notNull(omElement,
 				"Setfinder request OMElement must not be null");
-		log.debug("Inside setfinder request " + omElement);
+		//log.debug("Inside setfinder request " + omElement);
 		return handleRequest(SETFINDER_REQUEST, omElement);
 	}
 
@@ -129,7 +129,7 @@ public class QueryService {
 	public OMElement breakdownrequest(OMElement omElement) {
 		Assert.notNull(omElement,
 				"Setfinder request OMElement must not be null");
-		log.debug("Inside setfinder request " + omElement);
+		//log.debug("Inside setfinder request " + omElement);
 		return handleRequest(QTBREAKDOWN_REQUEST, omElement);
 	}
 	/**
@@ -141,7 +141,7 @@ public class QueryService {
 	 */
 	public OMElement pdorequest(OMElement omElement) {
 		Assert.notNull(omElement, "PDO request OMElement must not be null");
-		log.debug("Inside pdo request " + omElement);
+		//log.debug("Inside pdo request " + omElement);
 		return handleRequest(PDO_REQUEST, omElement);
 	}
 
@@ -185,14 +185,14 @@ public class QueryService {
 	 */
 	public OMElement getNameInfo(OMElement omElement) {
 		Assert.notNull(omElement, "getNameInfo  OMElement must not be null");
-		log.debug("Inside getNameInfo request " + omElement);
+		//log.debug("Inside getNameInfo request " + omElement);
 		return handleRequest(GETNAMEINFO_REQUEST, omElement);
 	}
 
 	public OMElement publishDataRequest(OMElement request) {
 		Assert.notNull(request,
 				"publish data request OMElement must not be null");
-		log.debug("Inside publish data request " + request);
+		//log.debug("Inside publish data request " + request);
 		//TODO removed loader
 		// Added back
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -216,7 +216,7 @@ public class QueryService {
 	public OMElement bulkLoadRequest(OMElement request) {
 		Assert.notNull(request,
 				"bulk load request OMElement must not be null");
-		log.debug("Inside bulk load request " + request);
+		//log.debug("Inside bulk load request " + request);
 
 		//LoaderQueryReqDel handles permissions...
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -489,7 +489,7 @@ public class QueryService {
 	public OMElement getLoadDataStatusRequest(OMElement request) {
 		Assert.notNull(request,
 				"get load Data status request OMElement must not be null");
-		log.debug("Inside load status request " + request);
+		//log.debug("Inside load status request " + request);
 
 		//LoaderQueryReqDel handles permissions...
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();

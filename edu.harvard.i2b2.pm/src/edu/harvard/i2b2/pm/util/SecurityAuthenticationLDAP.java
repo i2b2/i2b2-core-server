@@ -117,6 +117,7 @@ public class SecurityAuthenticationLDAP implements SecurityAuthentication {
 		try {
 			// Create the initial directory context
 			DirContext ctx = new InitialDirContext(env);	
+			ctx.close();
 			// SUCCESS
 			return true;
 		} catch(AuthenticationException authEx) {

@@ -237,10 +237,10 @@ public class ProcessQueue implements Runnable{
 
 						if (queryInstanceId != 0 && readTimeoutPropertyValue(queue) > 1) { 
 
-							logesapi.debug("in ProcessQueue my pmXml is"+ pmXml);
+							//logesapi.debug("in ProcessQueue my pmXml is"+ pmXml);
 							ExecRunnable exec = new ExecRunnable(sqlString, Integer.toString(queryInstanceId), null,
 									xmlRequest, dslookup.getDomainId(), projectId, ownerId, pmXml, transactionTimeout);
-							logesapi.info("STARTING " + queue + " FOR " + queryInstanceId + " " + sqlString + " " + transactionTimeout);
+							//logesapi.info("STARTING " + queue + " FOR " + queryInstanceId + " " + sqlString + " " + transactionTimeout);
 							
 							Thread t = new Thread(exec);
 

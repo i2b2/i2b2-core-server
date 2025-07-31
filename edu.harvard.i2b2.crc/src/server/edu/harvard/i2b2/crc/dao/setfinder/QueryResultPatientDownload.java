@@ -350,7 +350,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						callStmt = conn.prepareCall(item.getQuery());
 						callStmt.registerOutParameter(1, Types.OTHER); // refcursor out param
 
-						log.info("Calling stored procedure" + item.getQuery());
+						//log.info("Calling stored procedure" + item.getQuery());
 						callStmt.execute(); // Step 2: call procedure
 
 						// String cursorName = (String) callStmt.getObject(1); // Step 3: get cursor name
@@ -383,7 +383,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					} else 	{
 						stmt = sfConn.prepareStatement(item.getQuery());
 						stmt.setQueryTimeout(transactionTimeout);
-						logesapi.debug("Executing count sql [" + item.getQuery() + "]");
+						//logesapi.debug("Executing count sql [" + item.getQuery() + "]");
 
 						resultSet = stmt.executeQuery();
 					}  
@@ -507,6 +507,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 							if (stmt != null)
 								stmt.close();
+							
+							if (writer != null)
+								writer.close();
 						}
 						/*
 						if (csr.getSqlFinishedFlag()) {
@@ -543,7 +546,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 									+ " AND C_VISUALATTRIBUTES NOT LIKE '_H%' AND DELETE_FLAG != 'Y' "
 									+ "  order by set_index asc ";
 							
-							log.info(sql);
+							//log.info(sql);
 							stmt = sfConn.prepareStatement(sql);
 							//stmt.setQueryTimeout(transactionTimeout);
 

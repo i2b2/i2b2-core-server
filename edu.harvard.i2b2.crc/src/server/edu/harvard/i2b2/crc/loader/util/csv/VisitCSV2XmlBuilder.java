@@ -188,6 +188,7 @@ public class VisitCSV2XmlBuilder {
 			}
 
 			writeEndDocument(visitWriter);
+			csvReader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new I2B2Exception("Error building Visit xml", ex);

@@ -236,7 +236,7 @@ public class WorkplaceService {
 
 		GetNameInfoDataMessage foldersDataMsg = new GetNameInfoDataMessage();
 		String requestElementString = requestElement.toString();
-		logesapi.debug(requestElementString);
+		//logesapi.debug(requestElementString);
 		foldersDataMsg.setRequestMessageType(requestElementString);
 
 		long waitTime = 0;
