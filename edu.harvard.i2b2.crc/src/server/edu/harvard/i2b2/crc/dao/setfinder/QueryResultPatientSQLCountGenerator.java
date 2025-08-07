@@ -48,6 +48,7 @@ import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
+import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
@@ -91,7 +92,7 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 
 		// String patientSetId = (String)param.get("PatientSetId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
-		String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
+		//String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
 		String resultInstanceId = (String) param.get("ResultInstanceId");
 		// String itemKey = (String) param.get("ItemKey");
 		String resultTypeName = (String) param.get("ResultOptionName");
@@ -142,6 +143,17 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 			csrThread.start();
 
 			//String sqlFinal = "";
+
+			String TEMP_DX_TABLE = "#DX";
+			if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SQLSERVER)) {
+				TEMP_DX_TABLE = getDbSchemaName() + "#DX";
+
+			} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.ORACLE) || sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+							DAOFactoryHelper.POSTGRESQL)) {
+				TEMP_DX_TABLE = getDbSchemaName() + "DX";
+			}
 
 			if (itemCountSql.contains("{{{DX}}}"))
 				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DX\\}\\}\\}", TEMP_DX_TABLE);

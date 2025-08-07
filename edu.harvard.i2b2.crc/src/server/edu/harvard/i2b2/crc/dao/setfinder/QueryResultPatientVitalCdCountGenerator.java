@@ -17,6 +17,7 @@ import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
+import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
@@ -45,11 +46,22 @@ public class QueryResultPatientVitalCdCountGenerator extends CRCDAO implements
 				.get("SetFinderDAOFactory");
 		// String patientSetId = (String)param.get("PatientSetId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
-		String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
+		//String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
 		String resultInstanceId = (String) param.get("ResultInstanceId");
 		this
 				.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
 						.getFullSchema());
+
+		String TEMP_DX_TABLE = "#DX";
+		if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SQLSERVER)) {
+			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
+
+		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.ORACLE) || sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+						DAOFactoryHelper.POSTGRESQL)) {
+			TEMP_DX_TABLE = getDbSchemaName() + "DX";
+		}
 
 		String demographics_count_sql = "select count(distinct dx.patient_num) as vital_status_count, case when cl.name_char IS NULL then pd.vital_status_cd else cl.name_char end as pd_vital_status_cd from "
 				+ "<from> "

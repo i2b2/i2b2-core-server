@@ -94,6 +94,7 @@ public class TablePdoQueryConceptDao extends CRCDAO implements
 						+ " ( set_index int, char_param1 varchar(500) )";
 				tempStmt.executeUpdate(createTempInputListTable);
 				log.debug("created temp table" + factTempTable);
+				tempStmt.close();
 			}
 			// if the inputlist is enumeration, then upload the enumerated input
 			// to temp table.
@@ -253,7 +254,9 @@ public class TablePdoQueryConceptDao extends CRCDAO implements
 				log.debug("Executing [" + finalSql + "]");
 
 				query = conn.prepareStatement(finalSql);
-
+				if (tempStmt != null)
+					tempStmt.close();
+					
 			}
 			ResultSet resultSet = query.executeQuery();
 

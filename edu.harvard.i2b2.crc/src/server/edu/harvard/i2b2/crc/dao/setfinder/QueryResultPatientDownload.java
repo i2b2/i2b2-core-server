@@ -64,6 +64,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -144,13 +145,26 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 		// String patientSetId = (String)param.get("PatientSetId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
-		String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
+		//String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
 		String resultInstanceId = (String) param.get("ResultInstanceId");
-		String PSetResultInstanceId = (String) param.get("PSetResultInstanceId");
+		int PSetResultInstanceId = -1;
+		if (param.get("PSetResultInstanceId") != null)
+			PSetResultInstanceId = Integer.valueOf((String) param.get("PSetResultInstanceId"));
 		// String itemKey = (String) param.get("ItemKey");
 		String resultTypeName = (String) param.get("ResultOptionName");
 
 		ResultType resultXmlType = (ResultType) param.get("resultType");
+
+		String TEMP_DX_TABLE = "#DX";
+		if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SQLSERVER)) {
+			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
+
+		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.ORACLE) || sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+						DAOFactoryHelper.POSTGRESQL)) {
+			TEMP_DX_TABLE = getDbSchemaName() + "DX";
+		}
 
 		//ZipOutputStream zipStream;
 
@@ -260,12 +274,12 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					edu.harvard.i2b2.crc.dao.xml.File item = valueExport.getFile()[0];
 
 					// Check if coming from Export RPDO, if so than change to hive filenames
-					if ( PSetResultInstanceId != null) { 
+					if ( PSetResultInstanceId != -1) { 
 						// Get actual filename 
 						String xmlFilename = item.getFilename().substring(item.getFilename().lastIndexOf('/'));
 						String newWorkDir = workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename");
 						newWorkDir = newWorkDir.substring(0,newWorkDir.lastIndexOf('/'));
-						item.setFilename(newWorkDir + xmlFilename);
+						item.setFilename(newWorkDir + qpUtil.sanitizeFilename(xmlFilename));
 						item.setFilename(qpUtil.processFilename(item.getFilename(), param));
 
 					} else {
@@ -280,7 +294,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 						valueExport.setZipFilename(qpUtil.processFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"), param));
 					}else {
-						item.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"));
+						item.setFilename(qpUtil.sanitizeFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename")));
 						item.setFilename(qpUtil.processFilename(item.getFilename(), param));
 					}
 					item.setQuery(exportItemXml);
@@ -319,14 +333,14 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					letterFilename = qpUtil.processFilename(letterFilename, param);
 
 
-					if (item.getQuery().contains("{{{DX}}}") && PSetResultInstanceId != null)
+					if (item.getQuery().contains("{{{DX}}}") && PSetResultInstanceId != -1)
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{DX\\}\\}\\}", " (SELECT PATIENT_NUM FROM " +this.getDbSchemaName() +  "QT_PATIENT_SET_COLLECTION WHERE RESULT_INSTANCE_ID = " + PSetResultInstanceId + ") "));
 					else
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{DX\\}\\}\\}", TEMP_DX_TABLE));
 					if (item.getQuery().contains("{{{FULL_SCHEMA}}}"))
 						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{FULL_SCHEMA\\}\\}\\}", this.getDbSchemaName()));
 					if (item.getQuery().contains("{{{RESULT_INSTANCE_ID}}}"))
-						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", PSetResultInstanceId));  //use the patient set
+						item.setQuery(item.getQuery().replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", "" + PSetResultInstanceId));  //use the patient set
 
 
 					if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE) &&
@@ -519,6 +533,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						 */
 
 						// if RPDO than save the RPDO table
+						String newId = resultTypeName.replace("RPDO_", "");
+						int newidInt = Integer.parseInt(newId);
+						
 						if (resultTypeName.startsWith("RPDO_")) {
 							String sql = "SELECT TABLE_INSTANCE_ID "
 									+ "      ,TABLE_INSTANCE_NAME "
@@ -542,7 +559,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 									+ "      ,CONSTRAIN_BY_VALUE_TYPE"
 									+ "      ,CREATE_DATE	  "
 									+ "  FROM " + this.getDbSchemaName() + "RPDO_TABLE_REQUEST"
-									+ "   WHERE TABLE_INSTANCE_ID = " + resultTypeName.replace("RPDO_", "")
+									+ "   WHERE TABLE_INSTANCE_ID = " + newidInt
 									+ " AND C_VISUALATTRIBUTES NOT LIKE '_H%' AND DELETE_FLAG != 'Y' "
 									+ "  order by set_index asc ";
 							
@@ -574,6 +591,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 									stmt.close();
 								if (callStmt != null)
 									callStmt.close();
+
+								if (writer != null)
+									writer.close();
 								//sfDAOFactory.getDataSource().getConnection().commit(); // Close the transaction (needed for Oracle and Postgres)
 							}
 						}
@@ -979,6 +999,36 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				.getBreakdownTypeByName(resultTypeKey);
 		String itemKey = queryBreakdownType.getValue();
 		return itemKey;
+	}
+
+	private static String sanitizeFileNameold(String configPath, String ext) throws Exception {
+		
+		    String[] allowedExtensions = new String[]{"csv","txt","doc","zip"};
+		    String extension = "txt"; // Default extension
+		    for (String allowedExtension: allowedExtensions) {
+		        if (allowedExtension.equals(extension)) {
+		            extension = allowedExtension;
+		        }
+		        
+		    }
+		    String path = configPath;
+		    // See "Note on authorization"
+		   // User user = getCurrentUser();
+		    File file = new File(path);
+		    if (!file.canWrite()) {
+		        throw new Exception("User may not access this file");
+		    }
+		    return path;
+		//}
+	    //return name;
+	    /*
+	            .chars()
+	            .mapToObj(i -> (char) i)
+	            .map(c -> Character.isWhitespace(c) ? '_' : c)
+	            .filter(c -> Character.isLetterOrDigit(c) || c == '-' || c == '_'  || c == ':')
+	            .map(String::valueOf)
+	            .collect(Collectors.joining());
+	            */
 	}
 
 

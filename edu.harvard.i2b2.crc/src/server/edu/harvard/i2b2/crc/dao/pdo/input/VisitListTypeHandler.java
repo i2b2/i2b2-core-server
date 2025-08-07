@@ -329,6 +329,10 @@ public class VisitListTypeHandler extends CRCDAO implements
 
 		}
 		preparedStmt.executeBatch();
+		if (tempStmt != null)
+			tempStmt.close();
+		if (preparedStmt != null)
+			preparedStmt.close();
 	}
 
 	@Override

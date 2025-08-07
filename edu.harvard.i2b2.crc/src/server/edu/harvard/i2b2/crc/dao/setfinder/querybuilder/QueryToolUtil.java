@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -255,7 +256,8 @@ public class QueryToolUtil extends CRCDAO {
 			long DBNumPatients) {
 		long EstSize = 0;
 		String sql = "";
-
+		java.sql.Statement st1 = null;
+		ResultSet rs  = null;
 		try {
 			if (theTableName.equals(CONCEPT_TABLE)) {
 				sql = "select sum(n.patient_count) n "
@@ -266,8 +268,8 @@ public class QueryToolUtil extends CRCDAO {
 						+ CONCEPT_TABLE + " c " + "where " + CONCEPT_DIM_PATH
 						+ " " + theOperator + " " + theData + ")";
 
-				java.sql.Statement st1 = conn.createStatement();
-				ResultSet rs = st1.executeQuery(sql);
+				st1 = conn.createStatement();
+				rs = st1.executeQuery(sql);
 
 				if (rs.next()) {
 					EstSize = rs.getLong("n");
@@ -275,6 +277,7 @@ public class QueryToolUtil extends CRCDAO {
 
 				rs.close();
 				st1.close();
+				conn.close();
 			} else if (theTableName.equals(PROVIDER_TABLE)) {
 				sql = "select sum(n.patient_count) n "
 						+ "from rpdrconceptlookup n " + "where table_name = '"
@@ -284,8 +287,8 @@ public class QueryToolUtil extends CRCDAO {
 						+ PROVIDER_TABLE + " c " + "where " + PROVIDER_DIM_PATH
 						+ " " + theOperator + " " + theData + ")";
 
-				java.sql.Statement st1 = conn.createStatement();
-				ResultSet rs = st1.executeQuery(sql);
+				st1 = conn.createStatement();
+				rs = st1.executeQuery(sql);
 
 				if (rs.next()) {
 					EstSize = rs.getLong("n");
@@ -293,6 +296,7 @@ public class QueryToolUtil extends CRCDAO {
 
 				rs.close();
 				st1.close();
+				conn.close();
 			} else if (theTableName.equals(ENCOUNTER_TABLE)) {
 				sql = "select sum(n.patient_count) n "
 						+ "from rpdrconceptlookup n " + "where table_name = '"
@@ -300,8 +304,8 @@ public class QueryToolUtil extends CRCDAO {
 						+ theColumnName + "' " + "and concept_t_value "
 						+ theOperator + " " + theData;
 
-				java.sql.Statement st1 = conn.createStatement();
-				ResultSet rs = st1.executeQuery(sql);
+				st1 = conn.createStatement();
+				rs = st1.executeQuery(sql);
 
 				if (rs.next()) {
 					EstSize = rs.getLong("n");
@@ -309,6 +313,7 @@ public class QueryToolUtil extends CRCDAO {
 
 				rs.close();
 				st1.close();
+				conn.close();
 			} else if (theTableName.equals(PATIENT_TABLE)) {
 				if (theColumnName.equals("age_in_years_num")) {
 					sql = "select sum(n.patient_count) n "
@@ -326,8 +331,8 @@ public class QueryToolUtil extends CRCDAO {
 							+ theData;
 				}
 
-				java.sql.Statement st1 = conn.createStatement();
-				ResultSet rs = st1.executeQuery(sql);
+				st1 = conn.createStatement();
+				rs = st1.executeQuery(sql);
 
 				if (rs.next()) {
 					EstSize = rs.getLong("n");
@@ -335,11 +340,28 @@ public class QueryToolUtil extends CRCDAO {
 
 				rs.close();
 				st1.close();
+				conn.close();
 			} else {
 				EstSize = 1;
 			}
 		} catch (Exception e) {
 			log.error("Unable to get Estimated Size: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+
+				if (st1 != null) {
+					st1.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				;
+			}
 		}
 
 		return EstSize;

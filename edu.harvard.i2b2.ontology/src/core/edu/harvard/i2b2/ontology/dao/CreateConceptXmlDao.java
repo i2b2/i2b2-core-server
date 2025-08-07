@@ -34,6 +34,7 @@ import edu.harvard.i2b2.ontology.util.ModifierXMLWriterUtil;
 import edu.harvard.i2b2.ontology.util.ObserverXMLWriterUtil;
 import edu.harvard.i2b2.ontology.util.OntologyUtil;
 import edu.harvard.i2b2.ontology.util.PatientDataXMLWriterUtil;
+import edu.harvard.i2b2.ontology.util.StringUtil;
 
 public class CreateConceptXmlDao extends JdbcDaoSupport {
 
@@ -107,6 +108,7 @@ public class CreateConceptXmlDao extends JdbcDaoSupport {
 		} else {
 			tableAccessDao.setDataSourceObject(this.dataSource);
 		}
+		/*
 		String emptyStringClause = " ";
 		if (dbInfo.getDb_serverType().equals("ORACLE")) {
 			emptyStringClause = "trim(c_basecode) is not null ";
@@ -124,6 +126,7 @@ public class CreateConceptXmlDao extends JdbcDaoSupport {
 		} else {
 			updateOnlyClause = "  and c_synonym_cd = 'N' " + hiddenConceptSql + " and m_exclusion_cd is null";
 		}
+		*/
 		// call table access
 		List<String> tableNameList = tableAccessDao.getEditorTableName(
 				projectInfo, dbInfo, synchronizeAllFlag);
@@ -141,14 +144,18 @@ public class CreateConceptXmlDao extends JdbcDaoSupport {
 			// new FileWriter(pdoFileName));
 			xmlWriterUtil.startSet();
 			for (String singleTableName : tableNameList) {
-				String stageSql = " select * from <from>" 
-						+ " where c_basecode is not null and <clause>"
+				String stageSql = " select * from "  + dbInfo.getDb_fullSchema() + singleTableName
+						+ " where c_basecode is not null and " 
+						+ (dbInfo.getDb_serverType().equals("ORACLE")? "trim(c_basecode) is not null " : "rtrim(ltrim(c_basecode)) <> ''")
+						+ (synchronizeAllFlag == false ? " and c_visualattributes like '%E' " : "  and c_synonym_cd = 'N' ")
+						+ (hiddenConceptFlag ? " and c_visualattributes not like '_H%' " :  " ")
+						+ (synchronizeAllFlag == false ?  " and c_synonym_cd = 'N' and m_exclusion_cd is null" : " and m_exclusion_cd is null")
 						+ "   and lower(c_tablename) = ?";
-				log.debug("Executing sql [" + stageSql + "]");
-				String selectSql = stageSql.replace("<from>", metadataSchema	+ singleTableName);
-				selectSql = selectSql.replace("<clause>", emptyStringClause + updateOnlyClause);
+				//log.debug("Executing sql [" + stageSql + "]");
+				//String selectSql = stageSql.replace("<from>", metadataSchema	+ StringUtil.escapeSql(singleTableName));
+				//selectSql = selectSql.replace("<clause>", emptyStringClause + updateOnlyClause);
 				
-				query = conn.prepareStatement(selectSql);
+				query = conn.prepareStatement(stageSql);
 
 				query.setString(1, dimensionTableName.toLowerCase());
 				resultSet = query.executeQuery();

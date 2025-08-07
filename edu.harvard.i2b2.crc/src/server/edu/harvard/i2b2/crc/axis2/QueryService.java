@@ -857,8 +857,7 @@ public class QueryService {
 		try {
 			// call delegate's handleRequest function
 			String xmlString= request.toStringWithConsume();
-			String response = requestHandlerDelegate.handleRequest(request
-					.toString());
+			String response = requestHandlerDelegate.handleRequest(xmlString); //request.toString());
 			log.debug("Response in service" + response);
 			returnElement = buildOMElementFromString(response);
 		} catch (XMLStreamException e) {

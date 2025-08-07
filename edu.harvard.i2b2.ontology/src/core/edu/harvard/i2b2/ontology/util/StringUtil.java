@@ -77,6 +77,14 @@ public class StringUtil {
     	
     	
     }
+    
+    public static String escapeSql(String str) {
+        if (str == null) {
+            return null;
+        }
+        return str.replaceAll( "'", "''");
+    }
+
 
     public static String escapePOSTGRESQL(String sql){
         sql=sql.replaceAll("\\\\", "\\\\\\\\");

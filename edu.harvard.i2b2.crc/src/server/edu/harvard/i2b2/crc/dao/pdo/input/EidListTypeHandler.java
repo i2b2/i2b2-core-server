@@ -193,6 +193,8 @@ public class EidListTypeHandler extends CRCDAO implements
 			log.debug("loading " + eid.getValue() + " " + eid.getSource());
 		}
 		preparedStmt.executeBatch();
+		if (tempStmt != null)
+			tempStmt.close();
 	}
 
 	@Override

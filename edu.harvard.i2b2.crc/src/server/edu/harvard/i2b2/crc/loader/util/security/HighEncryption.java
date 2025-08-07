@@ -74,8 +74,10 @@ public class HighEncryption {
 			ht.put(inFileName, cipher.decrypt(rs.getString(1)));
 			//ConvertBaseNToDecDecrypt(rs.getString(1));
 		}
-		rs.close();
-		
+		if (rs != null)
+			rs.close();
+		if (stmt != null)
+			stmt.close();
 	}
 	
 	public HighEncryption(String inFileName, Hashtable keys) throws Exception {

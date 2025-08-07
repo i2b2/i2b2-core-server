@@ -800,11 +800,12 @@ public class FolderDao extends JdbcDaoSupport {
 		}
 
 		try {
+			//MM veracode changed queryList to Query
 			if(managerRole){
-				queryResult = jt.queryForList(sqlToRetreiveTableNm.toString(), new getFolderTableMapper(), projectInfo.getId().toLowerCase());
+				queryResult = jt.query(sqlToRetreiveTableNm.toString(), new getFolderTableMapper(), projectInfo.getId().toLowerCase());
 			}
 			else {
-				queryResult = jt.queryForList(sqlToRetreiveTableNm.toString(), new getFolderTableMapper(), userId.toLowerCase(), projectInfo.getId().toLowerCase(),  projectInfo.getId().toLowerCase());
+				queryResult = jt.query(sqlToRetreiveTableNm.toString(), new getFolderTableMapper(), userId.toLowerCase(), projectInfo.getId().toLowerCase(),  projectInfo.getId().toLowerCase());
 			}
 			resultStr = (String)queryResult.get(0);
 		} catch (DataAccessException e) {
@@ -824,7 +825,7 @@ public class FolderDao extends JdbcDaoSupport {
 				tableCd = StringUtil.getTableCd(resultStr);
 				tableName = StringUtil.getIndex(resultStr);
 
-				StringBuilder sql = new StringBuilder ("select <parameters> from <from> where LOWER(c_name) like ? and (c_status_cd != 'D' or c_status_cd is null) "); 
+				StringBuilder sql = new StringBuilder ("select " + parameters + " from " +metadataSchema	+ tableName + " where LOWER(c_name) like ? and (c_status_cd != 'D' or c_status_cd is null) "); 
 
 				if(managerRole){
 					sql.append("and LOWER(c_group_id) = ? ");
@@ -852,15 +853,15 @@ public class FolderDao extends JdbcDaoSupport {
 
 				try {
 					
-					String sqlFinal = sql.toString().replace("<from>", metadataSchema	+ tableName);
-					sqlFinal = sqlFinal.toString().replace("<parameters>", parameters);
+					//String sqlFinal = sql.toString().replace("<from>", metadataSchema	+ tableName);
+					//sqlFinal = sqlFinal.toString().replace("<parameters>", parameters);
 					
 
 					if(managerRole){
-						workplaceResult = jt.query(sqlFinal, mapper, searchWord, projectInfo.getId().toLowerCase() );
+						workplaceResult = jt.query( sql.toString(), mapper, searchWord, projectInfo.getId().toLowerCase() );
 					}
 					else {
-						workplaceResult = jt.query(sqlFinal, mapper, searchWord, userId.toLowerCase(), projectInfo.getId().toLowerCase(), projectInfo.getId().toLowerCase() );
+						workplaceResult = jt.query( sql.toString(), mapper, searchWord, userId.toLowerCase(), projectInfo.getId().toLowerCase(), projectInfo.getId().toLowerCase() );
 					}
 				} catch (DataAccessException e) {
 					log.error(e.getMessage());

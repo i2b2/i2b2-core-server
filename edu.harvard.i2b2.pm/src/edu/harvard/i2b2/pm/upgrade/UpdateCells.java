@@ -53,6 +53,7 @@ public class UpdateCells {
 		// do something with the result set.
 		st.close();    // NOTE!! if you close a statement the associated ResultSet is
 
+		rs.close();
 		// closed too
 		// so you should copy the contents to some other object.
 		// the result set is invalidated also  if you recycle an Statement

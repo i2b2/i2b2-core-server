@@ -53,7 +53,7 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 				.get("SetFinderDAOFactory");
 		// String patientSetId = (String)param.get("PatientSetId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
-		String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
+		//String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
 		String resultInstanceId = (String) param.get("ResultInstanceId");
 		String resultTypeName = (String) param.get("ResultOptionName");
 		DataSourceLookup originalDataSource = (DataSourceLookup) param
@@ -91,6 +91,17 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 			// build the encounter set sql using dx table
 			// if the querytiming is not SAMEVISIT, then join the
 			// visit_dimension table to get encountner num for the patients.
+			String TEMP_DX_TABLE = "#DX";
+			if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SQLSERVER)) {
+				TEMP_DX_TABLE = getDbSchemaName() + "#DX";
+
+			} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.ORACLE) || sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+							DAOFactoryHelper.POSTGRESQL)) {
+				TEMP_DX_TABLE = getDbSchemaName() + "DX";
+			}
+
 			String encounterSql = buildEncounterSetSql(sfDAOFactory,
 					queryInstanceId, TEMP_DX_TABLE, queryGeneratorVersion);
 			//logesapi.debug("Executing setfinder query result type encounter set sql [" + encounterSql + "]");

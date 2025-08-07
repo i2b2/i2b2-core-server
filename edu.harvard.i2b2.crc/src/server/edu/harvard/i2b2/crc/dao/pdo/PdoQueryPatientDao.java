@@ -86,7 +86,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 		Connection conn = null;
 		PreparedStatement query = null;
 		PatientSet patientDimensionSet = new PatientSet();
-
+		java.sql.Statement tempStmt = null;
 		String tempTableName = "";
 		try {
 			// execute fullsql
@@ -126,7 +126,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 			// load to temp table
 			// execute sql
 			log.debug("creating temp table");
-			java.sql.Statement tempStmt = conn.createStatement();
+			tempStmt = conn.createStatement();
 
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.POSTGRESQL))
@@ -137,12 +137,12 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 			else
 				tempTableName = this.getDbSchemaName()
 				+ FactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
-			
-			
+
+
 			try {
 				if (!dataSourceLookup.getServerType().equalsIgnoreCase(
 						DAOFactoryHelper.ORACLE))
-				tempStmt.executeUpdate("drop table " + tempTableName);
+					tempStmt.executeUpdate("drop table " + tempTableName);
 			} catch (SQLException sqlex) {
 				;
 			}
@@ -183,6 +183,9 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 				tempUtil.deleteTempTableSqlServer(conn, tempTableName);
 			}
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
+
 				JDBCUtil.closeJdbcResource(null, query, conn);
 
 			} catch (SQLException sqlEx) {
@@ -391,7 +394,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 		if ( !dbServer.equalsIgnoreCase(
 				DAOFactoryHelper.ORACLE)) {
 			String createTempInputListTable = "create " 
-					 + (dbServer.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ? " temp ": "" )
+					+ (dbServer.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ? " temp ": "" )
 					+ " table "
 					+ tempTableName
 					+ " ( char_param1 varchar(100) )";
@@ -438,6 +441,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 		String factTempTable = "";
 		Connection conn = null;
 		PreparedStatement query = null;
+		java.sql.Statement tempStmt = null;
 		try {
 			conn = dataSource.getConnection();
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
@@ -446,7 +450,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				tempStmt = conn.createStatement();
 				if (dataSourceLookup.getServerType().equalsIgnoreCase(
 						DAOFactoryHelper.POSTGRESQL))
 					factTempTable =  SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE.substring(1);
@@ -458,7 +462,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 					;
 				}
 				String createTempInputListTable = "create " 
-						 + (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ? " temp ": "" )
+						+ (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ? " temp ": "" )
 						+ " table "
 						+ factTempTable
 						+ " ( set_index int, char_param1 varchar(500) )";
@@ -527,7 +531,8 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 				}
 			}
 			try {
-
+				if (tempStmt != null)
+					tempStmt.close();
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();

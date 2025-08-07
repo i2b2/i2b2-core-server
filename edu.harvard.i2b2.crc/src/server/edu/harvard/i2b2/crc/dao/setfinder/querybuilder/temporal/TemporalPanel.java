@@ -211,7 +211,7 @@ public class TemporalPanel implements Comparable<Object> {
 			}
 			catch (ConceptNotFoundException ce){
 				log.debug("Concept not found error: " + ce.getMessage());
-				parent.addIgnoredMessage(ce.getMessage() + " panel#" + parent.getPanelIndex(this));
+				//MM veracode parent.addIgnoredMessage(ce.getMessage() + " panel#" + parent.getPanelIndex(this));
 			}
 		}
 	}
@@ -360,7 +360,7 @@ public class TemporalPanel implements Comparable<Object> {
 					itemList.add(itemSql);
 				}
 				catch (ConceptNotFoundException ce){
-					parent.addIgnoredMessage(ce.getMessage() + " panel#" + parent.getPanelIndex(this));
+					//MM veracode parent.addIgnoredMessage(ce.getMessage() + " panel#" + parent.getPanelIndex(this));
 				}
 			}
 		}

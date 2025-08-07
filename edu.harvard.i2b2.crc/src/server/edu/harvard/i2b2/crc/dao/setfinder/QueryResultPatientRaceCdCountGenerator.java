@@ -17,6 +17,7 @@ import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
+import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
@@ -45,17 +46,28 @@ public class QueryResultPatientRaceCdCountGenerator extends CRCDAO implements
 				.get("SetFinderDAOFactory");
 		// String patientSetId = (String)param.get("PatientSetId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
-		String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
+		//String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
 		String resultInstanceId = (String) param.get("ResultInstanceId");
 		this
 				.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
 						.getFullSchema());
 
+		String TEMP_DX_TABLE = "#DX";
+		if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SQLSERVER)) {
+			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
+
+		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.ORACLE) || sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+						DAOFactoryHelper.POSTGRESQL)) {
+			TEMP_DX_TABLE = getDbSchemaName() + "DX";
+		}
+
+		
 		String demographics_count_sql = "select count(distinct dx.patient_num) as race_count, case when cl.name_char IS NULL then pd.race_cd else cl.name_char end as pd_race_cd from "
-				+ " <from> "
-				+ "patient_dimension pd left join code_lookup  cl on pd.race_cd = cl.code_cd"
+				+ this.getDbSchemaName() +  "patient_dimension pd left join code_lookup  cl on pd.race_cd = cl.code_cd"
 				+ " and lower(cl.table_cd) = 'patient_dimension' and upper(cl.column_cd) = 'RACE_CD', "
-				+ " <TEMP_DX_TABLE> "
+				+ TEMP_DX_TABLE
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " group by case when cl.name_char IS NULL then pd.race_cd else cl.name_char end";
 
@@ -64,11 +76,11 @@ public class QueryResultPatientRaceCdCountGenerator extends CRCDAO implements
 		try {
 
 			log.debug("Executing[ " + demographics_count_sql + " ]");
-			String sqlFinal =  demographics_count_sql.replace("<from>",   this.getDbSchemaName()  );
-			sqlFinal = sqlFinal.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
+			//String sqlFinal =  demographics_count_sql.replace("<from>",   this.getDbSchemaName()  );
+			//sqlFinal = sqlFinal.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
 
 			PreparedStatement stmt = sfConn
-					.prepareStatement(sqlFinal);
+					.prepareStatement(demographics_count_sql);
 			ResultSet resultSet = stmt.executeQuery();
 			ResultType resultType = new ResultType();
 			resultType.setName(RESULT_NAME);

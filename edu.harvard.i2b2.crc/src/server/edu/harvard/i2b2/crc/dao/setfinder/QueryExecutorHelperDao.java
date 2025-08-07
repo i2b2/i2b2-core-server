@@ -444,6 +444,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			//log.debug("Query executor completed processing query instance[ "
 			//		+ queryInstanceId + " ]");
 
+			stmt.close();
+			manualConnection.close();
 		} catch (CRCTimeOutException timeoutEx) {
 			//TRANSACTION timeout  ... do nothing
 			//			timeOutErrorFlag = true;

@@ -76,13 +76,14 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 	@Override
 	public ConceptSet getConceptByConceptCd(List<String> conceptCdList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
-			throws I2B2DAOException {
+					throws I2B2DAOException {
 
 		ConceptSet conceptDimensionSet = new ConceptSet();
 		log.debug("Size of input concept cd list " + conceptCdList.size());
 		Connection conn = null;
 		PreparedStatement query = null;
 		String tempTableName = "";
+		java.sql.Statement tempStmt = null;
 		try {
 			conn = getDataSource().getConnection();
 			ConceptFactRelated conceptFactRelated = new ConceptFactRelated(
@@ -114,7 +115,7 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) || 
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				tempStmt = conn.createStatement();
 				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
 				else
@@ -160,6 +161,9 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 				tempUtil.deleteTempTableSqlServer(conn, tempTableName);
 			}
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
+
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();
@@ -259,7 +263,7 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 	private void uploadTempTable(Statement tempStmt, String tempTable,
 			List<String> patientNumList, boolean isPostgresql) throws SQLException {
 		String createTempInputListTable = "create "
-				 + (isPostgresql ? " temp ": "" )
+				+ (isPostgresql ? " temp ": "" )
 				+ " table " + tempTable
 				+ " ( char_param1 varchar(100) )";
 		tempStmt.executeUpdate(createTempInputListTable);
@@ -302,6 +306,7 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 		String tempTable = "";
 		Connection conn = null;
 		PreparedStatement query = null;
+		java.sql.Statement tempStmt = null;
 		try {
 			conn = dataSource.getConnection();
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
@@ -309,7 +314,7 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				tempStmt = conn.createStatement();
 				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 					tempTable = SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE.substring(1);
 				else
@@ -320,11 +325,11 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 					;
 				}
 				String createTempInputListTable = "create " 
-						 + (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ? " temp ": "" )
+						+ (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ? " temp ": "" )
 						+ " table "
 						+ tempTable
 						+ " ( set_index int, char_param1 varchar(500) )";
-				
+
 				tempStmt.executeUpdate(createTempInputListTable);
 				log.debug("created temp table" + tempTable);
 			}
@@ -359,7 +364,7 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 					+ "concept_dimension concept where concept_cd in (select distinct char_param1 from "
 					+ tempTable + ") order by concept_path";
 			log.debug("Executing SQL [" + finalSql + "]");
-			
+
 
 			query = conn.prepareStatement(finalSql);
 
@@ -378,7 +383,7 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 		} finally {
 			PdoTempTableUtil tempUtil = new PdoTempTableUtil();
 			tempUtil.clearTempTable(dataSourceLookup.getServerType(), conn, tempTable);
-			
+
 			if (inputOptionListHandler != null
 					&& inputOptionListHandler.isEnumerationSet()) {
 				try {
@@ -389,7 +394,8 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 				}
 			}
 			try {
-
+				if (tempStmt != null)
+					tempStmt.close();
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();
@@ -400,7 +406,7 @@ public class PdoQueryConceptDao extends CRCDAO implements IPdoQueryConceptDao {
 
 	private void executeTotalSql(String totalSql, Connection conn,
 			int sqlParamCount, IInputOptionListHandler inputOptionListHandler)
-			throws SQLException {
+					throws SQLException {
 
 		PreparedStatement stmt = conn.prepareStatement(totalSql);
 
