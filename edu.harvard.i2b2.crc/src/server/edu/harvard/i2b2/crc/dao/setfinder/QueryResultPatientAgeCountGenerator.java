@@ -51,11 +51,12 @@ public class QueryResultPatientAgeCountGenerator extends CRCDAO implements
 		if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.SQLSERVER)) {
 			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
-
 		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.ORACLE) || sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.ORACLE)) {
 			TEMP_DX_TABLE = getDbSchemaName() + "DX";
+		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL)) {
+			TEMP_DX_TABLE = "DX";
 		}
 		String resultInstanceId = (String) param.get("ResultInstanceId");
 		this

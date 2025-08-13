@@ -150,10 +150,13 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
 
 		} else if (dsLookup.getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.ORACLE) || dsLookup.getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.ORACLE) ) {
 			TEMP_TABLE = getDbSchemaName() + "QUERY_GLOBAL_TEMP";
 			TEMP_DX_TABLE = getDbSchemaName() + "DX";
+		} else if ( dsLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL)) {
+			TEMP_TABLE = "QUERY_GLOBAL_TEMP";
+			TEMP_DX_TABLE = "DX";
 		}
 		Exception exception = null;
 

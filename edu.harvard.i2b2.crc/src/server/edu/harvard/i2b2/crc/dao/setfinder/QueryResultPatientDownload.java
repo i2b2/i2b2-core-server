@@ -159,11 +159,12 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 		if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.SQLSERVER)) {
 			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
-
 		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.ORACLE) || sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.ORACLE)) {
 			TEMP_DX_TABLE = getDbSchemaName() + "DX";
+		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL)) {
+			TEMP_DX_TABLE = "DX";
 		}
 
 		//ZipOutputStream zipStream;
@@ -269,6 +270,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					workDir = workDirStr; // + File.separatorChar + (String) param.get("ResultRandom") + File.separatorChar;
 				}
 
+				/*
 				try {
 					valueExport = JaxbXmlToObj(exportItemXml);
 					edu.harvard.i2b2.crc.dao.xml.File item = valueExport.getFile()[0];
@@ -287,22 +289,23 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					}
 				} catch (Exception e)
 				{
-					edu.harvard.i2b2.crc.dao.xml.File item = new edu.harvard.i2b2.crc.dao.xml.File();
+				*/
+					edu.harvard.i2b2.crc.dao.xml.File fileParam = new edu.harvard.i2b2.crc.dao.xml.File();
 					if (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename").endsWith(".zip")) {
-						item.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename").replace(".zip", ".csv"));
-						item.setFilename(qpUtil.processFilename(item.getFilename(), param));
+						fileParam.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename").replace(".zip", ".csv"));
+						fileParam.setFilename(qpUtil.processFilename(fileParam.getFilename(), param));
 
 						valueExport.setZipFilename(qpUtil.processFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"), param));
 					}else {
-						item.setFilename(qpUtil.sanitizeFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename")));
-						item.setFilename(qpUtil.processFilename(item.getFilename(), param));
+						fileParam.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"));
+						fileParam.setFilename(qpUtil.processFilename(fileParam.getFilename(), param));
 					}
-					item.setQuery(exportItemXml);
-					item.setSeperatorCharacter(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultseperator"));
-					valueExport.setFile(new edu.harvard.i2b2.crc.dao.xml.File[] {item});
+					fileParam.setQuery(exportItemXml);
+					fileParam.setSeperatorCharacter(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultseperator"));
+					valueExport.setFile(new edu.harvard.i2b2.crc.dao.xml.File[] {fileParam});
 					valueExport.setZipEncryptMethod(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.zipencryptmethod"));
 
-				}
+				//}
 				JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
 				//ValueExport valueExport = (ValueExport) jaxbUtil
 				//		.unMashallFromString(exportItemXml).getValue();

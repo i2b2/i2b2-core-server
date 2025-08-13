@@ -103,7 +103,7 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 
 		// String patientSetId = (String)param.get("PatientSetId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
-		String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
+		//String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
 		String resultInstanceId = (String) param.get("ResultInstanceId");
 		// String itemKey = (String) param.get("ItemKey");
 		String resultTypeName = (String) param.get("ResultOptionName");

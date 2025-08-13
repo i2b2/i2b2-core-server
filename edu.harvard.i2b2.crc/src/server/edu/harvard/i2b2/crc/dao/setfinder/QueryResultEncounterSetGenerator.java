@@ -97,9 +97,11 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 				TEMP_DX_TABLE = getDbSchemaName() + "#DX";
 
 			} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
-					DAOFactoryHelper.ORACLE) || sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
-							DAOFactoryHelper.POSTGRESQL)) {
+					DAOFactoryHelper.ORACLE)) {
 				TEMP_DX_TABLE = getDbSchemaName() + "DX";
+			} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.POSTGRESQL)) {
+				TEMP_DX_TABLE = "DX";
 			}
 
 			String encounterSql = buildEncounterSetSql(sfDAOFactory,

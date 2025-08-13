@@ -143,9 +143,11 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
 
 		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.ORACLE) || sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.ORACLE)) {
 			TEMP_DX_TABLE = getDbSchemaName() + "DX";
+		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL)) {
+			TEMP_DX_TABLE = "DX";
 		}
 
 		this
