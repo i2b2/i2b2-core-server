@@ -153,5 +153,7 @@
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/xpp3-1.1.3.4.O.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/xsom-4.0.3.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/VeracodeAnnotations.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/jetty-jakarta-servlet-api-5.0.2.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/zip/opencsv-5.12.0.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

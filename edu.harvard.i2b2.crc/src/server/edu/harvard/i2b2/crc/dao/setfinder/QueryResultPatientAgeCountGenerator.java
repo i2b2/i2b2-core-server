@@ -47,6 +47,12 @@ public class QueryResultPatientAgeCountGenerator extends CRCDAO implements
 		// String patientSetId = (String)param.get("PatientSetId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
 		//String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
+
+		String resultInstanceId = (String) param.get("ResultInstanceId");
+		this
+				.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
+						.getFullSchema());
+
 		String TEMP_DX_TABLE = "#DX";
 		if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.SQLSERVER)) {
@@ -58,11 +64,7 @@ public class QueryResultPatientAgeCountGenerator extends CRCDAO implements
 				DAOFactoryHelper.POSTGRESQL)) {
 			TEMP_DX_TABLE = "DX";
 		}
-		String resultInstanceId = (String) param.get("ResultInstanceId");
-		this
-				.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
-						.getFullSchema());
-
+		
 		String age1CountSql = "select count(distinct dx.patient_num) patient_count, '0-20' patient_range"
 				+ " from "
 				+ this.getDbSchemaName()  + "patient_dimension pd , "

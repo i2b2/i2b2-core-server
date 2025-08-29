@@ -63,7 +63,7 @@ public class QueryStatusTypeSpringDao extends CRCDAO implements IQueryStatusType
     public QtQueryStatusType getQueryStatusTypeById(int statusTypeId) {
     	
         String sql = "select * from " + getDbSchemaName() + "qt_query_status_type where status_type_id = ?" ;
-        QtQueryStatusType queryStatusType = (QtQueryStatusType)jdbcTemplate.queryForObject(sql,new Object[]{statusTypeId},queryStatusTypeMapper );
+        QtQueryStatusType queryStatusType = (QtQueryStatusType)jdbcTemplate.queryForObject(sql,queryStatusTypeMapper , statusTypeId );
         return queryStatusType;
     }
    

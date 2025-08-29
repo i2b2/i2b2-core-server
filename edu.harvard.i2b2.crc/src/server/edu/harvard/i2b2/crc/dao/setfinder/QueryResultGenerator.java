@@ -137,11 +137,14 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 		int transactionTimeout = (Integer) param.get("TransactionTimeout");
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
 
+		this
+		.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
+				.getFullSchema());
+
 		String TEMP_DX_TABLE = "#DX";
 		if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.SQLSERVER)) {
-			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
-
+			TEMP_DX_TABLE =  getDbSchemaName() + "#DX";
 		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.ORACLE)) {
 			TEMP_DX_TABLE = getDbSchemaName() + "DX";
@@ -150,9 +153,6 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			TEMP_DX_TABLE = "DX";
 		}
 
-		this
-		.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
-				.getFullSchema());
 		Map ontologyKeyMap = (Map) param.get("setFinderResultOntologyKeyMap");
 		String serverType = (String) param.get("ServerType");
 		//		CallOntologyUtil ontologyUtil = (CallOntologyUtil) param
@@ -308,7 +308,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 				itemCountSql = itemCountSql.substring(0,itemCountSql.length()-5) + "  ) a ";
 				stmt = sfConn.prepareStatement(itemCountSql);
 				stmt.setQueryTimeout(transactionTimeout);
-				//log.debug("Executing count sql [" + itemCountSql + "]");
+				log.debug("Executing count sql [" + itemCountSql + "]");
 
 				//
 				subLogTimingUtil.setStartTime();

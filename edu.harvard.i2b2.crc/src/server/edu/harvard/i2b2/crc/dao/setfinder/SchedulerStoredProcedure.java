@@ -66,10 +66,6 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
-import edu.harvard.i2b2.crc.opencsv.CSVWriter;
-import edu.harvard.i2b2.crc.opencsv.ResultSetHelperService;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 

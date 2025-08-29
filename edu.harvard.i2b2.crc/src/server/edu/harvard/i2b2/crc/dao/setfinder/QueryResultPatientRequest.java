@@ -92,8 +92,6 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.delegate.pm.CallPMUtil;
-import edu.harvard.i2b2.crc.opencsv.CSVWriter;
-import edu.harvard.i2b2.crc.opencsv.ResultSetHelperService;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 import edu.harvard.i2b2.crc.dao.xml.Item_orig;

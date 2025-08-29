@@ -390,7 +390,10 @@ public class QueryProcessorUtil {
 	public String sanitizeFilename(String filename)
 	{
 
-		return filename.replaceAll("[^a-zA-Z0-9.-]", "_");
+		if (filename == null)
+			return null;
+		else
+			return filename.replaceAll("[^a-zA-Z0-9.-]", "_");
 	}
 
 

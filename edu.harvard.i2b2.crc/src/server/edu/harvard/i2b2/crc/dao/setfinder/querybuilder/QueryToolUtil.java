@@ -275,9 +275,17 @@ public class QueryToolUtil extends CRCDAO {
 					EstSize = rs.getLong("n");
 				}
 
-				rs.close();
-				st1.close();
-				conn.close();
+				if (rs != null) {
+					rs.close();
+				}
+
+				if (st1 != null) {
+					st1.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
 			} else if (theTableName.equals(PROVIDER_TABLE)) {
 				sql = "select sum(n.patient_count) n "
 						+ "from rpdrconceptlookup n " + "where table_name = '"
@@ -294,9 +302,17 @@ public class QueryToolUtil extends CRCDAO {
 					EstSize = rs.getLong("n");
 				}
 
-				rs.close();
-				st1.close();
-				conn.close();
+				if (rs != null) {
+					rs.close();
+				}
+
+				if (st1 != null) {
+					st1.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
 			} else if (theTableName.equals(ENCOUNTER_TABLE)) {
 				sql = "select sum(n.patient_count) n "
 						+ "from rpdrconceptlookup n " + "where table_name = '"
@@ -311,9 +327,17 @@ public class QueryToolUtil extends CRCDAO {
 					EstSize = rs.getLong("n");
 				}
 
-				rs.close();
-				st1.close();
-				conn.close();
+				if (rs != null) {
+					rs.close();
+				}
+
+				if (st1 != null) {
+					st1.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
 			} else if (theTableName.equals(PATIENT_TABLE)) {
 				if (theColumnName.equals("age_in_years_num")) {
 					sql = "select sum(n.patient_count) n "
@@ -338,9 +362,17 @@ public class QueryToolUtil extends CRCDAO {
 					EstSize = rs.getLong("n");
 				}
 
-				rs.close();
-				st1.close();
-				conn.close();
+				if (rs != null) {
+					rs.close();
+				}
+
+				if (st1 != null) {
+					st1.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
 			} else {
 				EstSize = 1;
 			}

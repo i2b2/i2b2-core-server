@@ -71,8 +71,7 @@ IQueryResultTypeDao {
 		String sql = "select * from " + getDbSchemaName()
 		+ "qt_query_result_type where result_type_id = ?";
 		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
-				.queryForObject(sql, new Object[] { resultTypeId },
-						queryResultTypeMapper);
+				.queryForObject(sql, queryResultTypeMapper,  resultTypeId );
 		return queryResultType;
 	}
 
@@ -89,8 +88,8 @@ IQueryResultTypeDao {
 		String sql = "select * from " + getDbSchemaName()
 		+ "qt_query_result_type where name = ?";
 		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
-				.queryForObject(sql, new Object[] { resultName },
-						queryResultTypeMapper);
+				.queryForObject(sql, queryResultTypeMapper, resultName 
+						);
 		return queryResultType;
 	}
 
@@ -108,8 +107,8 @@ IQueryResultTypeDao {
 		String sql = "select * from " + getDbSchemaName()
 		+ "qt_query_result_type where name = ?";
 		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
-				.queryForObject(sql, new Object[] { resultName },
-						queryResultTypeMapper);
+				.queryForObject(sql, queryResultTypeMapper, resultName 
+						);
 		return queryResultType.getClassname();
 	}
 
@@ -146,8 +145,8 @@ IQueryResultTypeDao {
 			String sql = "select * from " + getDbSchemaName()
 			+ "qt_query_result_type where name = ?";
 			queryResultType = jdbcTemplate.query(sql,
-					new Object[] { resultName.toUpperCase() },
-					queryResultTypeMapper);
+					queryResultTypeMapper, resultName.toUpperCase() 
+					);
 		}
 		return queryResultType;
 	}

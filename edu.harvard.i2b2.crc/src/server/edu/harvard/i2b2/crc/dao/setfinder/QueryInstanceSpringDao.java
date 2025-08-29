@@ -121,8 +121,8 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 	public List<QtQueryInstance> getQueryInstanceByMasterId(String queryMasterId) {
 		String sql = "select *  from " + getDbSchemaName()
 				+ "qt_query_instance where query_master_id = ?";
-		List<QtQueryInstance> queryInstanceList = jdbcTemplate.query(sql,
-				new Object[] { Integer.parseInt(queryMasterId) }, queryInstanceMapper);
+		List<QtQueryInstance> queryInstanceList = jdbcTemplate.query(sql, queryInstanceMapper,
+				  Integer.parseInt(queryMasterId) );
 		return queryInstanceList;
 	}
 
@@ -138,8 +138,8 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 				+ "qt_query_instance  where query_instance_id =?";
 
 		QtQueryInstance queryInstance = (QtQueryInstance) jdbcTemplate
-				.queryForObject(sql, new Object[] { Integer.parseInt(queryInstanceId ) },
-						queryInstanceMapper);
+				.queryForObject(sql,  queryInstanceMapper, Integer.parseInt(queryInstanceId ) 
+						);
 
 		return queryInstance;
 	}

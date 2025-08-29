@@ -54,22 +54,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
-import edu.harvard.i2b2.common.util.db.JDBCUtil;
-import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
-import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
-import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
-import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
-import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
-import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
-import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
-import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
-import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
-import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
-import edu.harvard.i2b2.crc.opencsv.CSVWriter;
-import edu.harvard.i2b2.crc.opencsv.ResultSetHelperService;
-import edu.harvard.i2b2.crc.util.LogTimingUtil;
-import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
+
 
 /**
  * Setfinder's result genertor class. This class calculates patient break down
