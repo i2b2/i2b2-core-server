@@ -565,8 +565,8 @@ public class QueryManagerBean{ // implements SessionBean {
 						//r.getQtQueryResultType().
 						Map param = new HashMap();
 						log.debug("Creatiung hash map");
-						SetFinderConnection sfConn = new SetFinderConnection(sfDAOFactory.getDataSource().getConnection());
-						param.put("SetFinderConnection", sfConn);
+						//SetFinderConnection sfConn = new SetFinderConnection(sfDAOFactory.getDataSource().getConnection());
+						//param.put("SetFinderConnection", sfConn);
 						param.put("SetFinderDAOFactory", sfDAOFactory);
 						param.put("QueryInstanceId", queryInstanceId);
 						param.put("TEMP_DX_TABLE", TEMP_DX_TABLE);
