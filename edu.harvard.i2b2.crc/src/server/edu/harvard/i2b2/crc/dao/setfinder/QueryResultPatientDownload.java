@@ -230,6 +230,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				edu.harvard.i2b2.crc.dao.xml.File item = valueExport.getFile()[0];
 
 				// Check if coming from Export RPDO, if so than change to hive filenames
+				item.setFilename(workDir+qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.filename"));
+				item.setFilename(qpUtil.processFilename(item.getFilename(), param));
+				/*
 				if ( PSetResultInstanceId != -1) { 
 					// Get actual filename 
 					String xmlFilename = item.getFilename().substring(item.getFilename().lastIndexOf('/'));
@@ -241,6 +244,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				} else {
 					item.setFilename(workDir + item.getFilename());
 				}
+				*/
 			} catch (Exception e)
 			{
 
