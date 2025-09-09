@@ -265,7 +265,6 @@
 		<junit fork="yes" haltonfailure="no" maxmemory="512M" printsummary="on" errorProperty="test.failed" failureProperty="test.failed" showoutput="false">
 			<formatter type="xml" />
 			<jvmarg value="-Dtestfiledir=${testfiledir}" />
-			<jvmarg value="-Djava.endorsed.dirs=endorsed_lib" />
 			<jvmarg value="-Dtesthost=${testhost}" />
 			<!--<test name="AllTests" todir="${report.dir}"/>-->
 			<batchtest fork="yes" todir="${reports.dir}">
