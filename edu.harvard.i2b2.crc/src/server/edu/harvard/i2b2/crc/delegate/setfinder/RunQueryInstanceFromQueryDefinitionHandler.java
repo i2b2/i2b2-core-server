@@ -95,7 +95,7 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 					+ getDataSourceLookup().getOwnerId();
 
 			//List<String> roles = (List<String>) cache.getRoot().get(rolePath);
-			logesapi.debug("Roles from get " + rolePath);
+			//logesapi.debug("Roles from get " + rolePath);
 			List<String> roles = (List<String>) CacheUtil.get(rolePath);
 			if (roles != null) {
 				log.debug("Roles from size " + roles.size());
@@ -206,8 +206,8 @@ public class RunQueryInstanceFromQueryDefinitionHandler extends RequestHandler {
 					else if (masterInstanceResponse.getQueryInstance().getBatchMode().equals("MEDIUM_QUEUE"))						
 					{
 						QueryStatusTypeType newStatusType = new QueryStatusTypeType();
-						newStatusType.setName("LARGE_QUEUE");
-						newStatusType.setDescription("LARGE_QUEUE");
+						newStatusType.setName("MEDIUM_QUEUE");
+						newStatusType.setDescription("MEDIUM_QUEUE");
 						newStatusType.setStatusTypeId("7");
 						masterInstanceResponse.getQueryInstance().setQueryStatusType(newStatusType);
 						masterInstanceResponse.getQueryInstance().setEndDate(null);

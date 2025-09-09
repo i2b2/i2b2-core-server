@@ -62,7 +62,7 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 		setDataSource(dataSource);
 		this.dataSourceLookup = dataSourceLookup;
 	}
-	
+
 	@Override
 	public void setMetaDataParamList(List<ParamType> metaDataParamList) { 
 		this.metaDataParamList = metaDataParamList; 
@@ -79,12 +79,13 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 	@Override
 	public EventSet getVisitsByEncounterNum(List<String> encounterNumList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
-			throws I2B2DAOException {
+					throws I2B2DAOException {
 		EventSet visitDimensionSet = new EventSet();
 		log.debug("visit list size " + encounterNumList.size());
 		Connection conn = null;
 		PreparedStatement query = null;
 		String tempTableName = "";
+		java.sql.Statement tempStmt = null;
 		try {
 			conn = getDataSource().getConnection();
 			VisitFactRelated visitRelated = new VisitFactRelated(
@@ -94,7 +95,7 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 			String serverType = dataSourceLookup.getServerType();
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
 				oracle.jdbc.driver.OracleConnection conn1 = null;//(oracle.jdbc.driver.OracleConnection) ((WrappedConnection) conn)
-					//	.getUnderlyingConnection();
+				//	.getUnderlyingConnection();
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
@@ -115,7 +116,7 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
 				else
 					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
-				java.sql.Statement tempStmt = conn.createStatement();
+				 tempStmt = conn.createStatement();
 
 				try {
 					tempStmt.executeUpdate("drop table " + tempTableName);
@@ -157,6 +158,8 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 				tempUtil.deleteTempTableSqlServer(conn, tempTableName);
 			}
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();
@@ -340,8 +343,8 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 	private void uploadTempTable(Statement tempStmt, String tempTableName,
 			List<String> patientNumList,  boolean isPostgresql)  throws SQLException {
 		String createTempInputListTable =  "create "
-				 + (isPostgresql ? " temp ": "" ) 
-				 + " table " + tempTableName
+				+ (isPostgresql ? " temp ": "" ) 
+				+ " table " + tempTableName
 				+ " ( char_param1 varchar(100) )";
 		tempStmt.executeUpdate(createTempInputListTable);
 		log.debug("created temp table" + tempTableName);
@@ -365,7 +368,7 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 		tempStmt.executeBatch();
 	}
 
-	
+
 
 	@Override
 	public EventSet getVisitByFact(List<String> panelSqlList,
@@ -379,11 +382,12 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 		VisitFactRelated eventFactRelated = new VisitFactRelated(
 				buildOutputOptionType(detailFlag, blobFlag, statusFlag));
 		eventFactRelated.setMetaDataParamList(this.metaDataParamList);
-		
+
 		String selectClause = eventFactRelated.getSelectClause();
 		String serverType = dataSourceLookup.getServerType();
 		String factTempTable = "";
 		Connection conn = null;
+		java.sql.Statement tempStmt = null;
 		PreparedStatement query = null;
 		try {
 			conn = dataSource.getConnection();
@@ -393,7 +397,7 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				tempStmt = conn.createStatement();
 				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 					factTempTable = SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE.substring(1);
 				else
@@ -457,9 +461,9 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 			log.error("", ioEx);
 			throw new I2B2DAOException("IO exception", ioEx);
 		} finally {
-				PdoTempTableUtil tempUtil = new PdoTempTableUtil();
-				tempUtil.clearTempTable(dataSourceLookup.getServerType(), conn, factTempTable);
-			
+			PdoTempTableUtil tempUtil = new PdoTempTableUtil();
+			tempUtil.clearTempTable(dataSourceLookup.getServerType(), conn, factTempTable);
+
 			if (inputOptionListHandler != null
 					&& inputOptionListHandler.isEnumerationSet()) {
 				try {
@@ -470,7 +474,8 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 				}
 			}
 			try {
-
+				if (tempStmt != null)
+					tempStmt.close();
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();
@@ -482,7 +487,7 @@ public class PdoQueryVisitDao extends CRCDAO implements IPdoQueryVisitDao {
 
 	private void executeUpdateSql(String totalSql, Connection conn,
 			int sqlParamCount, IInputOptionListHandler inputOptionListHandler)
-			throws SQLException {
+					throws SQLException {
 
 		PreparedStatement stmt = conn.prepareStatement(totalSql);
 

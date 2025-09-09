@@ -13,5 +13,6 @@ import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
 public interface IQueryBreakdownTypeDao {
 
 	public QtQueryBreakdownType getBreakdownTypeByName(String name);
+	public QtQueryBreakdownType getBreakdownTypeByName(String name, String group);
 
 }

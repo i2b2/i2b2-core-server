@@ -76,13 +76,14 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 	@Override
 	public ModifierSet getModifierByModifierCd(List<String> modifierCdList,
 			boolean detailFlag, boolean blobFlag, boolean statusFlag)
-			throws I2B2DAOException {
+					throws I2B2DAOException {
 
 		ModifierSet modifierDimensionSet = new ModifierSet();
 		log.debug("Size of input modifier cd list " + modifierCdList.size());
 		Connection conn = null;
 		PreparedStatement query = null;
 		String tempTableName = "";
+		java.sql.Statement tempStmt = null;
 		try {
 			conn = getDataSource().getConnection();
 			ModifierFactRelated modifierFactRelated = new ModifierFactRelated(
@@ -95,7 +96,7 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 				// Otherwise Jboss wrapped connection fails when using oracle
 				// Arrays
 				oracle.jdbc.driver.OracleConnection conn1 = null;// (oracle.jdbc.driver.OracleConnection) ((WrappedConnection) conn)
-					//	.getUnderlyingConnection();
+				//	.getUnderlyingConnection();
 				String finalSql = "SELECT "
 						+ selectClause
 						+ "  FROM "
@@ -113,7 +114,7 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				 tempStmt = conn.createStatement();
 				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 					tempTableName = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
 				else 
@@ -159,6 +160,9 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 				tempUtil.deleteTempTableSqlServer(conn, tempTableName);
 			}
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
+
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();
@@ -167,13 +171,13 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 		return modifierDimensionSet;
 	}
 
-	
+
 
 	private void uploadTempTable(Statement tempStmt, String tempTable,
 			List<String> patientNumList,  boolean isPostgresql) throws SQLException {
 		String createTempInputListTable =  "create "
-				 + (isPostgresql ? " temp ": "" ) 
-				 + " table " + tempTable
+				+ (isPostgresql ? " temp ": "" ) 
+				+ " table " + tempTable
 				+ " ( char_param1 varchar(100) )";
 		tempStmt.executeUpdate(createTempInputListTable);
 		log.debug("created temp table" + tempTable);
@@ -215,6 +219,7 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 		String tempTable = "";
 		Connection conn = null;
 		PreparedStatement query = null;
+		java.sql.Statement tempStmt = null;
 		try {
 			conn = dataSource.getConnection();
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
@@ -222,7 +227,7 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				tempStmt = conn.createStatement();
 				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 					tempTable = SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE.substring(1);
 				else
@@ -287,7 +292,7 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 		} finally {
 			PdoTempTableUtil tempUtil = new PdoTempTableUtil();
 			tempUtil.clearTempTable(dataSourceLookup.getServerType(), conn, tempTable);
-			
+
 			if (inputOptionListHandler != null
 					&& inputOptionListHandler.isEnumerationSet()) {
 				try {
@@ -298,7 +303,8 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 				}
 			}
 			try {
-
+				if (tempStmt != null)
+					tempStmt.close();
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();
@@ -309,7 +315,7 @@ public class PdoQueryModifierDao extends CRCDAO implements IPdoQueryModifierDao 
 
 	private void executeTotalSql(String totalSql, Connection conn,
 			int sqlParamCount, IInputOptionListHandler inputOptionListHandler)
-			throws SQLException {
+					throws SQLException {
 
 		PreparedStatement stmt = conn.prepareStatement(totalSql);
 

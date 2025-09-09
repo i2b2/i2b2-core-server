@@ -37,6 +37,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
+import edu.harvard.i2b2.crc.datavo.pm.ConfigureType;
 import edu.harvard.i2b2.crc.datavo.pm.ParamType;
 import edu.harvard.i2b2.crc.datavo.pm.ProjectType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType;
@@ -72,7 +73,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 		PsmQryHeaderType headerType = null;
 		String response = null;
 		JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
-
+		
 		try {
 			JAXBElement jaxbElement = jaxbUtil.unMashallFromString(requestXml);
 
@@ -131,8 +132,12 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				}
 
 				log.debug("project name from PM " + projectType.getName());
-				logesapi.debug("project id from PM " + projectType.getId());
+				//logesapi.debug("project id from PM " + projectType.getId());
 
+			
+				
+				if (projectType.getUserName() == null)
+					projectType.setUserName(securityType.getUsername());
 
 				if (projectType.getRole() != null) {
 					log.debug("project role from PM "
@@ -168,12 +173,12 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 							//this.putPocessTiming(projectId, securityType.getUsername(), securityType.getDomain(), param);
 							LogTimingUtil.putPocessTiming(projectId, securityType.getUsername(), securityType.getDomain(), param);
 							String cacheValue = LogTimingUtil.getPocessTiming(projectId, securityType.getUsername(), securityType.getDomain());
-							logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.PM_ENABLE_PROCESS_TIMING  + "[" + cacheValue + "]" );
+							//logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.PM_ENABLE_PROCESS_TIMING  + "[" + cacheValue + "]" );
 
 						} else if (param.getName() != null && param.getName().trim().equalsIgnoreCase(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION))  {
 							paramUtil.putParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION,param);
 							String unitCdCache = paramUtil.getParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
-							logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
+							//logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
 						}
 					}
 				}
@@ -224,13 +229,14 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 					.equals(
 							PsmRequestTypeType.CRC_QRY_GET_QUERY_MASTER_LIST_FROM_GROUP_ID)) {
 				// check if user have right permission to access this request
-				if (projectType != null && projectType.getRole().size() > 0) {
-					if ((!projectType.getRole().contains("MANAGER"))) {
+				if (projectType != null && projectType.getRole().size() > 0) {  
+					//if ((!projectType.getRole().contains("MANAGER")) || !projectType.getRole().contains("ADMIN")) {
+					if (!(projectType.getRole().contains("MANAGER") || projectType.getRole().contains("ADMIN"))) {
 						// Not authorized
 						procStatus = new StatusType();
 						procStatus.setType("ERROR");
 						procStatus
-						.setValue("Authorization failure, should have MANAGER  role");
+						.setValue("Authorization failure, should have MANAGER or ADMIN role");
 						response = I2B2MessageResponseFactory
 								.buildResponseMessage(requestXml, procStatus,
 										bodyType);
@@ -241,7 +247,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 					procStatus = new StatusType();
 					procStatus.setType("ERROR");
 					procStatus
-					.setValue("Authorization failure, should have MANAGER role");
+					.setValue("Authorization failure, should have MANAGER or ADMIN role");
 					response = I2B2MessageResponseFactory.buildResponseMessage(
 							requestXml, procStatus, bodyType);
 					return response;
@@ -331,7 +337,7 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 					PsmRequestTypeType.CRC_QRY_DELETE_QUERY_MASTER)) {
 				DeleteQueryMasterHandler handler = new DeleteQueryMasterHandler(
 						requestXml);
-				logesapi.info("DELETE QUERY MASTER: " + requestXml);
+				//logesapi.info("DELETE QUERY MASTER: " + requestXml);
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_RENAME_QUERY_MASTER)) {
@@ -374,12 +380,14 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_UPDATE_QUERY_INSTANCE_MESSAGE)) {
 				
-				boolean isManager = false;
+				boolean isAdminManager = false;
 				if (projectType != null && projectType.getRole().size() > 0 && projectType.getRole().contains("MANAGER"))
-					isManager = true;
+					isAdminManager = true;
+				if (projectType != null && projectType.getRole().size() > 0 && projectType.getRole().contains("ADMIN"))
+					isAdminManager = true;
 				
 				UpdateQueryInstanceMessageHandler handler = new UpdateQueryInstanceMessageHandler(
-						requestXml, isManager, projectType.getUserName());
+						requestXml, isAdminManager, projectType.getUserName());
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_RUN_EXPORT_FROM_QUERY_INSTANCE_ID)) {
@@ -393,12 +401,14 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_UPDATE_QUERY_INSTANCE_STATUS)) {
-				boolean isManager = false;
+				boolean isAdminManager = false;
 				if (projectType != null && projectType.getRole().size() > 0 && projectType.getRole().contains("MANAGER"))
-					isManager = true;
+					isAdminManager = true;
+				if (projectType != null && projectType.getRole().size() > 0 && projectType.getRole().contains("ADMIN"))
+					isAdminManager = true;
 
 				SetQueryInstanceStatusHandler handler = new SetQueryInstanceStatusHandler(
-						requestXml, isManager, projectType.getUserName());
+						requestXml, isAdminManager, projectType.getUserName());
 				responseBodyType = handler.execute();
 			} else if (headerType.getRequestType().equals(
 					PsmRequestTypeType.CRC_QRY_GET_ANALYSIS_PLUGIN_METADATA)) {

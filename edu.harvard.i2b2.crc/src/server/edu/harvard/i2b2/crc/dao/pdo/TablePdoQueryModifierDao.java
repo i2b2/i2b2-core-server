@@ -74,6 +74,7 @@ public class TablePdoQueryModifierDao extends CRCDAO implements
 		String factTempTable = "";
 		Connection conn = null;
 		PreparedStatement query = null;
+		java.sql.Statement tempStmt  = null;
 		try {
 			conn = dataSource.getConnection();
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
@@ -82,7 +83,7 @@ public class TablePdoQueryModifierDao extends CRCDAO implements
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				 tempStmt = conn.createStatement();
 				factTempTable = this.getDbSchemaName()
 						+ SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 				try {
@@ -157,6 +158,8 @@ public class TablePdoQueryModifierDao extends CRCDAO implements
 				}
 			}
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();
@@ -204,6 +207,7 @@ public class TablePdoQueryModifierDao extends CRCDAO implements
 		Connection conn = null;
 		PreparedStatement query = null;
 		String tempTableName = "";
+		java.sql.Statement tempStmt = null;
 		try {
 			conn = getDataSource().getConnection();
 			ModifierFactRelated modifierFactRelated = new ModifierFactRelated(
@@ -211,7 +215,7 @@ public class TablePdoQueryModifierDao extends CRCDAO implements
 			String selectClause = modifierFactRelated.getSelectClause();
 			String serverType = dataSourceLookup.getServerType();
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
-				oracle.jdbc.driver.OracleConnection conn1 = null;// (oracle.jdbc.driver.OracleConnection) ((WrappedConnection) conn)
+				//oracle.jdbc.driver.OracleConnection conn1 = null;// (oracle.jdbc.driver.OracleConnection) ((WrappedConnection) conn)
 			//			.getUnderlyingConnection();
 				String finalSql = "SELECT "
 						+ selectClause
@@ -219,18 +223,18 @@ public class TablePdoQueryModifierDao extends CRCDAO implements
 						+ getDbSchemaName()
 						+ "modifier_dimension modifier WHERE modifier.modifier_cd IN (SELECT * FROM TABLE (?))";
 				log.debug("Executing sql[" + finalSql + "]");
-				query = conn1.prepareStatement(finalSql);
+				query = conn.prepareStatement(finalSql);
 
 				ArrayDescriptor desc = ArrayDescriptor.createDescriptor(
-						"QT_PDO_QRY_STRING_ARRAY", conn1);
+						"QT_PDO_QRY_STRING_ARRAY", conn);
 
-				oracle.sql.ARRAY paramArray = new oracle.sql.ARRAY(desc, conn1,
+				oracle.sql.ARRAY paramArray = new oracle.sql.ARRAY(desc, conn,
 						modifierCdList.toArray(new String[] {}));
 				query.setArray(1, paramArray);
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				tempStmt = conn.createStatement();
 				tempTableName = this.getDbSchemaName()
 						+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 				try {
@@ -269,6 +273,8 @@ public class TablePdoQueryModifierDao extends CRCDAO implements
 			tempTableUtil.deleteTempTableSqlServer(conn, tempTableName);
 			
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();

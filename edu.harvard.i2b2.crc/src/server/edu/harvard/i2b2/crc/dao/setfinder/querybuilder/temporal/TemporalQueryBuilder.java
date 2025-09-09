@@ -130,7 +130,7 @@ public class TemporalQueryBuilder extends CRCDAO {
 					.getProcessTimingMessage());
 		}
 
-		logesapi.debug("generated sql " + sql);
+		//logesapi.debug("generated sql " + sql);
 		sqlBuffer.append(sql);
 
 		return new String[] { sql, maxPanelNum };

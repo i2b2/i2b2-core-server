@@ -146,7 +146,10 @@ public class GetPDOTemplateHandler extends RequestHandler {
 			e.printStackTrace();
 		} finally {
 			try {
-				is.close();
+				if (reader != null)
+					reader.close();
+				if (is != null)
+					is.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

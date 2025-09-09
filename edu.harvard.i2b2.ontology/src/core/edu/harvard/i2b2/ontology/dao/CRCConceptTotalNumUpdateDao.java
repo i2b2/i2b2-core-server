@@ -173,7 +173,7 @@ public class CRCConceptTotalNumUpdateDao extends JdbcDaoSupport {
 					}
 					//pass c_fullname to crc setfinder util class
 					// call frc
-					logesapi.debug("Begin Setfinder query to CRC [" + cFullName + "]");
+					//logesapi.debug("Begin Setfinder query to CRC [" + cFullName + "]");
 					conceptSkipFlag = false;
 					try { 
 						masterInstanceResultResponse = CallCRCUtil.callSetfinderQuery("\\\\" + tableAccessType.getTableCd().trim() + cFullName, securityType, projectId);
@@ -186,7 +186,7 @@ public class CRCConceptTotalNumUpdateDao extends JdbcDaoSupport {
 					if (conceptSkipFlag == false) { 
 						String queryInstanceId = masterInstanceResultResponse.getQueryInstance().getQueryInstanceId();
 						queryStatusType = masterInstanceResultResponse.getQueryInstance().getQueryStatusType();
-						logesapi.debug("End Setfinder query to CRC[" + cFullName + "]");
+						//logesapi.debug("End Setfinder query to CRC[" + cFullName + "]");
 						int totalNum = 0;
 						if (queryStatusType.getName().equalsIgnoreCase("PROCESSING")) { 
 							log.info("Setfinder request status is processing query instance id [ " + queryInstanceId + " ]");

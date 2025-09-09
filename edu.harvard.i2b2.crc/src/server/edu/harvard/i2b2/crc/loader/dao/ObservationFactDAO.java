@@ -37,7 +37,7 @@ import edu.harvard.i2b2.crc.datavo.pdo.ObservationType;
  * 
  */
 public class ObservationFactDAO extends CRCLoaderDAO implements
-		IObservationFactDAO {
+IObservationFactDAO {
 
 	private int DB_BATCH_INSERT_SIZE = 1;
 
@@ -259,10 +259,11 @@ public class ObservationFactDAO extends CRCLoaderDAO implements
 				+ " where  utemp.concept_cd is null " + " ) a ";
 
 		Statement stmt = null;
+		ResultSet resultSet = null;
 		try {
 			stmt = getDataSource().getConnection().createStatement();
 			stmt.setFetchSize(5000);
-			ResultSet resultSet = stmt.executeQuery(queryString);
+			resultSet = stmt.executeQuery(queryString);
 			String encounterIde = "", patientIde = "", conceptCd = "", providerId = "";
 			Date startDate = null;
 			while (resultSet.next()) {
@@ -275,6 +276,7 @@ public class ObservationFactDAO extends CRCLoaderDAO implements
 				bufWriter.write(encounterIde + "|" + patientIde + "|"
 						+ conceptCd + "|" + providerId + "\n");
 			}
+			stmt.close();
 		} catch (IOException ioEx) {
 			log.error("IOException ", ioEx);
 			throw new I2B2Exception("IOException " + ioEx.getMessage(), ioEx);
@@ -286,7 +288,10 @@ public class ObservationFactDAO extends CRCLoaderDAO implements
 			throw new I2B2Exception("Exception " + ex.getMessage(), ex);
 		} finally {
 			try {
-				stmt.close();
+				if (resultSet != null)
+					resultSet.close();
+				if (stmt != null)
+					stmt.close();
 			} catch (SQLException sqlEx) {
 				log.info("Unable to close statment", sqlEx);
 			}
@@ -380,70 +385,70 @@ public class ObservationFactDAO extends CRCLoaderDAO implements
 					// observationFactMap.get("patient_ide"),
 					(observationType.getPatientId() != null) ? observationType
 							.getPatientId().getValue() : null,
-					(observationType.getPatientId() != null) ? observationType
-							.getPatientId().getSource() : null,
-					// observationFactMap.get("provider_id"),
-					(observationType.getObserverCd() != null) ? observationType
-							.getObserverCd().getValue() : null,
-					// observationFactMap.get("start_date"),
-					(observationType.getStartDate() != null) ? observationType
-							.getStartDate().toGregorianCalendar().getTime()
-							: null,
-					// observationFactMap.get("modifier_cd"),
-					(observationType.getModifierCd() != null) ? observationType
-							.getModifierCd().getValue() : null,
-					(observationType.getInstanceNum() != null) ? observationType
-							.getInstanceNum().getValue()
-							: null,
-					// observationFactMap.get("valtype_cd"),
-					observationType.getValuetypeCd(),
-					// observationFactMap.get("tval_char"),
-					observationType.getTvalChar(),
-					// (Float)observationFactMap.get("nval_num"),
-					(observationType.getNvalNum() != null) ? observationType
-							.getNvalNum().getValue() : null,
-					// observationFactMap.get("valueflag_cd"),
-					(observationType.getValueflagCd() != null) ? observationType
-							.getValueflagCd().getValue()
-							: null,
-					// (Float)observationFactMap.get("quantity_num"),
-					(observationType.getQuantityNum() != null) ? observationType
-							.getQuantityNum()
-							: null,
-					// observationFactMap.get("confidence_num"),
+							(observationType.getPatientId() != null) ? observationType
+									.getPatientId().getSource() : null,
+									// observationFactMap.get("provider_id"),
+									(observationType.getObserverCd() != null) ? observationType
+											.getObserverCd().getValue() : null,
+											// observationFactMap.get("start_date"),
+											(observationType.getStartDate() != null) ? observationType
+													.getStartDate().toGregorianCalendar().getTime()
+													: null,
+													// observationFactMap.get("modifier_cd"),
+													(observationType.getModifierCd() != null) ? observationType
+															.getModifierCd().getValue() : null,
+															(observationType.getInstanceNum() != null) ? observationType
+																	.getInstanceNum().getValue()
+																	: null,
+																	// observationFactMap.get("valtype_cd"),
+																	observationType.getValuetypeCd(),
+																	// observationFactMap.get("tval_char"),
+																	observationType.getTvalChar(),
+																	// (Float)observationFactMap.get("nval_num"),
+																	(observationType.getNvalNum() != null) ? observationType
+																			.getNvalNum().getValue() : null,
+																			// observationFactMap.get("valueflag_cd"),
+																			(observationType.getValueflagCd() != null) ? observationType
+																					.getValueflagCd().getValue()
+																					: null,
+																					// (Float)observationFactMap.get("quantity_num"),
+																					(observationType.getQuantityNum() != null) ? observationType
+																							.getQuantityNum()
+																							: null,
+																							// observationFactMap.get("confidence_num"),
 
-					// TODO add confidence number to observation
-					null,
-					// observationFactMap.get("observation_blob"),
-					(observationType.getObservationBlob() != null) ? observationType
-							.getObservationBlob().getContent().get(0)
-							.toString()
-							: null,
-					// observationFactMap.get("units_cd"),
-					observationType.getUnitsCd(),
-					// observationFactMap.get("end_date"),
-					(observationType.getEndDate() != null) ? observationType
-							.getEndDate().toGregorianCalendar().getTime()
-							: null,
-					// observationFactMap.get("location_cd"),
-					(observationType.getLocationCd() != null) ? observationType
-							.getLocationCd().getValue() : null,
-					// (Date) observationFactMap.get("update_date"),
-					(observationType.getUpdateDate() != null) ? observationType
-							.getUpdateDate().toGregorianCalendar().getTime()
-							: null,
-					// (Date) observationFactMap.get("download_date"),
-					(observationType.getDownloadDate() != null) ? observationType
-							.getDownloadDate().toGregorianCalendar().getTime()
-							: null,
-					// (Date) observationFactMap.get("import_date"),
-					(observationType.getImportDate() != null) ? observationType
-							.getImportDate().toGregorianCalendar().getTime()
-							: null,
-					// observationFactMap.get("sourcesystem_cd"),
-					observationType.getSourcesystemCd(),
-					// observationFactMap.get("upload_id")
-					observationType.getUploadId() };
+																							// TODO add confidence number to observation
+																							null,
+																							// observationFactMap.get("observation_blob"),
+																							(observationType.getObservationBlob() != null) ? observationType
+																									.getObservationBlob().getContent().get(0)
+																									.toString()
+																									: null,
+																									// observationFactMap.get("units_cd"),
+																									observationType.getUnitsCd(),
+																									// observationFactMap.get("end_date"),
+																									(observationType.getEndDate() != null) ? observationType
+																											.getEndDate().toGregorianCalendar().getTime()
+																											: null,
+																											// observationFactMap.get("location_cd"),
+																											(observationType.getLocationCd() != null) ? observationType
+																													.getLocationCd().getValue() : null,
+																													// (Date) observationFactMap.get("update_date"),
+																													(observationType.getUpdateDate() != null) ? observationType
+																															.getUpdateDate().toGregorianCalendar().getTime()
+																															: null,
+																															// (Date) observationFactMap.get("download_date"),
+																															(observationType.getDownloadDate() != null) ? observationType
+																																	.getDownloadDate().toGregorianCalendar().getTime()
+																																	: null,
+																																	// (Date) observationFactMap.get("import_date"),
+																																	(observationType.getImportDate() != null) ? observationType
+																																			.getImportDate().toGregorianCalendar().getTime()
+																																			: null,
+																																			// observationFactMap.get("sourcesystem_cd"),
+																																			observationType.getSourcesystemCd(),
+																																			// observationFactMap.get("upload_id")
+																																			observationType.getUploadId() };
 			update(objs);
 		}
 

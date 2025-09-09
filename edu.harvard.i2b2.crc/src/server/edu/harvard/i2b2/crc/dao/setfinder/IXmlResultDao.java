@@ -35,4 +35,6 @@ public interface IXmlResultDao {
 	public QtXmlResult getXmlResultByResultInstanceId(
 			String resultInstanceId) throws I2B2DAOException;
 
+	public void deleteQueryXmlResult(String resultInstanceId);
+
 }

@@ -117,14 +117,14 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 			+ "qt_query_result_type b where a.result_instance_id = ? and a.result_type_id = b.result_type_id";
 
 			String resultName = null;
-			
+
 			try {
-				
+
 				resultName = (String) jdbcTemplate.queryForObject(
-					sql, new Object[] { Integer.parseInt(resultInstanceId) }, String.class);
+						sql, new Object[] { Integer.parseInt(resultInstanceId) }, String.class);
 			} catch (Exception e)
 			{
-				
+
 			}
 
 			if (resultName != null)
@@ -188,4 +188,23 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 	}
 
 
+
+
+	@Override
+	public void deleteQueryXmlResult(String resultInstanceIdStr) {
+		//TODO mm remove
+		try {
+			int resultInstanceId = Integer.parseInt(resultInstanceIdStr);
+			String sql = "DELETE FROM " + getDbSchemaName() + "QT_XML_RESULT where result_instance_id = ?";
+			jdbcTemplate.update(sql, new Object[]{resultInstanceId});
+		} catch (Exception e)
+		{
+
+			e.printStackTrace();
+			//throw e;
+		}
+	}
 }
+
+
+

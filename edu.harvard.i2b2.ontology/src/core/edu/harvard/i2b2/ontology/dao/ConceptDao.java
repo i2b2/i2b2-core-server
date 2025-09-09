@@ -27,7 +27,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
@@ -965,7 +964,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		}
 		String whereClause = null;
 
-		String compareCode = value.toUpperCase();
+		String compareCode = StringUtil.escapeSql(value.toUpperCase());
 
 		if(vocabType.getMatchStr().getStrategy().equals("exact")) {
 			whereClause = " where upper(c_basecode) = '" + compareCode+ "'";
@@ -1002,7 +1001,7 @@ public class ConceptDao extends JdbcDaoSupport {
 		String codeInfoSql = null;
 		if(tableNames != null){
 			Iterator itTn = tableNames.iterator();
-			String table = (String)itTn.next();
+			String table = StringUtil.escapeSql((String)itTn.next());
 			// the following (distinct) doesnt work for a flattened hierarchy but is left for
 			//  dbs other than sqlserver or oracle.   [c_table_cd is needed for key]
 			String tableCdSql = ", (select distinct(c_table_cd) from "+ metadataSchema + "TABLE_ACCESS where c_table_name = '"+  table+ "') as tableCd"; 
@@ -1014,7 +1013,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				tableCdSql = ", (select c_table_cd from "+ metadataSchema + "TABLE_ACCESS where c_table_name = '"+  table+ "' limit 1) as tableCd"; 
 			codeInfoSql = "select " + parameters + tableCdSql + " from " + metadataSchema + table + whereClause	+ hidden + synonym;;
 			while(itTn.hasNext()){		
-				table = (String)itTn.next();
+				table = StringUtil.escapeSql((String)itTn.next());
 				// the following (distinct) doesnt work for a flattened hierarchy but is left for
 				//  dbs other than sqlserver or oracle.    [c_table_cd is needed for key]
 				tableCdSql = ", (select distinct(c_table_cd) from "+ metadataSchema + "TABLE_ACCESS where c_table_name = '"+  table+ "') as tableCd"; 

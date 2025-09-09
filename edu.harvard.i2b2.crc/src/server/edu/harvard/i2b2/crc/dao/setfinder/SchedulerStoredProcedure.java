@@ -66,10 +66,6 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
-import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
-import edu.harvard.i2b2.crc.opencsv.CSVWriter;
-import edu.harvard.i2b2.crc.opencsv.ResultSetHelperService;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
@@ -202,15 +198,17 @@ public class SchedulerStoredProcedure extends CRCDAO implements IResultGenerator
 				//	{
 
 
-
+				/*  MM removed not used
 				stmt = sfConn.prepareStatement(itemCountSql);
 				stmt.setQueryTimeout(transactionTimeout);
-				logesapi.debug("Executing count sql [" + itemCountSql + "]");
+				//logesapi.debug("Executing count sql [" + itemCountSql + "]");
 
 				//
 				subLogTimingUtil.setStartTime();
 				ResultSet resultSet = stmt.executeQuery();
-
+				*/
+				
+				
 				//String fileName = "/tmp/"+ projectId +"output"+resultInstanceId + ".csv";
 				//automatically compression if destination file extension is ".zip" or ".gz"
 
@@ -322,7 +320,7 @@ public class SchedulerStoredProcedure extends CRCDAO implements IResultGenerator
 					}
 				}
 				//tm.commit();
-
+				/*
 			} catch (SQLException sqlEx) {
 				// catch oracle query timeout error ORA-01013
 				if (sqlEx.toString().indexOf("ORA-01013") > -1) {
@@ -340,6 +338,7 @@ public class SchedulerStoredProcedure extends CRCDAO implements IResultGenerator
 				errorFlag = true;
 				log.error("Error while executing sql", sqlEx);
 				throw new I2B2DAOException("Error while executing sql", sqlEx);
+				*/
 			} catch (Exception sqlEx) {
 
 				errorFlag = true;

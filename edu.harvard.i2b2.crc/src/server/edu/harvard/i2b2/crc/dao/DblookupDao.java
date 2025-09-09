@@ -145,7 +145,7 @@ public class DblookupDao extends JdbcDaoSupport {
 				}
 				queryResult = jt.query(sql, new getMapper(), v, domainId, userId);
 			}
-			logesapi.info(sql + "(c_" + column + "=" + v + ", domainId=" + domainId + ", userId=" + userId + ") -- # of entries found: " + queryResult.size());
+			//logesapi.info(sql + "(c_" + column + "=" + v + ", domainId=" + domainId + ", userId=" + userId + ") -- # of entries found: " + queryResult.size());
 		} catch (DataAccessException e) {
 			log.error(e.getMessage());
 			e.printStackTrace();

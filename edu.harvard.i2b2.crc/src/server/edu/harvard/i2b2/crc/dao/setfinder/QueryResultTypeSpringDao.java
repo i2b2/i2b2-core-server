@@ -71,11 +71,29 @@ IQueryResultTypeDao {
 		String sql = "select * from " + getDbSchemaName()
 		+ "qt_query_result_type where result_type_id = ?";
 		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
-				.queryForObject(sql, new Object[] { resultTypeId },
-						queryResultTypeMapper);
+				.queryForObject(sql, queryResultTypeMapper,  resultTypeId );
 		return queryResultType;
 	}
 
+	/**
+	 * Returns list of query master by user id
+	 * 
+	 * @param userId
+	 * @return List<QtQueryMaster>
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public QtQueryResultType getQueryResultTypeByName(String resultName) {
+
+		String sql = "select * from " + getDbSchemaName()
+		+ "qt_query_result_type where name = ?";
+		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
+				.queryForObject(sql, queryResultTypeMapper, resultName 
+						);
+		return queryResultType;
+	}
+
+	
 	/**
 	 * Returns list of query master by user id
 	 * 
@@ -89,8 +107,8 @@ IQueryResultTypeDao {
 		String sql = "select * from " + getDbSchemaName()
 		+ "qt_query_result_type where name = ?";
 		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
-				.queryForObject(sql, new Object[] { resultName },
-						queryResultTypeMapper);
+				.queryForObject(sql, queryResultTypeMapper, resultName 
+						);
 		return queryResultType.getClassname();
 	}
 
@@ -109,24 +127,26 @@ IQueryResultTypeDao {
 
 		if (roles != null)
 		{
-			String sql = "select * from <from>"
-			+ "qt_query_result_type where name = '<resultName>' and (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd))";
+			String sql = "select * from " + getDbSchemaName()
+			+ "qt_query_result_type where name = '" + resultName + "' and (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd))";
+			//+ "qt_query_result_type where name = ? and (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd))";
+
 			Map myRoles = Collections.singletonMap("roleCd", roles);
 			
 
-			String sqlFinal =  sql.replace("<from>",   this.getDbSchemaName()  );
-			sqlFinal = sqlFinal.replace("<resultName>", resultName);
+			//String sqlFinal =  sql.replace("<from>",   this.getDbSchemaName()  );
+			//sqlFinal = sqlFinal.replace("<resultName>", resultName);
 
-			queryResultType = namedParameterJdbcTemplate.query(sqlFinal,
-					myRoles,
+			queryResultType = namedParameterJdbcTemplate.query(sql, 
+					myRoles, 
 					queryResultTypeMapper);
 		} else
 		{
 			String sql = "select * from " + getDbSchemaName()
 			+ "qt_query_result_type where name = ?";
 			queryResultType = jdbcTemplate.query(sql,
-					new Object[] { resultName.toUpperCase() },
-					queryResultTypeMapper);
+					queryResultTypeMapper, resultName.toUpperCase() 
+					);
 		}
 		return queryResultType;
 	}

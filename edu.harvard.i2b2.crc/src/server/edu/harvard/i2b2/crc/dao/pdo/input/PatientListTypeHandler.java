@@ -417,6 +417,8 @@ public class PatientListTypeHandler extends CRCDAO implements
 
 		}
 		preparedStmt.executeBatch();
+		if (tempStmt != null)
+			tempStmt.close();
 	}
 
 	@Override

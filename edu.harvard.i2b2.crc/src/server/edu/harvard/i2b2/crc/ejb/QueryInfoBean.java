@@ -14,9 +14,12 @@
  */
 package edu.harvard.i2b2.crc.ejb;
 
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,24 +34,37 @@ import org.w3c.dom.Document;
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
+import edu.harvard.i2b2.crc.dao.setfinder.IQueryBreakdownTypeDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryMasterDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultInstanceDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultTypeDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IResultGenerator;
+import edu.harvard.i2b2.crc.dao.setfinder.IXmlResultDao;
 import edu.harvard.i2b2.crc.dao.setfinder.QueryExecutorHelperDao;
 import edu.harvard.i2b2.crc.dao.setfinder.QueryResultTypeSpringDao;
 import edu.harvard.i2b2.crc.dao.setfinder.SetFinderConnection;
+import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.PSMFactory;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
+import edu.harvard.i2b2.crc.datavo.db.QtXmlResult;
+import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
+import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
+import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
+import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
+import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.CrcXmlResultResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceResponseType;
@@ -68,6 +84,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.UserRequestType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.XmlResultType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.XmlValueType;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
+import jakarta.xml.bind.JAXBElement;
 
 /**
  * Ejb manager class for query operation
@@ -107,6 +124,7 @@ public class QueryInfoBean { //implements SessionBean {
 					throws I2B2DAOException {
 
 		String userId = userRequestType.getUserId();
+		String groupId = userRequestType.getGroupId();
 		int fetchSize = userRequestType.getFetchSize();
 		boolean includeQueryInstance = userRequestType.getIncludeQueryInstance();
 		String masterTypeCd = userRequestType.getMasterTypeCd();
@@ -116,7 +134,7 @@ public class QueryInfoBean { //implements SessionBean {
 				.getProjectPath(), dataSourceLookup.getOwnerId());
 		IQueryMasterDao queryMasterDao = sfDaoFactory.getQueryMasterDAO();
 		List<QtQueryMaster> masterList = queryMasterDao.getQueryMasterByUserId(
-				userId, fetchSize, masterTypeCd, includeQueryInstance);
+				userId, groupId, fetchSize, masterTypeCd, includeQueryInstance);
 		MasterResponseType masterResponseType = buildMasterResponseType(masterList);
 		return masterResponseType;
 	}
@@ -240,8 +258,8 @@ public class QueryInfoBean { //implements SessionBean {
 
 					doc = edu.harvard.i2b2.common.util.xml.XMLUtil
 							.convertStringToDOM(requestXml);
-					logesapi.debug("query definition xml prefix "
-							+ doc.getDocumentElement().getPrefix());
+					//logesapi.debug("query definition xml prefix "
+					//		+ doc.getDocumentElement().getPrefix());
 					requestXmlType.getContent().add(doc.getDocumentElement());
 				} catch (Exception i2b2) {
 					i2b2.printStackTrace();
@@ -396,10 +414,26 @@ public class QueryInfoBean { //implements SessionBean {
 		return resultResponseType;
 	}
 
+	protected Object getRequestType(String requestXml, Class classname)
+			throws JAXBUtilException {
+		Object returnObject = null;
+
+		JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+		JAXBElement jaxbElement = jaxbUtil.unMashallFromString(requestXml);
+		ResultEnvelopeType requestMessageType = (ResultEnvelopeType) jaxbElement
+				.getValue();
+		BodyType bodyType = requestMessageType.getBody();
+		JAXBUnWrapHelper unWrapHelper = new JAXBUnWrapHelper();
+		// get request header type
+		returnObject = unWrapHelper.getObjectByClass(bodyType.getAny(),
+				classname);
+
+		return returnObject;
+	}
 
 
 	public InstanceResponseType setQueryInstanceStatus(DataSourceLookup dataSourceLookup, String queryInstanceId,
-			String statusName, boolean isManager, String userId) throws I2B2Exception {
+			String statusName, boolean isAdminManager, String userId) throws I2B2Exception {
 
 		SetFinderDAOFactory sfDaoFactory = this.getSetFinderDaoFactory(
 				dataSourceLookup.getDomainId(), dataSourceLookup
@@ -409,13 +443,81 @@ public class QueryInfoBean { //implements SessionBean {
 
 		QtQueryInstance queryInstance = queryResultInstanceDao
 				.getQueryInstanceByInstanceId(queryInstanceId);
-		if (isManager == false) {
+		if (isAdminManager == false ) {
 			if (!userId.equalsIgnoreCase(queryInstance.getUserId()))
 				throw new I2B2Exception("Access Denied");
 
 		}
-		
 
+		//Update XML
+		IQueryResultInstanceDao patientSetResultDao = sfDaoFactory.getPatientSetResultDAO();
+		log.debug("got resultinstancesdao" + patientSetResultDao.toString());
+		List<QtQueryResultInstance> queryResultInstanceList = patientSetResultDao.getResultInstanceList( queryInstanceId);
+		log.debug("got QtQueryResultInstance" + queryResultInstanceList.size());
+		ResultResponseType resultResultInstanceType = new ResultResponseType();
+		DTOFactory dtoFactory = new DTOFactory(); 
+		for(QtQueryResultInstance resultInstance: queryResultInstanceList) { 
+
+
+			IXmlResultDao xmlResultDao = sfDaoFactory.getXmlResultDao();
+			QtXmlResult xmlResult = xmlResultDao.getXmlResultByResultInstanceId(resultInstance.getResultInstanceId());
+			//			xmlResult.
+
+
+			XmlResultType xmlResultType = new XmlResultType();
+			xmlResultType.setXmlResultId(xmlResult.getXmlResultId());
+
+			String xmlValue = xmlResult.getXmlValue();
+			if (xmlValue != null) {
+
+
+				try {
+					ResultType resultType = (ResultType) this.getRequestType(xmlValue,
+							edu.harvard.i2b2.crc.datavo.i2b2result.ResultType.class);
+
+					if (resultType.getName().startsWith("RPDO")) { 
+						DataType mdataType = new DataType();
+
+						mdataType.setValue( new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+						mdataType.setColumn(statusName);
+						mdataType.setType("string");
+						resultType.getData().add(mdataType);
+					
+						edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
+						BodyType bodyType = new BodyType();
+						bodyType.getAny().add(of.createResult(resultType));
+						ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
+						resultEnvelop.setBody(bodyType);
+
+						JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+
+						StringWriter strWriter2 = new StringWriter();
+						jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
+								strWriter2);
+						//tm.begin();
+						IXmlResultDao xmlResultDao2 = sfDaoFactory.getXmlResultDao();
+						String xmlResult2 = strWriter2.toString();
+
+						xmlResultDao2.deleteQueryXmlResult(resultInstance.getResultInstanceId());
+						xmlResultDao2.createQueryXmlResult(resultInstance.getResultInstanceId(), xmlResult2);
+
+					}
+
+				} catch (JAXBUtilException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			//xmlResultType.getXmlValue().getContent().get(0);
+
+			//xmlResultDao.
+		//	QueryResultInstanceType queryResultInstanceType = PSMFactory.buildQueryResultInstanceType(resultInstance);
+			//System.out.println("RESULT INSTANCE " + resultInstance.getResultInstanceId() );
+		//	resultResultInstanceType.getQueryResultInstance().add(queryResultInstanceType);
+		}
+
+
+		//Update status
 		queryInstance.setBatchMode(statusName);
 
 		queryResultInstanceDao.update(queryInstance, false);
@@ -519,8 +621,16 @@ public class QueryInfoBean { //implements SessionBean {
 		ResultTypeResponseType resultTypeResponseType = new ResultTypeResponseType();
 		List<QueryResultTypeType> returnQueryResultType = new ArrayList<QueryResultTypeType>();
 		for (QtQueryResultType queryResultType : queryResultTypeList) {
-			returnQueryResultType.add(PSMFactory
-					.buildQueryResultType(queryResultType));
+			IQueryBreakdownTypeDao queryBreakdownTypeDao = sfDaoFactory
+					.getQueryBreakdownTypeDao();
+			QtQueryBreakdownType queryBreakdownType = queryBreakdownTypeDao.
+					getBreakdownTypeByName(queryResultType.getName(), dataSourceLookup.getProjectPath());
+
+			//log.info("here"+ queryBreakdownType.getName() + "|" + queryBreakdownType.getUserId());
+			if (queryBreakdownType != null && (queryBreakdownType.getUserId() == null || queryBreakdownType.getUserId().equalsIgnoreCase(dataSourceLookup.getOwnerId()) 
+					|| queryBreakdownType.getUserId().equalsIgnoreCase("@")))
+				returnQueryResultType.add(PSMFactory
+						.buildQueryResultType(queryResultType));
 		}
 		resultTypeResponseType.getQueryResultType().addAll(
 				returnQueryResultType);
@@ -572,7 +682,8 @@ public class QueryInfoBean { //implements SessionBean {
 					queryResultInstance.setDescription(b.getDescription());
 					queryResultInstance.setStartDate(dtoFactory
 							.getXMLGregorianCalendar(b.getStartDate().getTime()));
-					queryResultInstance.setEndDate(dtoFactory
+					if ( b.getEndDate() != null)
+						queryResultInstance.setEndDate(dtoFactory
 							.getXMLGregorianCalendar(b.getEndDate().getTime()));
 					QueryResultTypeType queryResultType = new QueryResultTypeType();
 					queryResultType.setVisualAttributeType(b.getQtQueryResultType().getVisualAttributeType());

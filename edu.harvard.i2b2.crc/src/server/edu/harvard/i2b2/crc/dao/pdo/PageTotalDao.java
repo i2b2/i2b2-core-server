@@ -250,6 +250,9 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 			}
 		}
 		tempStmt.executeBatch();
+		if (tempStmt != null)
+			tempStmt.close();
+
 	}
 
 	private void upLoadTempTableForMin(Connection conn,
@@ -279,6 +282,8 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 			}
 		}
 		tempStmt.executeBatch();
+		if (tempStmt != null)
+			tempStmt.close();
 	}
 
 	private void deleteTempTable(Connection conn) {

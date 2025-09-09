@@ -107,6 +107,7 @@ public class ObservationFactCSV2XmlBuilder {
 
 		BufferedReader inputReader = null;
 		BufferedWriter observationFactWriter = null;
+		CSVFileReader csvReader = null;
 		log.info("Before building ObservationFact xml: " + outputXmlFileName
 				+ " for " + inputFileName);
 		try {
@@ -117,7 +118,7 @@ public class ObservationFactCSV2XmlBuilder {
 					new FileOutputStream(outputXmlFileName)));
 			writeHeader(observationFactWriter);
 			observationFactWriter.write("<ns2:observation_set>\n");
-			CSVFileReader csvReader = new CSVFileReader(inputFileName, ',',
+			 csvReader = new CSVFileReader(inputFileName, ',',
 					'\"');
 
 			// read header and map header column position with element name
@@ -176,6 +177,7 @@ public class ObservationFactCSV2XmlBuilder {
 			}
 			observationFactWriter.write("</ns2:observation_set>\n");
 			writeEndDocument(observationFactWriter);
+			csvReader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new I2B2Exception("Build XML failed ", ex);
@@ -183,6 +185,9 @@ public class ObservationFactCSV2XmlBuilder {
 			try {
 				if (inputReader != null) {
 					inputReader.close();
+				}
+				if (csvReader != null) {
+					csvReader.close();
 				}
 
 				if (observationFactWriter != null) {

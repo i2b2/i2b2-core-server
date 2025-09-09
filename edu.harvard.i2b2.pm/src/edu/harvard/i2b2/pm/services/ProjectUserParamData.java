@@ -13,7 +13,14 @@ public class ProjectUserParamData {
 //    private String oid = null;
 
     private String value = new String();
-    public ProjectUserParamDataPK getProjectUserParamDataPK() {
+    private String status;
+    public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public ProjectUserParamDataPK getProjectUserParamDataPK() {
 		return projectUserParamDataPK;
 	}
 	public void setProjectUserParamDataPK(ProjectUserParamDataPK projectUserParamDataPK) {

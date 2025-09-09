@@ -124,14 +124,14 @@ public class VisitCSV2XmlBuilder {
 
 		BufferedReader inputReader = null;
 		BufferedWriter visitWriter = null;
-
+		CSVFileReader csvReader = null;
 		try {
 			// read file and return buffered reader
 			visitWriter = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(outputXmlFileName)));
 			writeHeader(visitWriter);
 			visitWriter.write("<ns2:event_set>");
-			CSVFileReader csvReader = new CSVFileReader(inputFileName, ',',
+			 csvReader = new CSVFileReader(inputFileName, ',',
 					'\"');
 			// read header and map header column position with element name
 			java.util.Vector<String> headerFields = csvReader.readFields();
@@ -188,6 +188,7 @@ public class VisitCSV2XmlBuilder {
 			}
 
 			writeEndDocument(visitWriter);
+			csvReader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new I2B2Exception("Error building Visit xml", ex);
@@ -195,6 +196,9 @@ public class VisitCSV2XmlBuilder {
 			try {
 				if (inputReader != null) {
 					inputReader.close();
+				}
+				if (csvReader != null) {
+					csvReader.close();
 				}
 				if (visitWriter != null) {
 					visitWriter.close();

@@ -221,7 +221,7 @@ public abstract class TemporalPanelItem {
 				+ formatSql(panelDateConstraintSql)
 				+ " \ngroup by " + groupbyClause
 				+ formatSql(havingClause);
-		logesapi.debug("Derived table sql [" + derivedTableSql + "]");
+		//logesapi.debug("Derived table sql [" + derivedTableSql + "]");
 
 		return derivedTableSql;
 	}

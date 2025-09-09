@@ -183,6 +183,8 @@ public class PidListTypeHandler extends CRCDAO implements
 			log.debug("loading " + pid.getValue() + " " + pid.getSource());
 		}
 		preparedStmt.executeBatch();
+		if (tempStmt != null)
+			tempStmt.close();
 	}
 
 	@Override

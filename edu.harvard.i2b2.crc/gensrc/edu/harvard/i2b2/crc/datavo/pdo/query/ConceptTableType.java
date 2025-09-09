@@ -43,143 +43,148 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "conceptTableType", propOrder = {
-    "name",
-    "display",
-    "required",
-    "locked",
-    "data"
+		"name",
+		"display",
+		"required",
+		"locked",
+		"data"
 })
 public class ConceptTableType {
-//  @XmlElement(name = "json_data", required = true)
+	//  @XmlElement(name = "json_data", required = true)
 
-    @XmlElement(required = true)
-    protected String name;
-    protected boolean display;
-    protected boolean required;
-    protected boolean locked;
-    @XmlJavaTypeAdapter(value=CDATAAdapter.class)
-    protected String data;
-    @XmlAttribute(name = "id")
-    protected Integer id;
+	@XmlElement(required = true)
+	@XmlJavaTypeAdapter(value=CDATAAdapter.class)
+	protected String name;
+	protected boolean display;
+	protected boolean required;
+	protected boolean locked;
+	//  @XmlJavaTypeAdapter(value=CDATAAdapter.class)
+	protected String data;
+	@XmlAttribute(name = "id")
+	protected Integer id;
 
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Gets the value of the name property.
+	 * 
+	 * @return
+	 *     possible object is
+	 *     {@link String }
+	 *     
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+	/**
+	 * Sets the value of the name property.
+	 * 
+	 * @param value
+	 *     allowed object is
+	 *     {@link String }
+	 *     
+	 */
+	public void setName(String value) {
+		this.name = value;
+	}
 
-    /**
-     * Gets the value of the display property.
-     * 
-     */
-    public boolean isDisplay() {
-        return display;
-    }
+	/**
+	 * Gets the value of the display property.
+	 * 
+	 */
+	public boolean isDisplay() {
+		return display;
+	}
 
-    /**
-     * Sets the value of the display property.
-     * 
-     */
-    public void setDisplay(boolean value) {
-        this.display = value;
-    }
+	/**
+	 * Sets the value of the display property.
+	 * 
+	 */
+	public void setDisplay(boolean value) {
+		this.display = value;
+	}
 
-    /**
-     * Gets the value of the required property.
-     * 
-     */
-    public boolean isRequired() {
-        return required;
-    }
+	/**
+	 * Gets the value of the required property.
+	 * 
+	 */
+	public boolean isRequired() {
+		return required;
+	}
 
-    /**
-     * Sets the value of the required property.
-     * 
-     */
-    public void setRequired(boolean value) {
-        this.required = value;
-    }
+	/**
+	 * Sets the value of the required property.
+	 * 
+	 */
+	public void setRequired(boolean value) {
+		this.required = value;
+	}
 
-    /**
-     * Gets the value of the locked property.
-     * 
-     */
-    public boolean isLocked() {
-        return locked;
-    }
+	/**
+	 * Gets the value of the locked property.
+	 * 
+	 */
+	public boolean isLocked() {
+		return locked;
+	}
 
-    /**
-     * Sets the value of the locked property.
-     * 
-     */
-    public void setLocked(boolean value) {
-        this.locked = value;
-    }
+	/**
+	 * Sets the value of the locked property.
+	 * 
+	 */
+	public void setLocked(boolean value) {
+		this.locked = value;
+	}
 
-    /**
-     * Gets the value of the jsonData property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getData() {
-        return data;
-    }
+	/**
+	 * Gets the value of the jsonData property.
+	 * 
+	 * @return
+	 *     possible object is
+	 *     {@link String }
+	 *     
+	 */
+	public String getData() {
+		return data;
+	}
 
-    /**
-     * Sets the value of the jsonData property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setData(String value) {
-        this.data = value;
-    }
+	/**
+	 * Sets the value of the jsonData property.
+	 * 
+	 * @param value
+	 *     allowed object is
+	 *     {@link String }
+	 *     
+	 */
+	public void setData(String value) {
+		if (value != null) {
+			value = value.replace("<", "&lt;");
+			value = value.replace("&", "&amp;");
+		}
+		this.data = value;
+	}
 
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getId() {
-        return id;
-    }
+	/**
+	 * Gets the value of the id property.
+	 * 
+	 * @return
+	 *     possible object is
+	 *     {@link Integer }
+	 *     
+	 */
+	public Integer getId() {
+		return id;
+	}
 
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setId(Integer value) {
-        this.id = value;
-    }
+	/**
+	 * Sets the value of the id property.
+	 * 
+	 * @param value
+	 *     allowed object is
+	 *     {@link Integer }
+	 *     
+	 */
+	public void setId(Integer value) {
+		this.id = value;
+	}
 
 }

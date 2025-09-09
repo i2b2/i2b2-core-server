@@ -17,6 +17,7 @@ import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
+import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
@@ -45,49 +46,57 @@ public class QueryResultPatientAgeCountGenerator extends CRCDAO implements
 				.get("SetFinderDAOFactory");
 		// String patientSetId = (String)param.get("PatientSetId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
-		String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
+		//String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
+
 		String resultInstanceId = (String) param.get("ResultInstanceId");
 		this
 				.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
 						.getFullSchema());
 
+		String TEMP_DX_TABLE = "#DX";
+		if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SQLSERVER)) {
+			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
+		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.ORACLE)) {
+			TEMP_DX_TABLE = getDbSchemaName() + "DX";
+		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL)) {
+			TEMP_DX_TABLE = "DX";
+		}
+		
 		String age1CountSql = "select count(distinct dx.patient_num) patient_count, '0-20' patient_range"
 				+ " from "
-				+ " <from> "
-				+ "patient_dimension pd ,"
-				+ " <TEMP_DX_TABLE> "
+				+ this.getDbSchemaName()  + "patient_dimension pd , "
+				+ TEMP_DX_TABLE
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " and pd.age_in_years_num between 0 and 20";
 
 		String age2CountSql = "select count(dx.patient_num) patient_count, '21-40' patient_range"
 				+ " from "
-				+ " <from> "
-				+ "patient_dimension pd ,"
-				+ " <TEMP_DX_TABLE> "
+				+ this.getDbSchemaName()  + "patient_dimension pd , "
+				+ TEMP_DX_TABLE
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " and pd.age_in_years_num between 21 and 40";
 
 		String age3CountSql = "select count(dx.patient_num) patient_count, '41-60' patient_range"
 				+ " from "
-				+ " <from> "
-				+ "patient_dimension pd ,"
-				+ " <TEMP_DX_TABLE> "
+				+ this.getDbSchemaName()  + "patient_dimension pd , "
+				+ TEMP_DX_TABLE
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " and pd.age_in_years_num between 41 and 60";
 
 		String age4CountSql = "select count(dx.patient_num) patient_count, '61-80' patient_range"
 				+ " from "
-				+ " <from> "
-				+ "patient_dimension pd ,"
-				+ " <TEMP_DX_TABLE> "
+				+ this.getDbSchemaName()  + "patient_dimension pd , " 
+				+ TEMP_DX_TABLE
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " and pd.age_in_years_num between 61 and 80";
 
 		String age5CountSql = "select count(dx.patient_num) patient_count, '>80' patient_range"
 				+ " from "
-				+ " <from> "
-				+ "patient_dimension pd ,"
-				+ " <TEMP_DX_TABLE> "
+				+ this.getDbSchemaName()  + "patient_dimension pd , "
+				+ TEMP_DX_TABLE
 				+ " dx where pd.patient_num = dx.patient_num"
 				+ " and pd.age_in_years_num > 80";
 
@@ -99,11 +108,11 @@ public class QueryResultPatientAgeCountGenerator extends CRCDAO implements
 		int totalCount = 0;
 		try {
 
-			String sqlFinal =  ageFinalCountSql.replace("<from>",   this.getDbSchemaName()  );
-			sqlFinal = ageFinalCountSql.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
+			//String sqlFinal =  ageFinalCountSql.replace("<from>",   this.getDbSchemaName()  );
+			//sqlFinal = ageFinalCountSql.replace("<TEMP_DX_TABLE>", TEMP_DX_TABLE);
 
 			log.debug("Executing[ " + ageFinalCountSql + " ]");
-			PreparedStatement stmt = sfConn.prepareStatement(sqlFinal);
+			PreparedStatement stmt = sfConn.prepareStatement(ageFinalCountSql);
 			ResultSet resultSet = stmt.executeQuery();
 			ResultType resultType = new ResultType();
 			resultType.setName(RESULT_NAME);

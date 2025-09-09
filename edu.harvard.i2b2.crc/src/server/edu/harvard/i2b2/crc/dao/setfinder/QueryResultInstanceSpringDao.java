@@ -189,8 +189,12 @@ IQueryResultInstanceDao {
 			String queryInstanceId) {
 		String sql = "select *  from " + getDbSchemaName()
 				+ "qt_query_result_instance where query_instance_id = ? ";
+		//List<QtQueryResultInstance> queryResultInstanceList = jdbcTemplate
+		//		.query(sql, new Object[] { Integer.parseInt(queryInstanceId) }, patientSetMapper);
+		
 		List<QtQueryResultInstance> queryResultInstanceList = jdbcTemplate
-				.query(sql, new Object[] { Integer.parseInt(queryInstanceId) }, patientSetMapper);
+				.query(sql, patientSetMapper, Integer.parseInt(queryInstanceId) );
+
 		return queryResultInstanceList;
 	}
 
@@ -207,7 +211,7 @@ IQueryResultInstanceDao {
 		String sql = "select *  from " + getDbSchemaName()
 				+ "qt_query_result_instance where result_instance_id = ? ";
 		List<QtQueryResultInstance> queryResultInstanceList = jdbcTemplate
-				.query(sql, new Object[] { Integer.parseInt(queryResultId) }, patientSetMapper);
+				.query(sql, patientSetMapper, Integer.parseInt(queryResultId) );
 		if (queryResultInstanceList.size() > 0) {
 			return queryResultInstanceList.get(0);
 		} else {
@@ -235,8 +239,8 @@ IQueryResultInstanceDao {
 				+ "qt_query_result_type rt where ri.query_instance_id = ? and ri.result_type_id = rt.result_type_id and rt.name=?";
 		QtQueryResultInstance queryResultInstanceList = (QtQueryResultInstance) jdbcTemplate
 				.queryForObject(sql,
-						new Object[] { Integer.parseInt(queryInstanceId), resultName },
-						patientSetMapper);
+						patientSetMapper,  Integer.parseInt(queryInstanceId), resultName 
+						);
 		return queryResultInstanceList;
 	}
 
@@ -257,8 +261,8 @@ IQueryResultInstanceDao {
 				+ "qt_query_result_instance ri, "
 				+ getDbSchemaName()
 				+ "qt_query_result_type rt where status_type_id = ? and queue_name = ? and ri.result_type_id = rt.result_type_id order by start_date";
-		resultInstanceList = jdbcTemplate.query(sql, new Object[] { waitStatus,
-				queueName }, patientSetMapper);
+		resultInstanceList = jdbcTemplate.query(sql, patientSetMapper, waitStatus,
+				queueName );
 		return resultInstanceList;
 	}
 

@@ -97,7 +97,7 @@ public class CallPMUtil {
 			//CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseXml);
 			ResponseMessageType pmRespMessageType = (ResponseMessageType) responseJaxb
 					.getValue();
-			logesapi.debug("CRC's PM call response xml" + response);
+			//logesapi.debug("CRC's PM call response xml" + response);
 
 			ResponseHeaderType responseHeader = pmRespMessageType
 					.getResponseHeader();
@@ -106,7 +106,7 @@ public class CallPMUtil {
 			String procMessage = status.getValue();
 
 			if (procStatus.equals("ERROR")) {
-				logesapi.info("PM Error reported by CRC web Service " + procMessage);
+				//logesapi.info("PM Error reported by CRC web Service " + procMessage);
 
 
 
@@ -181,7 +181,7 @@ public class CallPMUtil {
 		//CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseXml);
 		ResponseMessageType pmRespMessageType = (ResponseMessageType) responseJaxb
 				.getValue();
-		logesapi.debug("CRC's PM call response xml" + responseXml);
+		//logesapi.debug("CRC's PM call response xml" + responseXml);
 
 		ResponseHeaderType responseHeader = pmRespMessageType
 				.getResponseHeader();
@@ -190,11 +190,11 @@ public class CallPMUtil {
 		String procMessage = status.getValue();
 
 		if (procStatus.equals("ERROR")) {
-			logesapi.info("PM Error reported by CRC web Service " + procMessage);
+			//logesapi.info("PM Error reported by CRC web Service " + procMessage);
 			throw new I2B2Exception("PM Error reported by CRC web Service "
 					+ procMessage);
 		} else if (procStatus.equals("WARNING")) {
-			logesapi.info("PM Warning reported by CRC web Service" + procMessage);
+			//logesapi.info("PM Warning reported by CRC web Service" + procMessage);
 			throw new I2B2Exception("PM Warning reported by CRC web Service"
 					+ procMessage);
 		}
@@ -235,7 +235,7 @@ public class CallPMUtil {
 		//CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseXml);
 		ResponseMessageType pmRespMessageType = (ResponseMessageType) responseJaxb
 				.getValue();
-		logesapi.debug("CRC's PM call response xml" + responseXml);
+		//logesapi.debug("CRC's PM call response xml" + responseXml);
 
 		ResponseHeaderType responseHeader = pmRespMessageType
 				.getResponseHeader();
@@ -244,11 +244,11 @@ public class CallPMUtil {
 		String procMessage = status.getValue();
 
 		if (procStatus.equals("ERROR")) {
-			logesapi.info("PM Error reported by CRC web Service " + procMessage);
+			//logesapi.info("PM Error reported by CRC web Service " + procMessage);
 			throw new I2B2Exception("PM Error reported by CRC web Service "
 					+ procMessage);
 		} else if (procStatus.equals("WARNING")) {
-			logesapi.info("PM Warning reported by CRC web Service" + procMessage);
+			//logesapi.info("PM Warning reported by CRC web Service" + procMessage);
 			throw new I2B2Exception("PM Warning reported by CRC web Service"
 					+ procMessage);
 		}
@@ -274,6 +274,8 @@ public class CallPMUtil {
 						+ projectId + "]");
 			}
 		}
+		if (configureType.getUser().isIsAdmin())
+			projectType.getRole().add("ADMIN");
 
 		return projectType;
 	}
@@ -285,7 +287,7 @@ public class CallPMUtil {
 		//CRCJAXBUtil.getJAXBUtil().unMashallFromString(responseXml);
 		ResponseMessageType pmRespMessageType = (ResponseMessageType) responseJaxb
 				.getValue();
-		logesapi.debug("CRC's PM call response xml" + responseXml);
+		//logesapi.debug("CRC's PM call response xml" + responseXml);
 
 		ResponseHeaderType responseHeader = pmRespMessageType
 				.getResponseHeader();
@@ -294,11 +296,11 @@ public class CallPMUtil {
 		String procMessage = status.getValue();
 
 		if (procStatus.equals("ERROR")) {
-			logesapi.info("PM Error reported by CRC web Service " + procMessage);
+			//logesapi.info("PM Error reported by CRC web Service " + procMessage);
 			throw new I2B2Exception("PM Error reported by CRC web Service "
 					+ procMessage);
 		} else if (procStatus.equals("WARNING")) {
-			logesapi.info("PM Warning reported by CRC web Service" + procMessage);
+			//logesapi.info("PM Warning reported by CRC web Service" + procMessage);
 			throw new I2B2Exception("PM Warning reported by CRC web Service"
 					+ procMessage);
 		}
@@ -327,11 +329,11 @@ public class CallPMUtil {
 		String procMessage = status.getValue();
 
 		if (procStatus.equals("ERROR")) {
-			logesapi.info("PM Error reported by CRC web Service " + procMessage);
+			//logesapi.info("PM Error reported by CRC web Service " + procMessage);
 			throw new I2B2Exception("PM Error reported by CRC web Service "
 					+ procMessage);
 		} else if (procStatus.equals("WARNING")) {
-			logesapi.info("PM Warning reported by CRC web Service" + procMessage);
+			//logesapi.info("PM Warning reported by CRC web Service" + procMessage);
 			throw new I2B2Exception("PM Warning reported by CRC web Service"
 					+ procMessage);
 		}

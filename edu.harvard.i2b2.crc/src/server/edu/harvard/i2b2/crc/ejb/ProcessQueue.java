@@ -80,7 +80,8 @@ public class ProcessQueue implements Runnable{
 
 		
 		Connection conn = null;
-		PreparedStatement preparedStmt = null;
+		PreparedStatement preparedStmt1 = null;
+		PreparedStatement preparedStmt2 = null;
 		for (DataSourceLookup dslookup: dataSourceLookupList)
 		{		
 			try {
@@ -91,22 +92,41 @@ public class ProcessQueue implements Runnable{
 						 "update " + dslookup.getFullSchema() + ".qt_query_instance " +
 								 " set batch_mode = '" + queue + "'" +
 								 " where batch_mode = '" + queue + "_RUNNING' and end_date is null";
-				 log.info("QUEUE START UP: " + initializeSql);
 				 
-				 preparedStmt = conn.prepareStatement(initializeSql);
-				 preparedStmt.executeQuery();
+				 preparedStmt1 = conn.prepareStatement(initializeSql);
+				 preparedStmt1.executeQuery();
 					
+				 
+				 initializeSql = 
+						 "update " + dslookup.getFullSchema() + ".qt_query_instance " +
+								 " set batch_mode = 'ERROR'" +
+								 " where batch_mode = 'PROCESSING'";
+				 
+				 preparedStmt2 = conn.prepareStatement(initializeSql);
+				 preparedStmt2.executeQuery();
+				 
+				 log.info("QUEUE START UP: " + initializeSql);
+
+				 
 			} catch (I2B2Exception e) {
 				;
 			} catch (SQLException e) {
 				;
 			} finally {
 				try {
-					if(preparedStmt != null)
-						preparedStmt.close();
+					if(preparedStmt1 != null)
+						preparedStmt1.close();
 				} catch (SQLException e1) {
 				}
-				preparedStmt = null;
+				preparedStmt1 = null;
+
+				try {
+					if(preparedStmt2 != null)
+						preparedStmt2.close();
+				} catch (SQLException e1) {
+				}
+				preparedStmt2 = null;
+
 				
 				try {
 					if(conn != null)
@@ -237,10 +257,10 @@ public class ProcessQueue implements Runnable{
 
 						if (queryInstanceId != 0 && readTimeoutPropertyValue(queue) > 1) { 
 
-							logesapi.debug("in ProcessQueue my pmXml is"+ pmXml);
+							//logesapi.debug("in ProcessQueue my pmXml is"+ pmXml);
 							ExecRunnable exec = new ExecRunnable(sqlString, Integer.toString(queryInstanceId), null,
 									xmlRequest, dslookup.getDomainId(), projectId, ownerId, pmXml, transactionTimeout);
-							logesapi.info("STARTING " + queue + " FOR " + queryInstanceId + " " + sqlString + " " + transactionTimeout);
+							//logesapi.info("STARTING " + queue + " FOR " + queryInstanceId + " " + sqlString + " " + transactionTimeout);
 							
 							Thread t = new Thread(exec);
 

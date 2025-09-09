@@ -86,7 +86,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		Connection conn = null;
 		PreparedStatement query = null;
 		EidSet eidSet = new EidSet();
-
+		java.sql.Statement tempStmt = null;
 		try {
 			// execute fullsql
 			conn = getDataSource().getConnection();
@@ -121,7 +121,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 				// load to temp table
 				// execute sql
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				 tempStmt = conn.createStatement();
 
 				uploadTempTable(tempStmt, encounterNumList, dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL));
 				String finalSql = "SELECT "
@@ -159,6 +159,9 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 						SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE);
 			}
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
+
 				JDBCUtil.closeJdbcResource(null, query, conn);
 
 			} catch (SQLException sqlEx) {
@@ -271,6 +274,8 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		EidSet eidSet = new EidSet();
 		EidListTypeHandler eidListHandler = new EidListTypeHandler(
 				dataSourceLookup, eidList);
+		java.sql.Statement tempStmt = null;
+
 		try {
 			// execute fullsql
 			conn = getDataSource().getConnection();
@@ -284,7 +289,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 			// load to temp table
 			// execute sql
 			log.debug("creating temp table");
-			java.sql.Statement tempStmt = conn.createStatement();
+			  tempStmt = conn.createStatement();
 
 			eidListHandler.uploadEnumerationValueToTempTable(conn);
 			String tempTableName = eidListHandler.getTempTableName();
@@ -328,6 +333,9 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 			}
 
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
+
 				JDBCUtil.closeJdbcResource(null, query, conn);
 
 			} catch (SQLException sqlEx) {
@@ -352,9 +360,9 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		while (resultSet.next()) {
 			singleEidType = eidBuilder.buildEidSet(resultSet);
 			eidMapId = singleEidType.getEventMapId().get(0);
-			log.debug("Building  pidMapId " + eidMapId.getValue()
-					+ "   " + singleEidType.getEventId().getValue() + " "
-					+ eidMapId.getSource());
+			//log.debug("Building  pidMapId " + eidMapId.getValue()
+			//		+ "   " + singleEidType.getEventId().getValue() + " "
+			//		+ eidMapId.getSource());
 			tempSinglePidType = singleEidType.getEventId().getValue();
 
 			if (prevPatientNum.equals(singleEidType.getEventId().getValue())) {
@@ -486,6 +494,9 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 			}
 		}
 		tempStmt.executeBatch();
+		if (tempStmt != null)
+			tempStmt.close();
+
 	}
 
 	@Override
@@ -504,6 +515,8 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		String tempTable = "";
 		Connection conn = null;
 		PreparedStatement query = null;
+		java.sql.Statement tempStmt = null;
+
 		try {
 			conn = dataSource.getConnection();
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
@@ -511,7 +524,7 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				 tempStmt = conn.createStatement();
 				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
 						tempTable = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
 				else
@@ -590,6 +603,8 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 				}
 			}
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
 
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {

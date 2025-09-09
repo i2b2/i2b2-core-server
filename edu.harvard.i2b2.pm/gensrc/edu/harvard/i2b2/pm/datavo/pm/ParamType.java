@@ -48,8 +48,19 @@ public class ParamType {
     protected Integer id;
     @XmlAttribute(name = "datatype")
     protected String datatype;
+    @XmlAttribute(name = "status")
+    protected String status;
+    @XmlAttribute(name = "hidden")
+    protected Boolean hidden;
+    public Boolean getHidden() {
+		return hidden;
+	}
 
-    /**
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
+	}
+
+	/**
      * Gets the value of the value property.
      * 
      * @return
@@ -73,6 +84,31 @@ public class ParamType {
         this.value = value;
     }
 
+    /**
+     * Gets the status of the value property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    
     /**
      * Gets the value of the name property.
      * 

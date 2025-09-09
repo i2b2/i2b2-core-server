@@ -108,7 +108,7 @@ public class LoaderQueryRequestDelegate extends RequestHandlerDelegate {
 				}
 
 				log.debug("project name from PM " + projectType.getName());
-				logesapi.debug("project id from PM " + projectType.getId());
+				//logesapi.debug("project id from PM " + projectType.getId());
 				if (projectType.getRole().get(0) != null) {
 					log.debug("Project role from PM "
 							+ projectType.getRole().get(0));

@@ -50,7 +50,7 @@ public class QueryResultPatientSetGenerator extends CRCDAO implements
 				.get("SetFinderDAOFactory");
 		// String patientSetId = (String)param.get("PatientSetId");
 		String queryInstanceId = (String) param.get("QueryInstanceId");
-		String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
+		//String TEMP_DX_TABLE = (String) param.get("TEMP_DX_TABLE");
 		String resultInstanceId = (String) param.get("ResultInstanceId");
 		String resultTypeName = (String) param.get("ResultOptionName");
 		String processTimingFlag = (String) param.get("ProcessTimingFlag");
@@ -64,6 +64,18 @@ public class QueryResultPatientSetGenerator extends CRCDAO implements
 		Exception exception = null;
 		int loadCount = 0, realCount = 0;
 		String obfuscationDescription = "", obfusMethod = "";
+
+		String TEMP_DX_TABLE = "#DX";
+		if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SQLSERVER)) {
+			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
+		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.ORACLE)) {
+			TEMP_DX_TABLE = getDbSchemaName() + "DX";
+		} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL)) {
+			TEMP_DX_TABLE = "DX";
+		}
 
 		try {
 
@@ -104,8 +116,8 @@ public class QueryResultPatientSetGenerator extends CRCDAO implements
 			loadCount = ps.executeUpdate();
 			ps.close();
 			logTimingUtil.setEndTime();
-			logesapi.debug("Total patients loaded for query instance ="
-					+ queryInstanceId + " is [" + loadCount + "]");
+			//logesapi.debug("Total patients loaded for query instance ="
+			//		+ queryInstanceId + " is [" + loadCount + "]");
 			////
 			if (processTimingFlag != null) {
 				if (!processTimingFlag.trim().equalsIgnoreCase(ProcessTimingReportUtil.NONE) ) {

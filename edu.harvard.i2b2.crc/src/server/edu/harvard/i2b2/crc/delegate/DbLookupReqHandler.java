@@ -50,7 +50,7 @@ public abstract class DbLookupReqHandler {
 			GetUserConfigurationType userConfigType = new GetUserConfigurationType();
 			PMServiceDriver pmSrvDrvr = new PMServiceDriver();
 			String response = pmSrvDrvr.getRoles(userConfigType, header);		
-			logesapi.debug(response);
+			//logesapi.debug(response);
 			PMResponseMessage msg = new PMResponseMessage();
 			StatusType procStatus = msg.processResult(response);
 			if(procStatus.getType().equals("ERROR")) return false;

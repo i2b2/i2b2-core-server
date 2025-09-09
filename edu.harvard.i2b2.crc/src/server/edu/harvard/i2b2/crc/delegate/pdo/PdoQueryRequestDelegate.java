@@ -124,8 +124,8 @@ public class PdoQueryRequestDelegate extends RequestHandlerDelegate {
 					return response;
 				}
 
-				log.debug("project name from PM " + projectType.getName());
-				logesapi.debug("project id from PM " + projectType.getId());
+				//log.debug("project name from PM " + projectType.getName());
+				//logesapi.debug("project id from PM " + projectType.getId());
 				if (projectType.getRole() != null) {
 					log.debug("project role from PM "
 							+ projectType.getRole().get(0));
@@ -152,7 +152,7 @@ public class PdoQueryRequestDelegate extends RequestHandlerDelegate {
 							if (param.getName() != null && param.getName().trim().equalsIgnoreCase(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION))  {
 								paramUtil.putParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION,param);
 								String unitCdCache = paramUtil.getParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
-								logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
+								//logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
 								break;
 							}
 						}

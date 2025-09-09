@@ -96,6 +96,7 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 		Connection conn = null;
 		PreparedStatement query = null;
 		String tempTableName = "";
+		java.sql.Statement tempStmt = null;
 		try {
 			conn = getDataSource().getConnection();
 
@@ -127,7 +128,7 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				tempStmt = conn.createStatement();
 				tempTableName = getDbSchemaName()
 						+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 				try {
@@ -178,6 +179,9 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 				tempUtil.deleteTempTableSqlServer(conn, tempTableName);
 			}
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
+
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();
@@ -477,6 +481,7 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 		String factTempTable = "";
 		Connection conn = null;
 		PreparedStatement query = null;
+		java.sql.Statement tempStmt =null;
 		try {
 			conn = dataSource.getConnection();
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
@@ -485,7 +490,7 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				 tempStmt = conn.createStatement();
 				factTempTable = getDbSchemaName()
 						+ SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 				try {
@@ -562,7 +567,8 @@ public class TablePdoQueryVisitDao extends CRCDAO implements
 				}
 			}
 			try {
-
+				if (tempStmt != null)
+					tempStmt.close();
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();

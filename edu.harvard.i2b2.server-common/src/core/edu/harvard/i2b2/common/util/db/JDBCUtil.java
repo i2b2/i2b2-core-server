@@ -37,6 +37,7 @@ public class JDBCUtil {
 			while ((singleLine = stringReader.readLine()) != null) { 
 				strBuff.append(singleLine);
 			}
+			stringReader.close();			
 		return strBuff.toString();
 	}
 	

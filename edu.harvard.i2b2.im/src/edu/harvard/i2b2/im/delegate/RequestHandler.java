@@ -53,7 +53,7 @@ public abstract class RequestHandler {
 		try {
 			GetUserConfigurationType userConfigType = new GetUserConfigurationType();
 			String response = PMServiceDriver.getRoles(userConfigType, header);		
-			logesapi.debug(response);
+			//logesapi.debug(response);
 			PMResponseMessage msg = new PMResponseMessage();
 			StatusType procStatus = msg.processResult(response);
 			if(procStatus.getType().equals("ERROR")) return false;
@@ -90,7 +90,7 @@ public abstract class RequestHandler {
 			PMResponseMessage msg = new PMResponseMessage();
 			StatusType procStatus = null;	
 			String response = PMServiceDriver.getAllProjects(header);		
-			logesapi.debug(response);
+			//logesapi.debug(response);
 			procStatus = msg.processResult(response);
 			if(procStatus.getType().equals("ERROR"))
 				return null;
@@ -147,7 +147,7 @@ public abstract class RequestHandler {
 			PMResponseMessage msg = new PMResponseMessage();
 			StatusType procStatus = null;	
 			String response = PMServiceDriver.getRoles(userConfigType,header);		
-			logesapi.debug(response);
+			//logesapi.debug(response);
 			procStatus = msg.processResult(response);
 			if(procStatus.getType().equals("ERROR"))
 				return null;

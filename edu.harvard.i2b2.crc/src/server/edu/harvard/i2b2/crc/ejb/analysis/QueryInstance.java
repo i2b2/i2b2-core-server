@@ -54,7 +54,7 @@ public class QueryInstance {
 		String queryInstanceId = queryInstanceDao.createQueryInstance(
 				queryMasterId, userId, groupId, queueName, StatusEnum.QUEUED
 						.ordinal());
-		log.debug("New Query instance id " + queryInstanceId);
+		//log.debug("New Query instance id " + queryInstanceId);
 
 		IQueryResultInstanceDao patientSetResultDao = sfDAOFactory
 				.getPatientSetResultDAO();
@@ -65,20 +65,20 @@ public class QueryInstance {
 
 			for (ResultOutputOptionType resultOption : resultOptionList
 					.getResultOutput()) {
-				log.debug("Patient result ID [" + resultOption.getName()
-						+ "] for query instance= " + queryInstanceId);
+				//log.debug("Patient result ID [" + resultOption.getName()
+				//		+ "] for query instance= " + queryInstanceId);
 				patientSetId = patientSetResultDao.createPatientSet(
 						queryInstanceId, resultOption.getName());
-				logesapi.debug("Patient Set ID [" + patientSetId
-						+ "] for query instance= " + queryInstanceId);
+				//logesapi.debug("Patient Set ID [" + patientSetId
+				//		+ "] for query instance= " + queryInstanceId);
 			}
 		} else {
 			QueryProcessorUtil qp = QueryProcessorUtil.getInstance();
 			String defaultResultType = "PATIENTSET";
 			patientSetId = patientSetResultDao.createPatientSet(
 					queryInstanceId, defaultResultType);
-			logesapi.debug("Patient Set ID [" + patientSetId
-					+ "] for query instance= " + queryInstanceId);
+			//logesapi.debug("Patient Set ID [" + patientSetId
+			//		+ "] for query instance= " + queryInstanceId);
 		}
 		return queryInstanceId;
 	}

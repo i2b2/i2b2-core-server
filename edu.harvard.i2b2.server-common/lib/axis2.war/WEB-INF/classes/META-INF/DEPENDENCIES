@@ -14,7 +14,7 @@ From: 'an unknown organization'
   - FindBugs-jsr305 (http://findbugs.sourceforge.net/) com.google.code.findbugs:jsr305:jar:3.0.2
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Gson (https://github.com/google/gson) com.google.code.gson:gson:jar:2.11.0
+  - Gson (https://github.com/google/gson) com.google.code.gson:gson:jar:2.12.1
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
   - Error Prone shaded javac (https://github.com/google/error-prone-javac) com.google.errorprone:javac-shaded:jar:9+181-r4173-1
@@ -23,7 +23,7 @@ From: 'an unknown organization'
   - Guava InternalFutureFailureAccess and InternalFutures (https://github.com/google/guava/failureaccess) com.google.guava:failureaccess:bundle:1.0.2
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Guava: Google Core Libraries for Java (https://github.com/google/guava) com.google.guava:guava:bundle:33.3.1-jre
+  - Guava: Google Core Libraries for Java (https://github.com/google/guava) com.google.guava:guava:bundle:33.4.0-jre
     License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
   - Guava ListenableFuture only (https://github.com/google/guava/listenablefuture) com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava
@@ -32,25 +32,25 @@ From: 'an unknown organization'
   - J2ObjC Annotations (https://github.com/google/j2objc/) com.google.j2objc:j2objc-annotations:jar:3.0.0
     License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - moshi (https://github.com/square/moshi/) com.squareup.moshi:moshi:jar:1.15.1
+  - moshi (https://github.com/square/moshi/) com.squareup.moshi:moshi:jar:1.15.2
     License: The Apache Software License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - moshi-adapters (https://github.com/square/moshi/) com.squareup.moshi:moshi-adapters:jar:1.15.1
+  - moshi-adapters (https://github.com/square/moshi/) com.squareup.moshi:moshi-adapters:jar:1.15.2
     License: The Apache Software License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
   - okio (https://github.com/square/okio/) com.squareup.okio:okio-jvm:jar:3.7.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - micrometer-commons (https://github.com/micrometer-metrics/micrometer) io.micrometer:micrometer-commons:jar:1.12.2
+  - micrometer-commons (https://github.com/micrometer-metrics/micrometer) io.micrometer:micrometer-commons:jar:1.14.4
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - micrometer-observation (https://github.com/micrometer-metrics/micrometer) io.micrometer:micrometer-observation:jar:1.12.2
+  - micrometer-observation (https://github.com/micrometer-metrics/micrometer) io.micrometer:micrometer-observation:jar:1.14.4
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - tomcat-juli (https://tomcat.apache.org/) org.apache.tomcat:tomcat-juli:jar:11.0.0
+  - tomcat-juli (https://tomcat.apache.org/) org.apache.tomcat:tomcat-juli:jar:11.0.4
     License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - tomcat-tribes (https://tomcat.apache.org/) org.apache.tomcat:tomcat-tribes:jar:11.0.0
+  - tomcat-tribes (https://tomcat.apache.org/) org.apache.tomcat:tomcat-tribes:jar:11.0.4
     License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
   - Checker Qual (https://checkerframework.org/) org.checkerframework:checker-qual:jar:3.43.0
@@ -131,7 +131,7 @@ From: 'Eclipse Foundation' (https://www.eclipse.org)
     License: Apache License, Version 2.0  (http://www.opensource.org/licenses/apache2.0.php)
     License: Eclipse Distribution License - v 1.0  (http://www.eclipse.org/org/documents/edl-v10.php)
 
-  - Jakarta SOAP Implementation (https://projects.eclipse.org/projects/ee4j/metro-saaj/saaj-impl) com.sun.xml.messaging.saaj:saaj-impl:jar:3.0.2
+  - Jakarta SOAP Implementation (https://projects.eclipse.org/projects/ee4j/metro-saaj/saaj-impl) com.sun.xml.messaging.saaj:saaj-impl:jar:3.0.4
     License: Eclipse Distribution License - v 1.0  (http://www.eclipse.org/org/documents/edl-v10.php)
 
   - xmlstreambuffer (https://github.com/eclipse-ee4j/metro-xmlstreambuffer) com.sun.xml.stream.buffer:streambuffer:jar:2.1.0
@@ -143,7 +143,7 @@ From: 'Eclipse Foundation' (https://www.eclipse.org)
   - JAX-WS RI Tools (jaxws-tools) (https://projects.eclipse.org/projects/ee4j/jaxws-ri-bom/jaxws-ri-bom-ext/project/bundles/jaxws-tools) com.sun.xml.ws:jaxws-tools:jar:4.0.3
     License: Eclipse Distribution License - v 1.0  (http://www.eclipse.org/org/documents/edl-v10.php)
 
-  - Jakarta Activation API (https://github.com/jakartaee/jaf-api) jakarta.activation:jakarta.activation-api:jar:2.1.2
+  - Jakarta Activation API (https://github.com/jakartaee/jaf-api) jakarta.activation:jakarta.activation-api:jar:2.1.3
     License: EDL 1.0  (http://www.eclipse.org/org/documents/edl-v10.php)
 
   - Jakarta Annotations API (https://projects.eclipse.org/projects/ee4j.ca) jakarta.annotation:jakarta.annotation-api:jar:3.0.0
@@ -167,13 +167,13 @@ From: 'Eclipse Foundation' (https://www.eclipse.org)
     License: EPL 2.0  (http://www.eclipse.org/legal/epl-2.0)
     License: GPL2 w/ CPE  (https://www.gnu.org/software/classpath/license.html)
 
-  - Jakarta XML Binding API (https://github.com/eclipse-ee4j/jaxb-api/jakarta.xml.bind-api) jakarta.xml.bind:jakarta.xml.bind-api:jar:4.0.1
+  - Jakarta XML Binding API (https://github.com/jakartaee/jaxb-api/jakarta.xml.bind-api) jakarta.xml.bind:jakarta.xml.bind-api:jar:4.0.2
     License: Eclipse Distribution License - v 1.0  (http://www.eclipse.org/org/documents/edl-v10.php)
 
-  - Jakarta SOAP with Attachments API (https://github.com/eclipse-ee4j/saaj-api) jakarta.xml.soap:jakarta.xml.soap-api:jar:3.0.0
+  - Jakarta SOAP with Attachments API (https://github.com/jakartaee/saaj-api) jakarta.xml.soap:jakarta.xml.soap-api:jar:3.0.2
     License: Eclipse Distribution License - v 1.0  (http://www.eclipse.org/org/documents/edl-v10.php)
 
-  - Jakarta XML Web Services API (https://github.com/eclipse-ee4j/jax-ws-api) jakarta.xml.ws:jakarta.xml.ws-api:jar:4.0.0
+  - Jakarta XML Web Services API (https://github.com/jakartaee/jax-ws-api) jakarta.xml.ws:jakarta.xml.ws-api:jar:4.0.2
     License: Eclipse Distribution License - v 1.0  (http://www.eclipse.org/org/documents/edl-v10.php)
 
   - Angus Activation Registries (https://github.com/eclipse-ee4j/angus-activation/angus-activation) org.eclipse.angus:angus-activation:jar:2.0.2
@@ -230,9 +230,16 @@ From: 'Eclipse Foundation' (https://www.eclipse.org/org/foundation/)
     License: GPL-2.0-with-classpath-exception  (https://www.gnu.org/software/classpath/license.html)
 
 
+From: 'EE4J Community' (https://github.com/eclipse-ee4j)
+
+  - jakarta.transaction API (https://projects.eclipse.org/projects/ee4j.jta) jakarta.transaction:jakarta.transaction-api:jar:2.0.1
+    License: EPL 2.0  (http://www.eclipse.org/legal/epl-2.0)
+    License: GPL2 w/ CPE  (https://www.gnu.org/software/classpath/license.html)
+
+
 From: 'FasterXML' (http://fasterxml.com)
 
-  - Woodstox (https://github.com/FasterXML/woodstox) com.fasterxml.woodstox:woodstox-core:bundle:7.0.0
+  - Woodstox (https://github.com/FasterXML/woodstox) com.fasterxml.woodstox:woodstox-core:bundle:7.1.0
     License: The Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 
@@ -240,12 +247,6 @@ From: 'fasterxml.com' (http://fasterxml.com)
 
   - Stax2 API (http://github.com/FasterXML/stax2-api) org.codehaus.woodstox:stax2-api:bundle:4.2.2
     License: The BSD 2-Clause License  (http://www.opensource.org/licenses/bsd-license.php)
-
-
-From: 'GlassFish Community' (https://glassfish.java.net)
-
-  - javax.transaction API (http://jta-spec.java.net) javax.transaction:javax.transaction-api:jar:1.3
-    License: CDDL + GPLv2 with classpath exception  (https://github.com/javaee/javax.transaction/blob/master/LICENSE)
 
 
 From: 'Google Inc.' (http://www.google.com/)
@@ -256,7 +257,7 @@ From: 'Google Inc.' (http://www.google.com/)
 
 From: 'Google LLC' (http://www.google.com)
 
-  - error-prone annotations (https://errorprone.info/error_prone_annotations) com.google.errorprone:error_prone_annotations:jar:2.27.0
+  - error-prone annotations (https://errorprone.info/error_prone_annotations) com.google.errorprone:error_prone_annotations:jar:2.36.0
     License: Apache 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 
@@ -278,13 +279,6 @@ From: 'JUnit' (http://www.junit.org)
     License: Eclipse Public License 1.0  (http://www.eclipse.org/legal/epl-v10.html)
 
 
-From: 'Mort Bay Consulting' (http://www.mortbay.com)
-
-  - Jetty :: Jakarta Servlet API and Schemas for JPMS and OSGi (https://eclipse.org/jetty/jetty-jakarta-servlet-api) org.eclipse.jetty.toolchain:jetty-jakarta-servlet-api:jar:5.0.2
-    License: Apache Software License - Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
-    License: Eclipse Public License - Version 1.0  (http://www.eclipse.org/org/documents/epl-v10.php)
-
-
 From: 'OWASP (Open Web-Application Security Project)' (https://www.owasp.org/)
 
   - Java Encoder (https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder) org.owasp.encoder:encoder:jar:1.3.1
@@ -293,31 +287,31 @@ From: 'OWASP (Open Web-Application Security Project)' (https://www.owasp.org/)
 
 From: 'QOS.ch' (http://www.qos.ch)
 
-  - SLF4J API Module (http://www.slf4j.org) org.slf4j:slf4j-api:jar:2.0.16
-    License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
+  - SLF4J API Module (http://www.slf4j.org) org.slf4j:slf4j-api:jar:2.0.17
+    License: MIT  (https://opensource.org/license/mit)
 
 
 From: 'Spring IO' (https://spring.io/projects/spring-framework)
 
-  - Spring AOP (https://github.com/spring-projects/spring-framework) org.springframework:spring-aop:jar:6.1.3
+  - Spring AOP (https://github.com/spring-projects/spring-framework) org.springframework:spring-aop:jar:6.2.3
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Spring Beans (https://github.com/spring-projects/spring-framework) org.springframework:spring-beans:jar:6.1.3
+  - Spring Beans (https://github.com/spring-projects/spring-framework) org.springframework:spring-beans:jar:6.2.3
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Spring Context (https://github.com/spring-projects/spring-framework) org.springframework:spring-context:jar:6.1.3
+  - Spring Context (https://github.com/spring-projects/spring-framework) org.springframework:spring-context:jar:6.2.3
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Spring Core (https://github.com/spring-projects/spring-framework) org.springframework:spring-core:jar:6.1.3
+  - Spring Core (https://github.com/spring-projects/spring-framework) org.springframework:spring-core:jar:6.2.3
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Spring Expression Language (SpEL) (https://github.com/spring-projects/spring-framework) org.springframework:spring-expression:jar:6.1.3
+  - Spring Expression Language (SpEL) (https://github.com/spring-projects/spring-framework) org.springframework:spring-expression:jar:6.2.3
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Spring Commons Logging Bridge (https://github.com/spring-projects/spring-framework) org.springframework:spring-jcl:jar:6.1.3
+  - Spring Commons Logging Bridge (https://github.com/spring-projects/spring-framework) org.springframework:spring-jcl:jar:6.2.3
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Spring Web (https://github.com/spring-projects/spring-framework) org.springframework:spring-web:jar:6.1.3
+  - Spring Web (https://github.com/spring-projects/spring-framework) org.springframework:spring-web:jar:6.2.3
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
 
@@ -332,106 +326,106 @@ From: 'The Apache Software Foundation' (http://www.apache.org)
 
 From: 'The Apache Software Foundation' (https://www.apache.org/)
 
-  - Apache Commons IO (https://commons.apache.org/proper/commons-io/) commons-io:commons-io:jar:2.17.0
+  - Apache Commons IO (https://commons.apache.org/proper/commons-io/) commons-io:commons-io:jar:2.18.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Commons Logging (https://commons.apache.org/proper/commons-logging/) commons-logging:commons-logging:jar:1.3.4
+  - Apache Commons Logging (https://commons.apache.org/proper/commons-logging/) commons-logging:commons-logging:jar:1.3.5
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Addressing (http://axis.apache.org/axis2/java/core/) org.apache.axis2:addressing:mar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Addressing (http://axis.apache.org/axis2/java/core/) org.apache.axis2:addressing:mar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Data Binding (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-adb:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Data Binding (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-adb:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Clustering (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-clustering:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Clustering (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-clustering:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Code Generation (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-codegen:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Code Generation (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-codegen:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - CORBA (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-corba:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - CORBA (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-corba:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Fast Infoset (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-fastinfoset:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Fast Infoset (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-fastinfoset:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - JAXWS (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-jaxws:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - JAXWS (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-jaxws:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - JAXWS (mar) (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-jaxws-mar:mar:2.0.0-SNAPSHOT
+  - Apache Axis2 - JAXWS (mar) (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-jaxws-mar:mar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - JiBX Data Binding (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-jibx:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - JiBX Data Binding (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-jibx:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - JSON (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-json:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - JSON (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-json:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Kernel (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-kernel:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Kernel (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-kernel:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Metadata (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-metadata:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Metadata (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-metadata:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - MTOM Policy (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-mtompolicy:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - MTOM Policy (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-mtompolicy:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - SAAJ (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-saaj:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - SAAJ (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-saaj:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - SOAP Monitor Servlet (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-soapmonitor-servlet:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - SOAP Monitor Servlet (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-soapmonitor-servlet:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - spring (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-spring:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - spring (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-spring:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Transport - Base (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-base:bundle:2.0.0-SNAPSHOT
+  - Apache Axis2 - Transport - Base (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-base:bundle:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Transport - HTTP (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-http:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Transport - HTTP (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-http:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Transport - JMS (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-jms:bundle:2.0.0-SNAPSHOT
+  - Apache Axis2 - Transport - JMS (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-jms:bundle:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Transport - Local (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-local:bundle:2.0.0-SNAPSHOT
+  - Apache Axis2 - Transport - Local (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-local:bundle:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Transport - Mail (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-mail:bundle:2.0.0-SNAPSHOT
+  - Apache Axis2 - Transport - Mail (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-mail:bundle:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Transport - TCP (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-tcp:bundle:2.0.0-SNAPSHOT
+  - Apache Axis2 - Transport - TCP (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-tcp:bundle:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Transport - UDP (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-udp:bundle:2.0.0-SNAPSHOT
+  - Apache Axis2 - Transport - UDP (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-udp:bundle:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Transport - XMPP (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-xmpp:bundle:2.0.0-SNAPSHOT
+  - Apache Axis2 - Transport - XMPP (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-transport-xmpp:bundle:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - XMLBeans Data Binding (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-xmlbeans:jar:2.0.0-SNAPSHOT
+  - Apache Axis2 - XMLBeans Data Binding (http://axis.apache.org/axis2/java/core/) org.apache.axis2:axis2-xmlbeans:jar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - MEX (http://axis.apache.org/axis2/java/core/) org.apache.axis2:mex:mar:2.0.0-SNAPSHOT
+  - Apache Axis2 - MEX (http://axis.apache.org/axis2/java/core/) org.apache.axis2:mex:mar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - MEX (http://axis.apache.org/axis2/java/core/) org.apache.axis2:mex:mar:2.0.0-SNAPSHOT
+  - Apache Axis2 - MEX (http://axis.apache.org/axis2/java/core/) org.apache.axis2:mex:mar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - MTOM Policy module (http://axis.apache.org/axis2/java/core/) org.apache.axis2:mtompolicy:mar:2.0.0-SNAPSHOT
+  - Apache Axis2 - MTOM Policy module (http://axis.apache.org/axis2/java/core/) org.apache.axis2:mtompolicy:mar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Ping (http://axis.apache.org/axis2/java/core/) org.apache.axis2:ping:mar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Ping (http://axis.apache.org/axis2/java/core/) org.apache.axis2:ping:mar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Scripting (http://axis.apache.org/axis2/java/core/) org.apache.axis2:scripting:mar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Scripting (http://axis.apache.org/axis2/java/core/) org.apache.axis2:scripting:mar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - SOAP Monitor Module (http://axis.apache.org/axis2/java/core/) org.apache.axis2:soapmonitor:mar:2.0.0-SNAPSHOT
+  - Apache Axis2 - SOAP Monitor Module (http://axis.apache.org/axis2/java/core/) org.apache.axis2:soapmonitor:mar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Axis2 - Version Service (http://axis.apache.org/axis2/java/core/) org.apache.axis2:version:aar:2.0.0-SNAPSHOT
+  - Apache Axis2 - Version Service (http://axis.apache.org/axis2/java/core/) org.apache.axis2:version:aar:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
   - Apache Commons FileUpload Core (https://commons.apache.org/proper/commons-fileupload/commons-fileupload2-core/) org.apache.commons:commons-fileupload2-core:jar:2.0.0-M2
@@ -443,46 +437,46 @@ From: 'The Apache Software Foundation' (https://www.apache.org/)
   - Apache Commons Lang (https://commons.apache.org/proper/commons-lang/) org.apache.commons:commons-lang3:jar:3.17.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache HttpClient (https://hc.apache.org/httpcomponents-client-5.4.x/5.4/httpclient5/) org.apache.httpcomponents.client5:httpclient5:jar:5.4
+  - Apache HttpClient (https://hc.apache.org/httpcomponents-client-5.4.x/5.4.2/httpclient5/) org.apache.httpcomponents.client5:httpclient5:jar:5.4.2
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache HttpComponents Core HTTP/1.1 (https://hc.apache.org/httpcomponents-core-5.3.x/5.3/httpcore5/) org.apache.httpcomponents.core5:httpcore5:jar:5.3
+  - Apache HttpComponents Core HTTP/1.1 (https://hc.apache.org/httpcomponents-core-5.3.x/5.3.3/httpcore5/) org.apache.httpcomponents.core5:httpcore5:jar:5.3.3
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache HttpComponents Core HTTP/2 (https://hc.apache.org/httpcomponents-core-5.3.x/5.3/httpcore5-h2/) org.apache.httpcomponents.core5:httpcore5-h2:jar:5.3
+  - Apache HttpComponents Core HTTP/2 (https://hc.apache.org/httpcomponents-core-5.3.x/5.3.3/httpcore5-h2/) org.apache.httpcomponents.core5:httpcore5-h2:jar:5.3.3
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache James :: Mime4j :: Core (http://james.apache.org/mime4j/apache-mime4j-core) org.apache.james:apache-mime4j-core:bundle:0.8.11
+  - Apache James :: Mime4j :: Core (http://james.apache.org/mime4j/apache-mime4j-core) org.apache.james:apache-mime4j-core:bundle:0.8.12
     License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Apache Log4j API (https://logging.apache.org/log4j/2.x/log4j-api/) org.apache.logging.log4j:log4j-api:jar:2.20.0
-    License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-  - Apache Log4j Core (https://logging.apache.org/log4j/2.x/log4j-core/) org.apache.logging.log4j:log4j-core:jar:2.20.0
-    License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-  - Apache Log4j Commons Logging Bridge (https://logging.apache.org/log4j/2.x/log4j-jcl/) org.apache.logging.log4j:log4j-jcl:jar:2.20.0
-    License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-  - Apache Neethi (https://ws.apache.org/neethi/) org.apache.neethi:neethi:bundle:3.2.0
-    License: Apache License, Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-  - Axiom API (http://ws.apache.org/axiom/) org.apache.ws.commons.axiom:axiom-api:bundle:2.0.0-SNAPSHOT
+  - Apache Log4j API (https://logging.apache.org/log4j/2.x/log4j/log4j-api/) org.apache.logging.log4j:log4j-api:jar:2.24.3
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - DOOM (http://ws.apache.org/axiom/implementations/axiom-dom/) org.apache.ws.commons.axiom:axiom-dom:bundle:2.0.0-SNAPSHOT
+  - Apache Log4j Core (https://logging.apache.org/log4j/2.x/log4j/log4j-core/) org.apache.logging.log4j:log4j-core:jar:2.24.3
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - LLOM (http://ws.apache.org/axiom/implementations/axiom-impl/) org.apache.ws.commons.axiom:axiom-impl:bundle:2.0.0-SNAPSHOT
+  - Apache Log4j Commons Logging Bridge (https://logging.apache.org/log4j/2.x/log4j/log4j-jcl/) org.apache.logging.log4j:log4j-jcl:jar:2.24.3
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - axiom-jakarta-activation (http://ws.apache.org/axiom/) org.apache.ws.commons.axiom:axiom-jakarta-activation:bundle:2.0.0-SNAPSHOT
+  - Apache Neethi (https://ws.apache.org/neethi/) org.apache.neethi:neethi:bundle:3.2.1
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - Axiom JAXB Integration (http://ws.apache.org/axiom/) org.apache.ws.commons.axiom:axiom-jakarta-jaxb:bundle:2.0.0-SNAPSHOT
+  - Axiom API (http://ws.apache.org/axiom/) org.apache.ws.commons.axiom:axiom-api:bundle:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-  - axiom-legacy-attachments (http://ws.apache.org/axiom/) org.apache.ws.commons.axiom:axiom-legacy-attachments:bundle:2.0.0-SNAPSHOT
+  - DOOM (http://ws.apache.org/axiom/implementations/axiom-dom/) org.apache.ws.commons.axiom:axiom-dom:bundle:2.0.0
+    License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - LLOM (http://ws.apache.org/axiom/implementations/axiom-impl/) org.apache.ws.commons.axiom:axiom-impl:bundle:2.0.0
+    License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - axiom-jakarta-activation (http://ws.apache.org/axiom/) org.apache.ws.commons.axiom:axiom-jakarta-activation:bundle:2.0.0
+    License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - Axiom JAXB Integration (http://ws.apache.org/axiom/) org.apache.ws.commons.axiom:axiom-jakarta-jaxb:bundle:2.0.0
+    License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - axiom-legacy-attachments (http://ws.apache.org/axiom/) org.apache.ws.commons.axiom:axiom-legacy-attachments:bundle:2.0.0
     License: Apache-2.0  (https://www.apache.org/licenses/LICENSE-2.0.txt)
 
   - XmlSchema Core (https://ws.apache.org/commons/xmlschema20/xmlschema-core/) org.apache.ws.xmlschema:xmlschema-core:bundle:2.3.1
@@ -497,31 +491,31 @@ From: 'The Jaxen Project' (https://www.cafeconleche.org/jaxen)
 
 From: 'Webtide' (https://webtide.com)
 
-  - Core :: HTTP (https://eclipse.dev/jetty/jetty-core/jetty-http) org.eclipse.jetty:jetty-http:jar:12.0.7
+  - Core :: HTTP (https://jetty.org/jetty-core/jetty-http) org.eclipse.jetty:jetty-http:jar:12.0.16
     License: Eclipse Public License - Version 2.0  (https://www.eclipse.org/legal/epl-2.0/)
     License: Apache Software License - Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Core :: IO (https://eclipse.dev/jetty/jetty-core/jetty-io) org.eclipse.jetty:jetty-io:jar:12.0.7
+  - Core :: IO (https://jetty.org/jetty-core/jetty-io) org.eclipse.jetty:jetty-io:jar:12.0.16
     License: Eclipse Public License - Version 2.0  (https://www.eclipse.org/legal/epl-2.0/)
     License: Apache Software License - Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Core :: Security (https://eclipse.dev/jetty/jetty-core/jetty-security) org.eclipse.jetty:jetty-security:jar:12.0.7
+  - Core :: Security (https://jetty.org/jetty-core/jetty-security) org.eclipse.jetty:jetty-security:jar:12.0.16
     License: Eclipse Public License - Version 2.0  (https://www.eclipse.org/legal/epl-2.0/)
     License: Apache Software License - Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Core :: Server (https://eclipse.dev/jetty/jetty-core/jetty-server) org.eclipse.jetty:jetty-server:jar:12.0.7
+  - Core :: Server (https://jetty.org/jetty-core/jetty-server) org.eclipse.jetty:jetty-server:jar:12.0.16
     License: Eclipse Public License - Version 2.0  (https://www.eclipse.org/legal/epl-2.0/)
     License: Apache Software License - Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Core :: Sessions (https://eclipse.dev/jetty/jetty-core/jetty-session) org.eclipse.jetty:jetty-session:jar:12.0.7
+  - Core :: Sessions (https://jetty.org/jetty-core/jetty-session) org.eclipse.jetty:jetty-session:jar:12.0.16
     License: Eclipse Public License - Version 2.0  (https://www.eclipse.org/legal/epl-2.0/)
     License: Apache Software License - Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - Core :: Utilities (https://eclipse.dev/jetty/jetty-core/jetty-util) org.eclipse.jetty:jetty-util:jar:12.0.7
+  - Core :: Utilities (https://jetty.org/jetty-core/jetty-util) org.eclipse.jetty:jetty-util:jar:12.0.16
     License: Eclipse Public License - Version 2.0  (https://www.eclipse.org/legal/epl-2.0/)
     License: Apache Software License - Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 
-  - EE9 :: Nested (https://eclipse.dev/jetty/jetty-ee9/jetty-ee9-nested) org.eclipse.jetty.ee9:jetty-ee9-nested:jar:12.0.7
+  - EE9 :: Nested (https://jetty.org/jetty-ee9/jetty-ee9-nested) org.eclipse.jetty.ee9:jetty-ee9-nested:jar:12.0.16
     License: Eclipse Public License - Version 2.0  (https://www.eclipse.org/legal/epl-2.0/)
     License: Apache Software License - Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
 

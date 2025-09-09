@@ -150,10 +150,13 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 			TEMP_DX_TABLE = getDbSchemaName() + "#DX";
 
 		} else if (dsLookup.getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.ORACLE) || dsLookup.getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.ORACLE) ) {
 			TEMP_TABLE = getDbSchemaName() + "QUERY_GLOBAL_TEMP";
 			TEMP_DX_TABLE = getDbSchemaName() + "DX";
+		} else if ( dsLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.POSTGRESQL)) {
+			TEMP_TABLE = "QUERY_GLOBAL_TEMP";
+			TEMP_DX_TABLE = "DX";
 		}
 		Exception exception = null;
 
@@ -515,22 +518,22 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 						}
 						generatedSql = "select count(distinct patient_num) as patient_num_count from ( \n" + generatedSql + " \n ) allitem ";
 
-						logesapi.debug("Setfinder converted sql without temp table " + generatedSql);
+						//logesapi.debug("Setfinder converted sql without temp table " + generatedSql);
 
 					} catch (JAXBUtilException e) { 
 						e.printStackTrace();
 					} catch (I2B2Exception e) { 
 						e.printStackTrace();
 					}
-					logesapi.debug("Setfinder skip temp table generated sql " + generatedSql);
-					logesapi.debug("Setfinder skip temp table missing item message " +  missingItemMessage);
-					logesapi.debug("Setfinder skip temp table process timing message " + processTimingMessage);
+					//logesapi.debug("Setfinder skip temp table generated sql " + generatedSql);
+					//logesapi.debug("Setfinder skip temp table missing item message " +  missingItemMessage);
+					//logesapi.debug("Setfinder skip temp table process timing message " + processTimingMessage);
 				}
 				queryMasterDao.updateQueryAfterRun(masterId, generatedSql, queryType);
 
 				if (missingItemMessage != null
 						&& missingItemMessage.trim().length() > 1) {
-					logesapi.debug("Setfinder query missing item message not null" + missingItemMessage);
+					//logesapi.debug("Setfinder query missing item message not null" + missingItemMessage);
 					missingItemFlag = true;
 
 					queryInstance.setEndDate(new Date(System

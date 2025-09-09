@@ -38,8 +38,11 @@ import edu.harvard.i2b2.crc.loader.delegate.BulkLoadRequestHandler;
 import edu.harvard.i2b2.crc.loader.delegate.GetLoadStatusRequestHandler;
 import edu.harvard.i2b2.crc.loader.delegate.LoaderQueryRequestDelegate;
 import edu.harvard.i2b2.crc.loader.delegate.PublishDataRequestHandler;
+import edu.harvard.i2b2.crc.datavo.I2B2MessageResponseFactory;
 //import edu.harvard.i2b2.crc.loader.ws.ProviderRestService;
 import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
+import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
+import edu.harvard.i2b2.crc.datavo.i2b2message.StatusType;
 import edu.harvard.i2b2.crc.delegate.DbLookupReqHandler;
 //import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.crc.delegate.DeleteDblookupHandler;
@@ -112,7 +115,7 @@ public class QueryService {
 	public OMElement request(OMElement omElement) {
 		Assert.notNull(omElement,
 				"Setfinder request OMElement must not be null");
-		log.debug("Inside setfinder request " + omElement);
+		//log.debug("Inside setfinder request " + omElement);
 		return handleRequest(SETFINDER_REQUEST, omElement);
 	}
 
@@ -126,7 +129,7 @@ public class QueryService {
 	public OMElement breakdownrequest(OMElement omElement) {
 		Assert.notNull(omElement,
 				"Setfinder request OMElement must not be null");
-		log.debug("Inside setfinder request " + omElement);
+		//log.debug("Inside setfinder request " + omElement);
 		return handleRequest(QTBREAKDOWN_REQUEST, omElement);
 	}
 	/**
@@ -138,7 +141,7 @@ public class QueryService {
 	 */
 	public OMElement pdorequest(OMElement omElement) {
 		Assert.notNull(omElement, "PDO request OMElement must not be null");
-		log.debug("Inside pdo request " + omElement);
+		//log.debug("Inside pdo request " + omElement);
 		return handleRequest(PDO_REQUEST, omElement);
 	}
 
@@ -182,14 +185,14 @@ public class QueryService {
 	 */
 	public OMElement getNameInfo(OMElement omElement) {
 		Assert.notNull(omElement, "getNameInfo  OMElement must not be null");
-		log.debug("Inside getNameInfo request " + omElement);
+		//log.debug("Inside getNameInfo request " + omElement);
 		return handleRequest(GETNAMEINFO_REQUEST, omElement);
 	}
 
 	public OMElement publishDataRequest(OMElement request) {
 		Assert.notNull(request,
 				"publish data request OMElement must not be null");
-		log.debug("Inside publish data request " + request);
+		//log.debug("Inside publish data request " + request);
 		//TODO removed loader
 		// Added back
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -213,7 +216,7 @@ public class QueryService {
 	public OMElement bulkLoadRequest(OMElement request) {
 		Assert.notNull(request,
 				"bulk load request OMElement must not be null");
-		log.debug("Inside bulk load request " + request);
+		//log.debug("Inside bulk load request " + request);
 
 		//LoaderQueryReqDel handles permissions...
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -486,7 +489,7 @@ public class QueryService {
 	public OMElement getLoadDataStatusRequest(OMElement request) {
 		Assert.notNull(request,
 				"get load Data status request OMElement must not be null");
-		log.debug("Inside load status request " + request);
+		//log.debug("Inside load status request " + request);
 
 		//LoaderQueryReqDel handles permissions...
 		LoaderQueryRequestDelegate queryDelegate = new LoaderQueryRequestDelegate();
@@ -854,8 +857,7 @@ public class QueryService {
 		try {
 			// call delegate's handleRequest function
 			String xmlString= request.toStringWithConsume();
-			String response = requestHandlerDelegate.handleRequest(request
-					.toString());
+			String response = requestHandlerDelegate.handleRequest(xmlString); //request.toString());
 			log.debug("Response in service" + response);
 			returnElement = buildOMElementFromString(response);
 		} catch (XMLStreamException e) {

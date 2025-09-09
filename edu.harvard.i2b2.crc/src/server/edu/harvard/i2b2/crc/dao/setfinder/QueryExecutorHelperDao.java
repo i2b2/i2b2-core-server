@@ -314,8 +314,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			while (count < sqls.length) {
 				singleSql = sqls[count++];
 				if (singleSql != null && singleSql.trim().length() > 10) {
-					logesapi.info("Executing setfinder query sql [" + singleSql + "]"
-							+ " for query instance= " + queryInstanceId);
+					//logesapi.info("Executing setfinder query sql [" + singleSql + "]"
+					//		+ " for query instance= " + queryInstanceId);
 					logTimingUtil.setStartTime();
 					if (this.queryWithoutTempTableFlag == false) { 
 						int rows = stmt.executeUpdate(singleSql);
@@ -351,8 +351,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			outerLogTimingUtil.setEndTime();
 			long endTime = System.currentTimeMillis();
 			long totalTime = endTime - startTime;
-			log.debug("Time to run the SETFINDER query query instance id ["
-					+ queryInstanceId + "] is [" + totalTime + " ]");
+			//log.debug("Time to run the SETFINDER query query instance id ["
+			//		+ queryInstanceId + "] is [" + totalTime + " ]");
 
 			//log the process timing to the query instance 
 			if (this.processTimingFlag.equalsIgnoreCase(ProcessTimingReportUtil.INFO)) {
@@ -380,8 +380,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 				obfuscatedRecordCount = (int) gaussianBoxMuller
 						.getNormalizedValueForCount(recordCount,countSigma,obfuscatedMinimumValue);
 
-				log.debug("Calculated Patient set size :[" + recordCount
-						+ "] for query instance= " + queryInstanceId);
+				//log.debug("Calculated Patient set size :[" + recordCount
+				//		+ "] for query instance= " + queryInstanceId);
 			}
 			resultSet.close();
 			countStmt.close();
@@ -441,9 +441,11 @@ public class QueryExecutorHelperDao extends CRCDAO {
 
 			// update query instance restult status
 			setQueryInstanceStatus(sfDAOFactory, queryInstanceId, 6, null);
-			log.debug("Query executor completed processing query instance[ "
-					+ queryInstanceId + " ]");
+			//log.debug("Query executor completed processing query instance[ "
+			//		+ queryInstanceId + " ]");
 
+			stmt.close();
+			manualConnection.close();
 		} catch (CRCTimeOutException timeoutEx) {
 			//TRANSACTION timeout  ... do nothing
 			//			timeOutErrorFlag = true;
@@ -477,7 +479,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			else{
 				errorFlag = true;
 				exception = sqlEx;
-				logesapi.error("Error while executing sql" + singleSql + sqlEx);
+				//logesapi.error("Error while executing sql" + singleSql + sqlEx);
 				throw new I2B2DAOException("Error while executing sql", sqlEx);
 			}
 		} catch (LockedoutException crcDaoEx) {
@@ -705,7 +707,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		param.put("ObfuscatedRecordCount", obfuscatedRecordCount);
 		param.put("RecordCount", recordCount);
 		param.put("ObfuscatedRoleFlag", dataObfuscFlag);
-		param.put("panelList", panelList);
+		//param.put("panelList", panelList);
 		param.put("queryDef", queryDef);
 		param.put("DXCreateTime", dxCreateTime);
 		try {
@@ -786,8 +788,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 							}
 						}
 					} else {
-						log.debug("Setfinder not doing the lockout check for instance ["+ queryInstanceId + "] " +
-								"the property value of query count is -1");
+						//log.debug("Setfinder not doing the lockout check for instance ["+ queryInstanceId + "] " +
+						//		"the property value of query count is -1");
 					}
 				}
 			} else {
@@ -831,8 +833,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 					}
 				}
 			} else {
-				log.debug("Setfinder not doing the lockout check for instance ["+ queryInstanceId + "] " +
-						"the property value of query count is -1");
+				//log.debug("Setfinder not doing the lockout check for instance ["+ queryInstanceId + "] " +
+				//		"the property value of query count is -1");
 			}
 		}
 	}
@@ -902,13 +904,13 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		//if the lockout query zero count is -1, dont count zero
 		if (setSize == 0 ) {
 			if (lockoutQueryZeroCount == -1) {
-				logesapi.debug("Setfinder not doing the lockout check for result instance ["+ resultInstanceId + "] " +
-						"the zero count property value is -1");
+				//logesapi.debug("Setfinder not doing the lockout check for result instance ["+ resultInstanceId + "] " +
+				//		"the zero count property value is -1");
 				return userLockedDate;
 			} else { 
 				//assign the lockout query zero count to lockout query count
-				logesapi.debug("Setfinder lockout query count value for result instance ["+ resultInstanceId + "] " +
-						"taken from zero count property value is ["+lockoutQueryZeroCount +"]");
+				//logesapi.debug("Setfinder lockout query count value for result instance ["+ resultInstanceId + "] " +
+				//		"taken from zero count property value is ["+lockoutQueryZeroCount +"]");
 				lockoutQueryCount = lockoutQueryZeroCount;
 			}
 		}
@@ -967,7 +969,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 	 */
 	public List<String> getRoleFromPM(String requestXml, String pmXml) throws I2B2Exception {
 
-		logesapi.debug("In getRoleFromPM, pmXml is " + pmXml);
+		//logesapi.debug("In getRoleFromPM, pmXml is " + pmXml);
 		I2B2RequestMessageHelper reqMsgHelper = new I2B2RequestMessageHelper(
 				requestXml);
 		SecurityType origSecurityType = reqMsgHelper.getSecurityType();

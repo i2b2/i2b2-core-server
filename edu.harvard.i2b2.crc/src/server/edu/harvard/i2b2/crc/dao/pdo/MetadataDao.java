@@ -100,6 +100,7 @@ public class MetadataDao extends CRCDAO implements IMetadataDao {
 		Map<String, TableMetaData> columnMap = new HashMap<String, TableMetaData>();
 		Connection conn = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 		try {
 			conn = getDataSource().getConnection();
 			
@@ -107,7 +108,7 @@ public class MetadataDao extends CRCDAO implements IMetadataDao {
 			
 			stmt = conn.createStatement();
 			// Execute the query
-			ResultSet rs = stmt.executeQuery("SELECT * FROM "
+			 rs = stmt.executeQuery("SELECT * FROM "
 					+ getDbSchemaName() + tableName + " WHERE 1 = 2");
 
 			// Get the metadata
@@ -144,6 +145,7 @@ public class MetadataDao extends CRCDAO implements IMetadataDao {
 					columnMap.put(columnName, tableMetaData);
 				}
 			}
+			stmt.close();
 		} catch (SQLException sqlEx) {
 			sqlEx.printStackTrace();
 			log.error("", sqlEx);
@@ -151,7 +153,12 @@ public class MetadataDao extends CRCDAO implements IMetadataDao {
 		} finally {
 			
 			try {
+				if (rs != null)
+					rs.close();
+	
 				JDBCUtil.closeJdbcResource(null, stmt, conn);
+				
+	
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();
 			}

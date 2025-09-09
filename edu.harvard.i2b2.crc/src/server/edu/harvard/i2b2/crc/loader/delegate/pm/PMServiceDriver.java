@@ -154,7 +154,7 @@ public class PMServiceDriver {
 			response = getRoles(security);
 			StatusType procStatus = msg.processResult(response);
 			if (procStatus.getType().equalsIgnoreCase("ERROR")) {
-				logesapi.debug("PM response error [" + procStatus.getValue() + "]");
+				//logesapi.debug("PM response error [" + procStatus.getValue() + "]");
 				projectType = null;
 			} else {
 				ConfigureType pmResponseUserInfo = msg.readUserInfo();

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlType;
 
@@ -73,7 +74,15 @@ public class ConfigureType {
     @XmlElement(name = "global_data", required = true)
     protected GlobalDataType globalData;
     protected List<ParamType> param;
+    @XmlAttribute(name = "hidden")
+    protected Boolean hidden;
+    public Boolean getHidden() {
+		return hidden;
+	}
 
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
+	}
     /**
      * Gets the value of the environment property.
      * 

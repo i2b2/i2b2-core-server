@@ -104,12 +104,9 @@ public class AuthrizationHelper {
 		//List<String> roles = (List<String>) cache.getRoot().get(rolePath);
 		List<String> roles = (List<String>) CacheUtil.get(rolePath);
 
-		log.debug("Roles from get " + rolePath);
-		if (roles != null) {
-			log.debug("Roles from size " + roles.size());
-		} else {
-			log.error( "Could not find the Roles from the cache for ["
-					+ rolePath + "]");
+		if (roles == null) {
+			//log.error( "Could not find the Roles from the cache for ["
+			//		+ rolePath + "]");
 			throw new I2B2Exception(
 					"Could not find the Roles from the cache for [" + rolePath
 							+ "]");

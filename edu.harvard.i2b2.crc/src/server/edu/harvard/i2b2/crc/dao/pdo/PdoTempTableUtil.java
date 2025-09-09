@@ -30,15 +30,21 @@ public class PdoTempTableUtil {
 		Statement deleteStmt = null;
 		try {
 			deleteStmt = conn.createStatement();
-			conn.createStatement().executeUpdate("drop table " + tableName);
+			//deleteStmt.executeUpdate("drop table " + tableName);
 			deleteStmt.executeUpdate("drop table " + tableName);
 
+			if(deleteStmt != null)
+				deleteStmt.close();
+			if (conn != null)
+				conn.close();
 		} catch (SQLException sqle) {
 			;
 		} finally {
 			try {
 				if(deleteStmt != null)
 					deleteStmt.close();
+				if (conn != null)
+					conn.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

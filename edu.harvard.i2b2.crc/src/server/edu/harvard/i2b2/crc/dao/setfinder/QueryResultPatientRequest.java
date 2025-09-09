@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import edu.harvard.i2b2.crc.dao.xml.ValueExporter;
 import edu.harvard.i2b2.crc.dao.EmailUtil;
+import edu.harvard.i2b2.crc.dao.RPDODao;
 
 /**
  * To add Length of Stay (This is for Oracle and Postgresl)  For Sql Server change the sql statement from (DX to #DX)
@@ -73,22 +74,24 @@ import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
+import edu.harvard.i2b2.crc.dao.pdo.RpdoTable;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryBreakdownType;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
+import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
+import edu.harvard.i2b2.crc.datavo.pdo.query.ConceptTableType;
+import edu.harvard.i2b2.crc.datavo.pdo.query.RpdoType;
 import edu.harvard.i2b2.crc.datavo.pm.UserType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PanelType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryDefinitionType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
 import edu.harvard.i2b2.crc.delegate.pm.CallPMUtil;
-import edu.harvard.i2b2.crc.opencsv.CSVWriter;
-import edu.harvard.i2b2.crc.opencsv.ResultSetHelperService;
 import edu.harvard.i2b2.crc.util.LogTimingUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 import edu.harvard.i2b2.crc.dao.xml.Item_orig;
@@ -223,9 +226,80 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 			valueExport = new ValueExporter();
 
 
+			if (exportItemXml != null)
+				valueExport = JaxbXmlToObj(exportItemXml);
 
-			valueExport = JaxbXmlToObj(exportItemXml);
 
+			// Create RPDO if no RPDO in the results
+
+			boolean hasRPDO = false;
+			boolean hasRPDOSecond = false;
+
+			for (ResultOutputOptionType r : resultOptionList)
+			{
+				if (r.getName().toUpperCase().startsWith("RPDO_"))
+				{
+					hasRPDO = true;
+					break;
+				}
+			}
+
+			if (hasRPDO == false) {
+				RPDODao RPDODao = new RPDODao(user.getDomain(), user.getUserName(), queryMaster.getGroupId());
+				RpdoType rpdoType = new RpdoType();
+
+
+				// Find if default already exists
+				int tableInstanceID = -1;
+				for (RpdoType rpdoTable : RPDODao.findRPDOs())
+				{
+					if (rpdoTable.getTitle().equalsIgnoreCase("Default Table " + user.getUserName()))
+						tableInstanceID = rpdoTable.getId();
+				}
+
+
+				if (tableInstanceID == -1) {
+					rpdoType.setCreatorId(user.getUserName());
+					rpdoType.setShared(false);
+					List<RpdoTable> rpdoTableList = RPDODao.getRPDO(-1);
+					for (RpdoTable rpdoTable :  rpdoTableList) 
+					{
+						ConceptTableType concept =  new ConceptTableType();
+						concept.setId(rpdoTable.getId());
+						concept.setRequired(true);
+						concept.setName(rpdoTable.getColumnName());
+						concept.setDisplay(true);
+						concept.setData("[{\"dataOption\":\"Value\",\"index\":1,\"sdxData\":{}}]");
+
+						rpdoType.getConcept().add(concept);
+					}
+					rpdoType.setTitle("Default Table " + user.getUserName());
+					tableInstanceID = RPDODao.setRPDO(rpdoType);
+
+				}
+
+				//run QueryResultUserCreated
+				IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
+						.getPatientSetResultDAO();
+
+				if (resultOptionList.size() == (resultInstanceDao.getResultInstanceList(queryInstanceId)).size())
+				{
+					String resultInstanceIdNew = resultInstanceDao.createPatientSet(queryInstanceId, "RPDO_"+tableInstanceID);
+
+					/*
+				QtQueryResultInstance resultInstance = resultInstanceDao
+						.getResultInstanceByQueryInstanceIdAndName(queryInstanceId,
+								"RPDO_"+tableInstanceID);
+				String resultInstanceIdNew =  resultInstance.getResultInstanceId();
+					 */
+
+					param.put("ResultInstanceId", resultInstanceIdNew);
+					param.put("ResultOptionName", "RPDO_"+tableInstanceID);
+
+					QueryResultUserCreated userCreated = new QueryResultUserCreated();
+					userCreated.generateResult(param);
+				}
+			}
 
 			//JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
 			//ValueExport valueExport = (ValueExport) jaxbUtil
@@ -301,6 +375,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 									//obsfcTotal, 
 									obfuscatedRecordCount, recordCount, obfusMethod);
 
+							/*
 							if (recordCount == 0)
 								description = "0 patients, no email sent";
 							else
@@ -321,7 +396,7 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 								if (letter != null) {
 
 									letter = processFilename(letter, param);
-			
+
 									requesterMessage = processFilename(requesterMessage, param);
 									for (ResultOutputOptionType resultOutputOption : resultOptionList) {
 										String resultName = resultOutputOption.getName()
@@ -354,6 +429,11 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 									mdataType.setColumn("DataManagerEmail");
 									mdataType.setType("string");
 									resultType.getData().add(mdataType);
+									mdataType = new DataType();
+									mdataType.setValue( queryDef.getEmail());
+									mdataType.setColumn("EMAIL");
+									mdataType.setType("string");
+									resultType.getData().add(mdataType);
 
 									edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 									BodyType bodyType = new BodyType();
@@ -376,12 +456,12 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 									if (resultInstanceId != null)
 										xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
 												.toString());
-//qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.subject")
+									//qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.subject")
 
 									if (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) {
 										EmailUtil email = new EmailUtil();
 										try {
-											
+
 											if (resultTypeName.equals(finalResultOutput)) {
 												email.email(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"),  "i2b2 Data Request", letter);
 												if (user.getEmail()!= null &&  !user.getEmail().equals("") && requesterMessage != null)
@@ -398,10 +478,12 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 											e.printStackTrace();
 										}
 									}
+									
 								}
 
-
 							}
+							*/
+
 						} catch (SecurityException e) {
 							throw new I2B2DAOException(
 									"Failed to write obfuscated description "
@@ -442,24 +524,6 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 		}
 		return resultDataSet;
 	}
-	private String sanitizeFilename(String filename)
-	{
-
-		return filename.replaceAll("[^a-zA-Z0-9.-]", "_");
-	}
-	/*
-	private static final Pattern TAG_REGEX = Pattern.compile("{{{(.+?)}}}", Pattern.DOTALL);
-
-
-	private static List<String> getTagValues(final String str) {
-		final List<String> tagValues = new ArrayList<String>();
-		final Matcher matcher = TAG_REGEX.matcher(str);
-		while (matcher.find()) {
-			tagValues.add(matcher.group(1));
-		}
-		return tagValues;
-	}
-	 */
 	private char getChar(String sTerminatedBy)
 	{
 		if ("\\t".equals(sTerminatedBy)) {
@@ -476,74 +540,6 @@ public class QueryResultPatientRequest extends CRCDAO implements IResultGenerato
 			return  ( sTerminatedBy.charAt(0));
 		}
 
-	}
-
-	private String processFilename(String fileName, Map param)
-	{
-
-
-		//		SetFinderDAOFactory sfDAOFactory = (SetFinderDAOFactory) param
-		//				.get("SetFinderDAOFactory");
-
-		String projectId = (String) param.get("projectId");
-		String queryInstanceId = (String) param.get("QueryInstanceId");
-		QueryDefinitionType queryDef = (QueryDefinitionType)param.get("queryDef");
-		String resultFullName = queryDef.getQueryName();
-		//queryDef.getQueryId()
-
-		//		String resultFullName =  sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-		//				sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
-		//		QtQueryMaster qtMaster =  sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster();
-
-		fileName = fileName.replaceAll("\\{\\{\\{USER_NAME\\}\\}\\}",(String) param.get("UserName"));//queryDef.getUserId());
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_STARTDATE\\}\\}\\}", ((java.sql.Timestamp) param.get("QueryStartDate")).toLocaleString());//sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getStartDate().toLocaleString());
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_ENDDATE\\}\\}\\}", new Date().toLocaleString());
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_RUNTIME\\}\\}\\}", Integer.toString(Math.toIntExact(new Date().getTime() - ((java.sql.Timestamp) param.get("QueryStartDate")).getTime())/1000));
-
-		fileName = fileName.replaceAll("\\{\\{\\{PATIENT_COUNT\\}\\}\\}", param.get("RecordCount").toString());		
-		fileName = fileName.replaceAll("\\{\\{\\{FULL_NAME\\}\\}\\}", (String) param.get("FullName"));			
-		fileName = fileName.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId.substring(1, projectId.length()-1));
-		//fileName = fileName.replaceAll("\\{\\{\\{RESULT_INSTANCE_ID\\}\\}\\}", resultInstanceId);
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", sanitizeFilename(resultFullName));
-		fileName = fileName.replaceAll("\\{\\{\\{QUERY_MASTER_ID\\}\\}\\}", sanitizeFilename(queryInstanceId)); //qtMaster.getQueryMasterId()));
-
-		while (fileName.contains("{{{RANDOM_"))
-		{
-
-			try {
-				int start = fileName.indexOf("{{{RANDOM_");
-				int end = fileName.indexOf("}}}", start);
-				int size = Integer.parseInt(fileName.substring(start+10, end));
-
-				//SecureRandom random = new SecureRandom();
-				//fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", String.valueOf(random.nextInt(size)));
-				fileName = fileName.replaceAll("\\{\\{\\{RANDOM_"+size+"\\}\\}\\}", (String) param.get("ResultRandom"));
-
-			} catch (Exception e) {}
-
-		}
-		// Deal with dates
-		while (fileName.contains("{{{DATE_"))
-		{
-
-			try {
-				int start = fileName.indexOf("{{{DATE_");
-				int end = fileName.indexOf("}}}", start);
-				String date = fileName.substring(start+8, end);
-
-				//DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
-				//fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}", LocalDate.now().format(formatter));
-
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date);
-				fileName = fileName.replaceAll("\\{\\{\\{DATE_"+date+"\\}\\}\\}",  ((LocalDate) param.get("ResultDate")).format(formatter));
-				//(String) param.get("ResultDate"));
-
-			} catch (Exception e) {}
-
-		}
-
-
-		return fileName;
 	}
 
 	private String getItemKeyFromResultType(SetFinderDAOFactory sfDAOFactory,

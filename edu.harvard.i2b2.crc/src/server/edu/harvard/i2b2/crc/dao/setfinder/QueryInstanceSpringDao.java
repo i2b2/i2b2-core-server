@@ -121,8 +121,8 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 	public List<QtQueryInstance> getQueryInstanceByMasterId(String queryMasterId) {
 		String sql = "select *  from " + getDbSchemaName()
 				+ "qt_query_instance where query_master_id = ?";
-		List<QtQueryInstance> queryInstanceList = jdbcTemplate.query(sql,
-				new Object[] { Integer.parseInt(queryMasterId) }, queryInstanceMapper);
+		List<QtQueryInstance> queryInstanceList = jdbcTemplate.query(sql, queryInstanceMapper,
+				  Integer.parseInt(queryMasterId) );
 		return queryInstanceList;
 	}
 
@@ -137,11 +137,15 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 		String sql = "select *  from " + getDbSchemaName()
 				+ "qt_query_instance  where query_instance_id =?";
 
-		QtQueryInstance queryInstance = (QtQueryInstance) jdbcTemplate
-				.queryForObject(sql, new Object[] { Integer.parseInt(queryInstanceId ) },
-						queryInstanceMapper);
+		List<QtQueryInstance> queryInstanceList =   jdbcTemplate
+				.query(sql,  queryInstanceMapper, Integer.parseInt(queryInstanceId ) 
+						);
 
-		return queryInstance;
+		
+		if (queryInstanceList != null && queryInstanceList.size() > 0)
+			return queryInstanceList.get(0);
+		else
+			return null;
 	}
 
 	/**
@@ -476,7 +480,7 @@ public class QueryInstanceSpringDao extends CRCDAO implements IQueryInstanceDao 
 		if (serverType.equalsIgnoreCase(DataSourceLookupDAOFactory.SQLSERVER)) {
 			String errorMsg = callStmt.getString(outParamIndex);
 			if (errorMsg != null) {
-				logesapi.debug("error codde" + errorMsg);
+				//logesapi.debug("error codde" + errorMsg);
 				throw new I2B2Exception("Error from stored procedure ["
 						+ errorMsg + "]");
 			}

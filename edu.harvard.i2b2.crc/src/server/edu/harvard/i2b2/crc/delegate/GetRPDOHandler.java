@@ -83,17 +83,21 @@ public class GetRPDOHandler extends RPDOReqHandler {
 						ConceptTableType concept = new ConceptTableType();
 						concept.setData(rpdo.getConcept());
 						concept.setName(rpdo.getColumnName());
-						concept.setDisplay(true);
+						concept.setId(rpdo.getRequestId());
 						dblu.setTitle(rpdo.getTitle());
 						dblu.setCreateDate(rpdo.getCreateDate());
 						dblu.setUpdateDate(rpdo.getUpdateDate());
 						dblu.setCreatorId(rpdo.getCreatorId());
 						concept.setRequired(rpdo.isRequired());
+						if (rpdo.isVisible() == true)
+							concept.setDisplay(true);
+						else 
+							concept.setDisplay(false);
 						if (rpdo.getConcept() == null)
-						{
 							concept.setLocked(true);
-						//	concept.setRequired(true);
-						}
+						else 
+							concept.setLocked(false);
+
 						dblu.getConcept().add(concept);
 					} while (it.hasNext());
 					

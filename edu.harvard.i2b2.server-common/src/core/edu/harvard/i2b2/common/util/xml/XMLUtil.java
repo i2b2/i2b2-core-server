@@ -42,12 +42,15 @@ import javax.xml.transform.stream.StreamResult;
 public class XMLUtil {
 	
 	public static org.w3c.dom.Document loadXMLFrom(java.io.InputStream is) 
-		    throws org.xml.sax.SAXException, java.io.IOException {
+		    throws org.xml.sax.SAXException, java.io.IOException, ParserConfigurationException {
 		    javax.xml.parsers.DocumentBuilderFactory factory =
 		        javax.xml.parsers.DocumentBuilderFactory.newInstance();
 		    factory.setExpandEntityReferences(false);
 		    factory.setXIncludeAware(false);
 		    factory.setNamespaceAware(true);
+		    String FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+		    factory.setFeature(FEATURE, true);
+
 		    javax.xml.parsers.DocumentBuilder builder = null;
 		    try {
 		        builder = factory.newDocumentBuilder();
@@ -189,11 +192,14 @@ public class XMLUtil {
 	    factory.setXIncludeAware(false);
 
         Document document = null;
-
+        String FEATURE = null;
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             document = builder.parse(new InputSource(
                         new StringReader(xmlString)));
+		    FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+		    factory.setFeature(FEATURE, true);
+
         } catch (ParserConfigurationException e) {
             throw new I2B2Exception(e.getMessage(), e);
         } catch (SAXException e) {

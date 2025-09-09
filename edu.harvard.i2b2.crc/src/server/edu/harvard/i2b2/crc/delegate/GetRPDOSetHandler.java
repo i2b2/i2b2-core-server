@@ -67,6 +67,7 @@ public class GetRPDOSetHandler extends RPDOReqHandler {
 			String dbError = "Database error";
 			responseMessageType = MessageFactory.doBuildErrorResponse(msgHdr, dbError);
 			log.error(dbError);
+			e1.printStackTrace();
 		}
 		if (responseMessageType == null) { // no db error
 			if (response == -1) { // but response is empty

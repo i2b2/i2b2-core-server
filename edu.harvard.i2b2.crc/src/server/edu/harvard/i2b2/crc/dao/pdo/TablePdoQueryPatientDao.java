@@ -96,6 +96,7 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 				detailFlag, blobFlag, statusFlag);
 		PreparedStatement query = null;
 		String tempTableName = "";
+		java.sql.Statement tempStmt  = null;
 		try {
 			// execute fullsql
 			conn = getDataSource().getConnection();
@@ -133,7 +134,7 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 				log.debug("creating temp table");
 				tempTableName = this.getDbSchemaName()
 						+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
-				java.sql.Statement tempStmt = conn.createStatement();
+				 tempStmt = conn.createStatement();
 
 				try {
 					tempStmt.executeUpdate("drop table " + tempTableName);
@@ -188,6 +189,8 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 			}
 
 			try {
+				if (tempStmt != null)
+					tempStmt.close();
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();
@@ -543,6 +546,7 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 		String serverType = dataSourceLookup.getServerType();
 		String factTempTable = "";
 		Connection conn = null;
+		java.sql.Statement tempStmt = null;
 		PreparedStatement query = null;
 		try {
 			conn = dataSource.getConnection();
@@ -552,7 +556,7 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
 					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
 				log.debug("creating temp table");
-				java.sql.Statement tempStmt = conn.createStatement();
+				tempStmt = conn.createStatement();
 				factTempTable = this.getDbSchemaName()
 						+ SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 				try {
@@ -630,7 +634,8 @@ public class TablePdoQueryPatientDao extends CRCDAO implements
 				}
 			}
 			try {
-
+				if ( tempStmt != null)
+					tempStmt.close();
 				JDBCUtil.closeJdbcResource(null, query, conn);
 			} catch (SQLException sqlEx) {
 				sqlEx.printStackTrace();

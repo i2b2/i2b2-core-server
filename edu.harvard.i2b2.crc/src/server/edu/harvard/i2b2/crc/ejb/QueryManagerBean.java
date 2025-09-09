@@ -15,8 +15,15 @@
 package edu.harvard.i2b2.crc.ejb;
 
 import java.io.StringWriter;
+import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,14 +40,18 @@ import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
+import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.IDAOFactory;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryMasterDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryResultInstanceDao;
+import edu.harvard.i2b2.crc.dao.setfinder.IXmlResultDao;
 import edu.harvard.i2b2.crc.dao.setfinder.QueryInstanceSpringDao;
 import edu.harvard.i2b2.crc.dao.setfinder.QueryResultInstanceSpringDao;
+import edu.harvard.i2b2.crc.dao.setfinder.SetFinderConnection;
+import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ProcessTimingReportUtil;
 import edu.harvard.i2b2.crc.datavo.CRCJAXBUtil;
 import edu.harvard.i2b2.crc.datavo.PSMFactory;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
@@ -48,6 +59,7 @@ import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
+import edu.harvard.i2b2.crc.datavo.db.QtXmlResult;
 import edu.harvard.i2b2.crc.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.PasswordType;
 import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
@@ -67,8 +79,14 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.StatusType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.StatusType.Condition;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.UserType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.XmlResultType;
 import edu.harvard.i2b2.crc.delegate.pm.CallPMUtil;
 import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
+
+import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
+import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
+import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
+
 
 
 /**
@@ -156,7 +174,7 @@ public class QueryManagerBean{ // implements SessionBean {
 					queryMasterId, userId, groupId,
 					"QUEUED", 5);
 			//					QueryExecutorMDB.SMALL_QUEUE, 5);
-			log.debug("New Query instance id " + queryInstanceId);
+			//log.debug("New Query instance id " + queryInstanceId);
 
 			IQueryResultInstanceDao patientSetResultDao = sfDAOFactory
 					.getPatientSetResultDAO();
@@ -173,8 +191,8 @@ public class QueryManagerBean{ // implements SessionBean {
 
 					patientSetId = patientSetResultDao.createPatientSet(
 							queryInstanceId, resultOption.getName());
-					logesapi.debug("Patient Set ID [" + patientSetId
-							+ "] for query instance= " + queryInstanceId);
+				//	logesapi.debug("Patient Set ID [" + patientSetId
+				//			+ "] for query instance= " + queryInstanceId);
 				}
 			} else {
 				QueryProcessorUtil qp = QueryProcessorUtil.getInstance();
@@ -182,8 +200,8 @@ public class QueryManagerBean{ // implements SessionBean {
 				String defaultResultType = "PATIENTSET";
 				patientSetId = patientSetResultDao.createPatientSet(
 						queryInstanceId, defaultResultType);
-				logesapi.debug("Patient Set ID [" + patientSetId
-						+ "] for query instance= " + queryInstanceId);
+				//logesapi.debug("Patient Set ID [" + patientSetId
+				//		+ "] for query instance= " + queryInstanceId);
 			}
 
 			// tm.commit();
@@ -270,7 +288,7 @@ public class QueryManagerBean{ // implements SessionBean {
 				stype.getCondition().add(e);
 				responseType1.setStatus(stype);
 			} else 
-			*/
+			 */
 			if 	(responseType1.getQueryResultInstance() != null && error == false && processing == false) //responseType1.getQueryResultInstance().get(0).getQueryStatusType().getStatusTypeId().equals("3"))
 			{
 				//	QueryStatusTypeType status = queryInstanceType.getQueryStatusType();
@@ -286,7 +304,7 @@ public class QueryManagerBean{ // implements SessionBean {
 				queryInstance.setQtQueryStatusType(status1);
 				//masterInstanceResultType.setQueryInstance(queryInstanceType);
 
-				
+
 				if  (queryMaster.getMasterTypeCd() != null && queryMaster.getMasterTypeCd().equals("EXPORT"))
 					queryInstance.setBatchMode(QueryManagerBeanUtil.SUBMITTED);
 				else
@@ -415,52 +433,231 @@ public class QueryManagerBean{ // implements SessionBean {
 	 * @return InstanceResultResponseType
 	 */
 	public InstanceResultResponseType runExportQueryInstance(
-			DataSourceLookup dataSourceLookup, String userId, String quertyInstanceId,
+			DataSourceLookup dataSourceLookup, String userId, String queryInstanceId,
 			String xmlRequest) throws Exception {
-		
+
 		InstanceResultResponseType instanceResultResponse = new InstanceResultResponseType();
+
+		SetFinderDAOFactory sfDAOFactory = null;
+		QueryManagerBeanUtil qmBeanUtil = new QueryManagerBeanUtil();
+
+		DataSourceLookup dsLookupInput = qmBeanUtil
+				.getDataSourceLookupInput(xmlRequest);
+
+		DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
+				dsLookupInput.getDomainId(),
+				dsLookupInput.getProjectPath(), dsLookupInput.getOwnerId());
+
+		IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
+		sfDAOFactory = daoFactory.getSetFinderDAOFactory();
+
+		IQueryInstanceDao queryInstanceDao = sfDAOFactory
+				.getQueryInstanceDAO();
+
+		QtQueryInstance queryInstance = queryInstanceDao
+				.getQueryInstanceByInstanceId(queryInstanceId);
 
 		try {
 			String sessionId = String.valueOf(System.currentTimeMillis());
-			QueryManagerBeanUtil qmBeanUtil = new QueryManagerBeanUtil();
 			long timeout = qmBeanUtil.getTimeout(xmlRequest);
 
-			DataSourceLookup dsLookupInput = qmBeanUtil
-					.getDataSourceLookupInput(xmlRequest);
-			SetFinderDAOFactory sfDAOFactory = null;
 			// tm.begin();
 			//			transaction.begin();
 			if (dsLookupInput.getProjectPath() == null) {
 				throw new I2B2Exception("project id is missing in the request");
 			}
-			DAOFactoryHelper daoFactoryHelper = new DAOFactoryHelper(
-					dsLookupInput.getDomainId(),
-					dsLookupInput.getProjectPath(), dsLookupInput.getOwnerId());
-			IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
-			sfDAOFactory = daoFactory.getSetFinderDAOFactory();
 
-			
+
 			QueryInstanceSpringDao instanceSpringDao = new QueryInstanceSpringDao(sfDAOFactory.getDataSource(), sfDAOFactory.getDataSourceLookup());
-			
-			
+
+
 			QueryResultInstanceSpringDao resultInstanceDao = new QueryResultInstanceSpringDao(sfDAOFactory.getDataSource(), sfDAOFactory.getDataSourceLookup());
 			Set<QtQueryResultInstance>  setResult = new HashSet<>(); 
+
 			
+
+
+			queryInstance.setBatchMode(QueryManagerBeanUtil.PROCESSING);
+			queryInstance.setEndDate(new Date(System
+					.currentTimeMillis()));
+			queryInstanceDao.update(queryInstance, false);
+			//SKIP this one and goto MEDIUM Queue
 			//QueryInstanceType queryInstanceResponse = PSMFactory
 			//		.buildQueryInstanceType(instanceSpringDao.getQueryInstanceByInstanceId(quertyInstanceId));
 			//instanceResultResponse.setQueryInstance(queryInstanceResponse);
 
-			for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(quertyInstanceId))
+			for (QtQueryResultInstance r : resultInstanceDao.getResultInstanceList(queryInstanceId))
 			{
-				if (r.getQtQueryResultType().getClassname().equals("edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientDownload"))
-					r.getClass();
+				if (r.getQtQueryResultType().getClassname().equals("edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientRequest")) {
+					r.getQtQueryResultType().setName(r.getQtQueryResultType().getName().replace("REQUEST", "CSV"));
+				}
+				if (r.getQtQueryResultType().getClassname().equals("edu.harvard.i2b2.crc.dao.setfinder.QueryResultUserCreated") ||
+						r.getQtQueryResultType().getClassname().equals("edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientRequest"))
+				{
+
+
+					//IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+					//Set<QtXmlResult> xmlResult = r.getQtXmlResults(); //xmlResultDao.getXmlResultByResultInstanceId(r.resultInstance.getResultInstanceId());
+					//			xmlResult.
+
+					//Set<QtQueryResultInstance> data = r.getQtQueryInstance().getQtQueryResultInstances();
+
+
+					IXmlResultDao xmlResultDao = sfDAOFactory.getXmlResultDao();
+					QtXmlResult xmlResult = xmlResultDao.getXmlResultByResultInstanceId(r.getResultInstanceId());
+					//resultInstanceDao.g
+
+					//	xmlResultDao.getXmlResultByResultInstanceId(r.resultInstance.getResultInstanceId());
+
+					XmlResultType xmlResultType = new XmlResultType();
+
+					xmlResultType.setXmlResultId(xmlResult.getXmlResultId());
+
+					String xmlValue = xmlResult.getXmlValue();
+					if (xmlValue != null) {
+
+
+						ResultType resultType = (ResultType) this.getRequestType(xmlValue,
+								edu.harvard.i2b2.crc.datavo.i2b2result.ResultType.class);
+
+						DataType mdataType = new DataType();
+
+						mdataType.setValue( new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+						mdataType.setColumn("QUEUED");
+						mdataType.setType("string");
+						resultType.getData().add(mdataType);
+
+						SaveXMLResult(resultType, sfDAOFactory, r.getResultInstanceId());
+
+
+						// Get the breakdown
+						String PSetResultInstanceId = "-1";
+						for (QtQueryResultInstance r2 : resultInstanceDao.getResultInstanceList(queryInstanceId))
+						{
+							if (r2.getQtQueryResultType().getName().equals("PATIENTSET"))
+								PSetResultInstanceId= r2.getResultInstanceId();
+						
+						}
+
+						// Call QueryResultPatientDownload
+						QueryDefinitionType queryDef =  new QueryDefinitionType();
+						queryDef.setQueryName("name");
+
+						String TEMP_DX_TABLE = "#DX";
+						if (daoFactoryHelper.getDataSourceLookup().getServerType().equalsIgnoreCase(
+								DAOFactoryHelper.SQLSERVER)) {
+							TEMP_DX_TABLE = daoFactoryHelper.getDataSourceLookup().getFullSchema() + "#DX";
+
+						} else if (daoFactoryHelper.getDataSourceLookup().getServerType().equalsIgnoreCase(
+								DAOFactoryHelper.ORACLE) || daoFactoryHelper.getDataSourceLookup().getServerType().equalsIgnoreCase(
+										DAOFactoryHelper.POSTGRESQL)) {
+							TEMP_DX_TABLE = daoFactoryHelper.getDataSourceLookup().getFullSchema() + "DX";
+						}
+
+						ResultOutputOptionListType resultOutputList = new ResultOutputOptionListType();
+						List<ResultOutputOptionType> resultOutput = new ArrayList<ResultOutputOptionType>();
+						ResultOutputOptionType resultOutputOptionType = new ResultOutputOptionType();
+						resultOutputOptionType.setName(r.getQtQueryResultType().getName());
+						resultOutput.add(resultOutputOptionType);
+						SecureRandom random = new SecureRandom();
+
+
+						//r.getQtQueryResultType().
+						Map param = new HashMap();
+						log.debug("Creatiung hash map");
+						//SetFinderConnection sfConn = new SetFinderConnection(sfDAOFactory.getDataSource().getConnection());
+						//param.put("SetFinderConnection", sfConn);
+						param.put("SetFinderDAOFactory", sfDAOFactory);
+						param.put("QueryInstanceId", queryInstanceId);
+						param.put("TEMP_DX_TABLE", TEMP_DX_TABLE);
+						param.put("ResultInstanceId", r.getResultInstanceId());
+						param.put("ResultOptionName", r.getQtQueryResultType().getName());
+						param.put("ProcessTimingFlag", ProcessTimingReportUtil.NONE);
+						param.put("ObfuscatedRecordCount", r.getSetSize());
+						param.put("RecordCount", r.getRealSetSize());
+						param.put("projectId", dsLookupInput.getProjectPath());
+						param.put("ResultPriority", -1);
+						param.put("TransactionTimeout", 0);
+						param.put("ObfuscatedRoleFlag", false);
+						param.put("queryDef", queryDef);
+						param.put("PSetResultInstanceId", PSetResultInstanceId);
+						param.put("resultOptionList", resultOutput);
+						//						ResultOutputOptionType>) param.get("");
+
+						param.put("ResultRandom", String.valueOf(random.nextInt()));
+						param.put("ResultDate",  LocalDate.now());
+						param.put("resultType", resultType);
+						param.put("isRPDO", true);
+
+						DataType mdataType3 = new DataType();
+						mdataType3.setValue( new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+						mdataType3.setColumn("PROCESSING");
+						mdataType3.setType("string");
+						resultType.getData().add(mdataType3);
+						
+						edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientDownload qrpd = new edu.harvard.i2b2.crc.dao.setfinder.QueryResultPatientDownload();
+
+						qrpd.generateResult(param);
+						//qrpd.
+						mdataType = new DataType();
+
+						mdataType.setValue( new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+						mdataType.setColumn("FINISHED");
+						mdataType.setType("string");
+						resultType.getData().add(mdataType);
+
+
+						DataType mdataType2 = new DataType();
+						mdataType2.setValue(userId);
+						mdataType2.setColumn("APPROVEDBY");
+						mdataType2.setType("string");
+						resultType.getData().add(mdataType2);
+							
+
+						SaveXMLResult(resultType, sfDAOFactory, r.getResultInstanceId());
+						/*
+						bodyType2 = new edu.harvard.i2b2.crc.datavo.i2b2result.BodyType();
+						bodyType2.getAny().add(of.createResult(resultType));
+						resultEnvelop = new ResultEnvelopeType();
+						resultEnvelop.setBody(bodyType2);
+
+						jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+
+						strWriter2 = new StringWriter();
+						jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
+								strWriter2);
+						//tm.begin();
+						xmlResultDao2 = sfDAOFactory.getXmlResultDao();
+						xmlResult2 = strWriter2.toString();
+
+						xmlResultDao2.deleteQueryXmlResult(r.getResultInstanceId());
+						xmlResultDao2.createQueryXmlResult(r.getResultInstanceId(), xmlResult2);
+						*/
+
+
+
+
+
+					}
+
+				}
 			}
-				
-	
+
+			queryInstance.setBatchMode(QueryManagerBeanUtil.FINISHED);
+			queryInstance.setEndDate(new Date(System
+					.currentTimeMillis()));
+			queryInstanceDao.update(queryInstance, false);
+
+
 
 		} catch (I2B2DAOException ex) {
 			log.debug("Got an error in QueryManagerBean, thropwing: " + ex.getMessage());
 			ex.printStackTrace();
+
+			queryInstance.setBatchMode(QueryManagerBeanUtil.ERROR);
+			queryInstance.setEndDate(new Date(System
+					.currentTimeMillis()));
+			queryInstanceDao.update(queryInstance, false);
 
 			throw new I2B2Exception(ex.getMessage());
 		}
@@ -468,7 +665,47 @@ public class QueryManagerBean{ // implements SessionBean {
 
 		return instanceResultResponse;
 	}
-	
+
+	private void SaveXMLResult(ResultType resultType, SetFinderDAOFactory sfDAOFactory, String resultInstanceId) throws JAXBUtilException
+	{
+		edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
+		edu.harvard.i2b2.crc.datavo.i2b2result.BodyType bodyType2 = new edu.harvard.i2b2.crc.datavo.i2b2result.BodyType();
+		bodyType2.getAny().add(of.createResult(resultType));
+		ResultEnvelopeType resultEnvelop = new ResultEnvelopeType();
+		resultEnvelop.setBody(bodyType2);
+
+		JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+
+		StringWriter strWriter2 = new StringWriter();
+		jaxbUtil.marshaller(of.createI2B2ResultEnvelope(resultEnvelop),
+				strWriter2);
+		//tm.begin();
+		IXmlResultDao xmlResultDao2 = sfDAOFactory.getXmlResultDao();
+		String xmlResult2 = strWriter2.toString();
+
+		xmlResultDao2.deleteQueryXmlResult(resultInstanceId);
+		xmlResultDao2.createQueryXmlResult(resultInstanceId, xmlResult2);
+
+	}
+
+	protected Object getRequestType(String requestXml, Class classname)
+			throws JAXBUtilException {
+		Object returnObject = null;
+
+		JAXBUtil jaxbUtil = CRCJAXBUtil.getJAXBUtil();
+		JAXBElement jaxbElement = jaxbUtil.unMashallFromString(requestXml);
+		ResultEnvelopeType requestMessageType = (ResultEnvelopeType) jaxbElement
+				.getValue();
+		edu.harvard.i2b2.crc.datavo.i2b2result.BodyType bodyType = requestMessageType.getBody();
+		JAXBUnWrapHelper unWrapHelper = new JAXBUnWrapHelper();
+		// get request header type
+		returnObject = unWrapHelper.getObjectByClass(bodyType.getAny(),
+				classname);
+
+		return returnObject;
+	}
+
+
 	private ResultResponseType executeSqlInQueue(String domainId,
 			String projectId, String ownerId, String userId,
 			String generatedSql, String sessionId, String queryInstanceId,
