@@ -604,8 +604,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				pw.close();
 			}
 
-			if (letter != null) { // && qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail") != null) {
-
+			if (letter != null) {
 				//need to use this real query_master name because the current one has "name"
 				letter = letter.replaceAll("\\{\\{\\{QUERY_NAME\\}\\}\\}", queryMaster.getName());
 				letter = qpUtil.processFilename(letter, param);
@@ -666,7 +665,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				if ((resultTypeName.equals(finalResultOutput))
 						&& (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) )
 
-					email.email(getProjectParam(projectParam, "Data Request Email Address"), getProjectParam(projectParam, "Data Request Email Address"), "i2b2 Data Export - " + qpUtil.sanitizeFilename(queryMaster.getName()), letter);
+					email.email(getProjectParam(projectParam, "Data Request Email Address"), getProjectParam(projectParam, "Data Request Email Address"), getProjectParam(projectParam, "Data Request Subject"), letter);
 			}
 
 

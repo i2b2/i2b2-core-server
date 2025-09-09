@@ -349,7 +349,7 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 								resultType.getData().add(mdataType);
 							}
 							mdataType = new DataType();
-							mdataType.setValue(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"));
+							mdataType.setValue(getProjectParam(projectParam, "Data Request Email Address"));
 							mdataType.setColumn("DataManagerEmail");
 							mdataType.setType("string");
 							resultType.getData().add(mdataType);
@@ -398,15 +398,9 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 									if ((resultTypeName.equals(finalResultOutput))
 											&& (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) )
 
-										email.email(getProjectParam(projectParam, "Data Request Email Address"), getProjectParam(projectParam, "Data Request Email Address"), "i2b2 Data Export - " + queryDef.getQueryName(), reuqestTemplate);
+										email.email(getProjectParam(projectParam, "Data Request Email Address"), getProjectParam(projectParam, "Data Request Email Address"), getProjectParam(projectParam, "Data Request Subject"), reuqestTemplate);
 
-									/* if (resultTypeName.equals(finalResultOutput)) {
-
-												email.email(qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"),  "i2b2 Data Request", letter);
-												if (user.getEmail()!= null &&  !user.getEmail().equals("") && reuqestTemplate != null)
-													email.email(user.getEmail(), qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.datamanageremail"),  "i2b2 Data Request", reuqestTemplate);
-											}
-									 */
+							
 								} catch (UnsupportedEncodingException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
