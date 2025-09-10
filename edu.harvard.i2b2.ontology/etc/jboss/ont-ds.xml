@@ -37,7 +37,7 @@
 		pool-name="OntologyBootStrapDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:oracle:thin:@localhost:1521:xe</connection-url>
 		<driver-class>oracle.jdbc.OracleDriver</driver-class>
-		<driver>ojdbc8.jar</driver>
+		<driver>ojdbc11.jar</driver>
 		<security>
 			<user-name>i2b2hive</user-name>
 			<password>demouser</password>
@@ -61,7 +61,7 @@
 		pool-name="OntologyBootStrapDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:sqlserver://localhost:1433</connection-url>
 		<driver-class>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver-class>
-		<driver>mssql-jdbc-12.4.2.jre8.jar</driver>
+		<driver>mssql-jdbc-12.8.1.jre11.jar</driver>
 		<security>
 			<user-name>i2b2hive</user-name>
 			<password>demouser</password>
@@ -86,7 +86,7 @@
 		pool-name="OntologyBootStrapDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:postgresql://localhost:5432/i2b2</connection-url>
 		<driver-class>org.postgresql.Driver</driver-class>
-		<driver>postgresql-42.7.1.jar</driver>
+		<driver>postgresql-42.7.4.jar</driver>
 		<security>
 			<user-name>i2b2hive</user-name>
 			<password>demouser</password>
@@ -128,7 +128,7 @@
 		pool-name="OntologyDemoDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:oracle:thin:@localhost:1521:xe</connection-url>
 		<driver-class>oracle.jdbc.OracleDriver</driver-class>
-		<driver>ojdbc8.jar</driver>
+		<driver>ojdbc11.jar</driver>
 		<security>
 			<user-name>i2b2metadata</user-name>
 			<password>demouser</password>
@@ -152,7 +152,7 @@
 		pool-name="OntologyDemoDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:sqlserver://localhost:1433</connection-url>
 		<driver-class>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver-class>
-		<driver>mssql-jdbc-12.4.2.jre8.jar</driver>
+		<driver>mssql-jdbc-12.8.1.jre11.jar</driver>
 		<security>
 			<user-name>i2b2metadata</user-name>
 			<password>demouser</password>
@@ -177,7 +177,7 @@
 		pool-name="OntologyDemoDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:postgresql://localhost:5432/i2b2</connection-url>
 		<driver-class>org.postgresql.Driver</driver-class>
-		<driver>postgresql-42.7.1.jar</driver>
+		<driver>postgresql-42.7.4.jar</driver>
 		<security>
 			<user-name>i2b2metadata</user-name>
 			<password>demouser</password>
@@ -204,7 +204,7 @@
 		pool-name="OntologyACTDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:oracle:thin:@localhost:1521:xe</connection-url>
 		<driver-class>oracle.jdbc.OracleDriver</driver-class>
-		<driver>ojdbc8.jar</driver>
+		<driver>ojdbc11.jar</driver>
 		<security>
 			<user-name>i2b2actata</user-name>
 			<password>demouser</password>
