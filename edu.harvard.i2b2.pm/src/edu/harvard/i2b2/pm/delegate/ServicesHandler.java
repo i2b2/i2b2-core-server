@@ -692,10 +692,8 @@ public class ServicesHandler extends RequestHandler {
 				else if (name.equals("get_global"))
 				{
 					ParamType param = new ParamType();
-					param.setId(Integer.valueOf(((ParamType)((JAXBElement) obj).getValue()).getValue()));
+					param.setId(Integer.valueOf((((JAXBElement) obj).getValue()).toString()));
 					boolean showDeleted = false;
-					if (((ParamType)((JAXBElement) obj).getValue()).getHidden() != null)
-						showDeleted = ((ParamType)((JAXBElement) obj).getValue()).getHidden();
 					GlobalDataType global = new GlobalDataType();
 					global.getParam().add(param);
 					return runGetParam(pmDb, project, rmt.getUsername(), global ,  showDeleted);	
