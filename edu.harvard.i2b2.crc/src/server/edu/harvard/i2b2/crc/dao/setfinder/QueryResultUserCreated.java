@@ -396,7 +396,7 @@ public class QueryResultUserCreated extends CRCDAO implements IResultGenerator {
 
 
 									if ((resultTypeName.equals(finalResultOutput))
-											&& (qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.smtp.enabled").equalsIgnoreCase("true")) )
+											|| (resultTypeName.startsWith("RPDO")) )
 
 										email.email(getProjectParam(projectParam, "Data Request Email Address"), getProjectParam(projectParam, "Data Request Email Address"), getProjectParam(projectParam, "Data Request Subject"), reuqestTemplate);
 
