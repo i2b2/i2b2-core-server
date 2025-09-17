@@ -42,13 +42,7 @@
             <groupId>edu.harvard.i2b2</groupId>
             <artifactId>edu.harvard.i2b2.server-common</artifactId>
         </dependency>
-        
-        <dependency>
-	        <groupId>junit</groupId>
-	        <artifactId>junit</artifactId>
-	        <scope>test</scope>
-		</dependency>
-    
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -77,13 +71,7 @@
 		    <artifactId>guava</artifactId>
 		    <version>33.4.8-jre</version>
 		</dependency>
-		
-		<!--<dependency>
-		    <groupId>org.apache.tomcat</groupId>
-		    <artifactId>tomcat-catalina</artifactId>
-		    <version>11.0.9</version>
-		</dependency> -->
-		
+
 		<dependency>
 		    <groupId>org.apache.tomcat</groupId>
 		    <artifactId>tomcat-tribes</artifactId>
