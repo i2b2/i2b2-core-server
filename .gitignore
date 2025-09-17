@@ -30,8 +30,9 @@ buildNumber.properties
 
 ### Eclipse ###
 .toDelete
-output/
-input/
+
+#output/
+#input/
 
 .vs/
 .metadata
