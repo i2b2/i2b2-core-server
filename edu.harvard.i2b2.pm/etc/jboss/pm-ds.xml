@@ -83,7 +83,7 @@
 		pool-name="PMBootStrapDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:postgresql://localhost:5432/i2b2</connection-url>
 		<driver-class>org.postgresql.Driver</driver-class>
-		<driver>postgresql-42.7.4.jar</driver>
+		<driver>postgresql-42.7.8.jar</driver>
 		<security>
 			<user-name>i2b2pm</user-name>
 			<password>demouser</password>
