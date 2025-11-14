@@ -13,6 +13,8 @@ import jakarta.xml.bind.annotation.XmlElementDecl;
 import jakarta.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
+import edu.harvard.i2b2.pm.services.SessionData;
+
 
 /**
  * This object contains factory methods for each 
@@ -69,6 +71,10 @@ public class ObjectFactory {
     private final static QName _SetPassword_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "set_password");
     private final static QName _Configure_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "configure");
     private final static QName _SetUser_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "set_user");
+    private final static QName _GetUserSession_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_user_session");
+    private final static QName _Sessions_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "sessions");
+    private final static QName _Session_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "session");
+    private final static QName _Logout_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "logout");
     private final static QName _GetApprovalParam_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_approval_param");
     private final static QName _Hives_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "hives");
     private final static QName _DeleteApproval_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "delete_approval");
@@ -667,10 +673,37 @@ public class ObjectFactory {
      * 
      */
     @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "set_user")
-    public JAXBElement<UserType> createSetUser(UserType value) {
-        return new JAXBElement<UserType>(_SetUser_QNAME, UserType.class, null, value);
+    public JAXBElement<UserLoginType> createSetUser(UserLoginType value) {
+        return new JAXBElement<UserLoginType>(_SetUser_QNAME, UserLoginType.class, null, value);
     }
 
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link UserType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_user_session")
+    public JAXBElement<UserLoginType> createGetUserSession(UserLoginType value) {
+        return new JAXBElement<UserLoginType>(_Session_QNAME, UserLoginType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link UserType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_user_sessions")
+    public JAXBElement<UserLoginsType> createGetUserSessions(UserLoginsType value) {
+        return new JAXBElement<UserLoginsType>(_Sessions_QNAME, UserLoginsType.class, null, value);
+    }
+    
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link UserType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "logout")
+    public JAXBElement<UserType> createLogout(UserType value) {
+        return new JAXBElement<UserType>(_Logout_QNAME, UserType.class, null, value);
+    }
+    
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 

@@ -563,6 +563,10 @@ public class ServicesHandler extends RequestHandler {
 					return runSetDatasource(pmDb, rmt.getUsername(), (DatasourceType)  ((JAXBElement) obj).getValue()  );
 				else if (name.equals("get_all_datasource"))
 					return runGetAllDatasource(pmDb, project, rmt.getUsername() );
+				else if (name.equals("get_user_session"))
+					return runUserSession(pmDb, rmt.getUsername(),  (UserLoginType) ((JAXBElement) obj).getValue()  );
+				else if (name.equals("logout"))
+					return runLogout(pmDb, 0,  ((UserType) ((JAXBElement) obj).getValue()).getPassword().getValue(), ((UserType) ((JAXBElement) obj).getValue()).getUserName() , rmt.getUsername());
 				else if (name.equals("get_user_login"))
 					return runUserLogin(pmDb, rmt.getUsername(),  (UserLoginType) ((JAXBElement) obj).getValue()  );
 				else if (name.equals("get_all_project_user_param")) {
@@ -801,6 +805,98 @@ public class ServicesHandler extends RequestHandler {
 		return responseVdo;		
 	}
 
+	private String runUserSession(PMDbDao pmDb, String caller, UserLoginType value) {
+		ResponseMessageType responseMessageType = null;
+
+		try {
+
+
+			List response = null;	
+			try {
+				response = pmDb.getUserSession(value, caller);
+			} catch (I2B2DAOException e1) {
+				throw new Exception ( "Database error in getting user sessions");
+			} catch (I2B2Exception e1) {
+				throw new Exception ("Database error in getting user sessions");
+			}
+
+			Iterator it = response.iterator();
+			UserLoginsType users = new UserLoginsType();
+			log.debug("Records returned: " + response.size());
+			while (it.hasNext())
+			{
+				UserLoginType user = (UserLoginType)it.next();
+				users.getUserLogin().add(user);
+			}
+			//everything is good so just return the same session key and the other info
+
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());    
+			responseMessageType = MessageFactory.createBuildResponse(messageHeader,users);
+
+		}
+		catch (Exception ee)
+		{
+			log.error(ee.getMessage());
+			// throw new Exception (ee.getMessage());
+			ee.printStackTrace();
+
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());          
+			responseMessageType = MessageFactory.doBuildErrorResponse(messageHeader,
+					ee.getMessage());			
+		}
+
+		String responseVdo = "DONE";
+		try {
+			responseVdo = MessageFactory.convertToXMLString(responseMessageType);
+		} catch (I2B2Exception e) {
+			log.error(e.getMessage());
+		}
+		return responseVdo;
+	}
+	
+
+	private String runLogout(PMDbDao pmDb, int timeout, String sessionId, String userId, String LoginUser) throws Exception
+	{
+		ResponseMessageType responseMessageType = null;
+
+		try {
+
+			//List response = null;	
+			try {
+				pmDb.updateSession(userId, LoginUser, sessionId, timeout);
+				//response = pmDb.getSession(userId, sessionId);
+			} catch (I2B2DAOException e1) {
+				throw new Exception ( "Database error in getting user data for NTLM");
+			} catch (I2B2Exception e1) {
+				throw new Exception ("Database error in getting user data for NTLM");
+			}
+
+			//everything is good so just return the same session key and the other info
+
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());    
+			responseMessageType = MessageFactory.createBuildResponse(messageHeader,"");
+
+		}
+		catch (Exception ee)
+		{
+			log.error(ee.getMessage());
+			// throw new Exception (ee.getMessage());
+			ee.printStackTrace();
+
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());          
+			responseMessageType = MessageFactory.doBuildErrorResponse(messageHeader,
+					ee.getMessage());			
+		}
+
+		String responseVdo = "DONE";
+		try {
+			responseVdo = MessageFactory.convertToXMLString(responseMessageType);
+		} catch (I2B2Exception e) {
+			log.error(e.getMessage());
+		}
+		return responseVdo;
+	}
+	
 	private String runUserLogin(PMDbDao pmDb, String caller, UserLoginType value) {
 		ResponseMessageType responseMessageType = null;
 

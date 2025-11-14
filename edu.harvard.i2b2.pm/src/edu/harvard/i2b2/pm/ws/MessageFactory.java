@@ -61,6 +61,8 @@ import edu.harvard.i2b2.pm.datavo.pm.ProjectType;
 import edu.harvard.i2b2.pm.datavo.pm.ProjectsType;
 import edu.harvard.i2b2.pm.datavo.pm.RoleType;
 import edu.harvard.i2b2.pm.datavo.pm.RolesType;
+import edu.harvard.i2b2.pm.datavo.pm.UserLoginType;
+import edu.harvard.i2b2.pm.datavo.pm.UserLoginsType;
 import edu.harvard.i2b2.pm.datavo.pm.UserType;
 import edu.harvard.i2b2.pm.datavo.pm.UsersType;
 import edu.harvard.i2b2.pm.util.JAXBConstant;
@@ -129,6 +131,10 @@ public class MessageFactory {
 			bodyType.getAny().add(of.createApproval((ApprovalType) uType));    	
 		else  if (uType.getClass().getName().equals("edu.harvard.i2b2.pm.datavo.pm.ApprovalsType"))
 			bodyType.getAny().add(of.createApprovals((ApprovalsType) uType));      
+		else  if (uType.getClass().getName().equals("edu.harvard.i2b2.pm.datavo.pm.UserLoginType"))
+			bodyType.getAny().add(of.createGetUserSession((UserLoginType) uType));    	
+		else  if (uType.getClass().getName().equals("edu.harvard.i2b2.pm.datavo.pm.UserLoginsType"))
+			bodyType.getAny().add(of.createGetUserSessions((UserLoginsType) uType));  
 		else  if (uType.getClass().getName().equals("edu.harvard.i2b2.pm.datavo.i2b2message.ResultStatusType"))
 			bodyType.getAny().add(of.createResponse(((ResultStatusType) uType).getStatus().getValue()));     
 		else  if (uType.getClass().getName().equals("edu.harvard.i2b2.pm.datavo.pm.DatasourcesType"))

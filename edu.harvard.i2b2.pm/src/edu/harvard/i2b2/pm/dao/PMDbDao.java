@@ -988,9 +988,9 @@ public class PMDbDao extends JdbcDaoSupport {
 		return queryResult;	
 	}
 
-	public List<SessionData>  getSession(String userId, String sessionID) throws I2B2Exception, I2B2DAOException { 
+	public List<UserLoginType>  getSession(String userId, String sessionID) throws I2B2Exception, I2B2DAOException { 
 		String sql =  "select * from pm_user_session where user_id = ? and session_id = ?";
-		List<SessionData> queryResult = null;
+		List<UserLoginType> queryResult = null;
 		log.debug("Searching for " + userId + " with session id of " + sessionID);
 		queryResult = jt.query(sql, new getSession(), userId, sessionID);
 		return queryResult;	
@@ -1187,20 +1187,43 @@ public class PMDbDao extends JdbcDaoSupport {
 		return numRowsAdded;
 	}
 
-	public int updateSession(String userId, String sessionId, int timeout)
+	public int updateSession(String userId, String sessionId, int timeout) throws Exception
+	{
+		return updateSession( userId, userId,  sessionId,  timeout);
+	}
+	
+	public int updateSession(String userId, String loginUser,  String sessionId, int timeout) throws Exception
 	{
 		int numRowsAdded  = -1;
-		String addSql = "update pm_user_session set expired_date = ? " + 
-				" where session_id = ? and user_id =?";
+		String addSql = null;
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.MILLISECOND, timeout);
 
-		try {
+		if (!userId.equals(loginUser) && !validateRole(loginUser, "admin", null))
+			throw new Exception("Only a admin can logout another user.");
+ 
+		
+		if (((sessionId == null) || sessionId.equals("@"))) // && (validateRole(userId, "admin", null)))
+			addSql = "update pm_user_session set expired_date = ? " + 
+					" where user_id =?";
+		else
+			addSql = "update pm_user_session set expired_date = ? " + 
+					" where session_id = ? and user_id =?";
 
-			numRowsAdded = jt.update(addSql, 
-					now.getTime(),
-					sessionId,
-					userId);	
+		if (sessionId.startsWith("SessionKey:"))
+			sessionId = sessionId.replace("SessionKey:", "");
+
+		try {
+			if (((sessionId == null) || sessionId.equals("@"))) // && (validateRole(userId, "admin", null)))
+				numRowsAdded = jt.update(addSql, 
+						now.getTime(),
+						userId);	
+			else
+				numRowsAdded = jt.update(addSql, 
+						now.getTime(),
+						sessionId,
+						userId);	
+
 		} catch (Exception e)
 		{ try {
 			if (e.getMessage().contains("deadlock")
@@ -1210,10 +1233,17 @@ public class PMDbDao extends JdbcDaoSupport {
 				int tosleep = new SecureRandom().nextInt(2000);
 				log.warn("Transaction rolled back. Restarting transaction.");
 				Thread.sleep(tosleep);
+				
+				if (((sessionId == null) || sessionId.equals("@"))) // && (validateRole(userId, "admin", null)))
 				numRowsAdded = jt.update(addSql, 
 						now.getTime(),
-						sessionId,
 						userId);	
+				else 
+					numRowsAdded = jt.update(addSql, 
+							now.getTime(),
+							sessionId,
+							userId);	
+
 			} else {
 				throw e;
 			} } catch (Exception ee) {}
@@ -2520,6 +2550,30 @@ public class PMDbDao extends JdbcDaoSupport {
 
 	}
 
+
+	public List<UserLoginType> getUserSession(UserLoginType value, String caller) throws I2B2Exception, I2B2DAOException { 
+
+
+		String sql = null;
+		List<UserLoginType> queryResult = null;
+
+		if (validateRole(caller, "admin", null))
+		{
+			if (database.equalsIgnoreCase("oracle"))
+				sql =  "select * from pm_user_session " +
+						" where expired_date  >= CURRENT_TIMESTAMP ";
+			else if (database.equalsIgnoreCase("Microsoft sql server"))
+				sql =  "select * from pm_user_session " +
+						" where expired_date  >= getdate() ";
+			else if (database.equalsIgnoreCase("postgresql"))
+				sql =  "select * from pm_user_session " +
+						" where expired_date >= now() ";
+
+			queryResult = jt.query(sql, new getSession());
+		}
+		return queryResult;	
+	}
+
 	public List<UserLoginType> getUserLogin(UserLoginType value, String caller) throws I2B2Exception, I2B2DAOException { 
 		String sql = null;
 		List<UserLoginType> queryResult = null;
@@ -2772,25 +2826,39 @@ class getProjectParams implements RowMapper<ParamType> {
 	} 
 }
 
-class getSession implements RowMapper<SessionData> {
+class getSession implements RowMapper<UserLoginType> {
+	
+	public static XMLGregorianCalendar long2Gregorian(long date) {
+		DatatypeFactory dataTypeFactory;
+		try {
+			dataTypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTimeInMillis(date);
+		return dataTypeFactory.newXMLGregorianCalendar(gc);
+	}
+	
 	@Override
-	public SessionData mapRow(ResultSet rs, int rowNum) throws SQLException {
-		SessionData rData = new SessionData();
+	public UserLoginType mapRow(ResultSet rs, int rowNum) throws SQLException {
+		UserLoginType rData = new UserLoginType();
 		//				DTOFactory factory = new DTOFactory();
 
-		rData.setSessionID(rs.getString("session_id"));
+		rData.setId(rs.getString("session_id"));
+		rData.setUserName(rs.getString("user_id"));
 
 		Date date = rs.getTimestamp("expired_date");
 		if (date == null)
-			rData.setExpiredDate(null);
+			rData.setExpireDate(null);
 		else 
-			rData.setExpiredDate(date); 
+			rData.setExpireDate(long2Gregorian(date.getTime())); 
 
 		date = rs.getTimestamp("entry_date");
 		if (date == null)
-			rData.setIssuedDate(null);
+			rData.setEntryDate(null);
 		else 
-			rData.setIssuedDate(date); 
+			rData.setEntryDate(long2Gregorian(date.getTime())); 
 
 
 		return rData;

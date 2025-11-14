@@ -43,7 +43,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlType(name = "user_loginType", propOrder = {
     "userName",
     "attempt",
-    "entryDate"
+    "entryDate",
+    "expireDate"
 })
 public class UserLoginType {
 
@@ -53,6 +54,9 @@ public class UserLoginType {
     @XmlElement(name = "entry_date")
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar entryDate;
+    @XmlElement(name = "expire_date")
+    @XmlSchemaType(name = "dateTime")
+    protected XMLGregorianCalendar expireDate;
     @XmlAttribute(name = "id", required = true)
     protected String id;
 
@@ -115,7 +119,6 @@ public class UserLoginType {
     public XMLGregorianCalendar getEntryDate() {
         return entryDate;
     }
-
     /**
      * Sets the value of the entryDate property.
      * 
@@ -127,6 +130,29 @@ public class UserLoginType {
     public void setEntryDate(XMLGregorianCalendar value) {
         this.entryDate = value;
     }
+    /**
+     * Sets the value of the ExpireDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setExpireDate(XMLGregorianCalendar value) {
+        this.expireDate = value;
+    }
+    /**
+     * Gets the value of the ExpireDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public XMLGregorianCalendar getExpireDate() {
+        return expireDate;
+    }
+
 
     /**
      * Gets the value of the id property.
