@@ -651,7 +651,7 @@ public class PMDbDao extends JdbcDaoSupport {
 	}
 
 
-	public List<UserType> getAllUser(String project, String caller) throws I2B2Exception, I2B2DAOException { 
+	public List<UserType> getAllUser(String project, String caller, String call) throws I2B2Exception, I2B2DAOException { 
 		String sql = null;
 		List<UserType> queryResult = null;
 
@@ -661,6 +661,15 @@ public class PMDbDao extends JdbcDaoSupport {
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
 					+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' where  a.status_cd<>'D' order by a.full_name";
 
+			if (call.equals("get_all_admin"))
+				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
+						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' and  a.status_cd<>'D' order by a.full_name";
+
+			if (call.equals("get_all_manager"))
+				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
+						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'MANAGER' and  a.status_cd<>'D' order by a.full_name";
+
+			
 			queryResult = jt.query(sql,  GetUser(false));
 		}
 
@@ -2578,11 +2587,11 @@ public class PMDbDao extends JdbcDaoSupport {
 		String sql = null;
 		List<UserLoginType> queryResult = null;
 
-		sql =  "select * from pm_user_login where status_cd<>'D' ";
+		sql =  "select distinct user_id, entry_date, attempt_cd from pm_user_login where status_cd<>'D' ";
 		if (value.getEntryDate() != null)
 		{
 			sql += " and entry_date > ?";
-			queryResult = jt.query(sql, new getUserLoginAttempt(), value.getEntryDate());
+			queryResult = jt.query(sql, new getUserLoginAttempt(), value.getEntryDate().toGregorianCalendar().getTime());
 
 		} else {
 
@@ -2957,11 +2966,30 @@ class getUserLoginAttempt implements RowMapper<UserLoginType> {
 	public UserLoginType mapRow(ResultSet rs, int rowNum) throws SQLException {
 		DTOFactory factory = new DTOFactory();
 		UserLoginType userData = new UserLoginType();
-		userData.setAttempt(rs.getString("attenpt_cd"));
+		userData.setAttempt(rs.getString("attempt_cd"));
 		userData.setUserName(rs.getString("user_id"));
+
+	
+		Date date = rs.getTimestamp("entry_date");
+		if (date == null)
+			userData.setEntryDate(null);
+		else 
+			userData.setEntryDate(long2Gregorian(date.getTime())); 
 
 		return userData;
 	} 
+
+	public static XMLGregorianCalendar long2Gregorian(long date) {
+		DatatypeFactory dataTypeFactory;
+		try {
+			dataTypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTimeInMillis(date);
+		return dataTypeFactory.newXMLGregorianCalendar(gc);
+	}
 
 }
 

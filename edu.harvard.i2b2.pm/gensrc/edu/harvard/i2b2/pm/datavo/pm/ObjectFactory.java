@@ -50,6 +50,7 @@ public class ObjectFactory {
     private final static QName _SetCell_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "set_cell");
     private final static QName _SetProjectUserParam_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "set_project_user_param");
     private final static QName _GetUserParam_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_user_param");
+    private final static QName _GetUserLogin_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_user_login");
     private final static QName _Cell_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "cell");
     private final static QName _SetHiveParam_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "set_hive_param");
     private final static QName _Param_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "param");
@@ -62,6 +63,8 @@ public class ObjectFactory {
     private final static QName _GetAllGlobal_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_global");
     private final static QName _DeleteGlobal_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "delete_global");
     private final static QName _GetAllUser_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_user");
+    private final static QName _GetAllAdmin_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_admin");
+    private final static QName _GetAllManager_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_manager");
     private final static QName _DeleteProject_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "delete_project");
     private final static QName _GetCell_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_cell");
     private final static QName _GetAllDatasource_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_datasource");
@@ -335,6 +338,7 @@ public class ObjectFactory {
         return new BlobType();
     }
 
+    
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link RoleType }{@code >}}
      * 
@@ -594,6 +598,33 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_all_user")
     public JAXBElement<String> createGetAllUser(String value) {
         return new JAXBElement<String>(_GetAllUser_QNAME, String.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_all_admin")
+    public JAXBElement<String> createGetAllAdmin(String value) {
+        return new JAXBElement<String>(_GetAllAdmin_QNAME, String.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_user_login")
+    public JAXBElement<UserLoginType> createGetUserLogin(UserLoginType value) {
+        return new JAXBElement<UserLoginType>(_GetUserLogin_QNAME, UserLoginType.class, null, value);
+    }
+    
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_all_manager")
+    public JAXBElement<String> createGetAllManager(String value) {
+        return new JAXBElement<String>(_GetAllManager_QNAME, String.class, null, value);
     }
 
     /**

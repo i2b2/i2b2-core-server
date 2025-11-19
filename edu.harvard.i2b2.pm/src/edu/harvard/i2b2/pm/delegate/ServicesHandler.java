@@ -502,7 +502,11 @@ public class ServicesHandler extends RequestHandler {
 				if (name.equals("set_user"))
 					return runSetUser(pmDb, project, rmt.getUsername(), (UserType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_user"))
-					return runGetAllUser(pmDb, project, rmt.getUsername() );
+					return runGetAllUser(pmDb, project, rmt.getUsername() , "get_all_user");
+				else if (name.equals("get_all_manager"))
+					return runGetAllUser(pmDb, project, rmt.getUsername(), "get_all_manager" );
+				else if (name.equals("get_all_admin"))
+					return runGetAllUser(pmDb, project, rmt.getUsername(), "get_all_admin" );
 				else if (name.equals("set_project"))
 					return runSetProject(pmDb, project, rmt.getUsername(), (ProjectType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_project"))
@@ -1706,7 +1710,7 @@ public class ServicesHandler extends RequestHandler {
 	}
 
 
-	private String runGetAllUser(PMDbDao pmDb, String project, String caller) {
+	private String runGetAllUser(PMDbDao pmDb, String project, String caller, String call) {
 		ResponseMessageType responseMessageType = null;
 
 		try {
@@ -1714,7 +1718,7 @@ public class ServicesHandler extends RequestHandler {
 
 			List response = null;	
 			try {
-				response = pmDb.getAllUser(project, caller);
+				response = pmDb.getAllUser(project, caller, call);
 			} catch (I2B2DAOException e1) {
 				throw new Exception ( "Database error in getting user data for NTLM");
 			} catch (I2B2Exception e1) {
