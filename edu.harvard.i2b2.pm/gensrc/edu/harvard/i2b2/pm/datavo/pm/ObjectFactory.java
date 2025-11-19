@@ -704,8 +704,8 @@ public class ObjectFactory {
      * 
      */
     @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "set_user")
-    public JAXBElement<UserLoginType> createSetUser(UserLoginType value) {
-        return new JAXBElement<UserLoginType>(_SetUser_QNAME, UserLoginType.class, null, value);
+    public JAXBElement<UserType> createSetUser(UserType value) {
+        return new JAXBElement<UserType>(_SetUser_QNAME, UserType.class, null, value);
     }
 
     /**
