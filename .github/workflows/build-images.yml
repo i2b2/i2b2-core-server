@@ -76,7 +76,7 @@ jobs:
           git clone -b main https://github.com/adityapersistent/i2b2-docker
           cd i2b2-docker/mssql
           echo ${{ github.ref_name}}
-          sh test_case.sh ${{ github.ref_name}}
+          source test_case.sh ${{ github.ref_name}}
 
       - name: Test with pgsql
         if: matrix.db == 'pgsql'
@@ -85,4 +85,4 @@ jobs:
           cd test_pgsql/ 
           git clone -b main https://github.com/adityapersistent/i2b2-docker
           cd i2b2-docker/pg
-          sh test_case.sh ${{ github.ref_name}}
+          source test_case.sh ${{ github.ref_name}}
