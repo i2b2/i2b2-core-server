@@ -81,8 +81,6 @@ jobs:
       - name: Test with pgsql
         if: matrix.db == 'pgsql'
         run: |
-          export docker_username=${{ secrets.DOCKER_HOST }}
-          export docker_reponame=${{ secrets.DOCKER_REPO }}
           mkdir test_pgsql
           cd test_pgsql/ 
           git clone -b main https://github.com/adityapersistent/i2b2-docker
