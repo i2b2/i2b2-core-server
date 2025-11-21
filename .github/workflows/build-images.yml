@@ -1,0 +1,115 @@
+name: CI Pipeline
+ 
+on:
+  push:
+    branches: ['*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag/Branch name to use for build & tests"
+        required: true
+        default: "main"
+        type: string
+ 
+jobs:
+  build:
+    name: Build & Publish i2b2-core-server image to private docker registry
+    runs-on: ubuntu-latest
+    environment: dev
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Unset docker host 
+        run: unset DOCKER_HOST
+ 
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HOST }}
+          password: ${{ secrets.DOCKER_LOGIN_TOKEN }}
+
+      - name: Determine tag (manual or push)
+        id: vars
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "core_tag=${{ inputs.tag }}" >> $GITHUB_ENV
+          else
+            echo "core_tag=${{ github.ref_name }}" >> $GITHUB_ENV
+          fi
+          echo "Using tag: $core_tag"
+ 
+      - name: Build image
+        run: | 
+          export CORE_SERVER_TAG="$core_tag"
+          echo "Building image with tag: $CORE_SERVER_TAG"
+ 
+          export date=$(date +"%Y%m%d")
+          export docker_username=${{ secrets.DOCKER_HOST }}
+          export docker_reponame=${{ secrets.DOCKER_REPO }}
+ 
+          sh docker/create_docker_image.sh "$CORE_SERVER_TAG"
+ 
+      - name: List docker images
+        run: docker images
+      
+ 
+  test:   
+    name: Running Tests (parallel execution)
+    needs: build
+    runs-on: ubuntu-latest
+    environment: dev
+ 
+    strategy:
+      matrix:
+        db: 
+          - mssql
+          - pgsql
+ 
+    steps:
+
+      - name: Unset docker host 
+        run: unset DOCKER_HOST
+ 
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HOST }}
+          password: ${{ secrets.DOCKER_LOGIN_TOKEN }}
+      
+      - name: Export docker variables
+        run: |
+          echo "docker_username=${{ secrets.DOCKER_HOST }}" >> $GITHUB_ENV
+          echo "docker_reponame=${{ secrets.DOCKER_REPO }}" >> $GITHUB_ENV
+
+      - name: Determine tag (manual or push)
+        id: vars
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "core_tag=${{ inputs.tag }}" >> $GITHUB_ENV
+          else
+            echo "core_tag=${{ github.ref_name }}" >> $GITHUB_ENV
+          fi
+          echo "Using tag: $core_tag"
+                
+      - name: Test with MSSQL
+        if: matrix.db == 'mssql'
+        run: |
+          mkdir test_mssql
+          cd test_mssql
+          git clone -b 1.8.2-hotfixes https://github.com/adityapersistent/i2b2-docker
+          cd i2b2-docker/mssql
+          echo "Running MSSQL test cases for tag: $core_tag"
+          source test_case.sh "$core_tag"
+ 
+      - name: Test with PostgreSQL
+        if: matrix.db == 'pgsql'
+        run: |
+          mkdir test_pgsql
+          cd test_pgsql
+          git clone -b 1.8.2-hotfixes https://github.com/i2b2/i2b2-docker
+          cd i2b2-docker/pg
+          echo "Running PGSQL test cases for tag: $core_tag"
+          source test_case.sh "$core_tag"
+ 
