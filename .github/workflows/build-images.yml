@@ -65,8 +65,8 @@ jobs:
       
       - name: export docker variables
         run: |
-          export docker_username=${{ secrets.DOCKER_HOST }}
-          export docker_reponame=${{ secrets.DOCKER_REPO }}
+          echo "docker_username=${{ secrets.DOCKER_HOST }}" >> $GITHUB_ENV
+          echo "docker_reponame=${{ secrets.DOCKER_REPO }}" >> $GITHUB_ENV
       
       - name: Test with mssql
         if: matrix.db == 'mssql'
