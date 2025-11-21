@@ -1,0 +1,90 @@
+name: CI Pipeline
+ 
+on:
+  push:
+    branches: ['*'] 
+  workflow_dispatch:
+ 
+jobs:
+  build:
+    name: Build & Publish i2b2-core-server image to private docker registry
+    runs-on: ubuntu-latest
+    environment: dev
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Unset docker host 
+        run: unset DOCKER_HOST
+
+  
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HOST }}
+          password: ${{ secrets.DOCKER_LOGIN_TOKEN }}
+
+      - name: Build image
+        run: | 
+          export CORE_SERVER_TAG=${{ github.ref_name}} #for commit/push branch name
+          echo ${{ github.ref_name}}
+
+          export date=$(date +"%Y%m%d")
+          export docker_username=${{ secrets.DOCKER_HOST }}
+          export docker_reponame=${{ secrets.DOCKER_REPO }}
+
+          # docker buildx version
+          # docker buildx create --name multiarch-builder --driver docker-container --platform linux/amd64,linux/arm64,windows/amd64 --use
+          
+          sh docker/create_docker_image.sh $CORE_SERVER_TAG
+
+      - name: list docker images
+        run: docker images
+      
+  test:   
+    name: Running Matrix Tests (parallel execution)
+    needs: build
+    runs-on: ubuntu-latest
+    environment: dev
+    strategy:
+      matrix:
+        db: 
+          - mssql
+          - pgsql
+    
+    steps:    
+      - name: Unset docker host 
+        run: unset DOCKER_HOST
+
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HOST }}
+          password: ${{ secrets.DOCKER_LOGIN_TOKEN }}
+      
+      - name: export docker variables
+        run: |
+          export docker_username=${{ secrets.DOCKER_HOST }}
+          export docker_reponame=${{ secrets.DOCKER_REPO }}
+      
+      - name: Test with mssql
+        if: matrix.db == 'mssql'
+        run: |
+          mkdir test_mssql/
+          cd test_mssql/
+          git clone -b main https://github.com/adityapersistent/i2b2-docker
+          cd i2b2-docker/mssql
+          echo ${{ github.ref_name}}
+          sh test_case.sh ${{ github.ref_name}}
+
+      - name: Test with pgsql
+        if: matrix.db == 'pgsql'
+        run: |
+          export docker_username=${{ secrets.DOCKER_HOST }}
+          export docker_reponame=${{ secrets.DOCKER_REPO }}
+          mkdir test_pgsql
+          cd test_pgsql/ 
+          git clone -b main https://github.com/adityapersistent/i2b2-docker
+          cd i2b2-docker/pg
+          sh test_case.sh ${{ github.ref_name}}
