@@ -997,9 +997,9 @@ public class PMDbDao extends JdbcDaoSupport {
 		return queryResult;	
 	}
 
-	public List<UserLoginType>  getSession(String userId, String sessionID) throws I2B2Exception, I2B2DAOException { 
+	public List<SessionData>  getSession(String userId, String sessionID) throws I2B2Exception, I2B2DAOException { 
 		String sql =  "select * from pm_user_session where user_id = ? and session_id = ?";
-		List<UserLoginType> queryResult = null;
+		List<SessionData> queryResult = null;
 		log.debug("Searching for " + userId + " with session id of " + sessionID);
 		queryResult = jt.query(sql, new getSession(), userId, sessionID);
 		return queryResult;	
@@ -2578,7 +2578,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				sql =  "select * from pm_user_session " +
 						" where expired_date >= now() ";
 
-			queryResult = jt.query(sql, new getSession());
+			queryResult = jt.query(sql, new getSessionUserLoginType());
 		}
 		return queryResult;	
 	}
@@ -2587,7 +2587,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		String sql = null;
 		List<UserLoginType> queryResult = null;
 
-		sql =  "select distinct user_id, entry_date, attempt_cd from pm_user_login where status_cd<>'D' ";
+		sql =  "select distinct user_id, entry_date, attempt_cd from pm_user_login where status_cd<>'D' and (attempt_cd = 'SUCCESS' or attempt_cd = 'PASSWORD_EXPIRED' or attempt_cd = 'BADPASSWORD' or attempt_cd = 'LOCKED_OUT' or attempt_cd = 'NONEXIST' ";
 		if (value.getEntryDate() != null)
 		{
 			sql += " and entry_date > ?";
@@ -2835,7 +2835,33 @@ class getProjectParams implements RowMapper<ParamType> {
 	} 
 }
 
-class getSession implements RowMapper<UserLoginType> {
+class getSession implements RowMapper<SessionData> {
+	@Override
+	public SessionData mapRow(ResultSet rs, int rowNum) throws SQLException {
+		SessionData rData = new SessionData();
+		//				DTOFactory factory = new DTOFactory();
+
+		rData.setSessionID(rs.getString("session_id"));
+
+		Date date = rs.getTimestamp("expired_date");
+		if (date == null)
+			rData.setExpiredDate(null);
+		else 
+			rData.setExpiredDate(date); 
+
+		date = rs.getTimestamp("entry_date");
+		if (date == null)
+			rData.setIssuedDate(null);
+		else 
+			rData.setIssuedDate(date); 
+
+
+		return rData;
+	} 
+}
+
+
+class getSessionUserLoginType implements RowMapper<UserLoginType> {
 	
 	public static XMLGregorianCalendar long2Gregorian(long date) {
 		DatatypeFactory dataTypeFactory;
