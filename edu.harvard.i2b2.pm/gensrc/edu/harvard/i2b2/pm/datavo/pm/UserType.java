@@ -9,6 +9,7 @@
 package edu.harvard.i2b2.pm.datavo.pm;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -54,7 +55,8 @@ import jakarta.xml.bind.annotation.XmlType;
     "isAdmin",
     "key",
     "param",
-    "project"
+    "project",
+    "entryDate"
 })
 public class UserType {
 
@@ -74,6 +76,18 @@ public class UserType {
     protected List<ProjectType> project;
     @XmlAttribute(name = "hidden")
     protected Boolean hidden;
+    
+    @XmlElement(name = "create_date", required = true)    
+	private Date entryDate;
+	public Date getEntryDate() {
+		return entryDate;
+	}
+	public void setEntryDate(Date entryDate) {
+		this.entryDate = entryDate;
+	}
+
+	
+	
     public Boolean getHidden() {
 		return hidden;
 	}

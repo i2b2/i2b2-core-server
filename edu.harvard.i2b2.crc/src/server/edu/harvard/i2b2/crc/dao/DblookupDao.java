@@ -60,6 +60,12 @@ public class DblookupDao extends JdbcDaoSupport {
 		userId = reqMsgHdr.getSecurity().getUsername();
 		initDblookupDao();
 	}
+
+	public DblookupDao(String domainid, String userid) throws I2B2Exception, JAXBUtilException {
+		domainId = domainid;
+		userId = userid;
+		initDblookupDao();
+	}
 	
 	private void initDblookupDao() {		
 		try {

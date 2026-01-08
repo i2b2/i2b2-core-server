@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.management.AttributeNotFoundException;
@@ -95,6 +96,7 @@ import edu.harvard.i2b2.pm.util.SecurityAuthentication;
 import edu.harvard.i2b2.pm.ws.MessageFactory;
 import edu.harvard.i2b2.pm.ws.ServicesMessage;
 import java.util.Enumeration;
+import java.util.HashMap;
 //import javax.servlet.http.HttpServletRequest;
 
 
@@ -414,9 +416,9 @@ public class ServicesHandler extends RequestHandler {
 						String value = null;
 						String name = null;
 						name  = ((JAXBElement) obj).getName().getLocalPart();
-						if (name.equalsIgnoreCase("set_password"))
-							skipValidation = true;
-						
+						//if (name.equalsIgnoreCase("set_password"))
+						//	skipValidation = true;
+
 						if (rmt.getUsername().equalsIgnoreCase("AGG_SERVICE_ACCOUNT") && 
 								(name.equalsIgnoreCase("get_user") || name.equalsIgnoreCase("set_user") || name.equalsIgnoreCase("set_user_param")) )
 							skipValidation = true;
@@ -502,11 +504,11 @@ public class ServicesHandler extends RequestHandler {
 				if (name.equals("set_user"))
 					return runSetUser(pmDb, project, rmt.getUsername(), (UserType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_user"))
-					return runGetAllUser(pmDb, project, rmt.getUsername() , "get_all_user");
+					return runGetAllUser(pmDb, project, rmt.getUsername() , "get_all_user",  (UserLoginType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_manager"))
-					return runGetAllUser(pmDb, project, rmt.getUsername(), "get_all_manager" );
+					return runGetAllUser(pmDb, project, rmt.getUsername(), "get_all_manager",  (UserLoginType) ((JAXBElement) obj).getValue()  );
 				else if (name.equals("get_all_admin"))
-					return runGetAllUser(pmDb, project, rmt.getUsername(), "get_all_admin" );
+					return runGetAllUser(pmDb, project, rmt.getUsername(), "get_all_admin",  (UserLoginType) ((JAXBElement) obj).getValue()  );
 				else if (name.equals("set_project"))
 					return runSetProject(pmDb, project, rmt.getUsername(), (ProjectType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_project"))
@@ -545,8 +547,6 @@ public class ServicesHandler extends RequestHandler {
 					return runSetParam(pmDb, project, name, rmt.getUsername(), (ConfigureType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("set_role"))
 					return runSetParam(pmDb, project, name, rmt.getUsername(), (RoleType) ((JAXBElement) obj).getValue() );
-				else if (name.equals("get_all_role"))
-					return runGetAllParam(pmDb, project, rmt.getUsername(),  (RoleType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("delete_role"))
 					return runDeleteParam(pmDb, project, rmt.getUsername(),  (RoleType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_role"))
@@ -573,6 +573,8 @@ public class ServicesHandler extends RequestHandler {
 					return runLogout(pmDb, 0,  ((UserType) ((JAXBElement) obj).getValue()).getPassword().getValue(), ((UserType) ((JAXBElement) obj).getValue()).getUserName() , rmt.getUsername());
 				else if (name.equals("get_user_login"))
 					return runUserLogin(pmDb, rmt.getUsername(),  (UserLoginType) ((JAXBElement) obj).getValue()  );
+				else if (name.equals("get_all_role"))
+					return runGetAllParam(pmDb, project, rmt.getUsername(),  (RoleType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_project_user_param")) {
 					ProjectType pType =  ((ProjectType)((JAXBElement) obj).getValue());
 					boolean showDeleted = false;
@@ -580,7 +582,6 @@ public class ServicesHandler extends RequestHandler {
 						showDeleted = ((ProjectType)((JAXBElement) obj).getValue()).getHidden();
 					return runGetAllParam(pmDb, project, rmt.getUsername(),  pType , ((JAXBElement) obj).getName().getLocalPart() , showDeleted);
 				}
-//					return runGetAllParam(pmDb, project,  rmt.getUsername(), (ProjectType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_cell_param")) {
 					CellDataType pType =  ((CellDataType)((JAXBElement) obj).getValue());
 					boolean showDeleted = false;
@@ -588,7 +589,7 @@ public class ServicesHandler extends RequestHandler {
 						showDeleted = ((CellDataType)((JAXBElement) obj).getValue()).getHidden();
 					return runGetAllParam(pmDb, project, rmt.getUsername(),  pType , ((JAXBElement) obj).getName().getLocalPart() , showDeleted);
 				}
-//					return runGetAllParam(pmDb, project, rmt.getUsername(),  (CellDataType) ((JAXBElement) obj).getValue() );
+				//					return runGetAllParam(pmDb, project, rmt.getUsername(),  (CellDataType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_user_param"))
 				{
 					UserType pType =  ((UserType)((JAXBElement) obj).getValue());
@@ -597,8 +598,8 @@ public class ServicesHandler extends RequestHandler {
 						showDeleted = ((UserType)((JAXBElement) obj).getValue()).getHidden();
 					return runGetAllParam(pmDb, project, rmt.getUsername(),  pType , ((JAXBElement) obj).getName().getLocalPart() , showDeleted);
 				}
-					
-					//return runGetAllParam(pmDb, project, rmt.getUsername(),  (UserType) ((JAXBElement) obj).getValue() );				
+
+				//return runGetAllParam(pmDb, project, rmt.getUsername(),  (UserType) ((JAXBElement) obj).getValue() );				
 				else if (name.equals("get_all_project_param"))
 				{
 					ProjectType pType = new ProjectType();
@@ -722,7 +723,7 @@ public class ServicesHandler extends RequestHandler {
 				else if (name.equals("set_password") && method != null)
 					throw new Exception(method + " authencation method is used, use that provider to change the password.");
 				else if (name.equals("set_password"))
-					return runSetPassword(pmDb, rmt.getUsername(), value );
+					return runSetPassword(pmDb, rmt.getUsername(), value, rmt.getPassword().getValue());
 				else if (name.equals("get_user"))
 					return runGetUser(pmDb, project, rmt.getUsername(), value );
 
@@ -857,7 +858,7 @@ public class ServicesHandler extends RequestHandler {
 		}
 		return responseVdo;
 	}
-	
+
 
 	private String runLogout(PMDbDao pmDb, int timeout, String sessionId, String userId, String LoginUser) throws Exception
 	{
@@ -900,7 +901,7 @@ public class ServicesHandler extends RequestHandler {
 		}
 		return responseVdo;
 	}
-	
+
 	private String runUserLogin(PMDbDao pmDb, String caller, UserLoginType value) {
 		ResponseMessageType responseMessageType = null;
 
@@ -1292,7 +1293,7 @@ public class ServicesHandler extends RequestHandler {
 
 			Iterator it = response.iterator();
 			ProjectRequestsType users = new ProjectRequestsType();
-			log.debug("Records returned: " + response.size());
+			//log.debug("Records returned: " + response.size());
 			while (it.hasNext())
 			{
 				ProjectRequestType user = (ProjectRequestType)it.next();
@@ -1349,7 +1350,7 @@ public class ServicesHandler extends RequestHandler {
 			}
 
 			Iterator it = response.iterator();
-			log.debug("Records returned: " + response.size());
+			//log.debug("Records returned: " + response.size());
 			while (it.hasNext())
 			{
 				ProjectRequestType user = (ProjectRequestType)it.next();
@@ -1387,7 +1388,7 @@ public class ServicesHandler extends RequestHandler {
 	private String runGetAllParam(PMDbDao pmDb, String project, String caller, Object utypem) {
 		return runGetAllParam( pmDb,  project,  caller,  utypem, null, false) ;
 	}
-	
+
 	private String runGetAllParam(PMDbDao pmDb, String project, String caller, Object utype, String localPart, boolean showDeleted) {
 		ResponseMessageType responseMessageType = null;
 
@@ -1409,24 +1410,68 @@ public class ServicesHandler extends RequestHandler {
 				{
 					response = pmDb.getAllParam(utype,project, caller, showDeleted);
 
-					log.debug("Records returned: " + response.size());
-					Iterator it = response.iterator();
-					users = new RolesType();
-					//ParamsType user = null;
-
-
-					while (it.hasNext())
+					if (response != null)
 					{
-						RoleType user = (RoleType)it.next();
-						((RolesType) users).getRole().add(user);
-					}					
+						//log.debug("Records returned: " + response.size());
+						Iterator it = response.iterator();
+						users = new RolesType();
+						//ParamsType user = null;
 
+
+						//HashMap<String, HashMap> projectHt = new HashMap<>();
+
+						//HashMap<String, Integer> ht = new HashMap<>();
+
+						//Map<String, String, Integer> projectHt = new HashMap<String, String, Integer>();
+
+						//List<List<String>> projectHt = new ArrayList<List<String>>();
+
+						Map<String, Map<String, Integer>> projectHt = new HashMap<>();
+
+						while (it.hasNext())
+						{
+							RoleType user = (RoleType)it.next();
+							((RolesType) users).getRole().add(user);
+
+
+							if (!projectHt.containsKey(user.getProjectId())) {
+								projectHt.put(user.getProjectId(), new HashMap<>());
+							}
+
+							if (!(projectHt.get(user.getProjectId())).containsKey(user.getRole()))
+								(projectHt.get(user.getProjectId())).put(user.getRole(), 1);
+							else 
+								(projectHt.get(user.getProjectId())).put(user.getRole(), projectHt.get(user.getProjectId()).get(user.getRole()) + 1);
+							/*
+						if (ht.get(user.getRole()) == null)
+							ht.put(user.getRole(), 1);
+						else
+							ht.put(user.getRole(), ht.get(user.getRole()) + 1);
+							 */
+						}
+
+						if (((RoleType) utype).getCount() != null && ((RoleType) utype).getCount().equalsIgnoreCase("project"))
+						{
+
+							users = new RolesType();
+							for (String keyProject : projectHt.keySet()) {
+								for (String keyRole : projectHt.get(keyProject).keySet())
+								{
+									RoleType role = new RoleType();
+									role.setRole(keyRole);
+									role.setProjectId(keyProject);
+									role.setCount(projectHt.get(keyProject).get(keyRole).toString());
+									((RolesType) users).getRole().add(role);
+								}
+							}
+						}
+					}
 				} else if ((utype instanceof ConfigureType) &&
 						((((ConfigureType) utype).getDomainId() == null)))
 				{
 					response = pmDb.getAllParam(utype,project, caller,showDeleted);
 
-					log.debug("Records returned: " + response.size());
+					//log.debug("Records returned: " + response.size());
 					Iterator it = response.iterator();
 					users = new ConfiguresType();
 					//ParamsType user = null;
@@ -1439,7 +1484,7 @@ public class ServicesHandler extends RequestHandler {
 				{
 					response = pmDb.getAllParam(utype,project, caller, showDeleted);
 
-					log.debug("Records returned: " + response.size());
+					//log.debug("Records returned: " + response.size());
 					Iterator it = response.iterator();
 
 					users = new UsersType();
@@ -1473,7 +1518,7 @@ public class ServicesHandler extends RequestHandler {
 				{
 					response = pmDb.getAllParam(utype,project, caller, showDeleted);
 
-					log.debug("Records returned: " + response.size());
+					//log.debug("Records returned: " + response.size());
 					Iterator it = response.iterator();
 					users = new ParamsType();
 					//ParamsType user = null;
@@ -1639,12 +1684,12 @@ public class ServicesHandler extends RequestHandler {
 	}
 
 
-	private String runSetPassword(PMDbDao pmDb,  String caller, String password) {
+	private String runSetPassword(PMDbDao pmDb,  String caller, String newpassword, String oldpassword) {
 		ResponseMessageType responseMessageType = null;
 
 		try {
 
-			int result = pmDb.setPassword(password, caller);
+			int result = pmDb.setPassword(newpassword, oldpassword, caller);
 
 			ResultStatusType results = new ResultStatusType();
 			StatusType status  = new StatusType();
@@ -1710,7 +1755,7 @@ public class ServicesHandler extends RequestHandler {
 	}
 
 
-	private String runGetAllUser(PMDbDao pmDb, String project, String caller, String call) {
+	private String runGetAllUser(PMDbDao pmDb, String project, String caller, String call, UserLoginType uType) {
 		ResponseMessageType responseMessageType = null;
 
 		try {
@@ -1718,7 +1763,7 @@ public class ServicesHandler extends RequestHandler {
 
 			List response = null;	
 			try {
-				response = pmDb.getAllUser(project, caller, call);
+				response = pmDb.getAllUser(project, caller, call, uType);
 			} catch (I2B2DAOException e1) {
 				throw new Exception ( "Database error in getting user data for NTLM");
 			} catch (I2B2Exception e1) {

@@ -216,10 +216,17 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 				DataType mdataType = new DataType();
 
 				String rangeCd = resultSet.getString("patient_range");
-
 				mdataType.setValue(String.valueOf(demoCount));
 				mdataType.setColumn(rangeCd);
-				mdataType.setType("int");
+
+
+
+				if (resultTypeName.startsWith("ADMIN"))
+				{
+					mdataType.setType(resultSet.getString("query_name"));
+				}else {
+					mdataType.setType("int");
+				}
 				resultType.getData().add(mdataType);
 
 			}

@@ -39,6 +39,7 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlType(name = "user_requestType", propOrder = {
     "userId",
     "groupId",
+    "datasource",
     "masterTypeCd",
     "includeQueryInstance",
     "fetchSize"
@@ -49,8 +50,10 @@ public class UserRequestType
 
     @XmlElement(name = "user_id", required = true)
     protected String userId;
-    @XmlElement(name = "group_id", required = true)
+    @XmlElement(name = "group_id")
     protected String groupId;
+    @XmlElement(name = "datasource")
+    protected String datasource;
     @XmlElement(name = "fetch_size")
     protected int fetchSize;
     @XmlElement(name = "master_type_cd")
@@ -155,6 +158,31 @@ public class UserRequestType
         this.groupId = value;
     }
 
+    /**
+     * Gets the value of the datasource property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDatasource() {
+        return datasource;
+    }
+
+    /**
+     * Sets the value of the datasource property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDatasource(String value) {
+        this.datasource = value;
+    }
+
+    
     /**
      * Gets the value of the fetchSize property.
      * 

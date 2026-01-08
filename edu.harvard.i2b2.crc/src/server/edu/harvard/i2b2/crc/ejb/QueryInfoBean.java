@@ -38,6 +38,7 @@ import edu.harvard.i2b2.common.util.jaxb.JAXBUnWrapHelper;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtil;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
+import edu.harvard.i2b2.crc.dao.DblookupDao;
 import edu.harvard.i2b2.crc.dao.SetFinderDAOFactory;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryBreakdownTypeDao;
 import edu.harvard.i2b2.crc.dao.setfinder.IQueryInstanceDao;
@@ -65,6 +66,7 @@ import edu.harvard.i2b2.crc.datavo.i2b2result.BodyType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.DataType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultEnvelopeType;
 import edu.harvard.i2b2.crc.datavo.i2b2result.ResultType;
+import edu.harvard.i2b2.crc.datavo.pdo.query.DblookupType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.CrcXmlResultResponseType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InstanceResponseType;
@@ -182,19 +184,50 @@ public class QueryInfoBean { //implements SessionBean {
 	 */
 	public MasterResponseType getQueryMasterListFromGroupId(
 			DataSourceLookup dataSourceLookup, UserRequestType userRequestType)
-					throws I2B2DAOException {
+					throws I2B2DAOException, Exception {
 		String groupId = userRequestType.getGroupId();
+		String datasource = userRequestType.getDatasource();
+
+		if ((groupId != null && groupId.equalsIgnoreCase("")) && (datasource != null && datasource.equalsIgnoreCase("")))
+			throw new I2B2DAOException(
+					"GroupId and Datasource can not both be not null");
 		String masterTypeCd = userRequestType.getMasterTypeCd();
 		boolean includeQueryInstance = userRequestType.getIncludeQueryInstance();
 
 		int fetchSize = userRequestType.getFetchSize();
-		SetFinderDAOFactory sfDaoFactory = this.getSetFinderDaoFactory(
-				dataSourceLookup.getDomainId(), dataSourceLookup
-				.getProjectPath(), dataSourceLookup.getOwnerId());
-		IQueryMasterDao queryMasterDao = sfDaoFactory.getQueryMasterDAO();
-		List<QtQueryMaster> masterList = queryMasterDao
-				.getQueryMasterByGroupId(groupId, fetchSize, masterTypeCd, includeQueryInstance);
+
+		List<QtQueryMaster> masterList = new ArrayList<>();
+		if (datasource != null && !datasource.equalsIgnoreCase(""))
+		{
+			//get list of all projects
+			DblookupDao dblookupDao = new DblookupDao(dataSourceLookup.getDomainId(), userRequestType.getUserId());
+
+			List<DblookupType> dblookups = dblookupDao.getDblookup("db_fullschema", datasource);
+
+			for (DblookupType dblookup: dblookups)
+			{
+
+				SetFinderDAOFactory sfDaoFactory = this.getSetFinderDaoFactory(
+						dataSourceLookup.getDomainId(),  dblookup.getProjectPath().replace("/", "")
+						, dataSourceLookup.getOwnerId());
+				IQueryMasterDao queryMasterDao = sfDaoFactory.getQueryMasterDAO();
+				masterList.addAll(queryMasterDao
+						.getQueryMasterByGroupId(dblookup.getProjectPath().replace("/", ""), fetchSize, masterTypeCd, includeQueryInstance));
+
+			}
+
+
+		} else {
+
+			SetFinderDAOFactory sfDaoFactory = this.getSetFinderDaoFactory(
+					dataSourceLookup.getDomainId(), dataSourceLookup
+					.getProjectPath(), dataSourceLookup.getOwnerId());
+			IQueryMasterDao queryMasterDao = sfDaoFactory.getQueryMasterDAO();
+			masterList = queryMasterDao
+					.getQueryMasterByGroupId(groupId, fetchSize, masterTypeCd, includeQueryInstance);
+		}
 		MasterResponseType masterResponseType = buildMasterResponseType(masterList);
+
 		return masterResponseType;
 	}
 
@@ -482,7 +515,7 @@ public class QueryInfoBean { //implements SessionBean {
 						mdataType.setColumn(statusName);
 						mdataType.setType("string");
 						resultType.getData().add(mdataType);
-					
+
 						edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory of = new edu.harvard.i2b2.crc.datavo.i2b2result.ObjectFactory();
 						BodyType bodyType = new BodyType();
 						bodyType.getAny().add(of.createResult(resultType));
@@ -511,9 +544,9 @@ public class QueryInfoBean { //implements SessionBean {
 			//xmlResultType.getXmlValue().getContent().get(0);
 
 			//xmlResultDao.
-		//	QueryResultInstanceType queryResultInstanceType = PSMFactory.buildQueryResultInstanceType(resultInstance);
+			//	QueryResultInstanceType queryResultInstanceType = PSMFactory.buildQueryResultInstanceType(resultInstance);
 			//System.out.println("RESULT INSTANCE " + resultInstance.getResultInstanceId() );
-		//	resultResultInstanceType.getQueryResultInstance().add(queryResultInstanceType);
+			//	resultResultInstanceType.getQueryResultInstance().add(queryResultInstanceType);
 		}
 
 
@@ -684,7 +717,7 @@ public class QueryInfoBean { //implements SessionBean {
 							.getXMLGregorianCalendar(b.getStartDate().getTime()));
 					if ( b.getEndDate() != null)
 						queryResultInstance.setEndDate(dtoFactory
-							.getXMLGregorianCalendar(b.getEndDate().getTime()));
+								.getXMLGregorianCalendar(b.getEndDate().getTime()));
 					QueryResultTypeType queryResultType = new QueryResultTypeType();
 					queryResultType.setVisualAttributeType(b.getQtQueryResultType().getVisualAttributeType());
 					queryResultType.setName(b.getQtQueryResultType().getName());
@@ -726,7 +759,7 @@ public class QueryInfoBean { //implements SessionBean {
 		SetFinderDAOFactory sfDAOFactory = getSetFinderDaoFactory(
 				dataSourceLookup.getDomainId(), dataSourceLookup
 				.getProjectPath(), dataSourceLookup.getOwnerId());
-
+		long DXCreateTime = 0;
 		Map param = new HashMap();
 		log.debug("Creatiung hash map");
 		Connection manualConnection = sfDAOFactory.getDataSource().getConnection();
@@ -741,6 +774,7 @@ public class QueryInfoBean { //implements SessionBean {
 		param.put("securityType", userRequestType);
 		param.put("TransactionTimeout", 180);
 		//	param.put("ProcessTimingFlag", "");
+		param.put("DXCreateTime",DXCreateTime);
 		param.put("ObfuscatedRecordCount", 3);
 		param.put("RecordCount", 0);
 		param.put("ObfuscatedRoleFlag", true);

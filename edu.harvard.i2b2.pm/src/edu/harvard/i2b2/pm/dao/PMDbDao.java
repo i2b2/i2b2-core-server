@@ -651,7 +651,7 @@ public class PMDbDao extends JdbcDaoSupport {
 	}
 
 
-	public List<UserType> getAllUser(String project, String caller, String call) throws I2B2Exception, I2B2DAOException { 
+	public List<UserType> getAllUser(String project, String caller, String call, UserLoginType uType ) throws I2B2Exception, I2B2DAOException { 
 		String sql = null;
 		List<UserType> queryResult = null;
 
@@ -670,7 +670,13 @@ public class PMDbDao extends JdbcDaoSupport {
 						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'MANAGER' and  a.status_cd<>'D' order by a.full_name";
 
 			
-			queryResult = jt.query(sql,  GetUser(false));
+			if (uType.getEntryDate() != null)
+			{
+				sql += " and a.entry_date > ?";
+				queryResult = jt.query(sql, GetUser(false), uType.getEntryDate().toGregorianCalendar().getTime());
+			} else {
+				queryResult = jt.query(sql,  GetUser(false));
+			}
 		}
 
 		return queryResult;	
@@ -863,10 +869,10 @@ public class PMDbDao extends JdbcDaoSupport {
 
 
 
-	public int setPassword(String password, String caller) throws I2B2DAOException, I2B2Exception{
+	public int setPassword(String newpassword, String oldpassword, String caller) throws I2B2DAOException, I2B2Exception{
 		int numRowsAdded = 0;
 		//String hashMD5 = PMUtil.getInstance().getHashedPassword("ND5", password);
-		String hashSHA256 = PMUtil.getInstance().getHashedPassword("SHA-256", password);
+		String hashSHA256 = PMUtil.getInstance().getHashedPassword("SHA-256", oldpassword);
 
 		try {
 
@@ -886,7 +892,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					if (user.getName().equals("PM_COMPLEX_PASSWORD") )
 					{
 
-						if (!PMUtil.getInstance().passwordValidation(password, user.getValue()))
+						if (!PMUtil.getInstance().passwordValidation(newpassword, user.getValue()))
 							throw new Exception("Password Validation Failed");
 					} else if (user.getName().equals("PM_EXPIRED_PASSWORD")) {
 
@@ -916,6 +922,7 @@ public class PMDbDao extends JdbcDaoSupport {
 
 
 				//sql =  "select * from pm_user_data where user_id = ?  and password = ?";
+				/*
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
 						+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' where  a.user_id = ? and password = ?";
 
@@ -924,7 +931,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				it = queryResult2.iterator();
 				if (it.hasNext())
 					throw new Exception("New password is same as current password.");
-
+				*/
 			} catch (Exception e)
 			{
 				throw new I2B2DAOException(e.getMessage(), e);
@@ -935,7 +942,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					"set password = ?, change_date = ?, changeby_char = ? where user_id = ?";
 
 			numRowsAdded = jt.update(addSql, 
-					hashSHA256,
+					PMUtil.getInstance().getHashedPassword("SHA-256", newpassword),
 					Calendar.getInstance().getTime(),
 					caller,
 					caller);
@@ -1653,32 +1660,35 @@ public class PMDbDao extends JdbcDaoSupport {
 		}
 		else if (utype instanceof RoleType)
 		{
-			String addsql = "  user_id = '" + caller + "' ";
+			String addsql = " ";
+			if (((RoleType) utype).getCount() == null)
+				addsql = " and  user_id = '" + caller + "' ";
 			if ((validateRole(caller, "admin", null)) || (validateRole(caller, "manager", project)))
 			{
-				addsql = " 1 = 1 ";				
+				addsql = " and 1 = 1 ";				
 			}
 			if (((RoleType) utype).getProjectId() == null)
 			{
-				sql =  "select * from pm_project_user_roles where " + 	(showDeleted ? "" :" status_cd<>'D' and ");
+				sql =  "select * from pm_project_user_roles where " + 	(showDeleted ? "" :" status_cd<>'D'  ");
 				sql +=  addsql + " order by project_id";
 				queryResult = jt.query(sql, new getRole());
 
 			} else if (((RoleType) utype).getUserName() != null)
 			{
-				sql =  "select * from pm_project_user_roles where project_id=? and user_id=? and " + 	(showDeleted ? "" :" status_cd<>'D' and ");
+				sql =  "select * from pm_project_user_roles where project_id=? and user_id=? and " + 	(showDeleted ? "" :" status_cd<>'D'  ");
 				sql += addsql + " order by project_id";
 				queryResult = jt.query(sql, new getRole(), ((RoleType) utype).getProjectId(), ((RoleType) utype).getUserName());
 
 			}  
 			else {
-				sql =  "select * from pm_project_user_roles where project_id=? and " + 	(showDeleted ? "" :" status_cd<>'D' and ");
+				sql =  "select * from pm_project_user_roles where project_id=? and " + 	(showDeleted ? "" :" status_cd<>'D'  ");
 				sql += addsql;
 				queryResult = jt.query(sql, new getRole(), ((RoleType) utype).getProjectId());
 			}
 			//	}
 
 		}
+		log.info("my sql: " + sql);
 		return queryResult;	
 	}
 
@@ -2587,7 +2597,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		String sql = null;
 		List<UserLoginType> queryResult = null;
 
-		sql =  "select distinct user_id, entry_date, attempt_cd from pm_user_login where status_cd<>'D' and (attempt_cd = 'SUCCESS' or attempt_cd = 'PASSWORD_EXPIRED' or attempt_cd = 'BADPASSWORD' or attempt_cd = 'LOCKED_OUT' or attempt_cd = 'NONEXIST' ";
+		sql =  "select distinct user_id, entry_date, attempt_cd from pm_user_login where status_cd<>'D' and (attempt_cd = 'SUCCESS' or attempt_cd = 'PASSWORD_EXPIRED' or attempt_cd = 'BADPASSWORD' or attempt_cd = 'LOCKED_OUT' or attempt_cd = 'NONEXIST') ";
 		if (value.getEntryDate() != null)
 		{
 			sql += " and entry_date > ?";
@@ -2964,6 +2974,13 @@ class getUser implements RowMapper<UserType> {
 		UserType userData = new UserType();
 		userData.setFullName(rs.getString("full_name"));
 		userData.setUserName(rs.getString("user_id"));
+		
+		Date date = rs.getTimestamp("entry_date");
+		if (date == null)
+			userData.setEntryDate(null);
+		else 
+			userData.setEntryDate(date); 
+
 		try {
 			//TODO MM fix admin
 			String isAdmin = rs.getString("user_role_cd");

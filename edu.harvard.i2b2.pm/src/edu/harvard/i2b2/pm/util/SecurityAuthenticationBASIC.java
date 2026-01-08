@@ -66,7 +66,7 @@ public class SecurityAuthenticationBASIC implements SecurityAuthentication {
 			// Check if MD5 and if so tahn convert to SHA256
 			if (user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword("MD5", password)))
 			{
-				pmDb.setPassword(password, username);
+				pmDb.setPassword(user.getPassword().getValue(), password, username);
 				PasswordType pass = user.getPassword();
 				pass.setValue(PMUtil.getInstance().getHashedPassword("SHA-256", password));
 				user.setPassword(pass );

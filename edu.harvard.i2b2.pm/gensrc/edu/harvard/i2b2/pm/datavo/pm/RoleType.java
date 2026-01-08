@@ -39,7 +39,8 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlType(name = "roleType", propOrder = {
     "projectId",
     "userName",
-    "role"
+    "role",
+    "count"
 })
 public class RoleType {
 
@@ -49,6 +50,7 @@ public class RoleType {
     protected String userName;
     @XmlElement(required = true)
     protected String role;
+    protected String count;
 
     /**
      * Gets the value of the projectId property.
@@ -120,6 +122,29 @@ public class RoleType {
      */
     public void setRole(String value) {
         this.role = value;
+    }
+    /**
+     * Gets the value of the count property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCount() {
+        return count;
+    }
+
+    /**
+     * Sets the value of the count property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCount(String value) {
+        this.count = value;
     }
 
 }
