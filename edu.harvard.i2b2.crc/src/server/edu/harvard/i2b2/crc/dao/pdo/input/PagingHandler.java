@@ -114,6 +114,10 @@ public class PagingHandler extends CRCDAO {
 			countClause = " COUNT_BIG(*) ";
 			factRelatedHandler = new SQLServerFactRelatedQueryHandler(
 					dataSourceLookup, inputList, filterList, outputOptionList);
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
+			factRelatedHandler = new FactRelatedQueryHandler(dataSourceLookup,
+					inputList, filterList, outputOptionList);
 		}
 		factRelatedHandler.setProjectParamMap(this.projectParamMap);
 		factRelatedHandler.setModifierMetadataXmlMap(this.modifierMetadataXmlMap);
@@ -229,6 +233,10 @@ public class PagingHandler extends CRCDAO {
 			countSqlFrom = "as";
 			factRelatedHandler = new SQLServerFactRelatedQueryHandler(
 					dataSourceLookup, inputList, filterList, outputOptionList);
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
+			factRelatedHandler = new FactRelatedQueryHandler(dataSourceLookup,
+					inputList, filterList, outputOptionList);
 		}
 		//set project param
 		factRelatedHandler.setProjectParamMap(this.projectParamMap);

@@ -76,6 +76,8 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 		private String SEQUENCE_ORACLE = "";
 		private String SEQUENCE_POSTGRESQL = "";
 		private String INSERT_POSTGRESQL = "";
+		private String SEQUENCE_SNOWFLAKE = "";
+		private String INSERT_SNOWFLAKE = "";
 
 		private DataSourceLookup dataSourceLookup = null;
 
@@ -114,6 +116,18 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 				setSql(INSERT_POSTGRESQL);
 				SEQUENCE_POSTGRESQL = "select "// + dbSchemaName
 						+ "nextval('qt_pdo_query_master_query_master_id_seq') ";
+				declareParameter(new SqlParameter(Types.INTEGER));
+			} else if ( dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
+				INSERT_SNOWFLAKE = "INSERT INTO "
+						+ dbSchemaName
+						+ "QT_PDO_QUERY_MASTER "
+						+ "(QUERY_MASTER_ID,  USER_ID, GROUP_ID,CREATE_DATE,REQUEST_XML,I2B2_REQUEST_XML) "
+						+ "VALUES (?,?,?,?,?,?)";
+				setSql(INSERT_SNOWFLAKE);
+				SEQUENCE_SNOWFLAKE = "select "
+						+ dbSchemaName
+						+ "SEQ_QT_PDO_QUERY_MASTER.nextval";
 				declareParameter(new SqlParameter(Types.INTEGER));
 			}
 			this.dataSourceLookup = dataSourceLookup;
@@ -163,6 +177,15 @@ public class QueryPdoMasterSpringDao extends CRCDAO implements
 						getRequestXmlNoPass, i2b2RequestXml };
 				update(object);
 
+			} else  if (dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
+
+				queryMasterIdentityId = jdbc.queryForObject(SEQUENCE_SNOWFLAKE, Integer.class);
+				object = new Object[] { queryMasterIdentityId,
+						queryMaster.getUserId(), queryMaster.getGroupId(),
+						queryMaster.getCreateDate(),
+						getRequestXmlNoPass, i2b2RequestXml };
+				update(object);
 			}
 
 			queryMaster.setQueryMasterId(String.valueOf(queryMasterIdentityId));

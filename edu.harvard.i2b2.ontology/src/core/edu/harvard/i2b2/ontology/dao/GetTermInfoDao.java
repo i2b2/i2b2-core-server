@@ -191,6 +191,8 @@ class GetTermInfoConcept implements RowMapper<ConceptType> {
 				try {
 					if (dbType.equals("POSTGRESQL"))
 						self.setComment(rs.getString("c_comment"));
+					else if (dbType.equals("SNOWFLAKE"))
+						self.setComment(rs.getString("c_comment"));
 					else
 						self.setComment(JDBCUtil.getClobString(rs.getClob("c_comment")));
 				} catch (IOException e1) {
@@ -203,6 +205,8 @@ class GetTermInfoConcept implements RowMapper<ConceptType> {
 				String c_xml = null;
 				try {
 					if (dbType.equals("POSTGRESQL"))
+						c_xml = rs.getString("c_metadataxml");
+					else if (dbType.equals("SNOWFLAKE"))
 						c_xml = rs.getString("c_metadataxml");
 					else
 						c_xml = JDBCUtil.getClobString(rs.getClob("c_metadataxml"));

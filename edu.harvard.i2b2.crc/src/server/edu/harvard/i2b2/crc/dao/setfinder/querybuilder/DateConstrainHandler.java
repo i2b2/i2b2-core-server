@@ -47,6 +47,9 @@ public class DateConstrainHandler {
 						DAOFactoryHelper.POSTGRESQL)) {
 			// ISO 8601
 			dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
+			dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		}
 	}
 
@@ -83,6 +86,10 @@ public class DateConstrainHandler {
 				// {ts '2005-06-27 00:00:00'}
 				dateConstrainSql = fromDateField + sqlOperator + " '"
 						+ fromDateString + ".00'";
+			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+        					DAOFactoryHelper.SNOWFLAKE)) {
+    			dateConstrainSql = fromDateField + sqlOperator + " '"
+						+ fromDateString + "'";
 			}
 		}
 
@@ -119,6 +126,10 @@ public class DateConstrainHandler {
 							DAOFactoryHelper.POSTGRESQL)) {
 				dateConstrainSql += (toDateField + sqlOperator + " '"
 						+ toDateString + ".99'");
+			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
+       			 			DAOFactoryHelper.SNOWFLAKE)) {
+    			dateConstrainSql += (toDateField + sqlOperator + " '"
+						+ toDateString + "'");
 			}
 		}
 

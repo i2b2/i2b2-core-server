@@ -141,7 +141,11 @@ public class MissingTermDAO extends CRCLoaderDAO implements IMissingTermDAO {
 			}
 			conn = getDataSource().getConnection();
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					DataSourceLookupDAOFactory.SQLSERVER)) {
+					DataSourceLookupDAOFactory.SQLSERVER) ||
+					dataSourceLookup.getServerType().equalsIgnoreCase(
+							DataSourceLookupDAOFactory.POSTGRESQL) ||
+					dataSourceLookup.getServerType().equalsIgnoreCase(
+							DataSourceLookupDAOFactory.SNOWFLAKE)) {
 				sql = " select tot,concept_cd, rnum  from ( "
 						+ " select count(*) tot, obs1.concept_cd, row_number() over (order by obs1.concept_cd asc)  rnum from "
 						+ this.getDbSchemaName() + "observation_fact obs1 where concept_cd not in ( "
@@ -217,7 +221,11 @@ public class MissingTermDAO extends CRCLoaderDAO implements IMissingTermDAO {
 			}
 			conn = getDataSource().getConnection();
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					DataSourceLookupDAOFactory.SQLSERVER)) {
+					DataSourceLookupDAOFactory.SQLSERVER) ||
+					dataSourceLookup.getServerType().equalsIgnoreCase(
+							DataSourceLookupDAOFactory.POSTGRESQL) ||
+					dataSourceLookup.getServerType().equalsIgnoreCase(
+							DataSourceLookupDAOFactory.SNOWFLAKE)) {
 				sql = " select tot,modifier_cd, rnum  from ( "
 						+ " select count(*) tot, obs1.modifier_cd, row_number() over (order by obs1.modifier_cd asc)  rnum from "
 						+ this.getDbSchemaName() + "observation_fact obs1 where modifier_cd not in ( "
@@ -294,7 +302,11 @@ public class MissingTermDAO extends CRCLoaderDAO implements IMissingTermDAO {
 			}
 			conn = getDataSource().getConnection();
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					DataSourceLookupDAOFactory.SQLSERVER)) {
+					DataSourceLookupDAOFactory.SQLSERVER) ||
+					dataSourceLookup.getServerType().equalsIgnoreCase(
+							DataSourceLookupDAOFactory.POSTGRESQL) ||
+					dataSourceLookup.getServerType().equalsIgnoreCase(
+							DataSourceLookupDAOFactory.SNOWFLAKE)) {
 				sql = " select tot,provider_id, rnum  from ( "
 						+ " select count(*) tot, obs1.provider_id, row_number() over (order by obs1.provider_id asc)  rnum from "
 						+ this.getDbSchemaName() + "observation_fact obs1 where provider_id not in ( "

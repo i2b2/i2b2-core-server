@@ -26,7 +26,8 @@ public class TempTableNameMap {
 			tempMasterTableName = "#master_global_temp_table";
 		} else if (serverType.equalsIgnoreCase(
 				DAOFactoryHelper.ORACLE) || serverType.equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.POSTGRESQL) || serverType.equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
 			tempTableName = "QUERY_GLOBAL_TEMP";
 			tempDxTableName = "DX";
 			tempMasterTableName = "MASTER_QUERY_GLOBAL_TEMP";

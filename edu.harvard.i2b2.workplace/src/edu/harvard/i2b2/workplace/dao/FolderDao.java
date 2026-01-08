@@ -595,17 +595,20 @@ public class FolderDao extends JdbcDaoSupport {
 					int fetchSize = returnType.getMax() +1 ;
 
 					// if server is oracle then use rownum to return max number of rows
-					if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE"))				
-						maxString = " and rownum>0 and rownum <=" + fetchSize; 
+					if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE"))
+						maxString = " and rownum>0 and rownum <=" + fetchSize;
 
-					// if server is SQL SERVER then use 'TOP' clause to return max number of rows 
+					// if server is SQL SERVER then use 'TOP' clause to return max number of rows
 					else if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-						maxString = "TOP " + fetchSize + " "; 
+						maxString = "TOP " + fetchSize + " ";
 						parameters = maxString + parameters; // appended maxstring infront of parameters
 						maxString = "";
-					} 
-					//else 	if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL"))				
-					//	maxString = " limit " + fetchSize; 
+					}
+					// Snowflake supports LIMIT
+					else if(dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE"))
+						maxString = " limit " + fetchSize;
+					//else 	if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL"))
+					//	maxString = " limit " + fetchSize;
 
 				}
 			}
@@ -1835,7 +1838,7 @@ class GetFolderMapper implements RowMapper<FolderType> {
 
 			String c_xml = null;
 			try {
-				if (dbType.equals("POSTGRESQL"))
+				if (dbType.equals("POSTGRESQL") || dbType.equals("SNOWFLAKE"))
 				{
 					c_xml = rs.getString("c_work_xml");
 				} else
@@ -1881,9 +1884,17 @@ class GetFolderMapper implements RowMapper<FolderType> {
 			} 
 
 			try {
-				Clob xml_schema_clob = rs.getClob("c_work_xml_schema");
-				if (xml_schema_clob != null){
-					c_xml = JDBCUtil.getClobString(xml_schema_clob);
+				String xml_schema_string = null;
+				//on snowflake the column is varchar, not a clob
+				if (dbType.equals("SNOWFLAKE")) {
+					xml_schema_string = rs.getString("c_work_xml_schema");
+				} else {
+					Clob xml_schema_clob = rs.getClob("c_work_xml_schema");
+					if (xml_schema_clob != null)
+						xml_schema_string = JDBCUtil.getClobString(xml_schema_clob);
+				}
+				if (xml_schema_string != null){
+					c_xml = xml_schema_string;
 					if ((c_xml!=null)&&(c_xml.trim().length()>0)&&(!c_xml.equals("(null)")))
 					{
 						Element rootElement = null;

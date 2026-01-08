@@ -155,7 +155,8 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 					DAOFactoryHelper.ORACLE)) {
 				TEMP_DX_TABLE = getDbSchemaName() + "DX";
 			} else if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
-					DAOFactoryHelper.POSTGRESQL)) {
+					DAOFactoryHelper.POSTGRESQL) || sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
 				TEMP_DX_TABLE = "DX";
 			}
 

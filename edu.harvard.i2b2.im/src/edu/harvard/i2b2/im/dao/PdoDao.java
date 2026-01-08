@@ -275,7 +275,8 @@ public class PdoDao  extends JdbcDaoSupport {
 					"PROJECT_ID       VARCHAR(50) NULL "+
 					")";
 			jt.update(sql); 
-		} else 	if (dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL"))
+		} else 	if (dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")
+				|| dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE"))
 		{
 
 			// Drop if already exists
@@ -288,7 +289,7 @@ public class PdoDao  extends JdbcDaoSupport {
 					"LCL_ID           VARCHAR(200) NULL, "+
 					"PROJECT_ID       VARCHAR(50) NULL "+
 					")";
-			jt.update(sql); 
+			jt.update(sql);
 		} else
 		{
 			tempTable = metadataSchema  + tempTable;
@@ -366,13 +367,14 @@ public class PdoDao  extends JdbcDaoSupport {
 			pidt.getPatientMapId().addAll(queryResult);
 			pidSet.getPid().add(pidt);
 
-			if (dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER") )	{
+			if (dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")
+					|| dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE"))	{
 				String sql = "DROP TABLE " + tempTable;
-				jt.update(sql); 
+				jt.update(sql);
 			} else if (dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL"))
 			{
 				String sql = "DISCARD TEMP ";
-				jt.update(sql); 				
+				jt.update(sql);
 			} else {
 				String sql = "DELETE FROM " + tempTable;
 				jt.update(sql);
@@ -456,7 +458,7 @@ public class PdoDao  extends JdbcDaoSupport {
 
 
 
-		} else 	if (dbInfo.getDb_serverType().equals("SQLSERVER") || (dbInfo.getDb_serverType().equals("POSTGRESQL"))) {
+		} else 	if (dbInfo.getDb_serverType().equals("SQLSERVER") || (dbInfo.getDb_serverType().equals("POSTGRESQL")) || (dbInfo.getDb_serverType().equals("SNOWFLAKE"))) {
 			tablesSql =	"SELECT * FROM ( " +
 					"    SELECT ROW_NUMBER() OVER ( ORDER BY query_date ) AS RowNum, * " +
 					"       FROM " +  metadataSchema +  "im_audit WHERE ";

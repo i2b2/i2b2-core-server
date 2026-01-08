@@ -550,7 +550,8 @@ public class QueryManagerBean{ // implements SessionBean {
 
 						} else if (daoFactoryHelper.getDataSourceLookup().getServerType().equalsIgnoreCase(
 								DAOFactoryHelper.ORACLE) || daoFactoryHelper.getDataSourceLookup().getServerType().equalsIgnoreCase(
-										DAOFactoryHelper.POSTGRESQL)) {
+										DAOFactoryHelper.POSTGRESQL) || daoFactoryHelper.getDataSourceLookup().getServerType().equalsIgnoreCase(
+												DAOFactoryHelper.SNOWFLAKE)) {
 							TEMP_DX_TABLE = daoFactoryHelper.getDataSourceLookup().getFullSchema() + "DX";
 						}
 

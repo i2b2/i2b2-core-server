@@ -257,8 +257,11 @@ public final class LuceneIndexer {
 					category = StringUtil.escapeORACLE(tableName.getFullName());
 				}
 				else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-					category = StringUtil.escapePOSTGRESQL(tableName.getFullName()); 
-				}		
+					category = StringUtil.escapePOSTGRESQL(tableName.getFullName());
+				}
+				else if(dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE")){
+					category = StringUtil.escapeSNOWFLAKE(tableName.getFullName());
+				}
 
 				
 				// Iterator<OntologyRow> it = closeableCsvToBean.csvToBean.iterator();
