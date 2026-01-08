@@ -77,7 +77,7 @@
 	-->
 	
 	<!--  POSTGRESQL EXAMPLE -->
-	<!-- 
+	<!--
 	<datasource jta="false" jndi-name="java:/IMBootStrapDS"
 		pool-name="IMBootStrapDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:postgresql://localhost:5432/i2b2</connection-url>
@@ -88,7 +88,7 @@
 			<password>demouser</password>
 		</security>
 		<validation>
-			<valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>		
+			<valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
 			<validate-on-match>false</validate-on-match>
 			<background-validation>true</background-validation>
 			<background-validation-millis>60000</background-validation-millis>
@@ -100,11 +100,28 @@
 		</statement>
 	</datasource>
 	-->
-	
-	<!-- 
 
-   _____ ______ _____ _______ _____ ____  _   _    ___      ____  ______    ___  
-  / ____|  ____/ ____|__   __|_   _/ __ \| \ | |  |__ \    / __ \|  ____|  |__ \ 
+	<!--  SNOWFLAKE EXAMPLE -->
+	<!--
+	<datasource jta="false" jndi-name="java:/IMBootStrapDS"
+		pool-name="IMBootStrapDS" enabled="true" use-ccm="false">
+		<connection-url>jdbc:snowflake://<account>.us-east-2.aws.snowflakecomputing.com/?db=I2B2_DEV&schema=I2B2HIVE&warehouse=I2B2_DEV_WH&role=I2B2_DEV_APP_ROLE&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true</connection-url>
+		<driver-class>net.snowflake.client.jdbc.SnowflakeDriver</driver-class>
+		<driver>snowflake-jdbc-3.27.0.jar</driver>
+		<security>
+			<user-name>I2B2HIVE_USER</user-name>
+			<password>demouser</password>
+		</security>
+		<statement>
+			<share-prepared-statements>false</share-prepared-statements>
+		</statement>
+	</datasource>
+	-->
+
+	<!--
+
+   _____ ______ _____ _______ _____ ____  _   _    ___      ____  ______    ___
+  / ____|  ____/ ____|__   __|_   _/ __ \| \ | |  |__ \    / __ \|  ____|  |__ \
  | (___ | |__ | |       | |    | || |  | |  \| |     ) |  | |  | | |__        ) |
   \___ \|  __|| |       | |    | || |  | | . ` |    / /   | |  | |  __|      / / 
   ____) | |___| |____   | |   _| || |__| | |\  |   / /_   | |__| | |        / /_ 
@@ -170,7 +187,7 @@
 	-->
 
 	<!--  POSTGRESQL EXAMPLE -->
-	<!-- 
+	<!--
 	<datasource jta="false" jndi-name="java:/IMDemoDS"
 		pool-name="IMDemoDS" enabled="true" use-ccm="false">
 		<connection-url>jdbc:postgresql://localhost:5432/i2b2</connection-url>
@@ -181,7 +198,7 @@
 			<password>demouser</password>
 		</security>
 		<validation>
-			<valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>		
+			<valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
 			<validate-on-match>false</validate-on-match>
 			<background-validation>true</background-validation>
 			<background-validation-millis>60000</background-validation-millis>
@@ -193,6 +210,22 @@
 		</statement>
 	</datasource>
 	-->
-	
+
+	<!--  SNOWFLAKE EXAMPLE -->
+	<!--
+	<datasource jta="false" jndi-name="java:/IMDemoDS"
+		pool-name="IMDemoDS" enabled="true" use-ccm="false">
+		<connection-url>jdbc:snowflake://<account>.us-east-2.aws.snowflakecomputing.com/?db=I2B2_DEV&schema=I2B2IMDATA&warehouse=I2B2_DEV_WH&role=I2B2_DEV_APP_ROLE&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true</connection-url>
+		<driver-class>net.snowflake.client.jdbc.SnowflakeDriver</driver-class>
+		<driver>snowflake-jdbc-3.27.0.jar</driver>
+		<security>
+			<user-name>i2b2imdata</user-name>
+			<password>demouser</password>
+		</security>
+		<statement>
+			<share-prepared-statements>false</share-prepared-statements>
+		</statement>
+	</datasource>
+	-->
 
 </datasources>

@@ -65,9 +65,11 @@ public class PatientSetCollectionSpringDao extends CRCDAO implements  IPatientSe
 		setDbSchemaName(dataSourceLookup.getFullSchema());
 		jdbcTemplate = new JdbcTemplate(dataSource);
 		this.dataSourceLookup = dataSourceLookup;
-		if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE)) { 
-			insert_sql = "insert into " + getDbSchemaName() +"qt_patient_set_collection(patient_set_coll_id,result_instance_id,set_index,patient_num) values ("+getDbSchemaName()+"QT_SQ_QPR_PCID.nextval,?,?,?)"; 
-		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) || dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) { 
+		if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
+			insert_sql = "insert into " + getDbSchemaName() +"qt_patient_set_collection(patient_set_coll_id,result_instance_id,set_index,patient_num) values ("+getDbSchemaName()+"QT_SQ_QPR_PCID.nextval,?,?,?)";
+		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
+				dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+				dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 			insert_sql = "insert into " + getDbSchemaName() + "qt_patient_set_collection(result_instance_id,set_index,patient_num) values (?,?,?)";
 		}
 		sqlServerSequenceDao  = new SQLServerSequenceDAO(dataSource,dataSourceLookup) ;

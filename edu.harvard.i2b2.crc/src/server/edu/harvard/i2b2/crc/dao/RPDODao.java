@@ -579,10 +579,11 @@ public class RPDODao extends JdbcDaoSupport {
 						+ "','0"
 						+ "','" + maxFetchRowsStr + "',?)}";
 
-			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)
+					|| serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
 			{
 				value = "call " + dataSchema + ".usp_rpdo2 (" + naxtTableInstanceID
-						+ ",{{{RESULT_INSTANCE_ID}}}" 
+						+ ",{{{RESULT_INSTANCE_ID}}}"
 						+ ",0"
 						+ "," + maxFetchRowsStr + ",?)";
 

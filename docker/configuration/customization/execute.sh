@@ -126,6 +126,58 @@ EOF
 fi
 }
 
+function create_snowflake_ds() {
+
+  $JBOSS_CLI -c << EOF
+    # batch
+    # Add Snowflake module
+    module add --name=net.snowflake --resources=/opt/jboss/wildfly/customization/snowflake-jdbc-3.27.0.jar --dependencies=javax.api,javax.transaction.api
+
+    # Add Snowflake driver
+    /subsystem=datasources/jdbc-driver=snowflake:add(driver-name="snowflake",driver-module-name="net.snowflake",driver-class-name=net.snowflake.client.jdbc.SnowflakeDriver)
+EOF
+
+  if [[ -f "$jndi_connections_file" ]];
+        then
+        echo "------------------------------------------------------------------"
+        echo "Reading Datasources from file: $jndi_connections_file"
+        echo "------------------------------------------------------------------"
+
+        $JBOSS_CLI -c <<EOF
+        batch
+          $(grep -Ev '^\s*(#|$)' "/opt/jboss/wildfly/customization/custom_datasource.txt")
+        run-batch
+EOF
+
+  else
+    echo "------------------------------------------------------------------"
+    echo "Using environment Variables for creating datasources"
+    echo "------------------------------------------------------------------"
+      $JBOSS_CLI -c << EOF
+      batch
+
+    # Snowflake connection-url shape:
+    # jdbc:snowflake://<account>.<region>.snowflakecomputing.com/?db=<db>&schema=<schema>&warehouse=<wh>&role=<role>&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true
+    data-source add --jndi-name=java:/CRCBootStrapDS --name=CRCBootStrapDS --connection-url=jdbc:snowflake://${DS_HIVE_ACCOUNT}.snowflakecomputing.com/?db=${DS_HIVE_DB}&schema=${DS_HIVE_SCHEMA}&warehouse=${DS_HIVE_WAREHOUSE}&role=${DS_HIVE_ROLE}&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true --driver-name=snowflake --user-name=${DS_HIVE_USER} --password=${DS_HIVE_PASS}
+    data-source add --jndi-name=java:/QueryToolDemoDS --name=QueryToolDemoDS --connection-url=jdbc:snowflake://${DS_CRC_ACCOUNT}.snowflakecomputing.com/?db=${DS_CRC_DB}&schema=${DS_CRC_SCHEMA}&warehouse=${DS_CRC_WAREHOUSE}&role=${DS_CRC_ROLE}&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true --driver-name=snowflake --user-name=${DS_CRC_USER} --password=${DS_CRC_PASS}
+
+    data-source add --jndi-name=java:/IMBootStrapDS --name=IMBootStrapDS --connection-url=jdbc:snowflake://${DS_IM_ACCOUNT}.snowflakecomputing.com/?db=${DS_IM_DB}&schema=${DS_IM_SCHEMA}&warehouse=${DS_IM_WAREHOUSE}&role=${DS_IM_ROLE}&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true --driver-name=snowflake --user-name=${DS_IM_USER} --password=${DS_IM_PASS}
+    data-source add --jndi-name=java:/IMDemoDS --name=IMDemoDS --connection-url=jdbc:snowflake://${DS_IM_ACCOUNT}.snowflakecomputing.com/?db=${DS_IM_DB}&schema=${DS_IM_SCHEMA}&warehouse=${DS_IM_WAREHOUSE}&role=${DS_IM_ROLE}&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true --driver-name=snowflake --user-name=${DS_IM_USER} --password=${DS_IM_PASS}
+
+    data-source add --jndi-name=java:/OntologyBootStrapDS --name=OntologyBootStrapDS --connection-url=jdbc:snowflake://${DS_HIVE_ACCOUNT}.snowflakecomputing.com/?db=${DS_HIVE_DB}&schema=${DS_HIVE_SCHEMA}&warehouse=${DS_HIVE_WAREHOUSE}&role=${DS_HIVE_ROLE}&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true --driver-name=snowflake --user-name=${DS_HIVE_USER} --password=${DS_HIVE_PASS}
+    data-source add --jndi-name=java:/OntologyDemoDS --name=OntologyDemoDS --connection-url=jdbc:snowflake://${DS_ONT_ACCOUNT}.snowflakecomputing.com/?db=${DS_ONT_DB}&schema=${DS_ONT_SCHEMA}&warehouse=${DS_ONT_WAREHOUSE}&role=${DS_ONT_ROLE}&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true --driver-name=snowflake --user-name=${DS_ONT_USER} --password=${DS_ONT_PASS}
+
+    data-source add --jndi-name=java:/PMBootStrapDS --name=PMBootStrapDS --connection-url=jdbc:snowflake://${DS_PM_ACCOUNT}.snowflakecomputing.com/?db=${DS_PM_DB}&schema=${DS_PM_SCHEMA}&warehouse=${DS_PM_WAREHOUSE}&role=${DS_PM_ROLE}&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true --driver-name=snowflake --user-name=${DS_PM_USER} --password=${DS_PM_PASS}
+
+    data-source add --jndi-name=java:/WorkplaceBootStrapDS --name=WorkplaceBootStrapDS --connection-url=jdbc:snowflake://${DS_HIVE_ACCOUNT}.snowflakecomputing.com/?db=${DS_HIVE_DB}&schema=${DS_HIVE_SCHEMA}&warehouse=${DS_HIVE_WAREHOUSE}&role=${DS_HIVE_ROLE}&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true --driver-name=snowflake --user-name=${DS_HIVE_USER} --password=${DS_HIVE_PASS}
+    data-source add --jndi-name=java:/WorkplaceDemoDS --name=WorkplaceDemoDS --connection-url=jdbc:snowflake://${DS_WD_ACCOUNT}.snowflakecomputing.com/?db=${DS_WD_DB}&schema=${DS_WD_SCHEMA}&warehouse=${DS_WD_WAREHOUSE}&role=${DS_WD_ROLE}&CLIENT_RESULT_COLUMN_CASE_INSENSITIVE=true --driver-name=snowflake --user-name=${DS_WD_USER} --password=${DS_WD_PASS}
+
+    # Execute the batch
+    run-batch
+EOF
+fi
+}
+
 function create_oracle_ds() {
   
     $JBOSS_CLI -c << EOF
@@ -195,6 +247,10 @@ case ${DS_TYPE} in
   "postgres")
     DEFAULT_DS_PORT="5432"
     ;;
+  "snowflake")
+    # Snowflake URLs use account host, not port; placeholder kept for parity.
+    DEFAULT_DS_PORT="443"
+    ;;
 esac
 
 DS_PORT=${DS_PORT:-${DEFAULT_DS_PORT}}
@@ -257,6 +313,9 @@ case ${DS_TYPE} in
     ;;
   "postgres")
     create_postgres_ds
+    ;;
+  "snowflake")
+    create_snowflake_ds
     ;;
 esac
 

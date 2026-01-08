@@ -157,9 +157,11 @@ public class ValueConstrainsHandler {
 
 					} else {
 						if (dbServerType.equalsIgnoreCase(
-								DAOFactoryHelper.POSTGRESQL))
+								DAOFactoryHelper.POSTGRESQL)
+								|| dbServerType.equalsIgnoreCase(
+										DAOFactoryHelper.SNOWFLAKE))
 							constraintSql += " observation_blob @@  to_tsquery('english', '"
-									+ containsSql + "') ";						
+									+ containsSql + "') ";
 						else
 							constraintSql += " CONTAINS(observation_blob,'"
 									+ containsSql + "') ";

@@ -116,14 +116,16 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 				resultSet = query.executeQuery();
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SQLSERVER) || dataSourceLookup.getServerType().equalsIgnoreCase(
-							DAOFactoryHelper.POSTGRESQL) ) {
+					DAOFactoryHelper.POSTGRESQL) ||  dataSourceLookup.getServerType().equalsIgnoreCase(
+					DAOFactoryHelper.SNOWFLAKE)) {
 				// create temp table
 				// load to temp table
 				// execute sql
 				log.debug("creating temp table");
 				 tempStmt = conn.createStatement();
 
-				uploadTempTable(tempStmt, encounterNumList, dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL));
+				uploadTempTable(tempStmt, encounterNumList, (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)
+						|| dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)));
 				String finalSql = "SELECT "
 						+ selectClause
 						+ " FROM "
@@ -449,7 +451,10 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 		try {
 			deleteStmt = conn.createStatement();
 			//conn.createStatement().executeUpdate("drop table " + tempTableName);
-			deleteStmt.executeUpdate("drop table " + tempTableName);
+			if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
+				deleteStmt.executeUpdate("drop table  " + tempTableName);
+			else
+				deleteStmt.executeUpdate("drop table " + tempTableName);
 
 		} catch (SQLException sqle) {
 			;
@@ -522,15 +527,19 @@ public class PdoQueryEidDao extends CRCDAO implements IPdoQueryEidDao {
 			if (serverType.equalsIgnoreCase(DAOFactoryHelper.ORACLE)) {
 				tempTable = FactRelatedQueryHandler.TEMP_PARAM_TABLE;
 			} else if (serverType.equalsIgnoreCase(DAOFactoryHelper.SQLSERVER) ||
-					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) ||
+					serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				log.debug("creating temp table");
 				 tempStmt = conn.createStatement();
-				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+				if (serverType.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
 						tempTable = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE.substring(1);
 				else
-				tempTable = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
+					tempTable = SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 				try {
-					tempStmt.executeUpdate("drop table " + tempTable);
+					if (serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
+						tempStmt.executeUpdate("drop table " + tempTable);
+					else
+						tempStmt.executeUpdate("drop table " + tempTable);
 				} catch (SQLException sqlex) {
 					;
 				}

@@ -97,6 +97,11 @@ public class StringUtil {
  
     	return sql;
 	}
+
+	public static String escapeSNOWFLAKE(String sql){
+		sql=sql.replaceAll("\\\\", "\\\\\\\\");
+		return sql;
+	}
     
     public static String escapeSQLSERVER(String sql){
      	

@@ -203,13 +203,7 @@ public class SchedulerInfoBean {
 			Trigger trigger = TriggerBuilder.newTrigger()
 					.withIdentity(setJobRequestType.getName()+date, setJobRequestType.getGroup())
 					.startAt(runTime)
-					//.withSchedule(simpleSchedule()
-					//        .withIntervalInMinutes(5))
-					//.startNow()
 					.build();
-			//.withSchedule(simpleSchedule()
-			//	          .withIntervalInHours(3)
-			//NOTE: check to see if can have multiple withinterval
 
 			scheduler.scheduleJob(job, trigger);
 			scheduler.start();

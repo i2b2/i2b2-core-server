@@ -703,7 +703,8 @@ public class TemporalPanel implements Comparable<Object> {
 
 			if (parent.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.ORACLE) || parent.getServerType()
-					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType()
+					.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				firstPanelItemSql = "insert into "
 						+ parent.getTempTableName() + " ("
 						+ insertValuesClause + ")" + "\n"
@@ -774,8 +775,8 @@ public class TemporalPanel implements Comparable<Object> {
 	/**
 	 * Build First Panel Invert Sql
 	 * 
-	 * Take in the list of individual sql statements from this panel and creates a sql statement that is inverted. Current invert options are 
-	 * limited to either using a minus/except syntax or a not exists/not in syntax.  
+	 * Take in the list of individual sql statements from this panel and creates a sql statement that is inverted. Current invert options are
+	 * limited to either using a minus/except syntax or a not exists/not in syntax.
 	 * 
 	 * @param itemSqlList List of individual sql statements for all items in this panel
 	 * @return String sql statement that applies invert clause to all items in first panel
@@ -1024,7 +1025,8 @@ public class TemporalPanel implements Comparable<Object> {
 
 			if (parent.getServerType()
 					.equalsIgnoreCase(DAOFactoryHelper.ORACLE) || parent.getServerType()
-					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType()
+					.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				invertSql = "insert into " + parent.getTempTableName() + " ("
 						+ insertValuesClause + ")" + "\n"
 						+ tSelect;
@@ -1068,7 +1070,8 @@ public class TemporalPanel implements Comparable<Object> {
 	
 			if (parent.getServerType()
 					.equalsIgnoreCase(DAOFactoryHelper.ORACLE) || parent.getServerType()
-					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+					.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType()
+					.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 				invertSql = "insert into " + parent.getTempTableName() + " ("
 						+ insertValuesClause + ")" + "\n"
 						+ withItemSql.toString() + tSelect;
@@ -1260,7 +1263,8 @@ public class TemporalPanel implements Comparable<Object> {
 		}
 
 		if (parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE) || parent.getServerType()
-				.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+				.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType()
+				.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 			firstPanelItemSql = "insert into " + parent.getTempTableName()
 					+ " (" + insertValuesClause + ")" + "\n" + withItemSql
 					+ tSelect;
@@ -1468,7 +1472,8 @@ public class TemporalPanel implements Comparable<Object> {
 				+ " ) \n";
 
 		if (parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE) || parent.getServerType()
-				.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)) {
+				.equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType()
+				.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
 			nonFirstPanelItemSql += "update "
 					+ tempTableName
 					+ " set panel_count ="
@@ -1515,7 +1520,7 @@ public class TemporalPanel implements Comparable<Object> {
 	/**
 	 * Non First Panel Item Sql
 	 * 
-	 * Processes item sql from all items in panel that is not the first panel in a subquery. 
+	 * Processes item sql from all items in panel that is not the first panel in a subquery.
 	 * Non first panel items are processed as an update statement to the
 	 * temporary table rather than an insert
 	 * 
@@ -1697,7 +1702,7 @@ public class TemporalPanel implements Comparable<Object> {
 		String invertSql = "select " + selectClause + ", 0 panel_count"
 				+ " from " + parent.getDatabaseSchema() + invertTableName
 				+ whereClause + groupByClause;
-	/*	
+	/*
 		if(factTables != null){
 			if((factTables.size() == 1)) {
 

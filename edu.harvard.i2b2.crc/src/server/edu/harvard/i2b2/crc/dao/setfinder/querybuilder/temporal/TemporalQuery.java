@@ -136,6 +136,9 @@ public class TemporalQuery {
 		else if (getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)){
 			options.setQueryConstraintLogic(QueryConstraintStrategy.WITH_STATEMENT);
 		}
+		else if (getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)){
+			options.setQueryConstraintLogic(QueryConstraintStrategy.WITH_STATEMENT);
+		}
 		else if (getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE)){
 			options.setInvertedConstraintLogic(InvertedConstraintStrategy.MINUS_CLAUSE);
 		}
@@ -179,6 +182,10 @@ public class TemporalQuery {
 				//no default options at this time
 				
 			options.setQueryConstraintLogic(QueryConstraintStrategy.WITH_STATEMENT);
+		} else if (getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)){
+			//no default options at this time
+
+			options.setQueryConstraintLogic(QueryConstraintStrategy.WITH_STATEMENT);
 		}
 		else if (getServerType().equalsIgnoreCase(DAOFactoryHelper.ORACLE)){
 			options.setInvertedConstraintLogic(InvertedConstraintStrategy.MINUS_CLAUSE);
@@ -202,7 +209,7 @@ public class TemporalQuery {
 		queryDef = queryDefUnWrapHelper
 				.getQueryDefinitionType(queryXml);
 		
-		//get query timing out - this will be used as the default timing for all groups 
+		//get query timing out - this will be used as the default timing for all groups
 		//and panels. Panel timing values will override this value
 		queryTiming = queryDef.getQueryTiming();
 		
@@ -232,7 +239,7 @@ public class TemporalQuery {
 	 * @throws I2B2Exception		exception thrown when i2b2 specific error arises
 	 */
 	public void parseQuery() throws I2B2Exception {
-		//get query timing out - this will be used as the default timing for all groups 
+		//get query timing out - this will be used as the default timing for all groups
 		//and panels. Panel timing values will override this value
 
 		queryTiming = queryDef.getQueryTiming();
@@ -348,7 +355,7 @@ public class TemporalQuery {
 			}
 		}
 		
-		// finally, add in insert into dx table that will get passed back to 
+		// finally, add in insert into dx table that will get passed back to
 		// calling class
 			
 		String dxTempTableSql = "";
@@ -614,7 +621,7 @@ public class TemporalQuery {
 	/**
 	 * Get Master Temp Table Name
 	 * 
-	 * Return default name of the master table in the database. The master table is used to temporarily store results from embedded query items 
+	 * Return default name of the master table in the database. The master table is used to temporarily store results from embedded query items
 	 * and panel group constraints
 	 * 
 	 * @return string containing the default name used for the "master" table in the database
@@ -679,7 +686,7 @@ public class TemporalQuery {
 	/**
 	 * Generate Unique Id
 	 * 
-	 * Returns a string with a guaranteed unique value. This method is used specifically to uniquely identify queries and 
+	 * Returns a string with a guaranteed unique value. This method is used specifically to uniquely identify queries and
 	 * panel groups within the context of the query
 	 * 
 	 * @return string with a guaranteed unique value
@@ -753,7 +760,7 @@ public class TemporalQuery {
 	/**
 	 * Build Temp Table Check Drop
 	 * 
-	 * Create a Sql Server specific statement to check for the existence of a temporary table and, 
+	 * Create a Sql Server specific statement to check for the existence of a temporary table and,
 	 * if the table exists, drop it
 	 * 
 	 * @param tempTableName String name of the temporary table

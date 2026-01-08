@@ -580,6 +580,8 @@ public class TemporalSubQuery implements Comparable{
 											sqlUnits = "DATEADD(YEAR, (" + span + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";
 										else if (parent.getServerType().equals(DAOFactoryHelper.POSTGRESQL))
 											sqlUnits = " " + spanFirstPrefix + "." + spanFirstColumn + " + cast('" + span + " years' as interval) ";
+										else if (parent.getServerType().equals(DAOFactoryHelper.SNOWFLAKE))
+											sqlUnits = "DATEADD(YEAR, (" + span + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";
 
 									}
 									else if (TemporalQuerySpanUnits.valueOf(units)==TemporalQuerySpanUnits.MONTH){
@@ -589,6 +591,8 @@ public class TemporalSubQuery implements Comparable{
 											sqlUnits = "DATEADD(MONTH, (" + span + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";
 										else if (parent.getServerType().equals(DAOFactoryHelper.POSTGRESQL))
 											sqlUnits = " " + spanFirstPrefix + "." + spanFirstColumn + " + cast('" + span + " months' as interval) ";
+										else if (parent.getServerType().equals(DAOFactoryHelper.SNOWFLAKE))
+											sqlUnits = "DATEADD(MONTH, (" + span + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";
 									}
 									else if (TemporalQuerySpanUnits.valueOf(units)==TemporalQuerySpanUnits.DAY){
 										if (parent.getServerType().equals(DAOFactoryHelper.ORACLE))
@@ -597,6 +601,8 @@ public class TemporalSubQuery implements Comparable{
 											sqlUnits = "DATEADD(DAY, (" + span  + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";
 										else if (parent.getServerType().equals(DAOFactoryHelper.POSTGRESQL))
 											sqlUnits = " " + spanFirstPrefix + "." + spanFirstColumn + " + cast('" + span + " days' as interval) ";
+										else if (parent.getServerType().equals(DAOFactoryHelper.SNOWFLAKE))
+											sqlUnits = "DATEADD(DAY, (" + span  + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";
 									}
 									else if (TemporalQuerySpanUnits.valueOf(units)==TemporalQuerySpanUnits.HOUR){
 										if (parent.getServerType().equals(DAOFactoryHelper.ORACLE))
@@ -605,6 +611,8 @@ public class TemporalSubQuery implements Comparable{
 											sqlUnits = "DATEADD(HOUR, (" + span  + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";	
 										else if (parent.getServerType().equals(DAOFactoryHelper.POSTGRESQL))
 											sqlUnits = " " + spanFirstPrefix + "." + spanFirstColumn + " + cast('" + span + " hours' as interval) ";
+										else if (parent.getServerType().equals(DAOFactoryHelper.SNOWFLAKE))
+											sqlUnits = "DATEADD(HOUR, (" + span  + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";
 									}
 									else if (TemporalQuerySpanUnits.valueOf(units)==TemporalQuerySpanUnits.MINUTE){
 										if (parent.getServerType().equals(DAOFactoryHelper.ORACLE))
@@ -613,6 +621,8 @@ public class TemporalSubQuery implements Comparable{
 											sqlUnits = "DATEADD(MINUTE, (" + span  + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";	
 										else if (parent.getServerType().equals(DAOFactoryHelper.POSTGRESQL))
 											sqlUnits = " " + spanFirstPrefix + "." + spanFirstColumn + " + cast('" + span + " minutes' as interval) ";
+										else if (parent.getServerType().equals(DAOFactoryHelper.SNOWFLAKE))
+											sqlUnits = "DATEADD(MINUTE, (" + span  + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";
 									}
 									else if (TemporalQuerySpanUnits.valueOf(units)==TemporalQuerySpanUnits.SECOND){
 										if (parent.getServerType().equals(DAOFactoryHelper.ORACLE))
@@ -621,6 +631,8 @@ public class TemporalSubQuery implements Comparable{
 											sqlUnits = "DATEADD(SECOND, (" + span  + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";	
 										else if (parent.getServerType().equals(DAOFactoryHelper.POSTGRESQL))
 											sqlUnits = " " + spanFirstPrefix + "." + spanFirstColumn + " + cast('" + span + " seconds' as interval) ";
+										else if (parent.getServerType().equals(DAOFactoryHelper.SNOWFLAKE))
+											sqlUnits = "DATEADD(SECOND, (" + span  + "), " + spanFirstPrefix + "." + spanFirstColumn + ")";
 									}
 								}
 								
@@ -764,7 +776,7 @@ public class TemporalSubQuery implements Comparable{
 			whereStatement + " " +
 			groupByStatement;
 	}
-	
+
 	/*private String getConstrainedDateSqlFromMaster(QueryJoinType masterJoin){
 		String columnName = getColumnNameFromType(masterJoin.getJoinColumn());
 
@@ -773,12 +785,12 @@ public class TemporalSubQuery implements Comparable{
 				return "select m.patient_num, min(m." + columnName + ") " + columnName + " " +
 						"from " + parent.getMasterTempTableName() + " m " +
 						"where m.master_id = '" + this.buildSubQueryId(masterJoin.getQueryId()) + "' " +
-						"group by m.patient_num";	
+						"group by m.patient_num";
 			else if (masterJoin.getAggregateOperator().equals(QueryAggregateOperatorType.LAST))
 				return "select m.patient_num, max(m." + columnName + ") " + columnName + " " +
 					"from " + parent.getMasterTempTableName() + " m " +
 					"where m.master_id = '" + this.buildSubQueryId(masterJoin.getQueryId()) + "' " +
-					"group by m.patient_num";	
+					"group by m.patient_num";
 			else
 				return "select m.patient_num, m." + columnName + " " +
 					"from " + parent.getMasterTempTableName() + " m " +
@@ -1011,7 +1023,7 @@ public class TemporalSubQuery implements Comparable{
 			return "truncate table "+ tempTableName;
 		else
 			return "delete  "+
-					(parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)? " from " : "") + tempTableName;
+					(parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE) ? " from " : "") + tempTableName;
 	}
 	
 	protected String getDeleteDxTempTableSql()  { 
@@ -1021,7 +1033,7 @@ public class TemporalSubQuery implements Comparable{
 			return "truncate table "+ tempTableName;
 		else
 			return "delete  "+
-					(parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)? " from " : "") + tempTableName;
+					(parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)? " from " : "") + tempTableName;
 	}
 	
 	protected String getDeleteTempMasterSql(String masterId, int level) {
@@ -1035,9 +1047,9 @@ public class TemporalSubQuery implements Comparable{
 		}
 		else
 			return "delete " +
-			(parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL)? " from " : "") +
-			masterTableName + " " +
-					"where master_id = '" + masterId + "' " + 
+					(parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL) || parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)? " from " : "") +
+					masterTableName + " " +
+					"where master_id = '" + masterId + "' " +
 					"and level_no >= " + String.valueOf(level);
 	}
 
