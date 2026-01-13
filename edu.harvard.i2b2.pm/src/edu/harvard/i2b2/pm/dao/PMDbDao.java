@@ -24,8 +24,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -659,27 +662,50 @@ public class PMDbDao extends JdbcDaoSupport {
 		{
 			//sql =  "select * from pm_user_data where status_cd<>'D'";
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-					+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' where  a.status_cd<>'D' order by a.full_name";
+					+ " on a.user_id = o.user_id and o.status_cd <> 'D' where  a.status_cd<>'D' ";
 
 			if (call.equals("get_all_admin"))
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
-						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' and  a.status_cd<>'D' order by a.full_name";
+						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' and  a.status_cd<>'D' ";
 
 			if (call.equals("get_all_manager"))
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
-						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'MANAGER' and  a.status_cd<>'D' order by a.full_name";
+						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'MANAGER' and  a.status_cd<>'D' ";
 
+			if (project != null && !project.equals("@") && !project.equals(""))
+			{
+				sql += " and lower(o.project_id) = ? ";
+			}
 			
 			if (uType.getEntryDate() != null)
 			{
-				sql += " and a.entry_date > ?";
-				queryResult = jt.query(sql, GetUser(false), uType.getEntryDate().toGregorianCalendar().getTime());
+				sql += " and a.entry_date > ? order by a.full_name";
+				if (project != null && !project.equals("@") && !project.equals(""))
+					queryResult = jt.query(sql, GetUser(false), project.toLowerCase(), uType.getEntryDate().toGregorianCalendar().getTime());
+				else
+					queryResult = jt.query(sql, GetUser(false), uType.getEntryDate().toGregorianCalendar().getTime());
+
 			} else {
-				queryResult = jt.query(sql,  GetUser(false));
+				sql += " order by a.full_name";
+				if (project != null && !project.equals("@") && !project.equals(""))
+					queryResult = jt.query(sql,  GetUser(false), project.toLowerCase());
+				
+				else				
+					queryResult = jt.query(sql,  GetUser(false));
+			}
+			
+			if (queryResult != null)
+			{
+				Map<String, UserType> map = new LinkedHashMap<>();
+				for (UserType ays : queryResult) {
+				  map.put(ays.getUserName(), ays);
+				}
+				queryResult.clear();
+				queryResult.addAll(map.values());
 			}
 		}
 
-		return queryResult;	
+		return queryResult;
 	}
 
 	public int setUser(final UserType userdata, String caller) throws I2B2DAOException, I2B2Exception{

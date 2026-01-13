@@ -596,8 +596,8 @@ public class ObjectFactory {
      * 
      */
     @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_all_user")
-    public JAXBElement<String> createGetAllUser(String value) {
-        return new JAXBElement<String>(_GetAllUser_QNAME, String.class, null, value);
+    public JAXBElement<UserLoginType> createGetAllUser(UserLoginType value) {
+        return new JAXBElement<UserLoginType>(_GetAllUser_QNAME, UserLoginType.class, null, value);
     }
 
     /**
@@ -605,8 +605,8 @@ public class ObjectFactory {
      * 
      */
     @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_all_admin")
-    public JAXBElement<String> createGetAllAdmin(String value) {
-        return new JAXBElement<String>(_GetAllAdmin_QNAME, String.class, null, value);
+    public JAXBElement<UserLoginType> createGetAllAdmin(UserLoginType value) {
+        return new JAXBElement<UserLoginType>(_GetAllAdmin_QNAME, UserLoginType.class, null, value);
     }
 
     /**
@@ -623,8 +623,8 @@ public class ObjectFactory {
      * 
      */
     @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_all_manager")
-    public JAXBElement<String> createGetAllManager(String value) {
-        return new JAXBElement<String>(_GetAllManager_QNAME, String.class, null, value);
+    public JAXBElement<UserLoginType> createGetAllManager(UserLoginType value) {
+        return new JAXBElement<UserLoginType>(_GetAllManager_QNAME, UserLoginType.class, null, value);
     }
 
     /**
