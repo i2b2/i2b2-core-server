@@ -98,7 +98,7 @@ jobs:
         run: |
           mkdir test_mssql
           cd test_mssql
-          git clone -b 1.8.2-hotfixes https://github.com/adityapersistent/i2b2-docker
+          git clone -b 1.8.2-hotfixes https://github.com/i2b2/i2b2-docker
           cd i2b2-docker/mssql
           echo "Running MSSQL test cases for tag: $core_tag"
           source test_case.sh "$core_tag"
@@ -108,7 +108,7 @@ jobs:
         run: |
           mkdir test_pgsql
           cd test_pgsql
-          git clone -b 1.8.2-hotfixes https://github.com/adityapersistent/i2b2-docker
+          git clone -b 1.8.2-hotfixes https://github.com/i2b2/i2b2-docker
           cd i2b2-docker/pg
           echo "Running PGSQL test cases for tag: $core_tag"
           source test_case.sh "$core_tag"
