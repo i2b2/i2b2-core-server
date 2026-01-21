@@ -58,8 +58,8 @@ EOF
         data-source add --jndi-name=java:/CRCBootStrapDS --name=CRCBootStrapDS --connection-url=jdbc:sqlserver://${DS_IP}:${DS_PORT};databasename=${DS_HIVE_DB} --driver-name=mssql --user-name=${DS_HIVE_USER} --password=${DS_HIVE_PASS}
         data-source add --jndi-name=java:/QueryToolDemoDS --name=QueryToolDemoDS --connection-url=jdbc:sqlserver://${DS_CRC_IP}:${DS_CRC_PORT};databasename=${DS_CRC_DB} --driver-name=mssql --user-name=${DS_CRC_USER} --password=${DS_CRC_PASS}
 
-        data-source add --jndi-name=java:/IMBootStrapDS --name=IMBootStrapDS --connection-url=jdbc:sqlserver://${DS_IM_IP}:${DS_IM_PORT} --driver-name=mssql --user-name=${DS_IM_USER} --password=${DS_IM_PASS}
-        data-source add --jndi-name=java:/IMDemoDS --name=IMDemoDS --connection-url=jdbc:sqlserver://${DS_IM_IP}:${DS_IM_PORT} --driver-name=mssql --user-name=${DS_IM_USER} --password=${DS_IM_PASS}
+        data-source add --jndi-name=java:/IMBootStrapDS --name=IMBootStrapDS --connection-url=jdbc:sqlserver://${DS_IM_IP}:${DS_IM_PORT};databasename=${DS_IM_DB} --driver-name=mssql --user-name=${DS_IM_USER} --password=${DS_IM_PASS}
+        data-source add --jndi-name=java:/IMDemoDS --name=IMDemoDS --connection-url=jdbc:sqlserver://${DS_IM_IP}:${DS_IM_PORT};databasename=${DS_IM_DB} --driver-name=mssql --user-name=${DS_IM_USER} --password=${DS_IM_PASS}
 
         data-source add --jndi-name=java:/OntologyBootStrapDS --name=OntologyBootStrapDS --connection-url=jdbc:sqlserver://${DS_IP}:${DS_PORT};databasename=${DS_HIVE_DB} --driver-name=mssql --user-name=${DS_HIVE_USER} --password=${DS_HIVE_PASS}
         data-source add --jndi-name=java:/OntologyDemoDS --name=OntologyDemoDS --connection-url=jdbc:sqlserver://${DS_ONT_IP}:${DS_ONT_PORT};databasename=${DS_ONT_DB} --driver-name=mssql --user-name=${DS_ONT_USER} --password=${DS_ONT_PASS}
