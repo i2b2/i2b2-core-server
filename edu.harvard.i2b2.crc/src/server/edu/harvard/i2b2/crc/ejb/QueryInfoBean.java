@@ -258,6 +258,7 @@ public class QueryInfoBean { //implements SessionBean {
 			queryMasterType.setQueryMasterId(qtQueryMaster.getQueryMasterId());
 			queryMasterType.setName(qtQueryMaster.getName());
 			queryMasterType.setUserId(qtQueryMaster.getUserId());
+			queryMasterType.setGeneratedSql(qtQueryMaster.getGeneratedSql());
 			String requestXml = qtQueryMaster.getRequestXml();
 
 			if (requestXml != null) {

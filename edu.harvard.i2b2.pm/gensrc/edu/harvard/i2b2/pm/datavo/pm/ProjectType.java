@@ -10,10 +10,14 @@ package edu.harvard.i2b2.pm.datavo.pm;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
 
 
@@ -53,6 +57,7 @@ import jakarta.xml.bind.annotation.XmlType;
     "path",
     "userName",
     "role",
+    "entryDate",
     "param"
 })
 public class ProjectType {
@@ -72,6 +77,9 @@ public class ProjectType {
     protected String id;
     @XmlAttribute(name = "hidden")
     protected Boolean hidden;
+    @XmlElement(name = "entry_date")
+    @XmlSchemaType(name = "dateTime")
+    protected XMLGregorianCalendar entryDate;
     public Boolean getHidden() {
 		return hidden;
 	}
@@ -101,6 +109,30 @@ public class ProjectType {
      */
     public void setName(String value) {
         this.name = value;
+    }
+    
+    /**
+     * Gets the value of the activationDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public XMLGregorianCalendar getEntryDate() {
+        return entryDate;
+    }
+
+    /**
+     * Sets the value of the activationDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setEntryDate(XMLGregorianCalendar value) {
+        this.entryDate = value;
     }
 
     /**

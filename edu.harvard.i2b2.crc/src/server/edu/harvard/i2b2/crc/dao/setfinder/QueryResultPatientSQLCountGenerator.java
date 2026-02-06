@@ -342,11 +342,16 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 							resultInstanceDao.updateResultInstanceDescription(
 									resultInstanceId, description);
 							//	tm.commit();
+							stmt.close();
 						} catch (SecurityException e) {
 							throw new I2B2DAOException(
 									"Failed to write obfuscated description "
 											+ e.getMessage(), e);
 						} catch (IllegalStateException e) {
+							throw new I2B2DAOException(
+									"Failed to write obfuscated description "
+											+ e.getMessage(), e);
+						} catch (SQLException e) {
 							throw new I2B2DAOException(
 									"Failed to write obfuscated description "
 											+ e.getMessage(), e);

@@ -43,6 +43,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlType(name = "user_loginType", propOrder = {
     "userName",
     "attempt",
+    "projectId",
     "entryDate",
     "expireDate"
 })
@@ -50,6 +51,9 @@ public class UserLoginType {
 
     @XmlElement(name = "user_name", required = true)
     protected String userName;
+    @XmlElement(name = "project_id")
+    protected String projectId;
+
     protected String attempt;
     @XmlElement(name = "entry_date")
     @XmlSchemaType(name = "dateTime")
@@ -82,6 +86,31 @@ public class UserLoginType {
      */
     public void setUserName(String value) {
         this.userName = value;
+    }
+
+    
+    /**
+     * Gets the value of the userName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getProjectId() {
+        return projectId;
+    }
+
+    /**
+     * Sets the value of the userName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setProjectId(String value) {
+        this.projectId = value;
     }
 
     /**

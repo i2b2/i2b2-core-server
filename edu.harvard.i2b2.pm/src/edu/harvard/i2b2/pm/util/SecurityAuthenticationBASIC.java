@@ -83,6 +83,7 @@ public class SecurityAuthenticationBASIC implements SecurityAuthentication {
 			}				
 			else if (!user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword("SHA-256", password)))
 			{
+				String haspass = PMUtil.getInstance().getHashedPassword("SHA-256", password);
 				pmDb.setLoginAttempt(username, "BADPASSWORD" );
 				throw new Exception ("Unable to sign in");
 

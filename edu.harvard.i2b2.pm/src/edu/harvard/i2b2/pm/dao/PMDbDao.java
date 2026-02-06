@@ -661,9 +661,12 @@ public class PMDbDao extends JdbcDaoSupport {
 		if ((validateRole(caller, "admin", null)) || (validateRole(caller, "admin", null)))
 		{
 			//sql =  "select * from pm_user_data where status_cd<>'D'";
+			//sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
+			//		+ " on a.user_id = o.user_id and o.status_cd <> 'D' where  a.status_cd<>'D' ";
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-					+ " on a.user_id = o.user_id and o.status_cd <> 'D' where  a.status_cd<>'D' ";
+					+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' ";
 
+			
 			if (call.equals("get_all_admin"))
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
 						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' and  a.status_cd<>'D' ";
@@ -672,7 +675,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
 						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'MANAGER' and  a.status_cd<>'D' ";
 
-			if (project != null && !project.equals("@") && !project.equals(""))
+			if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
 			{
 				sql += " and lower(o.project_id) = ? ";
 			}
@@ -680,15 +683,15 @@ public class PMDbDao extends JdbcDaoSupport {
 			if (uType.getEntryDate() != null)
 			{
 				sql += " and a.entry_date > ? order by a.full_name";
-				if (project != null && !project.equals("@") && !project.equals(""))
-					queryResult = jt.query(sql, GetUser(false), project.toLowerCase(), uType.getEntryDate().toGregorianCalendar().getTime());
+				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
+					queryResult = jt.query(sql, GetUser(false), uType.getProjectId().toLowerCase(), uType.getEntryDate().toGregorianCalendar().getTime());
 				else
 					queryResult = jt.query(sql, GetUser(false), uType.getEntryDate().toGregorianCalendar().getTime());
 
 			} else {
 				sql += " order by a.full_name";
-				if (project != null && !project.equals("@") && !project.equals(""))
-					queryResult = jt.query(sql,  GetUser(false), project.toLowerCase());
+				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
+					queryResult = jt.query(sql,  GetUser(false), uType.getProjectId().toLowerCase());
 				
 				else				
 					queryResult = jt.query(sql,  GetUser(false));
@@ -1463,7 +1466,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		if (validateRole(caller, "admin", null))
 		{
 			sql =  "select * from pm_project_data where status_cd<>'D'";
-			queryResult = jt.query(sql, new getProject());
+			queryResult = jt.query(sql, new getProjectWithCreateDate());
 		}
 
 		return queryResult;	
@@ -2675,6 +2678,40 @@ class getEnvironmentParams implements RowMapper<HiveParamData> {
 		}
 	}
  */
+
+
+class getProjectWithCreateDate implements RowMapper<ProjectType> {
+	@Override
+	public ProjectType mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+		ProjectType rData = new ProjectType();
+		DTOFactory factory = new DTOFactory();
+		rData.setKey(rs.getString("project_key"));
+		rData.setName(rs.getString("project_name"));
+		rData.setPath(rs.getString("project_path"));
+		rData.setDescription(rs.getString("project_description"));
+		rData.setId(rs.getString("project_id"));
+		rData.setWiki(rs.getString("project_wiki"));
+		Date date = rs.getDate("entry_date");
+
+		if (date == null)
+			rData.setEntryDate(null);
+		else 
+			rData.setEntryDate(long2Gregorian(date.getTime())); 		
+		return rData;
+	} 
+	public static XMLGregorianCalendar long2Gregorian(long date) {
+		DatatypeFactory dataTypeFactory;
+		try {
+			dataTypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTimeInMillis(date);
+		return dataTypeFactory.newXMLGregorianCalendar(gc);
+	}
+}
 
 
 class getProject implements RowMapper<ProjectType> {
