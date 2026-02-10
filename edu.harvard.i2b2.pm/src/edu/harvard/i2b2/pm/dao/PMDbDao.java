@@ -570,8 +570,8 @@ public class PMDbDao extends JdbcDaoSupport {
 		String sql = null;
 		List<UserType> queryResult = null;
 
-		if (caller == null)
-		{
+		//if (caller == null)
+		//{
 			//sql =  "select * from pm_user_data where user_id = ?  "+  (password!=null?"    and password = ? ":"");
 
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
@@ -580,6 +580,9 @@ public class PMDbDao extends JdbcDaoSupport {
 			if (ignoreDeleted)
 				sql += " and a.status_cd<>'D'";
 
+			
+			if (caller != null)
+				user = caller;
 			try {
 				if (password == null) 
 					queryResult = jt.query(sql,  GetUser(true), user);
@@ -589,6 +592,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				log.error(e.getMessage());
 				throw new I2B2DAOException("Database error in getting userdata with password");
 			}
+		/*
 		} else  {
 			sql = "select  distinct" +
 					"    case  upper(rr.COLUMN_CD)" +
@@ -634,6 +638,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				throw new I2B2DAOException("Database error in getting userdata with password");
 			}
 		}
+		*/
 		//		String sql =  "select * from pm_user_data where user_id = ? and password  = ? and status_cd <> 'D'";
 		//		log.info(sql + domainId + projectId + ownerId);
 
@@ -823,6 +828,14 @@ public class PMDbDao extends JdbcDaoSupport {
 				if (numRowsAdded ==0)
 					throw new I2B2DAOException("User not updated, does it exist?");
 
+				 addSql = "update pm_project_user_roles " + 
+						"set status_cd = 'D', change_date = ?, changeby_char = ? where user_id = ?";
+
+				numRowsAdded = jt.update(addSql, 
+						Calendar.getInstance().getTime(),
+						caller,
+						user);
+				
 			} catch (DataAccessException e) {
 				log.error("Dao deleteuser failed");
 				log.error(e.getMessage());
