@@ -14,6 +14,7 @@ import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
+import edu.harvard.i2b2.crc.datavo.pdo.query.ItemType.ConstrainByDate;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
 
 public interface IQueryMasterDao {
@@ -67,11 +68,12 @@ public interface IQueryMasterDao {
 	 * Returns list of query master by group id
 	 * 
 	 * @param groupId
+	 * @param list 
 	 * @return List<QtQueryMaster>
 	 */
 	@SuppressWarnings("unchecked")
 	public List<QtQueryMaster> getQueryMasterByGroupId(String groupId,
-			int fetchSize, String masterTypeCd, boolean includeQueryInstance);
+			int fetchSize, String masterTypeCd, boolean includeQueryInstance, boolean showDeleted, List<ConstrainByDate> list);
 
 	/**
 	 * Find Query master by id

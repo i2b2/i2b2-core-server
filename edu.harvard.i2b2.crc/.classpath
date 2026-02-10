@@ -150,5 +150,10 @@
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-context-7.0.0-M9.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-core-7.0.0-M9.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-jdbc-7.0.0-M9.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/quartz/quartz-2.3.2.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/angus-mail-2.1.0-M1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/commons-fileupload2-core-2.0.0-M4.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/commons-lang3-3.19.0.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/httpclient5-5.5.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

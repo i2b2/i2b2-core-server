@@ -212,7 +212,7 @@ public class QueryInfoBean { //implements SessionBean {
 						, dataSourceLookup.getOwnerId());
 				IQueryMasterDao queryMasterDao = sfDaoFactory.getQueryMasterDAO();
 				masterList.addAll(queryMasterDao
-						.getQueryMasterByGroupId(dblookup.getProjectPath().replace("/", ""), fetchSize, masterTypeCd, includeQueryInstance));
+						.getQueryMasterByGroupId(dblookup.getProjectPath().replace("/", ""), fetchSize, masterTypeCd, includeQueryInstance, userRequestType.getShowDeleted(),  userRequestType.getConstrainByDate()));
 
 			}
 
@@ -224,7 +224,7 @@ public class QueryInfoBean { //implements SessionBean {
 					.getProjectPath(), dataSourceLookup.getOwnerId());
 			IQueryMasterDao queryMasterDao = sfDaoFactory.getQueryMasterDAO();
 			masterList = queryMasterDao
-					.getQueryMasterByGroupId(groupId, fetchSize, masterTypeCd, includeQueryInstance);
+					.getQueryMasterByGroupId(groupId, fetchSize, masterTypeCd, includeQueryInstance, userRequestType.getShowDeleted(), userRequestType.getConstrainByDate());
 		}
 		MasterResponseType masterResponseType = buildMasterResponseType(masterList);
 

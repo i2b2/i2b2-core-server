@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.sql.DataSource;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,6 +44,9 @@ import edu.harvard.i2b2.crc.datavo.db.QtQueryInstance;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultInstance;
 import edu.harvard.i2b2.crc.datavo.i2b2message.SecurityType;
+import edu.harvard.i2b2.crc.datavo.pdo.query.ConstrainDateType;
+import edu.harvard.i2b2.crc.datavo.pdo.query.ItemType.ConstrainByDate;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.ConstrainDateTimeType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.FindByChildType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.InclusiveType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.MatchStrType;
@@ -487,7 +491,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<QtQueryMaster> getQueryMasterByGroupId(String groupId,
-			int fetchSize, String masterTypeCd, boolean includeQueryInstance) {
+			int fetchSize, String masterTypeCd, boolean includeQueryInstance, boolean showDeleted, List<ConstrainByDate> constrainByDateList) {
 
 		String sql = "select ";
 		if (fetchSize > 0
@@ -498,14 +502,50 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		sql += " query_master_id,name,user_id,group_id,create_date,delete_date,null as request_xml,null as pm_xml,delete_flag,generated_sql,null as i2b2_request_xml, master_type_cd, null as plugin_id from "
 				+ getDbSchemaName()
 				+ "qt_query_master "
-				+ " where group_id = ? and delete_flag = ? "; //and master_type_cd is NULL";
+				+ " where group_id = ? "; //and master_type_cd is NULL";
 
-		Object[] obj = new Object[] { groupId, DELETE_NO_FLAG };
+		Object[] obj = obj = new Object[] { groupId, DELETE_NO_FLAG };
+
+		if(showDeleted)
+			obj = new Object[] { groupId };
+		else 
+			sql += " and delete_flag = ? ";
 		if (masterTypeCd != null) {
 			sql += " and master_type_cd = ?";
 			obj = new Object[] { groupId, DELETE_NO_FLAG, masterTypeCd };
+			if(showDeleted)
+				obj = new Object[] { groupId, masterTypeCd };
+
 		}
 
+		
+		for (ConstrainByDate constrainByDate : constrainByDateList) {
+			ConstrainDateType dateFrom = constrainByDate.getDateFrom();
+			ConstrainDateType dateTo = constrainByDate.getDateTo();
+
+			String dateFromColumn = "create_date", dateToColumn = "create_date";
+			InclusiveType dateFromInclusive = null, dateToInclusive = null;
+			XMLGregorianCalendar dateFromValue = null, dateToValue = null;
+
+			 if (dateFrom != null) {
+				dateFromValue = dateFrom.getValue();
+			} else if (dateTo != null) {
+				dateToValue = dateTo.getValue();
+
+			}
+			
+			DateConstrainHandler dateConstrainHandler  = new DateConstrainHandler(dataSourceLookup);
+
+			String dateConstrainSql = dateConstrainHandler
+					.constructDateConstrainClause(dateFromColumn,
+							dateToColumn, dateFromInclusive,
+							dateToInclusive, dateFromValue, dateToValue);
+			
+			if (dateConstrainSql != null) {
+				sql += " AND " + dateConstrainSql + " ";
+			}
+		}
+		
 		sql += " order by create_date desc  ";
 
 		if (fetchSize > 0) {

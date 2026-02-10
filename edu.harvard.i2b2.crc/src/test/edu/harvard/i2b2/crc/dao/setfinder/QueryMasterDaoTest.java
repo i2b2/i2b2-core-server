@@ -67,7 +67,7 @@ public class QueryMasterDaoTest {
 	public void getQueryMasterByGroup() {
 
 		List<QtQueryMaster> queryMasterList = qmDAO.getQueryMasterByGroupId(
-				"test_group_id", 5, null, false);
+				"test_group_id", 5, null, false, false, null);
 		org.junit.Assert.assertTrue(queryMasterList.size() > 0);
 	}
 

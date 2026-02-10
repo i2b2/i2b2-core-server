@@ -8,9 +8,16 @@
 
 package edu.harvard.i2b2.crc.datavo.setfinder.query;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import edu.harvard.i2b2.crc.datavo.pdo.query.ItemType;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
 
 
@@ -40,6 +47,8 @@ import jakarta.xml.bind.annotation.XmlType;
     "userId",
     "groupId",
     "datasource",
+    "showDeleted",
+    "constrainByDate",
     "masterTypeCd",
     "includeQueryInstance",
     "fetchSize"
@@ -60,7 +69,67 @@ public class UserRequestType
     protected String masterTypeCd;
     @XmlElement(name = "include_query_instance")
     protected boolean includeQueryInstance;
+    @XmlElement(name = "show_deleted")
+    protected boolean showDeleted;
+    @XmlElement(name = "constrain_by_date")
+    protected List<ItemType.ConstrainByDate> constrainByDate;
 
+    
+
+    /**
+     * Gets the value of the constrainByDate property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the constrainByDate property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getConstrainByDate().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link ItemType.ConstrainByDate }
+     * 
+     * 
+     */
+    public List<ItemType.ConstrainByDate> getConstrainByDate() {
+        if (constrainByDate == null) {
+            constrainByDate = new ArrayList<ItemType.ConstrainByDate>();
+        }
+        return this.constrainByDate;
+    }
+
+
+    /**
+     * Gets the value of the includeQueryInstance property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public boolean getShowDeleted() {
+        return showDeleted;
+    }
+
+    /**
+     * Sets the value of the includeQueryInstance property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setShowDeleted(boolean value) {
+        this.showDeleted = value;
+    }
+    
     /**
      * Gets the value of the includeQueryInstance property.
      * 
