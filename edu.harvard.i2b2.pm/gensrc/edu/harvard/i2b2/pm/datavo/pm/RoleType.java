@@ -8,6 +8,8 @@
 
 package edu.harvard.i2b2.pm.datavo.pm;
 
+import java.util.Date;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -40,7 +42,8 @@ import jakarta.xml.bind.annotation.XmlType;
     "projectId",
     "userName",
     "role",
-    "count"
+    "count",
+    "entryDate"
 })
 public class RoleType {
 
@@ -51,6 +54,15 @@ public class RoleType {
     @XmlElement(required = true)
     protected String role;
     protected String count;
+
+    @XmlElement(name = "create_date", required = true)    
+	private Date entryDate;
+	public Date getEntryDate() {
+		return entryDate;
+	}
+	public void setEntryDate(Date entryDate) {
+		this.entryDate = entryDate;
+	}
 
     /**
      * Gets the value of the projectId property.

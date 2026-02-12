@@ -572,26 +572,26 @@ public class PMDbDao extends JdbcDaoSupport {
 
 		//if (caller == null)
 		//{
-			//sql =  "select * from pm_user_data where user_id = ?  "+  (password!=null?"    and password = ? ":"");
+		//sql =  "select * from pm_user_data where user_id = ?  "+  (password!=null?"    and password = ? ":"");
 
-			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-					+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' where  a.user_id = ? " +  (password != null ? " and password = ? ":"");
+		sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
+				+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' where  a.user_id = ? " +  (password != null ? " and password = ? ":"");
 
-			if (ignoreDeleted)
-				sql += " and a.status_cd<>'D'";
+		if (ignoreDeleted)
+			sql += " and a.status_cd<>'D'";
 
-			
-			if (caller != null)
-				user = caller;
-			try {
-				if (password == null) 
-					queryResult = jt.query(sql,  GetUser(true), user);
-				else 
-					queryResult = jt.query(sql,  GetUser(false), user, password);
-			} catch (DataAccessException e) {
-				log.error(e.getMessage());
-				throw new I2B2DAOException("Database error in getting userdata with password");
-			}
+
+		if (caller != null)
+			user = caller;
+		try {
+			if (password == null) 
+				queryResult = jt.query(sql,  GetUser(true), user);
+			else 
+				queryResult = jt.query(sql,  GetUser(false), user, password);
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			throw new I2B2DAOException("Database error in getting userdata with password");
+		}
 		/*
 		} else  {
 			sql = "select  distinct" +
@@ -638,7 +638,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				throw new I2B2DAOException("Database error in getting userdata with password");
 			}
 		}
-		*/
+		 */
 		//		String sql =  "select * from pm_user_data where user_id = ? and password  = ? and status_cd <> 'D'";
 		//		log.info(sql + domainId + projectId + ownerId);
 
@@ -671,7 +671,7 @@ public class PMDbDao extends JdbcDaoSupport {
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
 					+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' ";
 
-			
+
 			if (call.equals("get_all_admin"))
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
 						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' and  a.status_cd<>'D' ";
@@ -684,7 +684,7 @@ public class PMDbDao extends JdbcDaoSupport {
 			{
 				sql += " and lower(o.project_id) = ? ";
 			}
-			
+
 			if (uType.getEntryDate() != null)
 			{
 				sql += " and a.entry_date > ? order by a.full_name";
@@ -697,16 +697,16 @@ public class PMDbDao extends JdbcDaoSupport {
 				sql += " order by a.full_name";
 				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
 					queryResult = jt.query(sql,  GetUser(false), uType.getProjectId().toLowerCase());
-				
+
 				else				
 					queryResult = jt.query(sql,  GetUser(false));
 			}
-			
+
 			if (queryResult != null)
 			{
 				Map<String, UserType> map = new LinkedHashMap<>();
 				for (UserType ays : queryResult) {
-				  map.put(ays.getUserName(), ays);
+					map.put(ays.getUserName(), ays);
 				}
 				queryResult.clear();
 				queryResult.addAll(map.values());
@@ -722,20 +722,23 @@ public class PMDbDao extends JdbcDaoSupport {
 		if (validateRole(caller, "admin", null) || caller.equals("AGG_SERVICE_ACCOUNT"))
 		{
 			try {
-				if ((getUser(userdata.getUserName(), caller, null, false) == null) || (getUser(userdata.getUserName(), caller,null, false).size() == 0))
-				{
-					String addSql = "insert into pm_user_data " + 
-							"(user_id, full_name, email, password, change_date, entry_date, changeby_char, status_cd) values (?,?,?,?,?,?,?,?)";
-					numRowsAdded = jt.update(addSql, 
-							userdata.getUserName(),
-							userdata.getFullName(),
-							userdata.getEmail(),
-							PMUtil.getInstance().getHashedPassword("SHA-256", userdata.getPassword().getValue()),
-							Calendar.getInstance().getTime(),
-							Calendar.getInstance().getTime(),				
-							caller,
-							"A");
-				} else if (userdata.getPassword() != null)
+				//if ((getUser(userdata.getUserName(), caller, null, false) == null) || (getUser(userdata.getUserName(), caller,null, false).size() == 0))
+				//{
+				String addSql = "insert into pm_user_data " + 
+						"(user_id, full_name, email, password, change_date, entry_date, changeby_char, status_cd) values (?,?,?,?,?,?,?,?)";
+				numRowsAdded = jt.update(addSql, 
+						userdata.getUserName(),
+						userdata.getFullName(),
+						userdata.getEmail(),
+						PMUtil.getInstance().getHashedPassword("SHA-256", userdata.getPassword().getValue()),
+						Calendar.getInstance().getTime(),
+						Calendar.getInstance().getTime(),				
+						caller,
+						"A");
+			} catch (Exception e) 
+			{
+				//} else if (userdata.getPassword() != null)
+				if ( userdata.getPassword() != null)
 				{
 					//user already exists, lets try to update
 					String addSql = "update pm_user_data " + 
@@ -761,7 +764,7 @@ public class PMDbDao extends JdbcDaoSupport {
 							caller,
 							userdata.getUserName());					
 				}
-
+			}
 				// Deal with is_admin
 				String addSql = "update pm_project_user_roles " + 
 						" set status_cd = 'D', change_date = ?, changeby_char = ?  where  user_id = ? and user_role_cd = ?";
@@ -794,11 +797,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					}
 				}
 
-			} catch (DataAccessException e) {
-				log.error("Dao update setuser failed for: " + userdata.getUserName());
-				log.error(e.getMessage());
-				throw new I2B2DAOException("Data access error " , e);
-			}
+			
 		}
 		else 
 		{
@@ -828,14 +827,14 @@ public class PMDbDao extends JdbcDaoSupport {
 				if (numRowsAdded ==0)
 					throw new I2B2DAOException("User not updated, does it exist?");
 
-				 addSql = "update pm_project_user_roles " + 
+				addSql = "update pm_project_user_roles " + 
 						"set status_cd = 'D', change_date = ?, changeby_char = ? where user_id = ?";
 
 				numRowsAdded = jt.update(addSql, 
 						Calendar.getInstance().getTime(),
 						caller,
 						user);
-				
+
 			} catch (DataAccessException e) {
 				log.error("Dao deleteuser failed");
 				log.error(e.getMessage());
@@ -973,7 +972,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				it = queryResult2.iterator();
 				if (it.hasNext())
 					throw new Exception("New password is same as current password.");
-				*/
+				 */
 			} catch (Exception e)
 			{
 				throw new I2B2DAOException(e.getMessage(), e);
@@ -1249,7 +1248,7 @@ public class PMDbDao extends JdbcDaoSupport {
 	{
 		return updateSession( userId, userId,  sessionId,  timeout);
 	}
-	
+
 	public int updateSession(String userId, String loginUser,  String sessionId, int timeout) throws Exception
 	{
 		int numRowsAdded  = -1;
@@ -1259,8 +1258,8 @@ public class PMDbDao extends JdbcDaoSupport {
 
 		if (!userId.equals(loginUser) && !validateRole(loginUser, "admin", null))
 			throw new Exception("Only a admin can logout another user.");
- 
-		
+
+
 		if (((sessionId == null) || sessionId.equals("@"))) // && (validateRole(userId, "admin", null)))
 			addSql = "update pm_user_session set expired_date = ? " + 
 					" where user_id =?";
@@ -1291,11 +1290,11 @@ public class PMDbDao extends JdbcDaoSupport {
 				int tosleep = new SecureRandom().nextInt(2000);
 				log.warn("Transaction rolled back. Restarting transaction.");
 				Thread.sleep(tosleep);
-				
+
 				if (((sessionId == null) || sessionId.equals("@"))) // && (validateRole(userId, "admin", null)))
-				numRowsAdded = jt.update(addSql, 
-						now.getTime(),
-						userId);	
+					numRowsAdded = jt.update(addSql, 
+							now.getTime(),
+							userId);	
 				else 
 					numRowsAdded = jt.update(addSql, 
 							now.getTime(),
@@ -2948,7 +2947,7 @@ class getSession implements RowMapper<SessionData> {
 
 
 class getSessionUserLoginType implements RowMapper<UserLoginType> {
-	
+
 	public static XMLGregorianCalendar long2Gregorian(long date) {
 		DatatypeFactory dataTypeFactory;
 		try {
@@ -2960,7 +2959,7 @@ class getSessionUserLoginType implements RowMapper<UserLoginType> {
 		gc.setTimeInMillis(date);
 		return dataTypeFactory.newXMLGregorianCalendar(gc);
 	}
-	
+
 	@Override
 	public UserLoginType mapRow(ResultSet rs, int rowNum) throws SQLException {
 		UserLoginType rData = new UserLoginType();
@@ -3019,6 +3018,11 @@ class getRole implements RowMapper<RoleType> {
 		rData.setUserName(rs.getString("user_id"));
 		rData.setRole(rs.getString("user_role_cd"));
 
+		Date date = rs.getTimestamp("entry_date");
+		if (date == null)
+			rData.setEntryDate(date);
+		else 
+			rData.setEntryDate(date); 
 		return rData;
 	} 
 }
@@ -3050,7 +3054,7 @@ class getUser implements RowMapper<UserType> {
 		UserType userData = new UserType();
 		userData.setFullName(rs.getString("full_name"));
 		userData.setUserName(rs.getString("user_id"));
-		
+
 		Date date = rs.getTimestamp("entry_date");
 		if (date == null)
 			userData.setEntryDate(null);
@@ -3088,7 +3092,7 @@ class getUserLoginAttempt implements RowMapper<UserLoginType> {
 		userData.setAttempt(rs.getString("attempt_cd"));
 		userData.setUserName(rs.getString("user_id"));
 
-	
+
 		Date date = rs.getTimestamp("entry_date");
 		if (date == null)
 			userData.setEntryDate(null);
