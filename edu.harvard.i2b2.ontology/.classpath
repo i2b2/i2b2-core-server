@@ -6,18 +6,11 @@
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/dist/i2b2Common-core.jar" sourcepath="/edu.harvard.i2b2.common"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/junit/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/junit/junit-4.12.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/angus-activation-2.0.2.jar"/>
-	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/angus-mail-2.0.3.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/annotations-13.0.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/checker-qual-3.43.0.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/codemodel-4.0.3.jar"/>
-	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/commons-fileupload2-core-2.0.0-M2.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/commons-fileupload2-jakarta-servlet6-2.0.0-M2.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/geronimo-annotation_1.0_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/geronimo-jaxws_2.2_spec-1.2.jar"/>
@@ -86,7 +79,6 @@
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/axis2-transport-xmpp-2.0.0.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/axis2-xmlbeans-2.0.0.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/commons-io-2.18.0.jar"/>
-	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/commons-lang3-3.17.0.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/commons-logging-1.3.5.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/dtd-parser-1.5.0.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/encoder-1.3.1.jar"/>
@@ -94,7 +86,6 @@
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/failureaccess-1.0.2.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/gson-2.12.1.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/guava-33.4.0-jre.jar"/>
-	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/httpclient5-5.4.2.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/httpcore5-5.3.3.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/httpcore5-h2-5.3.3.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/jakarta.activation-api-2.1.3.jar"/>
@@ -143,10 +134,58 @@
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/xmlschema-core-2.3.1.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/xpp3-1.1.3.4.O.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/xsom-4.0.3.jar"/>
-	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-beans-6.1.11.jar"/>
-	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-context-6.1.11.jar"/>
-	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-core-6.1.11.jar"/>
-	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-jdbc-6.1.11.jar"/>
 	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-tx-6.1.11.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-core-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-suggest-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/angus-mail-2.1.0-M1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/commons-fileupload2-core-2.0.0-M4.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/commons-lang3-3.19.0.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/httpclient5-5.5.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/axis2.war/WEB-INF/lib/VeracodeAnnotations.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-beans-7.0.0-M9.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-context-7.0.0-M9.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-core-7.0.0-M9.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/spring/spring-jdbc-7.0.0-M9.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 21.0.8 [21.0.8]">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/zip/opencsv-5.12.0.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-queryparser-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-analysis-common-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-analysis-icu-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-analysis-kuromoji-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-analysis-morfologik-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-analysis-nori-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-analysis-opennlp-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-analysis-phonetic-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-analysis-smartcn-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-analysis-stempel-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-backward-codecs-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-benchmark-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-benchmark-jmh-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-classification-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-codecs-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-demo-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-expressions-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-facet-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-grouping-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-highlighter-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-join-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-luke-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-memory-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-misc-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-monitor-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-queries-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-replicator-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-sandbox-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-spatial3d-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/lucene-spatial-extras-10.3.1.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/commons-collections4-4.5.0.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/commons-beanutils-1.11.0.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/jackson-databind-2.20.0.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/jackson-core-2.20.0.jar"/>
+	<classpathentry kind="lib" path="/edu.harvard.i2b2.server-common/lib/lucene/jackson-annotations-3.0-rc5.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

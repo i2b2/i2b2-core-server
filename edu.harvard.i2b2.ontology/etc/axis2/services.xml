@@ -57,14 +57,29 @@
     <operation name="loadMetadata">
         <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
     </operation>
+    <operation name="createSearchMetadata">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
     <operation name="getDerivedFactColumns">
         <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
     </operation>
-
+    <operation name="findDocuments">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <!--
+    <operation name="findDocuments">
+        <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                class="org.apache.axis2.json.moshi.rpc.JsonRpcMessageReceiver"  />
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-only"
+                class="org.apache.axis2.json.moshi.rpc.JsonInOnlyRPCMessageReceiver"/>
+    </operation>
+    -->    
     <parameter name="ServiceClass">edu.harvard.i2b2.ontology.ws.OntologyService</parameter>
+    <!--  
     <parameter name="xmlToJsonNamespaceMap">
     <mappings>
-        <mapping xmlNamespace="http://quickstart.samples/xsd" jsonNamespace=""/>
+        <mapping xmlNamespace="http://ws.ontology.i2b2.harvard.edu" jsonNamespace=""/>
     </mappings>
-</parameter>
+	</parameter>
+	-->
 </service>

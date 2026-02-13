@@ -25,8 +25,14 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMSourcedElement;
+import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.json.JSONDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -70,30 +76,22 @@ public class MessageFactory {
 	public static OMElement createResponseOMElementFromString(String xmlString)
 			throws I2B2Exception {
 		OMElement returnElement = null;
+		XMLStreamReader reader = null;
 
 		try {
-			/*
-			StringReader strReader = new StringReader(xmlString);
-			XMLInputFactory xif = XMLInputFactory.newInstance();
-			XMLStreamReader reader = xif.createXMLStreamReader(strReader);
 
-			StAXOMBuilder builder = new StAXOMBuilder(reader);
-			returnElement = builder.getDocumentElement();
-			*/
 			returnElement = AXIOMUtil.stringToOM(xmlString);
-
-			
 		} catch (Exception e) {
 			log
-					.error("Error while converting Ontology response VDO to OMElement");
+			.error("Error while converting Ontology response VDO to OMElement");
 			//throw new I2B2Exception("XML Stream error ", e);
-			
+
 		}
 
 		return returnElement;
 	}
 
-	
+
 	/**
 	 * Function to build concepts body type
 	 * 
@@ -125,7 +123,7 @@ public class MessageFactory {
 
 		return bodyType;
 	}
-	
+
 	/**
 	 * Function to build Dirty state body type
 	 * 
@@ -155,8 +153,8 @@ public class MessageFactory {
 
 		return bodyType;
 	}
-	
-	
+
+
 	/**swc20160515
 	 * Function to build concepts body type
 	 * 
@@ -172,7 +170,7 @@ public class MessageFactory {
 		return bodyType;
 	}
 
-	
+
 	/**
 	 * Function to create response message header based on request message
 	 * header
@@ -194,7 +192,7 @@ public class MessageFactory {
 		FacilityType facility = new FacilityType();
 		facility.setFacilityName("i2b2 Hive");
 		messageHeader.setSendingFacility(facility);
-		
+
 		if (reqMsgHeader != null) {
 			ApplicationType recvApp = new ApplicationType();
 			recvApp.setApplicationName(reqMsgHeader.getSendingApplication()
@@ -202,7 +200,7 @@ public class MessageFactory {
 			recvApp.setApplicationVersion(reqMsgHeader.getSendingApplication()
 					.getApplicationVersion());
 			messageHeader.setReceivingApplication(recvApp);
-		
+
 			FacilityType recvFac = new FacilityType();
 			recvFac.setFacilityName(reqMsgHeader.getSendingFacility()
 					.getFacilityName());
@@ -219,10 +217,10 @@ public class MessageFactory {
 		mcIdType.setInstanceNum(1);
 
 		if ((reqMsgHeader != null) && (reqMsgHeader.getMessageControlId() != null)) {
-				mcIdType.setMessageNum(reqMsgHeader.getMessageControlId()
-						.getMessageNum());
-				mcIdType.setSessionId(reqMsgHeader.getMessageControlId()
-						.getSessionId());
+			mcIdType.setMessageNum(reqMsgHeader.getMessageControlId()
+					.getMessageNum());
+			mcIdType.setSessionId(reqMsgHeader.getMessageControlId()
+					.getSessionId());
 		}
 
 		messageHeader.setMessageControlId(mcIdType);
@@ -335,8 +333,8 @@ public class MessageFactory {
 
 		return respMessageType;
 	}
-	
-	
+
+
 	/**
 	 * Function to build Response message type and return it as an XML string
 	 * 
@@ -360,9 +358,9 @@ public class MessageFactory {
 
 		return respMessageType;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Function to build Response message type and return it as an XML string
 	 * 
@@ -410,7 +408,7 @@ public class MessageFactory {
 		return respMessageType;
 	}
 
-	
+
 	/**swc20160515
 	 * Function to build Response message type and return it as an XML string
 	 * 
@@ -444,7 +442,7 @@ public class MessageFactory {
 		return respMessageType;
 	}
 
-	
+
 	public static ResponseMessageType createProcessStatusResponse(
 			MessageHeaderType messageHeaderType,
 			OntologyProcessStatusType ontProcessStatusType) {
@@ -463,8 +461,8 @@ public class MessageFactory {
 
 		return respMessageType;
 	}
-	
-	
+
+
 	public static ResponseMessageType createProcessStatusListResponse(
 			MessageHeaderType messageHeaderType,
 			OntologyProcessStatusListType ontProcessStatusListType) {
@@ -541,7 +539,7 @@ public class MessageFactory {
 
 		return respMessageType;
 	}
-	
+
 	/**
 	 * Creates ResponseHeader for the given type and value
 	 * 

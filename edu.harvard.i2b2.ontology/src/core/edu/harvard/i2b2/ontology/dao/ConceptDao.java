@@ -44,8 +44,13 @@ import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.common.util.xml.XMLUtil;
+import edu.harvard.i2b2.ontology.dao.lucene.LuceneService;
+import edu.harvard.i2b2.ontology.dao.lucene.LuceneService.ServiceResponse;
+import edu.harvard.i2b2.ontology.dao.lucene.LuceneService.SuggestQuery;
+import edu.harvard.i2b2.ontology.dao.lucene.LuceneSuggester;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptType;
+import edu.harvard.i2b2.ontology.datavo.vdo.ConceptsType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetCategoriesType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetChildrenType;
 import edu.harvard.i2b2.ontology.datavo.vdo.GetModifierChildrenType;
@@ -494,6 +499,30 @@ public class ConceptDao extends JdbcDaoSupport {
 	}
 
 
+	public ConceptsType searchOntology(final VocabRequestType vocabType, String projectInfo) throws I2B2DAOException, I2B2Exception{
+
+		log.info("MM: Begin searchOntology");
+		SuggestQuery q = new SuggestQuery();
+		q.setSuggestString(vocabType.getMatchStr().getValue());
+		//ServiceResponse
+		
+		// LuceneService luceneService = new LuceneService(projectInfo);
+
+		log.info("MM: Get instance");
+		OntologyUtil a = OntologyUtil.getInstance();
+		log.info("MM: Get LuceneSuggester");
+		LuceneSuggester b = a.getLuceneSuggester(projectInfo);
+		log.info("MM: Get ConceptsType");
+		ConceptsType c = b.getSuggestions(q, projectInfo);
+		
+		return c;
+		//return OntologyUtil.getInstance().getLuceneSuggester(projectInfo.getId()).getSuggestions(q, projectInfo.getId()); //search(query);
+//		List<ConceptType> queryResult = null;
+
+		
+
+		//return queryResult; //results.body;
+	}
 
 	public List findNameInfo(final VocabRequestType vocabType, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception{
 
@@ -560,6 +589,12 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		String nameInfoSql = null;
 		String compareName = null;
+		
+		String category = null;
+		String tableName = null;
+		String name = null;
+		String tooltip = null;
+		
 
 		String value = vocabType.getMatchStr().getValue();
 		//		using JDBCtemplate so dont need to do apostrophe replace   
@@ -574,8 +609,14 @@ public class ConceptDao extends JdbcDaoSupport {
 
 
 
+		boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
+		
 		for (int i=0; i < categoryResult.size(); i++) {
-			String category = categoryResult.get(i).getKey();
+			 category = categoryResult.get(i).getKey();
+			 tableName = categoryResult.get(i).getTablename();
+			 name = categoryResult.get(i).getName();
+			 tooltip = categoryResult.get(i).getTooltip();
+			 
 			if(category.contains("'")){
 				category = category.replaceAll("'", "''");
 			}
@@ -590,6 +631,8 @@ public class ConceptDao extends JdbcDaoSupport {
 				category = StringUtil.escapePOSTGRESQL(category); 
 			}		
 
+			if (tableCd.equals("@"))
+				vocabType.setCategory(tableName);
 
 			// dont do the sql injection replace; it breaks the service.
 			if(vocabType.getMatchStr().getStrategy().equals("exact")) {
@@ -673,6 +716,7 @@ public class ConceptDao extends JdbcDaoSupport {
 				}
 			}
 
+			
 
 			String hidden = "";// and c_totalnum != 0 ";
 			if(vocabType.isHiddens() == false)
@@ -686,10 +730,10 @@ public class ConceptDao extends JdbcDaoSupport {
 			nameInfoSql = nameInfoSql + hidden + synonym + " order by c_hlevel, c_totalnum, upper(c_name) asc ";  
 
 			log.info("nameInfoSql:" + nameInfoSql + " " +compareName);
-			boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
+			//boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
 			//ParameterizedRowMapper<ConceptType> mapper = getMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType());
 
-
+		//}
 			try {
 				List<ConceptType> list = null;
 				if(compareName != null) {
@@ -704,8 +748,9 @@ public class ConceptDao extends JdbcDaoSupport {
 
 				// Add parent poaths
 
-				String tableName=categoryResult.get(i).getTablename();
-				String name = categoryResult.get(i).getName();
+				//String tableName=categoryResult.get(i).getTablename();
+				//String name = categoryResult.get(i).getName();
+				
 				/*
 				String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
 				try {

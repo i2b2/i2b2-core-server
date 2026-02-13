@@ -47,6 +47,8 @@ import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.ServiceLocator;
 import edu.harvard.i2b2.common.util.axis2.ServiceClient;
 import edu.harvard.i2b2.common.util.jaxb.DTOFactory;
+import edu.harvard.i2b2.ontology.dao.lucene.LuceneService;
+import edu.harvard.i2b2.ontology.dao.lucene.LuceneSuggester;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.ApplicationType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.ontology.datavo.pm.ParamType;
@@ -64,6 +66,7 @@ public class OntologyUtil {
 
 	private static List<ParamType> appProperties = null;
 
+	private static HashMap<String, LuceneSuggester> suggesters = new HashMap<>();
 
 	/** property name for PM endpoint reference **/
 	private static final String PM_WS_EPR = "ontology.ws.pm.url";
@@ -305,6 +308,22 @@ public class OntologyUtil {
 		}
 
 		return propertyValue;
+	}
+	public LuceneSuggester getLuceneSuggester(String projectId)
+	{
+		
+		LuceneSuggester sugg = suggesters.get(projectId);
+		
+		if (sugg == null)
+		{
+			//LuceneService luceneService = new LuceneService();
+			sugg = new LuceneSuggester(projectId);
+			//sugg = luceneService.getSuggester(projectId);
+			suggesters.put(projectId, sugg);
+		}
+		
+		
+		return sugg;
 	}
 
 	public MessageHeaderType getMessageHeader()  {

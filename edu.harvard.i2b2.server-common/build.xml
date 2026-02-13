@@ -86,6 +86,7 @@
 	                        <fileset dir="${lib}/exec" includes="**/*" />
 	                        <fileset dir="${lib}/zip" includes="**/*" />
 	                        <fileset dir="${lib}/quartz" includes="**/*" />
+	                        <fileset dir="${lib}/lucene" includes="**/*" />
 	                </copy>
 	 
 	                <copy todir="${dist}/${axis2.war.name}_build/WEB-INF/lib">

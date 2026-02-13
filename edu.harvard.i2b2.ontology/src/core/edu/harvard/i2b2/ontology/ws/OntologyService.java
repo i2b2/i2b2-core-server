@@ -17,6 +17,8 @@ package edu.harvard.i2b2.ontology.ws;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.stream.XMLStreamWriter;
 
@@ -32,6 +34,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.ontology.dao.LoginRequest;
+import edu.harvard.i2b2.ontology.dao.lucene.LuceneService;
+import edu.harvard.i2b2.ontology.dao.lucene.LuceneService.ServiceResponse;
+import edu.harvard.i2b2.ontology.dao.lucene.LuceneService.SuggestQuery;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
 import edu.harvard.i2b2.ontology.delegate.AddChildHandler;
 import edu.harvard.i2b2.ontology.delegate.AddModifierHandler;
@@ -57,10 +63,12 @@ import edu.harvard.i2b2.ontology.delegate.GetSchemesHandler;
 import edu.harvard.i2b2.ontology.delegate.GetTermInfoHandler;
 import edu.harvard.i2b2.ontology.delegate.ModifyChildHandler;
 import edu.harvard.i2b2.ontology.delegate.CheckMetadataTableHandler;
+import edu.harvard.i2b2.ontology.delegate.CreateSearchMetadataHandler;
 import edu.harvard.i2b2.ontology.delegate.LoadMetadataHandler;
 import edu.harvard.i2b2.ontology.delegate.LoadSchemesHandler;
 import edu.harvard.i2b2.ontology.delegate.LoadTableAccessHandler;
 import edu.harvard.i2b2.ontology.delegate.RequestHandler;
+import edu.harvard.i2b2.ontology.delegate.SearchMetadataHandler;
 import edu.harvard.i2b2.ontology.delegate.SetDblookupHandler;
 import edu.harvard.i2b2.ontology.delegate.UpdateTotalNumHandler;
 
@@ -1125,6 +1133,39 @@ public class OntologyService {
 			return execute(new LoadMetadataHandler(loadDataMsg), waitTime);
 
 	}
+	
+	public OMElement createSearchMetadata(OMElement loadElement) throws I2B2Exception {
+
+		OMElement returnElement = null;
+		String ontologyDataResponse = null;
+		String unknownErrorMessage = "Error message delivered from the remote server \n"
+				+ "You may wish to retry your last action";
+
+		if (loadElement == null) {
+			log.error("Incoming Ontology request is null");
+			ResponseMessageType responseMsgType = MessageFactory
+					.doBuildErrorResponse(null, unknownErrorMessage);
+			ontologyDataResponse = MessageFactory
+					.convertToXMLString(responseMsgType);
+			return MessageFactory
+					.createResponseOMElementFromString(ontologyDataResponse);
+		}
+		String requestElementString = loadElement.toString();
+
+		LoadDataMessage loadDataMsg = new LoadDataMessage(
+				requestElementString);
+
+		long waitTime = 0;
+		if ((loadDataMsg.getRequestMessageType() != null) && (loadDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = loadDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
+		}
+
+			return execute(new CreateSearchMetadataHandler(loadDataMsg), waitTime);
+
+	}
+	
+	
 
 
 	public OMElement checkForTableExistence(OMElement loadElement) throws I2B2Exception {
@@ -1288,5 +1329,52 @@ public class OntologyService {
 		// do processing inside thread, so that service could send back message with timeout error.
 		return execute(new DeleteDblookupHandler(dblookupDataMsg), waitTime);
 	}
+	
+	
+    public OMElement findDocuments(OMElement query) throws I2B2Exception {
+    	
+    	
+		OMElement returnElement = null;
+		String ontologyDataResponse = null;
+		String unknownErrorMessage = "Error message delivered from the remote server \n"
+				+ "You may wish to retry your last action";
+
+		if (query == null) {
+			log.error("Incoming Ontology request is null");
+			ResponseMessageType responseMsgType = MessageFactory
+					.doBuildErrorResponse(null, unknownErrorMessage);
+			ontologyDataResponse = MessageFactory
+					.convertToXMLString(responseMsgType);
+			return MessageFactory
+					.createResponseOMElementFromString(ontologyDataResponse);
+		}
+
+		String requestElementString  =  query.toString();
+
+log.info("MM: Begin findDocuments");
+		GetNameInfoDataMessage nameInfoDataMsg = new GetNameInfoDataMessage(
+				requestElementString);
+		log.info("MM: Create JAXB");
+		long waitTime = 0;
+		if ((nameInfoDataMsg.getRequestMessageType() != null) && (nameInfoDataMsg.getRequestMessageType().getRequestHeader() != null)) {
+			waitTime = nameInfoDataMsg.getRequestMessageType()
+					.getRequestHeader().getResultWaittimeMs();
+		}
+
+		// do Ontology query processing inside thread, so that
+		// service could sends back message with timeout error.
+
+		log.info("MM: Going into SearchMetadataHandler");
+		return execute( new SearchMetadataHandler(nameInfoDataMsg), waitTime);
+ 
+		//return null; //results.toString();
+		// ExecutorRunnable er = new ExecutorRunnable();
+//		return execute(new GetNameInfoHandler(nameInfoDataMsg), waitTime);
+
+    	
+    	//            return MessageFactory
+  //  				.createResponseOMElementFromString(results.toString());
+
+    }
 
 }

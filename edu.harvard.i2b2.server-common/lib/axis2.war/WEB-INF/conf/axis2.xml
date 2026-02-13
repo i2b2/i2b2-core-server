@@ -179,6 +179,8 @@
                           class="org.apache.axis2.kernel.http.SOAPMessageFormatter"/>
         <messageFormatter contentType="application/soap+xml"
                           class="org.apache.axis2.kernel.http.SOAPMessageFormatter"/>
+		<messageFormatter contentType="application/json" class="org.apache.axis2.json.gson.JsonFormatter"/>
+                                                 
     </messageFormatters>
 
     <!-- ================================================= -->
@@ -193,6 +195,7 @@
                         class="org.apache.axis2.builder.XFormURLEncodedBuilder"/>
         <messageBuilder contentType="multipart/form-data"
                         class="org.apache.axis2.builder.MultipartFormDataBuilder"/>
+		<messageBuilder contentType="application/json" class="org.apache.axis2.json.gson.JsonBuilder"/>
     </messageBuilders>
 
     <!-- ================================================= -->

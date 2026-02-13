@@ -162,6 +162,7 @@ class geTableAccess implements RowMapper<TableAccessType> {
 		tableAccessType.setTableName(rs.getString("c_table_name"));
 		tableAccessType.setTableCd(rs.getString("c_table_cd"));
 		tableAccessType.setFullName(rs.getString("c_fullname"));
+		tableAccessType.setName(rs.getString("c_name"));
 		tableAccessType.setSynonymCd(rs.getString("c_synonym_cd"));
 		tableAccessType.setVisualAttributes(rs.getString("c_visualattributes"));
 		tableAccessType.setDimCode(rs.getString("c_dimcode"));

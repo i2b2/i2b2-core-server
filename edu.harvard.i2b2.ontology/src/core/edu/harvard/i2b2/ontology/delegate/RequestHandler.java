@@ -73,7 +73,9 @@ public abstract class RequestHandler {
 
 					PMResponseMessage msg = new PMResponseMessage();
 					StatusType procStatus = null;	
+					log.info("MM: Getting PM Resonse");
 					String response = PMServiceDriver.getRoles(userConfigType,header);		
+					log.info("MM: got PM Response");
 					logesapi.debug(response);
 					procStatus = msg.processResult(response);
 					if(procStatus.getType().equals("ERROR"))
