@@ -180,7 +180,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				"         when '@'   then pur.PROJECT_ID" +
 				"         when 'PROJECT_ID' then pur.PROJECT_ID" +
 				"         else null" +
-				"    end as PROJECT_ID," +
+				"    end as PROJECT_ID, pur.entry_date, " +
 				"    case  upper(rr.COLUMN_CD)" +
 				"         when '@'   then pur.USER_ID" +
 				"         when 'USER_ID' then pur.USER_ID" +
@@ -669,32 +669,32 @@ public class PMDbDao extends JdbcDaoSupport {
 			//sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
 			//		+ " on a.user_id = o.user_id and o.status_cd <> 'D' where  a.status_cd<>'D' ";
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-					+ " on a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' ";
+					+ " on a.user_id = o.user_id  and o.user_role_cd =  'ADMIN' where ";
 
 
 			if (call.equals("get_all_admin"))
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
-						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'ADMIN' and  a.status_cd<>'D' ";
+						+ " where a.user_id = o.user_id and o.user_role_cd =  'ADMIN' and ";
 
 			if (call.equals("get_all_manager"))
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
-						+ " where a.user_id = o.user_id and o.status_cd <> 'D' and o.user_role_cd =  'MANAGER' and  a.status_cd<>'D' ";
+						+ " where a.user_id = o.user_id  and o.user_role_cd =  'MANAGER' and  ";
 
 			if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
 			{
-				sql += " and lower(o.project_id) = ? ";
+				sql += "  lower(o.project_id) = ? and ";
 			}
 
 			if (uType.getEntryDate() != null)
 			{
-				sql += " and a.entry_date > ? order by a.full_name";
+				sql += "  a.entry_date > ? and a.status_cd <> 'D'  order by a.full_name";
 				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
 					queryResult = jt.query(sql, GetUser(false), uType.getProjectId().toLowerCase(), uType.getEntryDate().toGregorianCalendar().getTime());
 				else
 					queryResult = jt.query(sql, GetUser(false), uType.getEntryDate().toGregorianCalendar().getTime());
 
 			} else {
-				sql += " order by a.full_name";
+				sql += "  a.status_cd <> 'D' order by a.full_name";
 				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
 					queryResult = jt.query(sql,  GetUser(false), uType.getProjectId().toLowerCase());
 
@@ -834,6 +834,7 @@ public class PMDbDao extends JdbcDaoSupport {
 						Calendar.getInstance().getTime(),
 						caller,
 						user);
+				numRowsAdded = 1;
 
 			} catch (DataAccessException e) {
 				log.error("Dao deleteuser failed");
@@ -1729,7 +1730,6 @@ public class PMDbDao extends JdbcDaoSupport {
 			//	}
 
 		}
-		log.info("my sql: " + sql);
 		return queryResult;	
 	}
 
