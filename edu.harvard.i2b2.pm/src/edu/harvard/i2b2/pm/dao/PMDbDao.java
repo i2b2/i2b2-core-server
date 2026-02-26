@@ -680,6 +680,10 @@ public class PMDbDao extends JdbcDaoSupport {
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
 						+ " where a.user_id = o.user_id  and o.user_role_cd =  'MANAGER' and  ";
 
+			if (call.equals("get_lock_user"))
+				sql =  "select distinct a.*  from pm_user_data a,   pm_project_user_params o "
+						+ "	where a.user_id = o.user_id  and o.param_name_cd='LOCKEDOUT' and o.status_cd = 'A' and ";
+
 			if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
 			{
 				sql += "  lower(o.project_id) = ? and ";
@@ -706,7 +710,17 @@ public class PMDbDao extends JdbcDaoSupport {
 			{
 				Map<String, UserType> map = new LinkedHashMap<>();
 				for (UserType ays : queryResult) {
-					map.put(ays.getUserName(), ays);
+					boolean addUser = true;
+					if (call.equals("get_lock_user")) 
+					{
+						for (ParamType param : ays.getParam())
+						{
+							if (param.getName() != null && param.getName().equals("LOCKEDOUT") && param.getStatus().equals("A"))
+								addUser = false;
+						}
+					}
+					if (addUser)
+						map.put(ays.getUserName(), ays);
 				}
 				queryResult.clear();
 				queryResult.addAll(map.values());
@@ -765,39 +779,39 @@ public class PMDbDao extends JdbcDaoSupport {
 							userdata.getUserName());					
 				}
 			}
-				// Deal with is_admin
-				String addSql = "update pm_project_user_roles " + 
-						" set status_cd = 'D', change_date = ?, changeby_char = ?  where  user_id = ? and user_role_cd = ?";
-				numRowsAdded += jt.update(addSql, 
-						Calendar.getInstance().getTime(),
-						caller,
-						userdata.getUserName(),
-						"ADMIN");	
-				if (userdata.isIsAdmin() == true) {
-					try {
-						addSql = "insert into pm_project_user_roles " + 
-								"(  project_id, user_id, user_role_cd, change_date, entry_date, changeby_char, status_cd) values (?,?,?,?,?,?,?)";
-						numRowsAdded += jt.update(addSql, 
-								"@",
-								userdata.getUserName(),
-								"ADMIN",
-								Calendar.getInstance().getTime(),
-								Calendar.getInstance().getTime(),
-								caller,
-								"A");
-					} catch (Exception e) {
-						addSql = "update pm_project_user_roles " + 
-								" set status_cd = 'A', change_date = ?, changeby_char = ?  where  project_id = ? and user_id = ? and user_role_cd = ?";
-						numRowsAdded += jt.update(addSql, 
-								Calendar.getInstance().getTime(),
-								caller,
-								"@",
-								userdata.getUserName(),
-								"ADMIN");	
-					}
+			// Deal with is_admin
+			String addSql = "update pm_project_user_roles " + 
+					" set status_cd = 'D', change_date = ?, changeby_char = ?  where  user_id = ? and user_role_cd = ?";
+			numRowsAdded += jt.update(addSql, 
+					Calendar.getInstance().getTime(),
+					caller,
+					userdata.getUserName(),
+					"ADMIN");	
+			if (userdata.isIsAdmin() == true) {
+				try {
+					addSql = "insert into pm_project_user_roles " + 
+							"(  project_id, user_id, user_role_cd, change_date, entry_date, changeby_char, status_cd) values (?,?,?,?,?,?,?)";
+					numRowsAdded += jt.update(addSql, 
+							"@",
+							userdata.getUserName(),
+							"ADMIN",
+							Calendar.getInstance().getTime(),
+							Calendar.getInstance().getTime(),
+							caller,
+							"A");
+				} catch (Exception e) {
+					addSql = "update pm_project_user_roles " + 
+							" set status_cd = 'A', change_date = ?, changeby_char = ?  where  project_id = ? and user_id = ? and user_role_cd = ?";
+					numRowsAdded += jt.update(addSql, 
+							Calendar.getInstance().getTime(),
+							caller,
+							"@",
+							userdata.getUserName(),
+							"ADMIN");	
 				}
+			}
 
-			
+
 		}
 		else 
 		{
@@ -3069,10 +3083,28 @@ class getUser implements RowMapper<UserType> {
 			else
 				userData.setIsAdmin(false);
 
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//			e.printStackTrace();
 		}
+		/*
+		try {
+			if (rs.getString("param_name_cd") != null) {
+				ParamType param = new ParamType();
+				param.setDatatype("T");
+				param.setName(rs.getString("param_name_cd"));
+				param.setStatus("A");
+				userData.getParam().add(param);
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//			e.printStackTrace();
+		}
+		*/
+
+
 		if (includePassword) {
 			PasswordType pass = new PasswordType();
 			pass.setValue(rs.getString("password"));

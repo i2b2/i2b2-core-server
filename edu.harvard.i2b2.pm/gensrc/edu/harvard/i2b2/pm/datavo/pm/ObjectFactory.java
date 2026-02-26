@@ -65,6 +65,7 @@ public class ObjectFactory {
     private final static QName _GetAllUser_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_user");
     private final static QName _GetAllAdmin_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_admin");
     private final static QName _GetAllManager_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_manager");
+    private final static QName _GetLockUser_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_lock_user");
     private final static QName _DeleteProject_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "delete_project");
     private final static QName _GetCell_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_cell");
     private final static QName _GetAllDatasource_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_datasource");
@@ -617,7 +618,16 @@ public class ObjectFactory {
     public JAXBElement<UserLoginType> createGetUserLogin(UserLoginType value) {
         return new JAXBElement<UserLoginType>(_GetUserLogin_QNAME, UserLoginType.class, null, value);
     }
-    
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_lock_user")
+    public JAXBElement<UserLoginType> createGetUnlockUser(UserLoginType value) {
+        return new JAXBElement<UserLoginType>(_GetLockUser_QNAME, UserLoginType.class, null, value);
+    }
+
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 

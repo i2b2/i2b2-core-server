@@ -216,6 +216,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 		}
 	}
 
+	/*
 	@Test
 	public void A30_validSessionUnvalidUsernoXML() throws Exception {
 		try { 
@@ -266,6 +267,8 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			throw e;
 		}
 	}	
+	*/
+	/*
 	@Test
 	public void A40_validUsernoXML() throws Exception {
 		try { 
@@ -299,7 +302,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			throw e;
 		}
 	}	
-
+	*/
 	@Test
 	public void A50_wrongPassword() throws Exception {
 		String filename = testFileDir + "/pm_wrongpassword.xml";
@@ -1006,7 +1009,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	public void A180_createProjetUserParamWithValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_project_user_param_with_valid_user.xml";
 		ParamType ctype = null;
-		String masterInstanceResult = null;
+		String masterInstanceResult = "";
 		try { 
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 

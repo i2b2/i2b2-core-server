@@ -507,6 +507,8 @@ public class ServicesHandler extends RequestHandler {
 					return runGetAllUser(pmDb, project, rmt.getUsername() , "get_all_user",  (UserLoginType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_manager"))
 					return runGetAllUser(pmDb, project, rmt.getUsername(), "get_all_manager",  (UserLoginType) ((JAXBElement) obj).getValue()  );
+				else if (name.equals("get_lock_user"))
+					return runGetAllUser(pmDb, project, rmt.getUsername(), "get_lock_user",  (UserLoginType) ((JAXBElement) obj).getValue()  );
 				else if (name.equals("get_all_admin"))
 					return runGetAllUser(pmDb, project, rmt.getUsername(), "get_all_admin",  (UserLoginType) ((JAXBElement) obj).getValue()  );
 				else if (name.equals("set_project"))
