@@ -212,7 +212,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			assertNotNull("Set Role 2 for IM", masterInstanceResult);		
 		} catch (Exception e) { 
 			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e.getMessage(), false);
 		}
 	}
 
@@ -468,7 +468,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 		} catch (Exception e) { 
 			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e.getMessage(), false);
 		}
 	}
 
@@ -604,7 +604,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			assertEquals("Check Exists 3", ctype.getMethod(),"REST");
 		} catch (Exception e) { 
 			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e.getMessage(), false);
 		}
 	}
 
@@ -743,7 +743,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 			assertEquals("Check exists 2",ctype.getKey(), "321");
 		} catch (Exception e) { 
 			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e.getMessage(), false);
 		}
 	}
 
@@ -905,7 +905,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 
 		} catch (Exception e) { 
 			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e.getMessage(), false);
 		}
 	}
 
@@ -937,7 +937,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	public void A160_createCelllParamWithValidUser() throws Exception {
 		String filename = testFileDir + "/pm_create_cell_param_with_valid_user.xml";
 		ParamType ctype = null;
-		String masterInstanceResult = null;
+		String masterInstanceResult = "";
 		try { 
 			String requestString = getQueryString(filename);
 			OMElement requestElement = convertStringToOMElement(requestString); 

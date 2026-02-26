@@ -1723,6 +1723,28 @@ public class PMDbDao extends JdbcDaoSupport {
 			{
 				addsql = " and 1 = 1 ";				
 			}
+			
+			if (((RoleType) utype).getUserName() != null && ((RoleType) utype).getProjectId() != null)
+			{
+				sql =  "select * from pm_project_user_roles where project_id=? and user_id=? and " + 	(showDeleted ? "" :" status_cd<>'D'  ");
+				sql += addsql + " order by project_id";
+				queryResult = jt.query(sql, new getRole(), ((RoleType) utype).getProjectId(), ((RoleType) utype).getUserName());
+
+			}  else if (((RoleType) utype).getProjectId() != null) {
+				sql =  "select * from pm_project_user_roles where project_id=? and " + 	(showDeleted ? "" :" status_cd<>'D'  ");
+				sql += addsql;
+				queryResult = jt.query(sql, new getRole(), ((RoleType) utype).getProjectId());
+			} else if (((RoleType) utype).getUserName() != null) {
+				sql =  "select * from pm_project_user_roles where user_id=? and " + 	(showDeleted ? "" :" status_cd<>'D'  ");
+				sql += addsql;
+				queryResult = jt.query(sql, new getRole(), ((RoleType) utype).getUserName());
+			} else {
+				sql =  "select * from pm_project_user_roles where " + 	(showDeleted ? "" :" status_cd<>'D'  ");
+				sql +=  addsql + " order by project_id";
+				queryResult = jt.query(sql, new getRole());
+			}
+			
+			/*
 			if (((RoleType) utype).getProjectId() == null)
 			{
 				sql =  "select * from pm_project_user_roles where " + 	(showDeleted ? "" :" status_cd<>'D'  ");
@@ -1741,6 +1763,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				sql += addsql;
 				queryResult = jt.query(sql, new getRole(), ((RoleType) utype).getProjectId());
 			}
+			*/
 			//	}
 
 		}
