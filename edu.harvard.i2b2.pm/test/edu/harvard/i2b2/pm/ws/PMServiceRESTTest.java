@@ -53,7 +53,7 @@ public class PMServiceRESTTest extends PMAxisAbstract{
 	@BeforeClass
 	public static void setUp() throws Exception {
 		testFileDir = "test"; //System.getProperty("testfiledir");
-		String host = (System.getProperty("testhost") == null ? "http://phslxapp063:7070/i2b2/services" : System.getProperty("testhost") ) ;
+		String host = (System.getProperty("testhost") == null ? "http://127.0.0.1:9090/i2b2/services" : System.getProperty("testhost") ) ;
 		 pmTargetEPR = 
 				host + "/PMService/getServices";	
 		 pmGetVersion = 
