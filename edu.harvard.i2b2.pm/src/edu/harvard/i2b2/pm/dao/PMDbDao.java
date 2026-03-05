@@ -659,6 +659,46 @@ public class PMDbDao extends JdbcDaoSupport {
 	}
 
 
+	public int unlockUser(String project, String caller, UserLoginType uType ) throws I2B2Exception, I2B2DAOException { 
+		//String sql = null;
+		int numRowsAdded = 0;
+
+		if ((validateRole(caller, "admin", null)) || (validateRole(caller, "admin", null)))
+		{
+
+			String sql = "update pm_project_user_params " + 
+					" set status_cd = 'D', change_date = ?, changeby_char = ?  where  user_id = ? and param_name_cd = 'LOCKEDOUT' ";
+
+			if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
+			{
+				sql += " and lower(project_id) = ?  ";
+				numRowsAdded += jt.update(sql, 
+						Calendar.getInstance().getTime(),
+						caller,
+						uType.getUserName(),
+						uType.getProjectId().toLowerCase());	
+
+			}
+			else {
+				numRowsAdded += jt.update(sql, 
+						Calendar.getInstance().getTime(),
+						caller,
+						uType.getUserName().toLowerCase());	
+			}
+		}
+
+		else 
+		{
+			throw new I2B2DAOException("Access Denied for " + caller);
+		}
+		//	log.info(addSql +  " " + numRowsAdded);
+		log.debug("Number of rows added: " + numRowsAdded);
+
+		return numRowsAdded;
+
+
+
+	}
 	public List<UserType> getAllUser(String project, String caller, String call, UserLoginType uType ) throws I2B2Exception, I2B2DAOException { 
 		String sql = null;
 		List<UserType> queryResult = null;
@@ -1723,7 +1763,7 @@ public class PMDbDao extends JdbcDaoSupport {
 			{
 				addsql = " and 1 = 1 ";				
 			}
-			
+
 			if (((RoleType) utype).getUserName() != null && ((RoleType) utype).getProjectId() != null)
 			{
 				sql =  "select * from pm_project_user_roles where project_id=? and user_id=? and " + 	(showDeleted ? "" :" status_cd<>'D'  ");
@@ -1743,7 +1783,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				sql +=  addsql + " order by project_id";
 				queryResult = jt.query(sql, new getRole());
 			}
-			
+
 			/*
 			if (((RoleType) utype).getProjectId() == null)
 			{
@@ -1763,7 +1803,7 @@ public class PMDbDao extends JdbcDaoSupport {
 				sql += addsql;
 				queryResult = jt.query(sql, new getRole(), ((RoleType) utype).getProjectId());
 			}
-			*/
+			 */
 			//	}
 
 		}
@@ -3125,7 +3165,7 @@ class getUser implements RowMapper<UserType> {
 			// TODO Auto-generated catch block
 			//			e.printStackTrace();
 		}
-		*/
+		 */
 
 
 		if (includePassword) {

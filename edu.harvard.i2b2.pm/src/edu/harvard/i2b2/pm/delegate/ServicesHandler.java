@@ -503,6 +503,8 @@ public class ServicesHandler extends RequestHandler {
 				log.debug("Element name is: " + name );
 				if (name.equals("set_user"))
 					return runSetUser(pmDb, project, rmt.getUsername(), (UserType) ((JAXBElement) obj).getValue() );
+				else if (name.equals("unlock_user"))
+					return runUnlockUser(pmDb, project, rmt.getUsername() ,  (UserLoginType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_user"))
 					return runGetAllUser(pmDb, project, rmt.getUsername() , "get_all_user",  (UserLoginType) ((JAXBElement) obj).getValue() );
 				else if (name.equals("get_all_manager"))
@@ -1727,6 +1729,41 @@ public class ServicesHandler extends RequestHandler {
 
 		try {
 			int result = pmDb.setUser(utype, caller);
+
+			ResultStatusType results = new ResultStatusType();
+			StatusType status  = new StatusType();
+			status.setValue(result + " records");
+			results.setStatus(status);
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());    
+			responseMessageType = MessageFactory.createBuildResponse(messageHeader,results);
+
+		}
+		catch (Exception ee)
+		{
+			log.error(ee.getMessage());
+			// throw new Exception (ee.getMessage());
+			ee.printStackTrace();
+
+			MessageHeaderType messageHeader = MessageFactory.createResponseMessageHeader(getServicesMsg.getRequestMessageType().getMessageHeader());          
+			responseMessageType = MessageFactory.doBuildErrorResponse(messageHeader,
+					ee.getMessage());			
+		}
+
+		String responseVdo = "DONE";
+		try {
+			responseVdo = MessageFactory.convertToXMLString(responseMessageType);
+		} catch (I2B2Exception e) {
+			log.error(e.getMessage());
+		}
+		return responseVdo;
+	}
+
+	private String runUnlockUser(PMDbDao pmDb, String project, String caller,
+			UserLoginType utype) {
+		ResponseMessageType responseMessageType = null;
+
+		try {
+			int result = pmDb.unlockUser(project, caller, utype);
 
 			ResultStatusType results = new ResultStatusType();
 			StatusType status  = new StatusType();

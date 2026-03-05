@@ -62,6 +62,7 @@ public class ObjectFactory {
     private final static QName _SetApproval_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "set_approval");
     private final static QName _GetAllGlobal_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_global");
     private final static QName _DeleteGlobal_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "delete_global");
+    private final static QName _UnlockUser_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "unlock_user");
     private final static QName _GetAllUser_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_user");
     private final static QName _GetAllAdmin_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_admin");
     private final static QName _GetAllManager_QNAME = new QName("http://www.i2b2.org/xsd/cell/pm/1.1/", "get_all_manager");
@@ -623,8 +624,17 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 
      */
+    @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "unlock_user")
+    public JAXBElement<UserLoginType> createUnlockUser(UserLoginType value) {
+        return new JAXBElement<UserLoginType>(_UnlockUser_QNAME, UserLoginType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
     @XmlElementDecl(namespace = "http://www.i2b2.org/xsd/cell/pm/1.1/", name = "get_lock_user")
-    public JAXBElement<UserLoginType> createGetUnlockUser(UserLoginType value) {
+    public JAXBElement<UserLoginType> createGetlockUser(UserLoginType value) {
         return new JAXBElement<UserLoginType>(_GetLockUser_QNAME, UserLoginType.class, null, value);
     }
 
