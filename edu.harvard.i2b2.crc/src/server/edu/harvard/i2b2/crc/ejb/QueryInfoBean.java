@@ -778,7 +778,7 @@ public class QueryInfoBean { //implements SessionBean {
 		param.put("DXCreateTime",DXCreateTime);
 		param.put("ObfuscatedRecordCount", 3);
 		param.put("RecordCount", 0);
-		param.put("ObfuscatedRoleFlag", true);
+		param.put("ObfuscatedRoleFlag", false);
 
 		XmlResultType xml = new XmlResultType();
 

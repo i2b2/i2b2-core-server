@@ -42,6 +42,7 @@ import edu.harvard.i2b2.crc.datavo.pm.ParamType;
 import edu.harvard.i2b2.crc.datavo.pm.ProjectType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmQryHeaderType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.PsmRequestTypeType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.UserRequestType;
 import edu.harvard.i2b2.crc.delegate.RequestHandlerDelegate;
 import edu.harvard.i2b2.crc.delegate.ejbpm.EJBPMUtil;
 import edu.harvard.i2b2.crc.delegate.pm.PMServiceDriver;
@@ -241,6 +242,23 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 								.buildResponseMessage(requestXml, procStatus,
 										bodyType);
 						return response;
+					} else if (projectType.getRole().contains("MANAGER") && !(projectType.getRole().contains("ADMIN")))
+					{
+						
+			            UserRequestType userRequestType = (UserRequestType) unWrapHelper
+								.getObjectByClass(bodyType.getAny(),
+			                    edu.harvard.i2b2.crc.datavo.setfinder.query.UserRequestType.class);
+			            if (!userRequestType.getGroupId().equals(projectType.getId()))
+			            {
+			            	procStatus = new StatusType();
+							procStatus.setType("ERROR");
+							procStatus
+							.setValue("MANAGER error, the request group id must equal the message header group id");
+							response = I2B2MessageResponseFactory
+									.buildResponseMessage(requestXml, procStatus,
+											bodyType);
+							return response;
+			            }
 					}
 				} else {
 					// Not authorized

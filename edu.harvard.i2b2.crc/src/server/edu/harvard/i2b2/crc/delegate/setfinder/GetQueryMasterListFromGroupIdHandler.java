@@ -45,7 +45,7 @@ public class GetQueryMasterListFromGroupIdHandler extends RequestHandler {
         try {
             userRequestType = (UserRequestType) this.getRequestType(requestXml,
                     edu.harvard.i2b2.crc.datavo.setfinder.query.UserRequestType.class);
-            this.setDataSourceLookup(requestXml);
+            this.setDataSourceLookup(requestXml, userRequestType.getGroupId());
         } catch (JAXBUtilException jaxbUtilEx) {
             throw new I2B2Exception("Error ", jaxbUtilEx);
         }

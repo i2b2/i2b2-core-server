@@ -197,6 +197,20 @@ public abstract class RequestHandler {
 		return st;
 	}
 
+	protected void setDataSourceLookup(String requestXml, String projectId)
+			throws JAXBUtilException {
+		RequestMessageType reqMessage = getI2B2RequestMessageType(requestXml);
+		//String projectId = reqMessage.getMessageHeader().getProjectId();
+		String domainId = reqMessage.getMessageHeader().getSecurity()
+				.getDomain();
+		String userId = reqMessage.getMessageHeader().getSecurity()
+				.getUsername();
+		dataSourceLookup = new DataSourceLookup();
+		dataSourceLookup.setProjectPath(projectId);
+		dataSourceLookup.setDomainId(domainId);
+		dataSourceLookup.setOwnerId(userId);
+
+	}
 	protected void setDataSourceLookup(String requestXml)
 			throws JAXBUtilException {
 		RequestMessageType reqMessage = getI2B2RequestMessageType(requestXml);
