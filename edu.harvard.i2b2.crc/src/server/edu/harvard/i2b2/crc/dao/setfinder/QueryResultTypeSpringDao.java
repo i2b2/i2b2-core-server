@@ -162,7 +162,7 @@ IQueryResultTypeDao {
 		//	+ "qt_query_result_type where user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd) order by result_type_id";
 
 				String sql = "select a.* from " + getDbSchemaName()
-				+ "qt_query_result_type a, " + getDbSchemaName() + "qt_breakdown_path b where (user_role_cd = '@' or user_role_cd is null or user_role_cd in (:roleCd)) and (b.user_id = '" + user_id + "' or b.user_id is null or b.user_id = '@') and (b.group_id = '" + group_id + "' or b.group_id is null or b.group_id = '@') and a.name = b.name order by result_type_id";
+				+ "qt_query_result_type a left join  " + getDbSchemaName() + "qt_breakdown_path b on a.name = b.name where (a.user_role_cd = '@' or a.user_role_cd is null or a.user_role_cd in (:roleCd)) and (b.user_id = '" + user_id + "' or b.user_id is null or b.user_id = '@') and (b.group_id = '" + group_id + "' or b.group_id is null or b.group_id = '@')  order by a.result_type_id";
 
 			Map myRoles = Collections.singletonMap("roleCd", roles);
 			queryResultTypeList = namedParameterJdbcTemplate.query(sql,

@@ -1456,9 +1456,43 @@ public class ServicesHandler extends RequestHandler {
 
 						if (((RoleType) utype).getCount() != null && ((RoleType) utype).getCount().equalsIgnoreCase("project"))
 						{
-
+						
 							users = new RolesType();
 							for (String keyProject : projectHt.keySet()) {
+								
+								// Trim out duplicates
+
+								
+								int prot = 0;
+								int deid = 0;
+								int lds = 0;
+								int agg = 0;
+								int obfsc = 0;
+								if (projectHt.get(keyProject).get("DATA_PROT")!= null)
+									prot = projectHt.get(keyProject).get("DATA_PROT");
+								if (projectHt.get(keyProject).get("DATA_DEID")!= null)
+								{
+									deid = projectHt.get(keyProject).get("DATA_DEID");
+									projectHt.get(keyProject).replace("DATA_DEID" , deid - prot);
+								}
+								if (projectHt.get(keyProject).get("DATA_LDS")!= null)
+								{
+									lds = projectHt.get(keyProject).get("DATA_LDS");
+									projectHt.get(keyProject).replace("DATA_LDS" , lds - deid);
+								}
+								if (projectHt.get(keyProject).get("DATA_AGG")!= null)
+								{
+									agg = projectHt.get(keyProject).get("DATA_AGG");
+									projectHt.get(keyProject).replace("DATA_AGG" , agg - lds);
+								}
+								if (projectHt.get(keyProject).get("DATA_OBFSC")!= null)
+								{
+									obfsc = projectHt.get(keyProject).get("DATA_OBFSC");
+									projectHt.get(keyProject).replace("DATA_OBFSC" , obfsc - agg);
+								}								
+
+								
+								
 								for (String keyRole : projectHt.get(keyProject).keySet())
 								{
 									RoleType role = new RoleType();
