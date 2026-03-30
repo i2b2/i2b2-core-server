@@ -35,6 +35,7 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 	private MetadataLoadType conceptsType = null;
 	private ProjectType projectInfo = null;
 	private DBInfoType dbInfo = null;
+	private SecurityType securityType = null;
 	
 	public CreateSearchMetadataHandler(LoadDataMessage requestMsg) throws I2B2Exception{
 
@@ -42,7 +43,7 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 		conceptsType = requestMsg.getMetadataLoad();	
 		projectInfo = getRoleInfo(requestMsg.getMessageHeaderType());	
 		setDbInfo(requestMsg.getMessageHeaderType());
-		
+		securityType = requestMsg.getMessageHeaderType().getSecurity();
 		dbInfo = this.getDbInfo();
 	}
 
@@ -81,7 +82,7 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 					@Override
 					public void run() {
 						try {
-							query.buildCreateSearchMetadata( projectInfo, dbInfo);
+							query.buildCreateSearchMetadata( projectInfo, dbInfo, securityType);
 						} catch (Exception e) {
 							log.error("i2b2 exception", e);
 						} catch (Throwable e) {

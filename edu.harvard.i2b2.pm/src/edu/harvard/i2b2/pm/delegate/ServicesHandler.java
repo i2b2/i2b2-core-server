@@ -2487,7 +2487,8 @@ public class ServicesHandler extends RequestHandler {
 					for(Iterator it2=pmDb.getProjectParams(pType.getId()).iterator();it2.hasNext();){
 						ParamType vardata =(ParamType)it2.next();
 						log.debug("Added Project Param: " + vardata.getName());
-						pType.getParam().add(vardata);
+						if (vardata.getStatus().equals("A"))
+							pType.getParam().add(vardata);
 					}
 					//Get user project params for the project
 					ProjectType tempptype = new ProjectType();

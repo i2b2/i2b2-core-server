@@ -48,7 +48,8 @@ public class ParamType {
     protected Integer id;
     @XmlAttribute(name = "datatype")
     protected String datatype;
-
+    @XmlAttribute(name = "status")
+    protected String status;
     /**
      * Gets the value of the value property.
      * 
@@ -143,6 +144,30 @@ public class ParamType {
      */
     public void setDatatype(String value) {
         this.datatype = value;
+    }
+
+    /**
+     * Gets the value of the status property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the value of the datatype property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setStatus(String value) {
+        this.status = value;
     }
 
 }

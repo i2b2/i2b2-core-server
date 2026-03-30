@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,9 @@ import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.ontology.dao.lucene.parser.LuceneIndexer;
 import edu.harvard.i2b2.ontology.dao.lucene.parser.LuceneIndexer.SuggestionIndexInfo;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.SecurityType;
+import edu.harvard.i2b2.ontology.datavo.pm.ParamType;
+import edu.harvard.i2b2.ontology.datavo.pm.ParamsType;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.ejb.DBInfoType;
 import edu.harvard.i2b2.ontology.ejb.TableAccessType;
@@ -49,6 +53,7 @@ import edu.harvard.i2b2.ontology.util.ObserverXMLWriterUtil;
 import edu.harvard.i2b2.ontology.util.OntologyUtil;
 import edu.harvard.i2b2.ontology.util.PatientDataXMLWriterUtil;
 import edu.harvard.i2b2.ontology.util.StringUtil;
+import edu.harvard.i2b2.pm.ws.PMServiceDriver;
 
 public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 
@@ -72,40 +77,91 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 	}
 
 	public void buildCreateSearchMetadata(ProjectType projectInfo,
-			DBInfoType dbInfo)
+			DBInfoType dbInfo, SecurityType securityType)
 					throws I2B2Exception {
 		//Connection conn = null;
 		//ResultSet resultSet = null;
 		//PreparedStatement query = null;
+		boolean isAlreadyRunning = false;
 
 		TableAccessDao tableAccessDao = new TableAccessDao();
+		ParamType param  = null;
 		if (this.dataSource == null) {
 			setDataSource(dbInfo.getDb_dataSource());
 		} else {
 			tableAccessDao.setDataSourceObject(this.dataSource);
 		}
 		try {
+			param = PMServiceDriver.getProjectParam(
+					"LUCENE_INDEX",  securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+
+			if (param == null)
+			{
+				PMServiceDriver.setProjectParam("A",
+						"LUCENE_INDEX", "RUNNING", securityType, projectInfo.getId(),
+						OntologyUtil.getInstance()
+						.getPmEndpointReference());
+			}
+			else				 
+			{
+				if (param.getValue().equals("RUNNING"))
+				{
+					isAlreadyRunning = true;
+					throw new Exception("Lucene is already running");
+				}
+				else 
+				{
+					PMServiceDriver.setProjectParam(param.getId() ,"A",
+							"LUCENE_INDEX", "RUNNING", securityType, projectInfo.getId(),
+							OntologyUtil.getInstance()
+							.getPmEndpointReference());
+				}
+			}
+			param = PMServiceDriver.getProjectParam(
+					"LUCENE_INDEX",  securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+
+
+
+			PMServiceDriver.setProjectParam("H",
+					"LUCENE_STARTED_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+
 			LuceneIndexer lucene = new LuceneIndexer();
 			String suggestIndexDirName =  System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "lucene_index" + File.separatorChar + projectInfo.getId(); //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 			//String suggestIndexDirName = ".." + File.separatorChar + "standalone" + File.separatorChar + "lucene_index" + File.separatorChar + projectInfo.getId(); //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 
-			
-	        Path folderPath = Paths.get(suggestIndexDirName);
 
-	        // Check if the path exists AND if it is a directory
-	        if (Files.exists(folderPath) && Files.isDirectory(folderPath)) 
-	        {
-	        	LocalDateTime now = LocalDateTime.now();
-	        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("_MMddyyyy_HHmmss");
-	        	String formattedString = now.format(formatter); // e.g., "11-03-2026 15:15:00"
-	        	Path target = Paths.get(suggestIndexDirName + formattedString);
+			PMServiceDriver.setProjectParam("H",
+					"LUCENE_DIRECTORY_INDEX", suggestIndexDirName, securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
 
-	        	
-	        	 Files.move(folderPath, target, StandardCopyOption.REPLACE_EXISTING);
-	        	 
-	        //	throw new I2B2Exception("Error while creating lucene, folder already exists " + suggestIndexDirName);
 
-	        }
+			Path folderPath = Paths.get(suggestIndexDirName);
+
+			// Check if the path exists AND if it is a directory
+			if (Files.exists(folderPath) && Files.isDirectory(folderPath)) 
+			{
+				LocalDateTime now = LocalDateTime.now();
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("_MMddyyyy_HHmmss");
+				String formattedString = now.format(formatter); // e.g., "11-03-2026 15:15:00"
+				Path target = Paths.get(suggestIndexDirName + formattedString);
+
+
+				Files.move(folderPath, target, StandardCopyOption.REPLACE_EXISTING);
+
+				//	throw new I2B2Exception("Error while creating lucene, folder already exists " + suggestIndexDirName);
+				PMServiceDriver.setProjectParam("H",
+						"LUCENE_OLD_DIRECTORY_INDEX", suggestIndexDirName + formattedString, securityType, projectInfo.getId(),
+						OntologyUtil.getInstance()
+						.getPmEndpointReference());
+
+			}
 			List<String> suggestIndexDumpPrefixes = Collections.emptyList();
 
 			Map<String, String> suggestIndexDumpNames = new LinkedHashMap<>();
@@ -137,31 +193,71 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 					);
 
 
-			
-			SuggestionIndexInfo suggestIndexInfo = new SuggestionIndexInfo(suggestionIndexer, suggestIndexDirName, null);
-			
 
-		//	List<String> tableNameList = tableAccessDao.getEditorTableName(
-		//			projectInfo, dbInfo, true);
-			
+			SuggestionIndexInfo suggestIndexInfo = new SuggestionIndexInfo(suggestionIndexer, suggestIndexDirName, null);
+
+
+			//	List<String> tableNameList = tableAccessDao.getEditorTableName(
+			//			projectInfo, dbInfo, true);
+
 			List<TableAccessType> tableAccessType = tableAccessDao.getAllTableAccess(projectInfo, dbInfo);
 
-			lucene.indexFromDB(suggestIndexInfo,
-					tableAccessType,  dataSource,  dbInfo);
+			for (int i = 0; i < tableAccessType.size(); i++) {
 
+				TableAccessType tableName = tableAccessType.get(i);
+				PMServiceDriver.setProjectParam("H",
+						"LUCENE_WORKING_ON", i+1 + " of " + tableAccessType.size() + " : " + tableName.getTableName() + " - " + tableName.getName() , securityType, projectInfo.getId(),
+						OntologyUtil.getInstance()
+						.getPmEndpointReference());
 
+				lucene.indexFromDB(suggestIndexInfo,
+						tableName,  dataSource,  dbInfo);
+			}
+			PMServiceDriver.setProjectParam("H",
+					"LUCENE_BUILD_SUGGESION_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());		
 
+			suggestIndexInfo.suggestionIndexer.buildSuggestionIndex();
+
+			PMServiceDriver.setProjectParam("H",
+					"LUCENE_FINISHED_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
 
 			// Close the directory
 			log.debug("Finished creating the ontology auto-suggest indices");
 			suggestIndexDirectory.close();
+			PMServiceDriver.setProjectParam(param.getId() ,"H",
+					"LUCENE_INDEX", "FINISHED", securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
 
 		} catch (SQLException sqlEx) {
+			PMServiceDriver.setProjectParam(param.getId() ,"A",
+					"LUCENE_INDEX", "ERROR", securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+			PMServiceDriver.setProjectParam("H",
+					"LUCENE_ERROR", sqlEx.getMessage(), securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+
 			throw new I2B2Exception("Error while writing concept xml", sqlEx);
 		} catch (Exception e) {
-			throw new I2B2Exception("Error while writing concept xml ", e);
+			if (isAlreadyRunning == false) {
+			PMServiceDriver.setProjectParam(param.getId() ,"A",
+					"LUCENE_INDEX", "ERROR", securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+			PMServiceDriver.setProjectParam("H",
+					"LUCENE_ERROR", e.getMessage(), securityType, projectInfo.getId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+			}
+			throw new I2B2Exception("Error: ", e);
 		} finally {
-		//	closeAll(resultSet, query, conn);
+			//	closeAll(resultSet, query, conn);
 		}
 
 	}

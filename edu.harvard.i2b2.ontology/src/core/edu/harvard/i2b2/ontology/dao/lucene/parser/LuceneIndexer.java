@@ -233,7 +233,7 @@ public final class LuceneIndexer {
 
 	public static void indexFromDB(//Optional<SearchIndexInfo> searchIndexInfoOption,
 			SuggestionIndexInfo suggestionIndexInfoOption,
-			List<TableAccessType> tableAccessType, DataSource dataSource, DBInfoType dbInfo) throws Exception {
+			 TableAccessType tableName, DataSource dataSource, DBInfoType dbInfo) throws Exception {
 
 		long startTime = System.currentTimeMillis();
 		int numDataRead = 0;
@@ -246,8 +246,8 @@ public final class LuceneIndexer {
 
 
 		try {
-			for (TableAccessType tableName : tableAccessType) {
-				logesapi.info("Parsing ontology file: " + tableName.getFullName());
+			//for (TableAccessType tableName : tableAccessType) {
+				logesapi.debug("Parsing ontology file: " + tableName.getFullName());
 
 				String category = "";
 				if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
@@ -302,7 +302,7 @@ public final class LuceneIndexer {
 					 */
 					numDataRead++;
 					if (numDataRead % 200000 == 0) {
-						logesapi.info("Finished: " + numDataRead + " - " + sqlResult);
+						logesapi.debug("Finished: " + numDataRead + " - " + sqlResult);
 						logesapi.debug("Read " + numDataRead + " docs");
 						long endTime = System.currentTimeMillis();
 						long elapsedSeconds = (endTime - startTime) / 1000;
@@ -316,8 +316,8 @@ public final class LuceneIndexer {
 
 				//suggestionIndexInfoOption.suggestionIndexer.buildSuggestionIndex();
 				//compressIndex(suggestionIndexInfoOption.suggestOutputDirName, suggestionIndexInfoOption.suggestOutputZipFileName);
-			}
-			suggestionIndexInfoOption.suggestionIndexer.buildSuggestionIndex();
+			//}
+			
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -332,7 +332,7 @@ public final class LuceneIndexer {
 		long endTime = System.currentTimeMillis();
 		long elapsedSeconds = (endTime - startTime) / 1000;
 		logesapi.debug("Total elapsed time: " + elapsedSeconds + " seconds");
-		logesapi.info("Parsing ontology Done:"); 
+		logesapi.debug("Parsing ontology Done:"); 
 	}
 
 
