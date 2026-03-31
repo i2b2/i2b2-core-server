@@ -40,10 +40,9 @@ public final class LuceneSuggester {
 	public LuceneSuggester (String projectInfo ){
 
 		try {
-			suggestIndexDirectoryName =// "/Users/mem61/Downloads/lucene_i2b2/lucene_index"; //ConfigSource.config.getString("shrine.lucene.suggestDirectory");
-					System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "lucene_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
+			suggestIndexDirectoryName = System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "autosuggest_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 
-			suggestionsReturnedCount = -1; // ConfigSource.config.getInt("shrine.lucene.suggestCount");
+			suggestionsReturnedCount = -1; 
 			suggestIndexDirectory = new File(suggestIndexDirectoryName);
 			luceneDirectory = FSDirectory.open(suggestIndexDirectory.toPath());
 			analyzer = new StandardAnalyzer();
@@ -167,103 +166,3 @@ public final class LuceneSuggester {
 	}
 }
 
-/*
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-//import cats.effect.IO;
-//import net.shrine.config.ConfigSource;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.search.suggest.Lookup;
-import org.apache.lucene.search.suggest.analyzing.AnalyzingInfixSuggester;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.BytesRef;
-
-public class LuceneSuggester {
-
-    private static final String suggestIndexDirectoryName = ConfigSource.config.getString("shrine.lucene.suggestDirectory");
-    private static final int suggestionsReturnedCount = ConfigSource.config.getInt("shrine.lucene.suggestCount");
-    private static final File suggestIndexDirectory = new File(suggestIndexDirectoryName);
-    private static final FSDirectory luceneDirectory;
-    private static final StandardAnalyzer analyzer = new StandardAnalyzer();
-    private static final AnalyzingInfixSuggester suggester;
-
-    static {
-        try {
-            luceneDirectory = FSDirectory.open(suggestIndexDirectory.toPath());
-            suggester = new AnalyzingInfixSuggester(luceneDirectory, analyzer, analyzer, 3, true);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static IO<List<AutoSuggestResult>> getSuggestionsIO(SuggestQuery suggestQuery) {
-        return IO.apply(() -> getSuggestions(suggestQuery));
-    }
-
- * Return an empty list if the input contains fewer than 3 non-blank characters
- * Note that if the input contains double-quotes, an empty list will also be returned
- * because double quotes are not indexed.
-    public static List<AutoSuggestResult> getSuggestions(SuggestQuery suggestQuery) {
-        if (suggestQuery.getSuggestString().replace(" ", "").length() < 3) {
-            return new ArrayList<>();
-        } else {
-            String contextStr = "all";
-            Set<BytesRef> contexts = new HashSet<>();
-            contexts.add(new BytesRef(contextStr.getBytes(StandardCharsets.UTF_8)));
-
-            List<Lookup.LookupResult> results;
-            try {
-                results = suggester.lookup(suggestQuery.getSuggestString(), contexts, suggestionsReturnedCount, true, true);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-            List<AutoSuggestResult> suggestions = new ArrayList<>();
-            int limit = Math.min(suggestionsReturnedCount, results.size());
-            for (int i = 0; i < limit; i++) {
-                suggestions.add(AutoSuggestResult.apply(results.get(i)));
-            }
-            return suggestions;
-        }
-    }
-}
-
-// Note: the weight attribute is not used in the application, however it is useful for unit tests
-class AutoSuggestResult {
-    private final String suggestion;
-    private final long occurrences;
-    private final long weight;
-
-    public AutoSuggestResult(String suggestion, long occurrences, long weight) {
-        this.suggestion = suggestion;
-        this.occurrences = occurrences;
-        this.weight = weight;
-    }
-
-    public String getSuggestion() {
-        return suggestion;
-    }
-
-    public long getOccurrences() {
-        return occurrences;
-    }
-
-    public long getWeight() {
-        return weight;
-    }
-
-    public static AutoSuggestResult apply(Lookup.LookupResult result) {
-        String payload = new String(result.payload.bytes, StandardCharsets.UTF_8);
-        long occurrences = Long.parseLong(payload);
-        return new AutoSuggestResult(result.key.toString(), occurrences, result.value);
-    }
-
-
-}
- */

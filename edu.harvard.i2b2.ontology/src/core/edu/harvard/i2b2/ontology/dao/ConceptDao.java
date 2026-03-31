@@ -504,18 +504,18 @@ public class ConceptDao extends JdbcDaoSupport {
 		SuggestQuery q = new SuggestQuery();
 		q.setSuggestString(vocabType.getMatchStr().getValue());
 		//ServiceResponse
-		
+
 		// LuceneService luceneService = new LuceneService(projectInfo);
 
 		OntologyUtil a = OntologyUtil.getInstance();
 		LuceneSuggester b = a.getLuceneSuggester(projectInfo);
 		ConceptsType c = b.getSuggestions(q, projectInfo, vocabType);
-		
+
 		return c;
 		//return OntologyUtil.getInstance().getLuceneSuggester(projectInfo.getId()).getSuggestions(q, projectInfo.getId()); //search(query);
-//		List<ConceptType> queryResult = null;
+		//		List<ConceptType> queryResult = null;
 
-		
+
 
 		//return queryResult; //results.body;
 	}
@@ -584,13 +584,12 @@ public class ConceptDao extends JdbcDaoSupport {
 		}
 
 		String nameInfoSql = null;
-		String compareName = null;
-		
+
 		String category = null;
 		String tableName = null;
 		String name = null;
 		String tooltip = null;
-		
+
 
 		String value = vocabType.getMatchStr().getValue();
 		//		using JDBCtemplate so dont need to do apostrophe replace   
@@ -603,16 +602,18 @@ public class ConceptDao extends JdbcDaoSupport {
 			return null;
 		} 
 
+		String[] compareName = new String[categoryResult.size()];
 
 
 		boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
-		
+
+		String finalSql = "";
 		for (int i=0; i < categoryResult.size(); i++) {
-			 category = categoryResult.get(i).getKey();
-			 tableName = categoryResult.get(i).getTablename();
-			 name = categoryResult.get(i).getName();
-			 tooltip = categoryResult.get(i).getTooltip();
-			 
+			category = categoryResult.get(i).getKey();
+			tableName = categoryResult.get(i).getTablename();
+			name = categoryResult.get(i).getName();
+			tooltip = categoryResult.get(i).getTooltip();
+
 			if(category.contains("'")){
 				category = category.replaceAll("'", "''");
 			}
@@ -633,40 +634,40 @@ public class ConceptDao extends JdbcDaoSupport {
 			// dont do the sql injection replace; it breaks the service.
 			if(vocabType.getMatchStr().getStrategy().equals("exact")) {
 				nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(i).getTablename() + " where upper(c_name) = ? and c_fullname like '" + category +	"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
-				compareName = value.toUpperCase();  	
+				compareName[i] = value.toUpperCase();  	
 			}
 
 			else if(vocabType.getMatchStr().getStrategy().equals("left")){
 				nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(i).getTablename() +" where upper(c_name) like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";    
 				if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-					compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
+					compareName[i] = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
 					//compareName = compareName.replaceAll("\\[", "[[]");
 				}
 				else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-					compareName = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
+					compareName[i] = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
 					//compareName = compareName.replaceAll("\\[", "[[]");
 				}
 				else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-					compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
+					compareName[i] = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
 					//compareName = compareName.replaceAll("\\[", "[[]");
 				}
-				compareName = compareName + "%";
+				compareName[i] = compareName[i] + "%";
 
 			}
 
 			else if(vocabType.getMatchStr().getStrategy().equals("right")) {
 				nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(i).getTablename() +" where upper(c_name) like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" )	;  //{ESCAPE '?'}";     {ESCAPE '?'}";
 				if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-					compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
+					compareName[i] = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
 				}
 				else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-					compareName = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
+					compareName[i] = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
 				}
 				else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-					compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
+					compareName[i] = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
 				}
 
-				compareName =  "%" + compareName;
+				compareName[i] =  "%" + compareName[i];
 				//   	if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
 				//		compareName = compareName.replaceAll("\\[", "[[]");
 				//	}
@@ -676,28 +677,28 @@ public class ConceptDao extends JdbcDaoSupport {
 				if(!(value.contains(" "))){
 					nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(i).getTablename() +" where upper(c_name) like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + "";
 					if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-						compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
+						compareName[i] = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
 					}
 					else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-						compareName = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
+						compareName[i] = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
 					}
 					else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-						compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
+						compareName[i] = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
 					}
-					compareName =  "%" + compareName + "%";
+					compareName[i] =  "%" + compareName[i] + "%";
 					//if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
 					//		compareName = compareName.replaceAll("\\[", "[[]");
 					//	}
 				}else{
 					nameInfoSql = "select " + parameters  + " from " + metadataSchema+categoryResult.get(i).getTablename();
 					if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-						compareName = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
+						compareName[i] = StringUtil.escapeSQLSERVER(vocabType.getMatchStr().getValue().toUpperCase());
 					}
 					else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-						compareName = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
+						compareName[i] = StringUtil.escapeORACLE(vocabType.getMatchStr().getValue().toUpperCase());
 					}
 					else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-						compareName = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
+						compareName[i] = StringUtil.escapePOSTGRESQL(vocabType.getMatchStr().getValue().toUpperCase());
 					}
 
 					//		if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
@@ -706,13 +707,13 @@ public class ConceptDao extends JdbcDaoSupport {
 					//	WAS
 					//		nameInfoSql = nameInfoSql + parseMatchString(value)+ " and c_fullname like '" + category +"%'" + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + "";;
 					// !dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? compareName.replaceAll("'", "''") : compareName 
-					nameInfoSql = nameInfoSql + parseMatchString((compareName.replaceAll("'", "''")), dbInfo)+ " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " ";;
+					nameInfoSql = nameInfoSql + parseMatchString((compareName[i].replaceAll("'", "''")), dbInfo)+ " and c_fullname like '" + category +"%' " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "" ) + " ";;
 
-					compareName = null;
+					compareName[i] = null;
 				}
 			}
 
-			
+
 
 			String hidden = "";// and c_totalnum != 0 ";
 			if(vocabType.isHiddens() == false)
@@ -723,31 +724,35 @@ public class ConceptDao extends JdbcDaoSupport {
 			if(vocabType.isSynonyms() == false)
 				synonym = " and c_synonym_cd = 'N'";
 
-			nameInfoSql = nameInfoSql + hidden + synonym + " order by c_hlevel, c_totalnum, upper(c_name) asc ";  
+			if (tableCd.equals("@"))
+				nameInfoSql = nameInfoSql + hidden + synonym;  
+			else			
+				nameInfoSql = nameInfoSql + hidden + synonym + " order by c_hlevel, c_totalnum, upper(c_name) asc ";  
 
 			log.info("nameInfoSql:" + nameInfoSql + " " +compareName);
-			//boolean obfuscatedUserFlag = Roles.getInstance().isRoleOfuscated(projectInfo);
-			//ParameterizedRowMapper<ConceptType> mapper = getMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType());
-
-		//}
-			try {
-				List<ConceptType> list = null;
-				if(compareName != null) {
-					list = jt.query(nameInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()), compareName);
-					//queryResult.addAll(list);
-				} else {
-					vocabType.setCategory(categoryResult.get(i).getTooltip());
-					list = jt.query(nameInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()));
-					//queryResult.addAll(list);
-				}
 
 
-				// Add parent poaths
+			if (categoryResult.size() == i+1) {
+				if (tableCd.equals("@"))
+					nameInfoSql = finalSql + nameInfoSql;
+				try {
+					List<ConceptType> list = null;
+					if(compareName != null) {
+						list = jt.query(nameInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()), compareName);
+						//queryResult.addAll(list);
+					} else {
+						vocabType.setCategory(categoryResult.get(i).getTooltip());
+						list = jt.query(nameInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()));
+						//queryResult.addAll(list);
+					}
 
-				//String tableName=categoryResult.get(i).getTablename();
-				//String name = categoryResult.get(i).getName();
-				
-				/*
+
+					// Add parent poaths
+
+					//String tableName=categoryResult.get(i).getTablename();
+					//String name = categoryResult.get(i).getName();
+
+					/*
 				String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?";
 				try {
 					tableName = jt.queryForObject(tableSql, String.class, tableCd);	    
@@ -755,183 +760,186 @@ public class ConceptDao extends JdbcDaoSupport {
 					log.error("Get Children " + e.getMessage());
 					throw new I2B2DAOException("Database Error");
 				}
-				 */
+					 */
 
-				//jgk
-				// This does a linear search through fullnames for each previous fullname, O(n^2) :(
-				// BUT it assumes its sorted by hlevel so it only has to search through whats already seen - n(n+1)/2 operations 
-				if (list.size()>0 && vocabType.isReducedResults()!=null && vocabType.isReducedResults()) {
-					ArrayList<String> seen = new ArrayList<String>(); 
-					ArrayList<ConceptType> keep = new ArrayList<ConceptType>();
-					Iterator<ConceptType> it = list.iterator();
-					while (it.hasNext())
-					{
-						ConceptType node = (ConceptType)it.next();
-						String key = node.getKey();
-						boolean bAbort = false;
-						for (String k : seen) {
-							if(key.startsWith(k) && !key.equals(k) /* <-- don't kill the synonyms */ ) {
-								bAbort = true;
-								break;
+					//jgk
+					// This does a linear search through fullnames for each previous fullname, O(n^2) :(
+					// BUT it assumes its sorted by hlevel so it only has to search through whats already seen - n(n+1)/2 operations 
+					if (list.size()>0 && vocabType.isReducedResults()!=null && vocabType.isReducedResults()) {
+						ArrayList<String> seen = new ArrayList<String>(); 
+						ArrayList<ConceptType> keep = new ArrayList<ConceptType>();
+						Iterator<ConceptType> it = list.iterator();
+						while (it.hasNext())
+						{
+							ConceptType node = (ConceptType)it.next();
+							String key = node.getKey();
+							boolean bAbort = false;
+							for (String k : seen) {
+								if(key.startsWith(k) && !key.equals(k) /* <-- don't kill the synonyms */ ) {
+									bAbort = true;
+									break;
+								}
 							}
-						}
-						if (vocabType.getMax() == 0) {
-							if (node.getTotalnum() != null && node.getTotalnum() > 0) {
+							if (vocabType.getMax() == 0) {
+								if (node.getTotalnum() != null && node.getTotalnum() > 0) {
+									keep.add(node);
+								}
+							}
+							else if (!bAbort) { 
+								// Add nodes that were not subsumed to the keep list
 								keep.add(node);
 							}
+							// Hidden and inactive should not subsume other nodes - exclude them
+							if (node.getVisualattributes().contains("A")) 
+								seen.add(node.getKey());
 						}
-						else if (!bAbort) { 
-							// Add nodes that were not subsumed to the keep list
-							keep.add(node);
-						}
-						// Hidden and inactive should not subsume other nodes - exclude them
-						if (node.getVisualattributes().contains("A")) 
-							seen.add(node.getKey());
+						log.debug("Reduced find terms from "+list.size()+" to "+keep.size());
+						list = keep;
 					}
-					log.debug("Reduced find terms from "+list.size()+" to "+keep.size());
-					list = keep;
-				}
 
-				if (vocabType.isKeyname()!=null && vocabType.isKeyname()) {
-					// Only do keyname lookups if we haven't exceeded the max				
-					HashMap<String,String> KeynameCache = new HashMap<String,String>();
-					int skipCount = 0; // for debug, number of cache hits
-					//int skipPathCount = category.split("\\\\").length -2; // preamble elements in path, not to be output in key name (everything but final element in category path)
+					if (vocabType.isKeyname()!=null && vocabType.isKeyname()) {
+						// Only do keyname lookups if we haven't exceeded the max				
+						HashMap<String,String> KeynameCache = new HashMap<String,String>();
+						int skipCount = 0; // for debug, number of cache hits
+						//int skipPathCount = category.split("\\\\").length -2; // preamble elements in path, not to be output in key name (everything but final element in category path)
 
-					// A little code to ignore a path in the category name, if there is more than one element.
-					// e.g., \\i2b2_MED\Medications\ will ignore i2b2_MED
-					String[] skipPaths = category.split("\\\\");
-					String skipPath = "";
-					for (int j=1;j<skipPaths.length-1;j++) skipPath=skipPath+"\\"+skipPaths[j];
-					skipPath=skipPath+"\\";
+						// A little code to ignore a path in the category name, if there is more than one element.
+						// e.g., \\i2b2_MED\Medications\ will ignore i2b2_MED
+						String[] skipPaths = category.split("\\\\");
+						String skipPath = "";
+						for (int j=1;j<skipPaths.length-1;j++) skipPath=skipPath+"\\"+skipPaths[j];
+						skipPath=skipPath+"\\";
 
-					String sql = "";
-					int keynameCount = 0;
-					for (ConceptType cType: list) {
-						//String path = cType.getDimcode(); //StringUtil.getPath(childrenType.getParent());
-						String parentPath = StringUtil.getParentPath(cType.getKey().substring(tableCd.length()+2));
+						String sql = "";
+						int keynameCount = 0;
+						for (ConceptType cType: list) {
+							//String path = cType.getDimcode(); //StringUtil.getPath(childrenType.getParent());
+							String parentPath = StringUtil.getParentPath(cType.getKey().substring(tableCd.length()+2));
 
-						// Only do keyname lookups up to the max return result size
-						keynameCount++;
-						if (keynameCount>vocabType.getMax()) break;
+							// Only do keyname lookups up to the max return result size
+							keynameCount++;
+							if (keynameCount>vocabType.getMax()) break;
 
-						if (KeynameCache.containsKey(parentPath)) {
-							cType.setKeyName(KeynameCache.get(parentPath));
-							skipCount++;
-						}
-						else {
-							if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-								sql = "WITH pathnames ";
-								sql += " AS";
-								sql += " (";
-								sql += "    select c_name, c_fullname,";
-								sql += "        substring(c_fullname, 1, len(c_fullname) - charindex('\\', reverse(c_fullname), 2) + 1) as c_path,";
-								sql += "        1 as c_pathorder";
-								sql += "    from " + metadataSchema+tableName  + " where c_fullname =  ? and c_synonym_cd='N'";
-								sql += "    UNION ALL";
-								sql += "    select m.c_name, m.c_fullname,  substring(m.c_fullname, 1, len(m.c_fullname) - charindex('\\', reverse(m.c_fullname), 2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
-								sql += "    from " + metadataSchema+tableName  + "  m";
-								sql += "        inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";   
-								sql += " )";
-								sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
-								sql += " FROM   pathnames";
-								sql += " order by c_pathorder desc ";
-
+							if (KeynameCache.containsKey(parentPath)) {
+								cType.setKeyName(KeynameCache.get(parentPath));
+								skipCount++;
 							}
+							else {
+								if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+									sql = "WITH pathnames ";
+									sql += " AS";
+									sql += " (";
+									sql += "    select c_name, c_fullname,";
+									sql += "        substring(c_fullname, 1, len(c_fullname) - charindex('\\', reverse(c_fullname), 2) + 1) as c_path,";
+									sql += "        1 as c_pathorder";
+									sql += "    from " + metadataSchema+tableName  + " where c_fullname =  ? and c_synonym_cd='N'";
+									sql += "    UNION ALL";
+									sql += "    select m.c_name, m.c_fullname,  substring(m.c_fullname, 1, len(m.c_fullname) - charindex('\\', reverse(m.c_fullname), 2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
+									sql += "    from " + metadataSchema+tableName  + "  m";
+									sql += "        inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";   
+									sql += " )";
+									sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
+									sql += " FROM   pathnames";
+									sql += " order by c_pathorder desc ";
 
-							else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
+								}
 
-
-								sql = "WITH pathnames (c_name, c_fullname, c_path, c_pathorder) ";
-								sql += " AS ";
-								sql += " ( ";
-								sql += "   select c_name, c_fullname, ";
-								sql += "        substr(c_fullname, 1, length(c_fullname) - instr(reverse(c_fullname),'\\',  2) + 1) as c_path,";
-								sql += "       1 as c_pathorder";
-								sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? and c_synonym_cd='N'";
-								sql += "   UNION ALL";
-								sql += "   select m.c_name, m.c_fullname,  substr(m.c_fullname, 1, length(m.c_fullname) - instr(reverse(m.c_fullname), '\\',  2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
-								sql += "  from " + metadataSchema+tableName  + "   m";
-								sql += "       inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";
-
-								sql += " )";
-								sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
-								sql += " FROM   pathnames";
-								sql += " order by c_pathorder desc ";
-							} 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-
-								sql  = "WITH RECURSIVE pathnames ";
-								sql += " AS";
-								sql += " (";
-								sql += "    select c_name, c_fullname,";
-								sql += "      substr(c_fullname, 1, length(c_fullname) - strpos(substr(reverse(c_fullname), 2), '\\') ) as c_path,";
-								sql += "      1 as c_pathorder";
-								sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? and c_synonym_cd='N'";
-								sql += "    UNION ALL";
-								sql += "    select m.c_name, m.c_fullname,  ";
-								sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - strpos(substr(reverse(m.c_fullname), 2), '\\') ) as c_path,   c_pathorder + 1 as c_pathorder";
-
-								sql += "    from " + metadataSchema+tableName  + "  m";
-								sql += "        inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";
-
-								sql += " ) ";
-								sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
-								sql += " FROM   pathnames";
-								sql += " order by c_pathorder desc";
-							}
+								else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
 
 
-							//List  rows = jt.queryForList(sql, path);
+									sql = "WITH pathnames (c_name, c_fullname, c_path, c_pathorder) ";
+									sql += " AS ";
+									sql += " ( ";
+									sql += "   select c_name, c_fullname, ";
+									sql += "        substr(c_fullname, 1, length(c_fullname) - instr(reverse(c_fullname),'\\',  2) + 1) as c_path,";
+									sql += "       1 as c_pathorder";
+									sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? and c_synonym_cd='N'";
+									sql += "   UNION ALL";
+									sql += "   select m.c_name, m.c_fullname,  substr(m.c_fullname, 1, length(m.c_fullname) - instr(reverse(m.c_fullname), '\\',  2) + 1) as c_path, c_pathorder + 1 as c_pathorder";
+									sql += "  from " + metadataSchema+tableName  + "   m";
+									sql += "       inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";
 
-							/*
-							 * 			List<String> names = jt.query(sql,  new RowMapper() {
+									sql += " )";
+									sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
+									sql += " FROM   pathnames";
+									sql += " order by c_pathorder desc ";
+								} 		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
+
+									sql  = "WITH RECURSIVE pathnames ";
+									sql += " AS";
+									sql += " (";
+									sql += "    select c_name, c_fullname,";
+									sql += "      substr(c_fullname, 1, length(c_fullname) - strpos(substr(reverse(c_fullname), 2), '\\') ) as c_path,";
+									sql += "      1 as c_pathorder";
+									sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? and c_synonym_cd='N'";
+									sql += "    UNION ALL";
+									sql += "    select m.c_name, m.c_fullname,  ";
+									sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - strpos(substr(reverse(m.c_fullname), 2), '\\') ) as c_path,   c_pathorder + 1 as c_pathorder";
+
+									sql += "    from " + metadataSchema+tableName  + "  m";
+									sql += "        inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";
+
+									sql += " ) ";
+									sql += " SELECT distinct c_name, c_fullname, c_pathorder as c_hlevel";
+									sql += " FROM   pathnames";
+									sql += " order by c_pathorder desc";
+								}
+
+
+								//List  rows = jt.queryForList(sql, path);
+
+								/*
+								 * 			List<String> names = jt.query(sql,  new RowMapper() {
 							      public Object mapRow(ResultSet resultSet, int i) throws SQLException {
 							        return resultSet.getString(1);
 							      }
 							    }, path);
-							 */
-							List<ConceptType> names = jt.query(sql, new RowMapper<ConceptType>() {
-								public ConceptType mapRow(ResultSet rs, int rowNum) throws SQLException {
-									ConceptType category = new ConceptType();	 
+								 */
+								List<ConceptType> names = jt.query(sql, new RowMapper<ConceptType>() {
+									public ConceptType mapRow(ResultSet rs, int rowNum) throws SQLException {
+										ConceptType category = new ConceptType();	 
 
-									category.setKey(rs.getString("c_fullname"));
-									category.setLevel(rs.getInt("c_hlevel"));
-									category.setName(rs.getString("c_name"));
-									return category;
+										category.setKey(rs.getString("c_fullname"));
+										category.setLevel(rs.getInt("c_hlevel"));
+										category.setName(rs.getString("c_name"));
+										return category;
+									}
+								}/*new GetConceptParentMapper()*/, parentPath);
+
+								cType.setKeyName("\\");
+								for (int y=0; y< names.size(); y++) {
+									if(names.get(y).getKey().equals(skipPath)) continue; // only one path component for the category is ever included
+									if(names.get(y).getKey().equals(category)) 
+										cType.setKeyName(cType.getKeyName() + name); // Use the category name instead of the db row name, for clarity
+									else cType.setKeyName(cType.getKeyName() + names.get(y).getName());
+									if ((y + 1) < names.size())
+										cType.setKeyName(cType.getKeyName() + "\\" );
+									//+  \\ ");
+
 								}
-							}/*new GetConceptParentMapper()*/, parentPath);
-
-							cType.setKeyName("\\");
-							for (int y=0; y< names.size(); y++) {
-								if(names.get(y).getKey().equals(skipPath)) continue; // only one path component for the category is ever included
-								if(names.get(y).getKey().equals(category)) 
-									cType.setKeyName(cType.getKeyName() + name); // Use the category name instead of the db row name, for clarity
-								else cType.setKeyName(cType.getKeyName() + names.get(y).getName());
-								if ((y + 1) < names.size())
-									cType.setKeyName(cType.getKeyName() + "\\" );
-								//+  \\ ");
-
+								// In the event that the category does not have a row in the ontology, insert an entry for it manually
+								// TODO: Is the actual category name anywhere? (Currently using the code)
+								if (names.size()+skipPaths.length-2<cType.getLevel()) cType.setKeyName("\\"+name+cType.getKeyName());
 							}
-							// In the event that the category does not have a row in the ontology, insert an entry for it manually
-							// TODO: Is the actual category name anywhere? (Currently using the code)
-							if (names.size()+skipPaths.length-2<cType.getLevel()) cType.setKeyName("\\"+name+cType.getKeyName());
+							KeynameCache.put(parentPath, cType.getKeyName());
+							cType.setKeyName(cType.getKeyName()+"\\"+cType.getName()+"\\");
 						}
-						KeynameCache.put(parentPath, cType.getKeyName());
-						cType.setKeyName(cType.getKeyName()+"\\"+cType.getName()+"\\");
+						if (skipCount>0) log.debug("Skipped keyname lookups due to caching ="+skipCount);
 					}
-					if (skipCount>0) log.debug("Skipped keyname lookups due to caching ="+skipCount);
+
+					// Add list to results after adding parent list names
+					if (queryResult == null)
+						queryResult = list;
+					else
+						queryResult.addAll(list);
+
+				} catch (DataAccessException e) {
+					log.error("Search by Name " + e.getMessage());
+					e.printStackTrace();
+					throw new I2B2DAOException("Database Error");
 				}
-
-				// Add list to results after adding parent list names
-				if (queryResult == null)
-					queryResult = list;
-				else
-					queryResult.addAll(list);
-
-			} catch (DataAccessException e) {
-				log.error("Search by Name " + e.getMessage());
-				e.printStackTrace();
-				throw new I2B2DAOException("Database Error");
+			} else {
+				finalSql += nameInfoSql + " union all ";
 			}
 		}
 		log.debug("search by NameInfo result size = " + queryResult.size());

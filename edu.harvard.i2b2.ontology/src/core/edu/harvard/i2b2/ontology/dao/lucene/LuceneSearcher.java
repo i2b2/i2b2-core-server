@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  */
 public final class LuceneSearcher { // implements Loggable {
 
-	private static final String indexFileLocation = "/Users/mem61/Downloads/lucene_i2b2/lucene_index"; //ConfigSource.config.getString("shrine.lucene.directory");
+	private static final String indexFileLocation = "/Users/mmendis/Downloads/lucene_i2b2/lucene_index"; //ConfigSource.config.getString("shrine.lucene.directory");
 	private static final File indexDir = new File(indexFileLocation);
 	private static final FSDirectory directory;
 	public static final IndexSearcher searcher;

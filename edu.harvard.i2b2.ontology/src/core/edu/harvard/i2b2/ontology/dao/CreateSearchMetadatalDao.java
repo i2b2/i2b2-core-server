@@ -93,14 +93,14 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 		}
 		try {
 			param = PMServiceDriver.getProjectParam(
-					"LUCENE_INDEX",  securityType, projectInfo.getId(),
+					"AUTOSUGGEST_INDEX",  securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
 			if (param == null)
 			{
 				PMServiceDriver.setProjectParam("A",
-						"LUCENE_INDEX", "RUNNING", securityType, projectInfo.getId(),
+						"AUTOSUGGEST_INDEX", "RUNNING", securityType, projectInfo.getId(),
 						OntologyUtil.getInstance()
 						.getPmEndpointReference());
 			}
@@ -109,35 +109,35 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 				if (param.getValue().equals("RUNNING"))
 				{
 					isAlreadyRunning = true;
-					throw new Exception("Lucene is already running");
+					throw new Exception("Auto Correct is already running");
 				}
 				else 
 				{
 					PMServiceDriver.setProjectParam(param.getId() ,"A",
-							"LUCENE_INDEX", "RUNNING", securityType, projectInfo.getId(),
+							"AUTOSUGGEST_INDEX", "RUNNING", securityType, projectInfo.getId(),
 							OntologyUtil.getInstance()
 							.getPmEndpointReference());
 				}
 			}
 			param = PMServiceDriver.getProjectParam(
-					"LUCENE_INDEX",  securityType, projectInfo.getId(),
+					"AUTOSUGGEST_INDEX",  securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
 
 
 			PMServiceDriver.setProjectParam("H",
-					"LUCENE_STARTED_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
+					"AUTOSUGGEST_STARTED_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
 			LuceneIndexer lucene = new LuceneIndexer();
-			String suggestIndexDirName =  System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "lucene_index" + File.separatorChar + projectInfo.getId(); //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
+			String suggestIndexDirName =  System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "autosuggest_index" + File.separatorChar + projectInfo.getId(); //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 			//String suggestIndexDirName = ".." + File.separatorChar + "standalone" + File.separatorChar + "lucene_index" + File.separatorChar + projectInfo.getId(); //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 
 
 			PMServiceDriver.setProjectParam("H",
-					"LUCENE_DIRECTORY_INDEX", suggestIndexDirName, securityType, projectInfo.getId(),
+					"AUTOSUGGEST_DIRECTORY_INDEX", suggestIndexDirName, securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
@@ -157,7 +157,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 
 				//	throw new I2B2Exception("Error while creating lucene, folder already exists " + suggestIndexDirName);
 				PMServiceDriver.setProjectParam("H",
-						"LUCENE_OLD_DIRECTORY_INDEX", suggestIndexDirName + formattedString, securityType, projectInfo.getId(),
+						"AUTOSUGGEST_OLD_DIRECTORY_INDEX", suggestIndexDirName + formattedString, securityType, projectInfo.getId(),
 						OntologyUtil.getInstance()
 						.getPmEndpointReference());
 
@@ -206,7 +206,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 
 				TableAccessType tableName = tableAccessType.get(i);
 				PMServiceDriver.setProjectParam("H",
-						"LUCENE_WORKING_ON", i+1 + " of " + tableAccessType.size() + " : " + tableName.getTableName() + " - " + tableName.getName() , securityType, projectInfo.getId(),
+						"AUTOSUGGEST_WORKING_ON", i+1 + " of " + tableAccessType.size() + " : " + tableName.getTableName() + " - " + tableName.getName() , securityType, projectInfo.getId(),
 						OntologyUtil.getInstance()
 						.getPmEndpointReference());
 
@@ -214,14 +214,14 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 						tableName,  dataSource,  dbInfo);
 			}
 			PMServiceDriver.setProjectParam("H",
-					"LUCENE_BUILD_SUGGESION_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
+					"AUTOSUGGEST_BUILD_SUGGESION_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());		
 
 			suggestIndexInfo.suggestionIndexer.buildSuggestionIndex();
 
 			PMServiceDriver.setProjectParam("H",
-					"LUCENE_FINISHED_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
+					"AUTOSUGGEST_FINISHED_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
@@ -229,17 +229,17 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 			log.debug("Finished creating the ontology auto-suggest indices");
 			suggestIndexDirectory.close();
 			PMServiceDriver.setProjectParam(param.getId() ,"H",
-					"LUCENE_INDEX", "FINISHED", securityType, projectInfo.getId(),
+					"AUTOSUGGEST_INDEX", "FINISHED", securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
 		} catch (SQLException sqlEx) {
 			PMServiceDriver.setProjectParam(param.getId() ,"A",
-					"LUCENE_INDEX", "ERROR", securityType, projectInfo.getId(),
+					"AUTOSUGGEST_INDEX", "ERROR", securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 			PMServiceDriver.setProjectParam("H",
-					"LUCENE_ERROR", sqlEx.getMessage(), securityType, projectInfo.getId(),
+					"AUTOSUGGEST_ERROR", sqlEx.getMessage(), securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
@@ -247,11 +247,11 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 		} catch (Exception e) {
 			if (isAlreadyRunning == false) {
 			PMServiceDriver.setProjectParam(param.getId() ,"A",
-					"LUCENE_INDEX", "ERROR", securityType, projectInfo.getId(),
+					"AUTOSUGGEST_INDEX", "ERROR", securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 			PMServiceDriver.setProjectParam("H",
-					"LUCENE_ERROR", e.getMessage(), securityType, projectInfo.getId(),
+					"AUTOSUGGEST_ERROR", e.getMessage(), securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 			}

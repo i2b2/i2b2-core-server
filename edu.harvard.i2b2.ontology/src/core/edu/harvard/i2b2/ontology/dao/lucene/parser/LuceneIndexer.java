@@ -362,8 +362,8 @@ public final class LuceneIndexer {
 		// For simplicity assume positional args used in expected order (mirrors Scala defaults)
 		String ontologyDirectory = args[0];
 		String codeCategoryFilename = args[1];
-		String searchIndexDir = args.length > 2 ? args[2] : "lucene_index";
-		String searchIndexZipFile = args.length > 3 ? args[3] : "lucene_index.zip";
+		String searchIndexDir = args.length > 2 ? args[2] : "autocomplete_index";
+		String searchIndexZipFile = args.length > 3 ? args[3] : "autocomplete_index.zip";
 
 		startAppPulse();
 
