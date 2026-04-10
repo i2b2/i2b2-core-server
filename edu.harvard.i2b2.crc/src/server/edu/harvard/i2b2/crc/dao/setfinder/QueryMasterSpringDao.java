@@ -518,7 +518,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 
 		}
 
-		
+
 		for (ConstrainByDate constrainByDate : constrainByDateList) {
 			ConstrainDateType dateFrom = constrainByDate.getDateFrom();
 			ConstrainDateType dateTo = constrainByDate.getDateTo();
@@ -527,25 +527,25 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 			InclusiveType dateFromInclusive = null, dateToInclusive = null;
 			XMLGregorianCalendar dateFromValue = null, dateToValue = null;
 
-			 if (dateFrom != null) {
+			if (dateFrom != null) {
 				dateFromValue = dateFrom.getValue();
 			} else if (dateTo != null) {
 				dateToValue = dateTo.getValue();
 
 			}
-			
+
 			DateConstrainHandler dateConstrainHandler  = new DateConstrainHandler(dataSourceLookup);
 
 			String dateConstrainSql = dateConstrainHandler
 					.constructDateConstrainClause(dateFromColumn,
 							dateToColumn, dateFromInclusive,
 							dateToInclusive, dateFromValue, dateToValue);
-			
+
 			if (dateConstrainSql != null) {
 				sql += " AND " + dateConstrainSql + " ";
 			}
 		}
-		
+
 		sql += " order by create_date desc  ";
 
 		if (fetchSize > 0) {
@@ -715,6 +715,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 		private String INSERT_SQLSERVER = "";
 		private String SEQUENCE_ORACLE = "";
 		private String SEQUENCE_POSTGRESQL = "";
+		private String SEQUENCE_SQLSERVER = "";
 		private String INSERT_POSTGRESQL = "";
 
 		private DataSourceLookup dataSourceLookup = null;
@@ -743,6 +744,8 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 						+ "( NAME, USER_ID, GROUP_ID,MASTER_TYPE_CD,PLUGIN_ID,CREATE_DATE,DELETE_DATE,REQUEST_XML,DELETE_FLAG,GENERATED_SQL,I2B2_REQUEST_XML,PM_XML) "
 						+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 				this.setSql(INSERT_SQLSERVER);
+				SEQUENCE_SQLSERVER = "SELECT max(query_master_id) from " + dbSchemaName + "qt_query_master";
+
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.POSTGRESQL)) {
 				this.setReturnGeneratedKeys(true);
@@ -782,7 +785,9 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 
 			if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.SQLSERVER)) {
-				object = new Object[] { queryMaster.getName(),
+				//queryMasterIdentityId = jdbc.queryForObject(SEQUENCE_SQLSERVER, Integer.class);
+
+				object = new Object[] {  queryMaster.getName(),
 						queryMaster.getUserId(), queryMaster.getGroupId(),
 						queryMaster.getMasterTypeCd(),
 						queryMaster.getPluginId(), queryMaster.getCreateDate(),
@@ -791,7 +796,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 						queryMaster.getDeleteFlag(),
 						queryMaster.getGeneratedSql(), i2b2RequestXml, pmXml };
 				update(object);
-				queryMasterIdentityId = jdbc.queryForObject("SELECT @@IDENTITY", Integer.class);
+				queryMasterIdentityId = jdbc.queryForObject(SEQUENCE_SQLSERVER, Integer.class);
 
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.ORACLE)) {
