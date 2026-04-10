@@ -309,24 +309,18 @@ public final class LuceneIndexer {
 						logesapi.debug("Total elapsed time so far: " + elapsedSeconds + " seconds");
 						break;
 					}
-				}
-				resultSet.close();
-
-				// ontIt = Collections.emptyList();
-
-				//suggestionIndexInfoOption.suggestionIndexer.buildSuggestionIndex();
-				//compressIndex(suggestionIndexInfoOption.suggestOutputDirName, suggestionIndexInfoOption.suggestOutputZipFileName);
-			//}
-			
+				}			
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 
 		} finally {
-			resultSet.close();
-
-
-			conn.close();
+			if (resultSet != null  && !resultSet.isClosed())
+				resultSet.close();
+			if (query != null  && !query.isClosed())
+				query.close();
+			if (conn != null  && !conn.isClosed())
+				conn.close();
 
 		}
 		long endTime = System.currentTimeMillis();

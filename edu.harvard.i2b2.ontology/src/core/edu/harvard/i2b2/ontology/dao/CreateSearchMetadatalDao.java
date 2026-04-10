@@ -126,7 +126,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 
 
 
-			PMServiceDriver.setProjectParam("H",
+			PMServiceDriver.setProjectParam("S",
 					"AUTOSUGGEST_STARTED_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
@@ -136,7 +136,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 			//String suggestIndexDirName = ".." + File.separatorChar + "standalone" + File.separatorChar + "lucene_index" + File.separatorChar + projectInfo.getId(); //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 
 
-			PMServiceDriver.setProjectParam("H",
+			PMServiceDriver.setProjectParam("S",
 					"AUTOSUGGEST_DIRECTORY_INDEX", suggestIndexDirName, securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
@@ -156,7 +156,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 				Files.move(folderPath, target, StandardCopyOption.REPLACE_EXISTING);
 
 				//	throw new I2B2Exception("Error while creating lucene, folder already exists " + suggestIndexDirName);
-				PMServiceDriver.setProjectParam("H",
+				PMServiceDriver.setProjectParam("S",
 						"AUTOSUGGEST_OLD_DIRECTORY_INDEX", suggestIndexDirName + formattedString, securityType, projectInfo.getId(),
 						OntologyUtil.getInstance()
 						.getPmEndpointReference());
@@ -205,7 +205,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 			for (int i = 0; i < tableAccessType.size(); i++) {
 
 				TableAccessType tableName = tableAccessType.get(i);
-				PMServiceDriver.setProjectParam("H",
+				PMServiceDriver.setProjectParam("S",
 						"AUTOSUGGEST_WORKING_ON", i+1 + " of " + tableAccessType.size() + " : " + tableName.getTableName() + " - " + tableName.getName() , securityType, projectInfo.getId(),
 						OntologyUtil.getInstance()
 						.getPmEndpointReference());
@@ -213,14 +213,14 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 				lucene.indexFromDB(suggestIndexInfo,
 						tableName,  dataSource,  dbInfo);
 			}
-			PMServiceDriver.setProjectParam("H",
+			PMServiceDriver.setProjectParam("S",
 					"AUTOSUGGEST_BUILD_SUGGESION_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());		
 
 			suggestIndexInfo.suggestionIndexer.buildSuggestionIndex();
 
-			PMServiceDriver.setProjectParam("H",
+			PMServiceDriver.setProjectParam("S",
 					"AUTOSUGGEST_FINISHED_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
@@ -228,7 +228,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 			// Close the directory
 			log.debug("Finished creating the ontology auto-suggest indices");
 			suggestIndexDirectory.close();
-			PMServiceDriver.setProjectParam(param.getId() ,"H",
+			PMServiceDriver.setProjectParam(param.getId() ,"A",
 					"AUTOSUGGEST_INDEX", "FINISHED", securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
@@ -238,7 +238,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 					"AUTOSUGGEST_INDEX", "ERROR", securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
-			PMServiceDriver.setProjectParam("H",
+			PMServiceDriver.setProjectParam("S",
 					"AUTOSUGGEST_ERROR", sqlEx.getMessage(), securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
@@ -250,7 +250,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 					"AUTOSUGGEST_INDEX", "ERROR", securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
-			PMServiceDriver.setProjectParam("H",
+			PMServiceDriver.setProjectParam("S",
 					"AUTOSUGGEST_ERROR", e.getMessage(), securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
@@ -262,25 +262,6 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport {
 
 	}
 
-
-	private void closeAll(ResultSet resultSet, PreparedStatement query,
-			Connection conn) {
-		try {
-			if (resultSet != null) {
-				resultSet.close();
-			}
-
-			if (query != null) {
-				query.close();
-			}
-
-			if (conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			;
-		}
-	}
 
 
 }
