@@ -709,38 +709,38 @@ public class PMDbDao extends JdbcDaoSupport {
 			//sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
 			//		+ " on a.user_id = o.user_id and o.status_cd <> 'D' where  a.status_cd<>'D' ";
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-					+ " on a.user_id = o.user_id  and o.user_role_cd =  'ADMIN' where ";
+					+ " on a.user_id = o.user_id  and o.status_cd <> 'D'  where ";
 
 
 			if (call.equals("get_all_admin"))
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
-						+ " where a.user_id = o.user_id and o.user_role_cd =  'ADMIN' and ";
+						+ " where a.user_id = o.user_id and o.user_role_cd =  'ADMIN' and o.status_cd <> 'D'  and ";
 
 			if (call.equals("get_all_manager"))
 				sql =  "select distinct a.*, o.user_role_cd from pm_user_data a,  pm_project_user_roles o"
-						+ " where a.user_id = o.user_id  and o.user_role_cd =  'MANAGER' and  ";
+						+ " where a.user_id = o.user_id  and o.user_role_cd =  'MANAGER' and o.status_cd <> 'D'  and  ";
 
 			if (call.equals("get_lock_user"))
 				sql =  "select distinct a.*  from pm_user_data a,   pm_project_user_params o "
-						+ "	where a.user_id = o.user_id  and o.param_name_cd='LOCKEDOUT' and o.status_cd = 'A' and ";
+						+ "	where a.user_id = o.user_id  and o.param_name_cd='LOCKEDOUT' and o.status_cd <> 'D'  and ";
 
 			if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
 			{
-				sql += "  lower(o.project_id) = ? and ";
+				sql += "  o.project_id = ? and ";
 			}
 
 			if (uType.getEntryDate() != null)
 			{
-				sql += "  a.entry_date > ? and a.status_cd <> 'D'  order by a.full_name";
+				sql += "  o.entry_date > ? and a.status_cd <> 'D'  order by a.full_name";
 				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
-					queryResult = jt.query(sql, GetUser(false), uType.getProjectId().toLowerCase(), uType.getEntryDate().toGregorianCalendar().getTime());
+					queryResult = jt.query(sql, GetUser(false), uType.getProjectId(), uType.getEntryDate().toGregorianCalendar().getTime());
 				else
 					queryResult = jt.query(sql, GetUser(false), uType.getEntryDate().toGregorianCalendar().getTime());
 
 			} else {
 				sql += "  a.status_cd <> 'D' order by a.full_name";
 				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
-					queryResult = jt.query(sql,  GetUser(false), uType.getProjectId().toLowerCase());
+					queryResult = jt.query(sql,  GetUser(false), uType.getProjectId());
 
 				else				
 					queryResult = jt.query(sql,  GetUser(false));
@@ -2661,13 +2661,13 @@ public class PMDbDao extends JdbcDaoSupport {
 		{
 			try {
 				String addSql = "update pm_project_data " + 
-						"set status_cd = 'D', change_date = ? where project_id = ? and project_path = ? and changeby_char = ?";
+						"set status_cd = 'D', change_date = ?, changeby_char = ? where project_id = ? and project_path = ? ";
 
 				numRowsAdded = jt.update(addSql, 
 						Calendar.getInstance().getTime(),
+						caller,
 						((ProjectType) project).getId(),
-						((ProjectType) project).getPath(),
-						caller
+						((ProjectType) project).getPath()
 						);
 
 				if (numRowsAdded == 0)
