@@ -166,7 +166,7 @@ public class DblookupDao extends JdbcDaoSupport {
 								 dblookupType.getComment(),
 								 Calendar.getInstance().getTime(),
 								 Calendar.getInstance().getTime(),
-								 dblookupType.getStatusCd()
+								 'A'
 								);
 		log.info("insertDblookup - Number of rows added: " + numRowsAdded);
 		return numRowsAdded;
@@ -185,7 +185,7 @@ public class DblookupDao extends JdbcDaoSupport {
 	   						   dblookupType.getDbTooltip(),
 	   						   dblookupType.getComment(),
 	   						   Calendar.getInstance().getTime(),
-	   						   dblookupType.getStatusCd(),
+	   						   'A',
 	   						   slashEnd(dblookupType.getProjectPath()),
 	   						   dblookupType.getDomainId(),  
 	   						   dblookupType.getOwnerId()

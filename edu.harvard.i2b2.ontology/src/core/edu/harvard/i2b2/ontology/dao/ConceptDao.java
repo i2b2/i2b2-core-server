@@ -737,7 +737,7 @@ public class ConceptDao extends JdbcDaoSupport {
 					nameInfoSql = finalSql + nameInfoSql;
 				try {
 					List<ConceptType> list = null;
-					if(compareName != null) {
+					if(compareName[0] != null) {
 						list = jt.query(nameInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()), compareName);
 						//queryResult.addAll(list);
 					} else {
