@@ -645,7 +645,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						zipParameters.setCompressionLevel(CompressionLevel.MAXIMUM);
 						if (zipencryptMethod.equals("AES"))
 							zipParameters.setEncryptionMethod(EncryptionMethod.AES);
-						else if (zipencryptMethod.equals("STANARD"))
+						else if (zipencryptMethod.equals("STANDARD"))
 							zipParameters.setEncryptionMethod(EncryptionMethod.ZIP_STANDARD);
 						else
 							zipParameters.setEncryptionMethod(EncryptionMethod.NONE);
