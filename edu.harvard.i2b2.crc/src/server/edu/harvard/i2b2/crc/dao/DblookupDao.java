@@ -171,8 +171,10 @@ public class DblookupDao extends JdbcDaoSupport {
 	
 	public int insertDblookup(final SetDblookupType dblookupType) throws DataAccessException, I2B2Exception {
 		int numRowsAdded = 0;
+		log.info("in insertDblookup");
 		String sql = "INSERT INTO " + dbluTable +
 				     "(c_domain_id, c_project_path, c_owner_id, c_db_fullschema, c_db_datasource, c_db_servertype, c_db_nicename, c_db_tooltip, c_comment, c_entry_date, c_change_date, c_status_cd) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";		
+		log.info("in insertDblookup mysql : " + sql);
 		numRowsAdded = jt.update(sql, 
 								 dblookupType.getDomainId(),  
 								 slashSandwich(dblookupType.getProjectPath()),
@@ -185,7 +187,7 @@ public class DblookupDao extends JdbcDaoSupport {
 								 dblookupType.getComment(),
 								 Calendar.getInstance().getTime(),
 								 Calendar.getInstance().getTime(),
-								 'A'
+								 "A"
 								);
 		log.info("insertDblookup - Number of rows added: " + numRowsAdded);
 		return numRowsAdded;
@@ -204,7 +206,7 @@ public class DblookupDao extends JdbcDaoSupport {
 							   dblookupType.getDbTooltip(),
 							   dblookupType.getComment(),
 							   Calendar.getInstance().getTime(),
-							   'A',
+							   "A",
 							   slashSandwich(dblookupType.getProjectPath()),
 							   dblookupType.getDomainId(),  
 							   dblookupType.getOwnerId()

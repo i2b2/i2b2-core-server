@@ -266,7 +266,7 @@ public class QueryService {
 			}
 		}
 		
-		return execute(new GetAllRPDOsHandler(jobsDataMsg), waitTime);
+		return execute(new GetAllRPDOsHandler(jobsDataMsg, requestElementString), waitTime);
 	}
 	
 	/**  
@@ -298,7 +298,7 @@ public class QueryService {
 			}
 		}
 		
-		return execute(new GetRPDOHandler(jobsDataMsg), waitTime);
+		return execute(new GetRPDOHandler(jobsDataMsg, requestElementString), waitTime);
 	}
 	
 	
@@ -331,7 +331,7 @@ public class QueryService {
 			}
 		}
 		
-		return execute(new GetRPDODeleteHandler(jobsDataMsg), waitTime);
+		return execute(new GetRPDODeleteHandler(jobsDataMsg, requestElementString), waitTime);
 	}
 	
 	/**  
@@ -363,7 +363,7 @@ public class QueryService {
 			}
 		}
 		
-		return execute(new GetRPDORenameHandler(jobsDataMsg), waitTime);
+		return execute(new GetRPDORenameHandler(jobsDataMsg, requestElementString), waitTime);
 	}
 	
 
@@ -395,7 +395,7 @@ public class QueryService {
 				waitTime = jobsDataMsg.getRequestMessageType().getRequestHeader().getResultWaittimeMs();
 			}
 		}
-		return execute(new GetRPDOSetHandler(jobsDataMsg), waitTime);
+		return execute(new GetRPDOSetHandler(jobsDataMsg, requestElementString), waitTime);
 
 	}
 	

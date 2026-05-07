@@ -705,11 +705,9 @@ public class PMDbDao extends JdbcDaoSupport {
 
 		if ((validateRole(caller, "admin", null)) || (validateRole(caller, "admin", null)))
 		{
-			//sql =  "select * from pm_user_data where status_cd<>'D'";
-			//sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-			//		+ " on a.user_id = o.user_id and o.status_cd <> 'D' where  a.status_cd<>'D' ";
+			// Using a left join to get the admin role
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-					+ " on a.user_id = o.user_id  and o.status_cd <> 'D'  where ";
+					+ " on a.user_id = o.user_id  and o.status_cd <> 'D' and o.user_role_cd = 'ADMIN' where ";
 
 
 			if (call.equals("get_all_admin"))
@@ -731,7 +729,7 @@ public class PMDbDao extends JdbcDaoSupport {
 
 			if (uType.getEntryDate() != null)
 			{
-				sql += "  o.entry_date > ? and a.status_cd <> 'D'  order by a.full_name";
+				sql += "  a.entry_date > ? and a.status_cd <> 'D'  order by a.full_name";
 				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
 					queryResult = jt.query(sql, GetUser(false), uType.getProjectId(), uType.getEntryDate().toGregorianCalendar().getTime());
 				else

@@ -104,6 +104,9 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 		transactionTimeout = transactionTimeout - Math.toIntExact(dxCreateTime);
 		boolean obfscDataRoleFlag = (Boolean)param.get("ObfuscatedRoleFlag");
 
+		String projectId = sfDAOFactory.getDataSourceLookup().getProjectPath();
+		if (projectId != null)
+			projectId = projectId.replaceAll("/", "");
 		this
 		.setDbSchemaName(sfDAOFactory.getDataSourceLookup()
 				.getFullSchema());
@@ -160,6 +163,8 @@ public class QueryResultPatientSQLCountGenerator extends CRCDAO implements IResu
 				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DX\\}\\}\\}", TEMP_DX_TABLE);
 			if (itemCountSql.contains("{{{DATABASE_NAME}}}"))
 				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{DATABASE_NAME\\}\\}\\}", this.getDbSchemaName());
+			if (itemCountSql.contains("{{{PROJECT_ID}}}"))
+				itemCountSql = itemCountSql.replaceAll("\\{\\{\\{PROJECT_ID\\}\\}\\}", projectId);
 
 
 			log.info("Timeout to run breakdowns: " + transactionTimeout);
