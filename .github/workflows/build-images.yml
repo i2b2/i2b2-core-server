@@ -109,7 +109,7 @@ jobs:
         run: |
           mkdir test_mssql
           cd test_mssql
-          git clone https://github.com/adityapersistent/i2b2-docker
+          git clone https://github.com/i2b2/i2b2-docker
           cd i2b2-docker/mssql
           echo "Running MSSQL test cases for tag: $core_tag"
           source test_case.sh "$core_tag" "master"
@@ -119,7 +119,7 @@ jobs:
         run: |
           mkdir test_pgsql
           cd test_pgsql
-          git clone https://github.com/adityapersistent/i2b2-docker
+          git clone https://github.com/i2b2/i2b2-docker
           cd i2b2-docker/pg
           echo "Running PGSQL test cases for tag: $core_tag"
           source test_case.sh "$core_tag" "master"
@@ -129,9 +129,9 @@ jobs:
         run: |
           mkdir test_oracle
           cd test_oracle
-          git clone https://github.com/adityapersistent/i2b2-docker
+          git clone https://github.com/i2b2/i2b2-docker
           cd i2b2-docker/oracle
-          echo "Running PGSQL test cases for tag: $core_tag" "docker"
+          echo "Running Oracle test cases for tag: $core_tag" "docker"
           source test_case.sh "$core_tag" "master"
           
 
