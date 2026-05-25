@@ -1,13 +1,32 @@
-export CORE_SERVER_TAG=$1
-CORE_SERVER_REPO="/home/runner/work/i2b2-core-server/i2b2-core-server/"
+export CORE_SERVER_TAG=$(echo "$1" | tr '/' '-')
+echo "Core Server Tag - " $CORE_SERVER_TAG
 
-cd $CORE_SERVER_REPO;
-# echo "cloning the i2b2-core-server repo, branch/tag - "
-# echo $CORE_SERVER_TAG
+CORE_SERVER_REPO=$(pwd)/..
 
-# git clone --depth=1 --branch $CORE_SERVER_TAG  https://github.com/i2b2/i2b2-core-server.git;
-# cd i2b2-core-server/edu.harvard.i2b2.server-common && ant clean dist war;
-cd edu.harvard.i2b2.server-common && ant clean dist war; #for push/commit  branch
+#local build or CI build
+if [ "$CI" = "true" ]; then
+    echo "Running in GitHub Actions.."
+else
+    echo "Running Locally.."
+    echo "This script requires sudo access to install openjdk-21 & ant ."
+    export docker_username="local"
+    export docker_reponame="local"
+    sudo apt-get update
+    sudo apt install -y openjdk-21-jdk ant 
+    java --version
+    sleep 10
+fi
+
+cd "$CORE_SERVER_REPO";
+
+cd edu.harvard.i2b2.server-common && ant clean dist war; 
 cp dist/i2b2.war $CORE_SERVER_REPO/docker/configuration/customization/;
-cd $CORE_SERVER_REPO/docker;
-sh create_and_push_to_dockerhub.sh
+cd $CORE_SERVER_REPO/docker/configuration;
+
+bash customization/download_drivers.sh
+
+docker build -t $docker_username/$docker_reponame:i2b2-core-server_$CORE_SERVER_TAG .
+docker push $docker_username/$docker_reponame:i2b2-core-server_$CORE_SERVER_TAG
+
+#for multi-platform build - it will build and publish the image
+# docker buildx build --platform linux/amd64,linux/arm64 -t $docker_username/$docker_reponame:i2b2-core-server-multibuild --push "configuration/"
