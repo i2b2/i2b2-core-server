@@ -5,11 +5,6 @@ on:
     branches: ['**']
   workflow_dispatch:
     inputs:
-      core_server_branch:
-        description: "Core Server branch name used to build the Docker image"
-        required: true
-        default: "master"
-        type: string    
       database_image_branch:
         description: "Database Branch name to use for running tests"
         required: true
@@ -41,11 +36,7 @@ jobs:
       - name: Determine tag
         id: vars
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "core_tag=${{ inputs.core_server_branch }}" >> $GITHUB_ENV
-          else
-            echo "core_tag=${{ github.ref_name }}" >> $GITHUB_ENV
-          fi
+          echo "core_tag=${{ github.ref_name }}" >> $GITHUB_ENV
           echo "Using tag: $core_tag"
 
       - name: Build and Push image
@@ -57,7 +48,6 @@ jobs:
           export docker_username=${{ secrets.DOCKER_HOST }}
           export docker_reponame=${{ secrets.DOCKER_REPO }}
           
-          # Pass GITHUB_WORKSPACE to avoid hardcoded runner paths in the sh script
           cd docker/
           bash create_docker_image.sh "$CORE_SERVER_TAG"
 
