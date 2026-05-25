@@ -5,8 +5,13 @@ on:
     branches: ['**']
   workflow_dispatch:
     inputs:
-      database_image_tag:
-        description: "Database Tag/Branch name to use for running tests"
+      core_server_branch:
+        description: "Core Server branch name used to build the Docker image"
+        required: true
+        default: "master"
+        type: string    
+      database_image_branch:
+        description: "Database Branch name to use for running tests"
         required: true
         default: "master"
         type: string
@@ -37,7 +42,7 @@ jobs:
         id: vars
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "core_tag=${{ inputs.tag }}" >> $GITHUB_ENV
+            echo "core_tag=${{ inputs.core_server_branch }}" >> $GITHUB_ENV
           else
             echo "core_tag=${{ github.ref_name }}" >> $GITHUB_ENV
           fi
@@ -93,4 +98,4 @@ jobs:
           export core_tag=${{ github.ref_name }}
           echo "Running ${{ matrix.db }} test cases for tag: $core_tag"
           
-          bash test_case.sh "$core_tag" ${{ inputs.database_image_tag }}
+          bash test_case.sh "$core_tag" ${{ inputs.database_image_branch }}
