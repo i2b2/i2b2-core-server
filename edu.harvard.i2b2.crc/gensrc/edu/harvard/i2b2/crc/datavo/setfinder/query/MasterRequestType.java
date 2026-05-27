@@ -36,6 +36,7 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "master_requestType", propOrder = {
+	"groupId",
     "queryMasterId",
     "queryName"
 })
@@ -47,6 +48,8 @@ public class MasterRequestType
     protected String queryMasterId;
     @XmlElement(name = "query_name", required = true)
     protected String queryName;
+    @XmlElement(name = "group_id")
+    protected String groupId;
 
     /**
      * Gets the value of the queryMasterId property.
@@ -68,10 +71,34 @@ public class MasterRequestType
      *     {@link String }
      *     
      */
+    public void setGroupId(String value) {
+        this.groupId = value;
+    }
+
+    /**
+     * Gets the value of the queryMasterId property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getGroupId() {
+        return groupId;
+    }
+
+    /**
+     * Sets the value of the queryMasterId property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
     public void setQueryMasterId(String value) {
         this.queryMasterId = value;
     }
-
+    
     /**
      * Gets the value of the queryName property.
      * 

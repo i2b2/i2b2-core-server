@@ -732,13 +732,13 @@ public class ConceptDao extends JdbcDaoSupport {
 			log.info("nameInfoSql:" + nameInfoSql + " " +compareName);
 
 
-			if (categoryResult.size() == i+1) {
-				if (tableCd.equals("@"))
-					nameInfoSql = finalSql + nameInfoSql;
+			//if (categoryResult.size() == i+1) {
+			//	if (tableCd.equals("@"))
+			//		nameInfoSql = finalSql + nameInfoSql;
 				try {
 					List<ConceptType> list = null;
-					if(compareName[0] != null) {
-						list = jt.query(nameInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()), compareName);
+					if(compareName[i] != null) {
+						list = jt.query(nameInfoSql, getConceptNodeMapper(new NodeType(vocabType),obfuscatedUserFlag, dbInfo.getDb_serverType()), compareName[i]);
 						//queryResult.addAll(list);
 					} else {
 						vocabType.setCategory(categoryResult.get(i).getTooltip());
@@ -938,9 +938,9 @@ public class ConceptDao extends JdbcDaoSupport {
 					e.printStackTrace();
 					throw new I2B2DAOException("Database Error");
 				}
-			} else {
-				finalSql += nameInfoSql + " union all ";
-			}
+			//} else {
+			//	finalSql += nameInfoSql + " union all ";
+			//}
 		}
 		log.debug("search by NameInfo result size = " + queryResult.size());
 
