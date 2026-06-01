@@ -707,7 +707,7 @@ public class PMDbDao extends JdbcDaoSupport {
 		{
 			// Using a left join to get the admin role
 			sql =  "select distinct a.*, o.user_role_cd from pm_user_data a  left join pm_project_user_roles o"
-					+ " on a.user_id = o.user_id  and o.status_cd <> 'D' and o.user_role_cd = 'ADMIN' where ";
+					+ " on a.user_id = o.user_id  and o.status_cd <> 'D' and (o.user_role_cd in ( 'ADMIN', 'USER' )) where ";
 
 
 			if (call.equals("get_all_admin"))
@@ -727,16 +727,25 @@ public class PMDbDao extends JdbcDaoSupport {
 				sql += "  o.project_id = ? and ";
 			}
 
-			if (uType.getEntryDate() != null)
+			
+			if (call.equals("get_lock_user"))
 			{
-				sql += "  a.entry_date > ? and a.status_cd <> 'D'  order by a.full_name";
+				sql += "  a.status_cd <> 'D' order by a.full_name";
+				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
+					queryResult = jt.query(sql,  GetUser(false), uType.getProjectId());
+
+				else				
+					queryResult = jt.query(sql,  GetUser(false));
+			} else if (uType.getEntryDate() != null)
+			{
+				sql += "  o.entry_date > ? and a.status_cd <> 'D'  order by o.user_role_cd";
 				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
 					queryResult = jt.query(sql, GetUser(false), uType.getProjectId(), uType.getEntryDate().toGregorianCalendar().getTime());
 				else
 					queryResult = jt.query(sql, GetUser(false), uType.getEntryDate().toGregorianCalendar().getTime());
-
+			
 			} else {
-				sql += "  a.status_cd <> 'D' order by a.full_name";
+				sql += "  a.status_cd <> 'D' order by o.user_role_cd";
 				if (uType.getProjectId() != null && !uType.getProjectId().equals("@") && !uType.getProjectId().equals(""))
 					queryResult = jt.query(sql,  GetUser(false), uType.getProjectId());
 
@@ -757,7 +766,7 @@ public class PMDbDao extends JdbcDaoSupport {
 								addUser = false;
 						}
 					}
-					if (addUser)
+					if (addUser && !map.containsKey(ays.getUserName()))
 						map.put(ays.getUserName(), ays);
 				}
 				queryResult.clear();

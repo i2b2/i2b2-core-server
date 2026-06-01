@@ -247,8 +247,8 @@ public class QueryInfoBean { //implements SessionBean {
 			MasterRequestType masterRequestType) throws I2B2Exception {
 		String queryMasterId = masterRequestType.getQueryMasterId();
 		SetFinderDAOFactory sfDaoFactory = this.getSetFinderDaoFactory(
-				dataSourceLookup.getDomainId(), dataSourceLookup
-				.getProjectPath(), dataSourceLookup.getOwnerId());
+				dataSourceLookup.getDomainId(), (masterRequestType.getGroupId() != null? masterRequestType.getGroupId() :
+					dataSourceLookup.getProjectPath()), dataSourceLookup.getOwnerId());
 		IQueryMasterDao queryMasterDao = sfDaoFactory.getQueryMasterDAO();
 
 		QtQueryMaster qtQueryMaster = queryMasterDao

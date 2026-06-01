@@ -55,7 +55,7 @@ public class PMService {
 	protected static Log logesapi = LogFactory.getLog(PMService.class);
 
 	private static String msgVersion = "1.1";
-	private static String i2b2Version = "1.8.2";
+	private static String i2b2Version = "1.8.3";
 
 	public String getVersion()
 	{
