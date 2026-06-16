@@ -111,7 +111,7 @@ public class CalulatePatientCountMain {
 
 			// just generating random number, not calculating patitient set size
 			// using analysis definition info
-			java.util.Random r = new java.util.Random();
+			java.security.SecureRandom r = new java.security.SecureRandom();
 			int setSize = r.nextInt();
 
 			// build result xml

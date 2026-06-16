@@ -17,6 +17,7 @@ package edu.harvard.i2b2.pm.ws;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -35,9 +36,9 @@ import edu.harvard.i2b2.workplace.datavo.i2b2message.RequestMessageType;
 abstract public class ProjectManagementRequestData {
 
 	public static final String THIS_CLASS_NAME = ProjectManagementRequestData.class.getName();
-    private Log log = LogFactory.getLog(THIS_CLASS_NAME);
+	private Log log = LogFactory.getLog(THIS_CLASS_NAME);
 	public ProjectManagementRequestData() {}
-	
+
 
 	/**
 	 * Function to build i2b2 Request message header
@@ -49,7 +50,7 @@ abstract public class ProjectManagementRequestData {
 		reqHeader.setResultWaittimeMs(120000);
 		return reqHeader;
 	}
-	
+
 	/**
 	 * Function to build i2b2 message header
 	 * 
@@ -57,32 +58,32 @@ abstract public class ProjectManagementRequestData {
 	 */
 	public MessageHeaderType getMessageHeader() {
 		MessageHeaderType messageHeader = new MessageHeaderType();
-		
+
 		messageHeader.setI2B2VersionCompatible(new BigDecimal("1.1"));
 		messageHeader.setHl7VersionCompatible(new BigDecimal("2.4"));
-		
+
 		ApplicationType appType = new ApplicationType();
 		appType.setApplicationName("Workplace Cell");
 		appType.setApplicationVersion("1.701"); 
 		messageHeader.setSendingApplication(appType);
-		
+
 		FacilityType facility = new FacilityType();
 		facility.setFacilityName("i2b2 Hive");
 		messageHeader.setSendingFacility(facility);
-		
+
 		ApplicationType appType2 = new ApplicationType();
 		appType2.setApplicationVersion("1.701");
 		appType2.setApplicationName("Project Management Cell");		
 		messageHeader.setReceivingApplication(appType2);
-	
+
 		FacilityType facility2 = new FacilityType();
 		facility2.setFacilityName("i2b2 Hive");
 		messageHeader.setReceivingFacility(facility2);
-		
+
 		Date currentDate = new Date();
 		DTOFactory factory = new DTOFactory();
 		messageHeader.setDatetimeOfMessage(factory.getXMLGregorianCalendar(currentDate.getTime()));
-		
+
 		MessageControlIdType mcIdType = new MessageControlIdType();
 		mcIdType.setInstanceNum(0);
 		mcIdType.setMessageNum(generateMessageId());
@@ -92,14 +93,14 @@ abstract public class ProjectManagementRequestData {
 		proc.setProcessingId("P");
 		proc.setProcessingMode("I");
 		messageHeader.setProcessingId(proc);
-		
+
 		messageHeader.setAcceptAcknowledgementType("AL");
 		messageHeader.setApplicationAcknowledgementType("AL");
 		messageHeader.setCountryCode("US");
-		
+
 		return messageHeader;
 	}
-	
+
 	/**
 	 * Function to generate i2b2 message header message number
 	 * 
@@ -113,7 +114,7 @@ abstract public class ProjectManagementRequestData {
 		}
 		return strWriter.toString();
 	}
-	
+
 	/**
 	 * Function to generate random number used in message number
 	 * 
@@ -121,17 +122,18 @@ abstract public class ProjectManagementRequestData {
 	 */
 	private int getValidAcsiiValue() {
 		int number = 48;
+		SecureRandom random = new SecureRandom();
 		while(true) {
-			number = 48+(int) Math.round(Math.random() * 74);
+			number = 48 + random.nextInt(75);
 			if((number > 47 && number < 58) || (number > 64 && number < 91) 
-				|| (number > 96 && number < 123)) {
-					break;
-				}
+					|| (number > 96 && number < 123)) {
+				break;
+			}
 		}
 		return number;
 	}
-	
-	
+
+
 	/**
 	 * Function to build Request message type
 	 * 
@@ -148,5 +150,5 @@ abstract public class ProjectManagementRequestData {
 		reqMsgType.setRequestHeader(reqHeader);
 		return reqMsgType;
 	}
-	
+
 }

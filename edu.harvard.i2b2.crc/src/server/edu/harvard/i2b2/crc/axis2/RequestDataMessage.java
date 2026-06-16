@@ -17,6 +17,7 @@ package edu.harvard.i2b2.crc.axis2;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.Date;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
@@ -46,12 +47,12 @@ public abstract class RequestDataMessage{
 	protected final Log log = LogFactory.getLog(getClass());
 
 	public RequestMessageType reqMessageType = null;
-	
+
 	public void setRequestMessageType(String requestWdo) throws I2B2Exception {
 		try {
 			JAXBElement jaxbElement = CRCJAXBUtil.getJAXBUtil().unMashallFromString(requestWdo);
 			this.reqMessageType = (RequestMessageType) jaxbElement.getValue();
-			
+
 		} catch (JAXBUtilException e) {
 			throw new I2B2Exception("Umarshaller error: " + e.getMessage() +
 					requestWdo, e);
@@ -66,32 +67,32 @@ public abstract class RequestDataMessage{
 	 */
 	public MessageHeaderType getMessageHeader() {
 		MessageHeaderType messageHeader = new MessageHeaderType();
-		
+
 		messageHeader.setI2B2VersionCompatible(new BigDecimal("1.1"));
 		messageHeader.setHl7VersionCompatible(new BigDecimal("2.4"));
-		
+
 		ApplicationType appType = new ApplicationType();
 		appType.setApplicationName("CRC Cell");
 		appType.setApplicationVersion("1.700"); 
 		messageHeader.setSendingApplication(appType);
-		
+
 		FacilityType facility = new FacilityType();
 		facility.setFacilityName("i2b2 Hive");
 		messageHeader.setSendingFacility(facility);
-		
+
 		ApplicationType appType2 = new ApplicationType();
 		appType2.setApplicationVersion("1.700");
 		appType2.setApplicationName("i2b2_QueryTool");		
 		messageHeader.setReceivingApplication(appType2);
-	
+
 		FacilityType facility2 = new FacilityType();
 		facility2.setFacilityName("i2b2 Hive");
 		messageHeader.setReceivingFacility(facility2);
-		
+
 		Date currentDate = new Date();
 		DTOFactory factory = new DTOFactory();
 		messageHeader.setDatetimeOfMessage(factory.getXMLGregorianCalendar(currentDate.getTime()));
-		
+
 		MessageControlIdType mcIdType = new MessageControlIdType();
 		mcIdType.setInstanceNum(0);
 		mcIdType.setMessageNum(generateMessageId());
@@ -101,14 +102,14 @@ public abstract class RequestDataMessage{
 		proc.setProcessingId("P");
 		proc.setProcessingMode("I");
 		messageHeader.setProcessingId(proc);
-		
+
 		messageHeader.setAcceptAcknowledgementType("AL");
 		messageHeader.setApplicationAcknowledgementType("AL");
 		messageHeader.setCountryCode("US");
-		
+
 		return messageHeader;
 	}
-	
+
 	/**
 	 * Function to generate i2b2 message header message number
 	 * 
@@ -132,8 +133,8 @@ public abstract class RequestDataMessage{
 		reqHeader.setResultWaittimeMs(120000);
 		return reqHeader;
 	}
-	
-	
+
+
 	/**
 	 * Function to build Request message type
 	 * 
@@ -150,7 +151,7 @@ public abstract class RequestDataMessage{
 		reqMsgType.setRequestHeader(reqHeader);
 		return reqMsgType;
 	}
-	
+
 	/**
 	 * Function to generate random number used in message number
 	 * 
@@ -158,12 +159,13 @@ public abstract class RequestDataMessage{
 	 */
 	private int getValidAcsiiValue() {
 		int number = 48;
+		SecureRandom random = new SecureRandom();
 		while(true) {
-			number = 48+(int) Math.round(Math.random() * 74);
+			number = 48 + random.nextInt(75);
 			if((number > 47 && number < 58) || (number > 64 && number < 91) 
-				|| (number > 96 && number < 123)) {
-					break;
-				}
+					|| (number > 96 && number < 123)) {
+				break;
+			}
 		}
 		return number;
 	}
