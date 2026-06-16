@@ -808,7 +808,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					numRowsAdded = jt.update(addSql, 
 							userdata.getFullName(),
 							userdata.getEmail(),
-							(userdata.getPassword() != null? PMUtil.getInstance().getHashedPassword("SHA-256", userdata.getPassword().getValue()): null),
+							PMUtil.getInstance().getHashedPassword("SHA-256", userdata.getPassword().getValue()),
 							Calendar.getInstance().getTime(),
 							caller,
 							userdata.getUserName());					
