@@ -119,7 +119,7 @@ public class GetRPDODeleteHandler extends RPDOReqHandler {
 				procStatus = new StatusType();
 				procStatus.setType("ERROR");
 				procStatus
-						.setValue("Invalid user/password for the given domain");
+						.setValue("User was not validated");
 				return I2B2MessageResponseFactory.buildResponseMessage(
 						requestXml, procStatus, bodyType);
 				//throw new I2B2Exception("Request message missing user/password");
