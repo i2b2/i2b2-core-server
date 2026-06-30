@@ -4801,7 +4801,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			for (QueryResultInstanceType results :masterInstanceResult.getQueryResultInstance() )
 			{
 				if (results.getQueryResultType().getName().equals("PATIENT_COUNT_XML"))
-					assertEquals(results.getSetSize(), 25);
+					assertEquals(results.getSetSize(), 26);
 				else
 					assertTrue(false);
 			}
