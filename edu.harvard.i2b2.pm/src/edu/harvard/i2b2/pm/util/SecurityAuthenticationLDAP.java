@@ -67,17 +67,20 @@ public class SecurityAuthenticationLDAP implements SecurityAuthentication {
 		securityAuthentication = (String) params.get("security_authentication");
 		securityAuthentication = securityAuthentication.toUpperCase();
 		setSSL = (String) params.get("ssl");
-		// dn = (String) params.get("distinguished_name");
+		dn = (String) params.get("distinguished_name");
 
 		// mhorvath CORE-417
 		if (searchBase.startsWith("@"))
 		{
 			principalName = username + searchBase;
-		} else {
-			dn = (String) params.get("distinguished_name");
+		}
+		// cover cases where CN != sAMAccountName, here uses entire DN value for authentication.
+		else if (searchBase.startsWith("+")) {
+			principalName = dn;
+		}
+		else {
 			principalName = dn + username + "," + searchBase;
-		}		
-		//principalName = dn + username + "," + searchBase;
+		}
 		
 		// DIGEST-MD5 configuration from the parameters
 		securityLayer = (String) params.get("security_layer");
