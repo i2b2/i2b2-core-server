@@ -326,7 +326,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (fetchSize > 0)
 						callStmt.setFetchSize(fetchSize);
 					if (maxFetchRows > 0)
-						callStmt.setMaxFieldSize(maxFetchRows);
+						callStmt.setMaxRows(maxFetchRows);
 					
 					callStmt.registerOutParameter(1, OracleTypes.CURSOR);
 					callStmt.execute();
@@ -347,7 +347,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (fetchSize > 0)
 						callStmt.setFetchSize(fetchSize);
 					if (maxFetchRows > 0)
-						callStmt.setMaxFieldSize(maxFetchRows);
+						callStmt.setMaxRows(maxFetchRows);
 
 					//log.info("Calling stored procedure" + item.getQuery());
 					callStmt.execute(); // Step 2: call procedure
@@ -362,7 +362,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					if (fetchSize > 0)
 						stmt.setFetchSize(fetchSize);
 					if (maxFetchRows > 0)
-						stmt.setMaxFieldSize(maxFetchRows);
+						stmt.setMaxRows(maxFetchRows);
 
 					//logesapi.debug("Executing count sql [" + item.getQuery() + "]");
 
