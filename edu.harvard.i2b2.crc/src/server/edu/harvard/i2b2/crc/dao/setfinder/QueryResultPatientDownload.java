@@ -388,6 +388,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 				fileName = qpUtil.processFilename(fileName, param);
 
+				if (fetchSize < 0)
+					fetchSize = 0;
+				resultSet.setFetchSize(fetchSize);
 
 				//Update XML Value
 
