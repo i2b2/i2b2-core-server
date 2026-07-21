@@ -586,8 +586,9 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 			setQueryInstanceStatus(sfDAOFactory, queryInstanceId, 4,
 					e.getMessage());
 			// update the error status to result instance
-			setQueryResultInstanceStatus(sfDAOFactory, queryInstanceId,
-					4, e.getMessage());
+			// Got moved to result and only that result is set to error
+			//setQueryResultInstanceStatus(sfDAOFactory, queryInstanceId,
+			//		4, e.getMessage());
 
 			log.debug("Error in QueryExecutorDAO Throwing: " + e.getMessage());
 			exception = e;

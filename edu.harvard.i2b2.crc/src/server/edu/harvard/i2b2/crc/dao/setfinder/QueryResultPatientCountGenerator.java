@@ -105,40 +105,44 @@ public class QueryResultPatientCountGenerator extends CRCDAO implements
 			IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
 					.getPatientSetResultDAO();
 
+			
+			IQueryResultTypeDao resultTypeDao = sfDAOFactory
+					.getQueryResultTypeDao();
+
+			QtQueryResultType resultType = resultTypeDao.getQueryResultTypeByName(resultTypeName);
+
+			String queryName = sfDAOFactory
+					.getQueryMasterDAO()
+					.getQueryDefinition(
+							sfDAOFactory
+									.getQueryInstanceDAO()
+									.getQueryInstanceByInstanceId(
+											queryInstanceId)
+									.getQtQueryMaster().getQueryMasterId())
+					.getName();
+			String description = resultType.getDescription()
+					+ " for \"" + queryName + "\"";
+			resultInstanceDao.updateResultInstanceDescription(
+					resultInstanceId, description);
+
+			
 			if (errorFlag) {
 				resultInstanceDao.updatePatientSet(resultInstanceId,
 						QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
 			} else {
-				String obfusMethod = "", description = null;
+				String obfusMethod = "" ;
 				if (dataObfusRole) {
 					obfusMethod = IQueryResultInstanceDao.OBSUBTOTAL;
 					// add () to the result type description
 					// read the description from result type
 				}
 
-				IQueryResultTypeDao resultTypeDao = sfDAOFactory
-						.getQueryResultTypeDao();
-				List<QtQueryResultType> resultTypeList = resultTypeDao
-						.getQueryResultTypeByName(resultTypeName, roles);
 
-				String queryName = sfDAOFactory
-						.getQueryMasterDAO()
-						.getQueryDefinition(
-								sfDAOFactory
-										.getQueryInstanceDAO()
-										.getQueryInstanceByInstanceId(
-												queryInstanceId)
-										.getQtQueryMaster().getQueryMasterId())
-						.getName();
-				description = resultTypeList.get(0).getDescription()
-						+ " for \"" + queryName + "\"";
 
 				resultInstanceDao.updatePatientSet(resultInstanceId,
 						QueryStatusTypeId.STATUSTYPE_ID_FINISHED, "",
 						obfucatedRecordCount, realPatientCount, obfusMethod);
 
-				resultInstanceDao.updateResultInstanceDescription(
-						resultInstanceId, description);
 			}
 		}
 	}

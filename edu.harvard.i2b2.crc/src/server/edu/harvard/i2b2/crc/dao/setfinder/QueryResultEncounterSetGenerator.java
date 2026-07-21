@@ -156,6 +156,14 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 			IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
 					.getPatientSetResultDAO();
 
+			
+			String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
+					sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
+			String description = "Encounter Set for \"" + queryName +"\"";
+			resultInstanceDao.updateResultInstanceDescription(
+					resultInstanceId, description);
+
+			
 			if (errorFlag) {
 				resultInstanceDao.updatePatientSet(resultInstanceId,
 						QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
@@ -173,11 +181,6 @@ public class QueryResultEncounterSetGenerator extends CRCDAO implements
 						loadCount, recordCount, obfusMethod);
 				//String description = "Encounter Set - "
 				//		+ obfuscationDescription + loadCount + " encounters";
-				String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-						sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
-				String description = "Encounter Set for \"" + queryName +"\"";
-				resultInstanceDao.updateResultInstanceDescription(
-						resultInstanceId, description);
 
 			}
 		}
