@@ -416,6 +416,26 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
 					.getPatientSetResultDAO();
 
+			
+			IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
+
+			QtQueryResultType resultType = resultTypeDao.getQueryResultTypeByName(resultTypeName);
+
+			// add "(Obfuscated)" in the description
+			//description = resultTypeList.get(0)
+			//		.getDescription()
+			//		+ " (Obfuscated) ";
+			String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
+					sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
+
+			
+			String description = resultType
+					.getDescription() + " for \"" + queryName +"\"";
+
+			// set the result instance description
+			resultInstanceDao.updateResultInstanceDescription(
+					resultInstanceId, description);
+
 			if (errorFlag) {
 				resultInstanceDao.updatePatientSet(resultInstanceId,
 						QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
@@ -426,7 +446,7 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 					try {
 						//	tm.begin();
 
-						String obfusMethod = "", description = null;
+						String obfusMethod = "";
 						if (obfscDataRoleFlag) {
 							obfusMethod = IQueryResultInstanceDao.OBSUBTOTAL;
 							// add () to the result type description
@@ -435,16 +455,6 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 						} else { 
 							obfuscatedRecordCount = recordCount;
 						}
-						IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
-						List<QtQueryResultType> resultTypeList = resultTypeDao
-								.getQueryResultTypeByName(resultTypeName, roles);
-
-						// add "(Obfuscated)" in the description
-						//description = resultTypeList.get(0)
-						//		.getDescription()
-						//		+ " (Obfuscated) ";
-						String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-								sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
 
 
 
@@ -453,12 +463,6 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 								//obsfcTotal, 
 								obfuscatedRecordCount, recordCount, obfusMethod);
 
-						description = resultTypeList.get(0)
-								.getDescription() + " for \"" + queryName +"\"";
-
-						// set the result instance description
-						resultInstanceDao.updateResultInstanceDescription(
-								resultInstanceId, description);
 						//	tm.commit();
 					} catch (SecurityException e) {
 						throw new I2B2DAOException(

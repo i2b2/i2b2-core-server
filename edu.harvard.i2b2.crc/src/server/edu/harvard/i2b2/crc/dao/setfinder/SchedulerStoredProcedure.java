@@ -353,6 +353,24 @@ public class SchedulerStoredProcedure extends CRCDAO implements IResultGenerator
 					IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
 							.getPatientSetResultDAO();
 
+					
+					
+
+					String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
+							sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
+
+					
+					IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
+
+					QtQueryResultType resultType = resultTypeDao.getQueryResultTypeByName(resultTypeName);
+
+
+					String description = resultType
+							.getDescription() + " for \"" + queryName +"\"";
+
+					// set the result instance description
+					resultInstanceDao.updateResultInstanceDescription(
+							resultInstanceId, description);
 					if (errorFlag) {
 						resultInstanceDao.updatePatientSet(resultInstanceId,
 								QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
@@ -363,26 +381,13 @@ public class SchedulerStoredProcedure extends CRCDAO implements IResultGenerator
 							try {
 								//	tm.begin();
 
-								String obfusMethod = "", description = null;
+								String obfusMethod = "";
 
-								IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
-								List<QtQueryResultType> resultTypeList = resultTypeDao
-										.getQueryResultTypeByName(resultTypeName, roles);
 
 								// add "(Obfuscated)" in the description
 								//description = resultTypeList.get(0)
 								//		.getDescription()
 								//		+ " (Obfuscated) ";
-								String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
-										sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
-
-
-								description = resultTypeList.get(0)
-										.getDescription() + " for \"" + queryName +"\"";
-
-								// set the result instance description
-								resultInstanceDao.updateResultInstanceDescription(
-										resultInstanceId, description);
 								//	tm.commit();
 							} catch (SecurityException e) {
 								throw new I2B2DAOException(

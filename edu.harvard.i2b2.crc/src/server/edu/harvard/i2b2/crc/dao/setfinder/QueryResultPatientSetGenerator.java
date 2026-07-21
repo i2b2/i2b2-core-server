@@ -192,6 +192,14 @@ public class QueryResultPatientSetGenerator extends CRCDAO implements
 			String queryName = sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
 					sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
 
+			
+			String description = "Patient Set for \"" + queryName +"\"";
+			resultInstanceDao.updateResultInstanceDescription(
+					resultInstanceId, description);
+
+
+			
+			
 			if (errorFlag) {
 				resultInstanceDao.updatePatientSet(resultInstanceId,
 						QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
@@ -203,10 +211,6 @@ public class QueryResultPatientSetGenerator extends CRCDAO implements
 						realCount, obfusMethod);
 				//String description = "Patient Set - " + obfuscationDescription
 				//		+ loadCount + " Patients";
-				String description = "Patient Set for \"" + queryName +"\"";
-				resultInstanceDao.updateResultInstanceDescription(
-						resultInstanceId, description);
-
 			}
 		}
 	}

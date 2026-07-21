@@ -542,6 +542,17 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		queryInstanceDao.update(queryInstance, true);
 	}
 
+	private void setQueryResultInstanceStatusWithID(SetFinderDAOFactory sfDAOFactory,
+			String queryResultId, int statusTypeId, String message) {
+		IQueryResultInstanceDao queryResultInstanceDao = sfDAOFactory
+				.getPatientSetResultDAO();
+		//List<QtQueryResultInstance> resultInstanceList = queryResultInstanceDao
+		//		.getResultInstanceList(queryInstanceId);
+		//for (QtQueryResultInstance queryResultInstance : resultInstanceList) {
+			queryResultInstanceDao.updatePatientSet(queryResultId, statusTypeId, message, -1, -1, "");
+		//}
+
+	}
 	private void setQueryResultInstanceStatus(SetFinderDAOFactory sfDAOFactory,
 			String queryInstanceId, int statusTypeId, String message) {
 		IQueryResultInstanceDao queryResultInstanceDao = sfDAOFactory
@@ -869,6 +880,19 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		} catch (IllegalAccessException e) {
 			throw new I2B2DAOException(
 					"Illegal Access Exception for generator class["
+							+ generatorClassName + "] ", e);
+		} catch (I2B2DAOException e) {
+			log.error(e.getMessage());
+			
+			SetFinderDAOFactory sfDAOFactory = (SetFinderDAOFactory) param
+					.get("SetFinderDAOFactory");
+			String resultInstanceId = (String) param.get("ResultInstanceId");
+
+			setQueryResultInstanceStatusWithID(sfDAOFactory, resultInstanceId,
+					4, e.getMessage());
+			
+			throw new I2B2DAOException(
+					e.getMessage() + " for generator class["
 							+ generatorClassName + "] ", e);
 		}
 	}

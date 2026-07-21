@@ -388,6 +388,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 				fileName = qpUtil.processFilename(fileName, param);
 
+				if (fetchSize < 0)
+					fetchSize = 0;
+				resultSet.setFetchSize(fetchSize);
 
 				//Update XML Value
 
@@ -754,6 +757,25 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
 						.getPatientSetResultDAO();
 
+				
+				
+				IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
+				QtQueryResultType resultTypes = resultTypeDao.getQueryResultTypeByName(resultTypeName);
+
+				// add "(Obfuscated)" in the description
+				//description = resultTypeList.get(0)
+				//		.getDescription()
+				//		+ " (Obfuscated) ";
+				String queryName = queryMaster.getName();
+
+				String description = resultTypes
+						.getDescription() + " for \"" + queryName +"\"";
+
+				// set the result instance description
+				resultInstanceDao.updateResultInstanceDescription(
+						resultInstanceId, description);
+				
+				
 				if (errorFlag) {
 					resultInstanceDao.updatePatientSet(resultInstanceId,
 							QueryStatusTypeId.STATUSTYPE_ID_ERROR, 0);
@@ -766,7 +788,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						try {
 							//	tm.begin();
 
-							String obfusMethod = "", description = null;
+							String obfusMethod = "";
 							if (obfscDataRoleFlag) {
 								obfusMethod = IQueryResultInstanceDao.OBSUBTOTAL;
 								// add () to the result type description
@@ -775,15 +797,7 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 							} else { 
 								obfuscatedRecordCount = recordCount;
 							}
-							IQueryResultTypeDao resultTypeDao = sfDAOFactory.getQueryResultTypeDao();
-							List<QtQueryResultType> resultTypeList = resultTypeDao
-									.getQueryResultTypeByName(resultTypeName, roles);
-
-							// add "(Obfuscated)" in the description
-							//description = resultTypeList.get(0)
-							//		.getDescription()
-							//		+ " (Obfuscated) ";
-							String queryName = queryMaster.getName();
+				
 							//sfDAOFactory.getQueryMasterDAO().getQueryDefinition(
 							//sfDAOFactory.getQueryInstanceDAO().getQueryInstanceByInstanceId(queryInstanceId).getQtQueryMaster().getQueryMasterId()).getName();
 
@@ -846,12 +860,6 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 								xmlResultDao.createQueryXmlResult(resultInstanceId, strWriter
 										.toString());
 
-							description = resultTypeList.get(0)
-									.getDescription() + " for \"" + queryName +"\"";
-
-							// set the result instance description
-							resultInstanceDao.updateResultInstanceDescription(
-									resultInstanceId, description);
 							//	tm.commit();
 
 
