@@ -116,23 +116,28 @@ public final class LuceneSuggester {
 
 			ConceptType b = new ConceptType();
 			String[] suggestion = a.suggestion.split("~\\|");
-			if (vocabType.isReducedResults() && suggestion.length < 3)
+			if (!vocabType.isReducedResults() && suggestion.length < 3)
 				continue;
-			
-			b.setName(suggestion[0]);
-			if (suggestion.length > 1)
-				b.setTablename(suggestion[1]);
-		
-			if (suggestion.length > 2 && StringUtils.isNumeric(suggestion[2]))
-				b.setTotalnum(Integer.valueOf(suggestion[2]));
 
-			if (suggestion.length > 3)
-				b.setBasecode(suggestion[3]);
+			if (vocabType.getCategory() == null || vocabType.getCategory().equals("@") ||
+					(suggestion.length > 1 && vocabType.getCategory().equalsIgnoreCase(suggestion[1])) ){
+				b.setName(suggestion[0]);
+				if (suggestion.length > 1)
+					b.setTablename(suggestion[1]);
 
-			
-			b.setLevel((int) a.occurrences);
+				if (suggestion.length > 2 && StringUtils.isNumeric(suggestion[2]))
+					b.setTotalnum(Integer.valueOf(suggestion[2]));
 
-			suggestions.getConcept().add(b);
+				if (suggestion.length > 3)
+					b.setBasecode(suggestion[3]);
+
+				if (suggestion.length > 4)
+					b.setVisualattributes(suggestion[4]);
+
+				b.setLevel((int) a.occurrences);
+
+				suggestions.getConcept().add(b);
+			}
 			//suggestions.add(AutoSuggestResult.fromLookup(results.get(i)));
 		}
 		return suggestions;
