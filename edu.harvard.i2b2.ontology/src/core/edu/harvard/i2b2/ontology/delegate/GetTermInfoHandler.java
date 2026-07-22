@@ -74,7 +74,11 @@ public class GetTermInfoHandler extends RequestHandler{
 
 		List response = null;
 		try {
-			response = conceptDao.findByFullname(getTermInfoType, project, this.getDbInfo());
+			if (getTermInfoType.isAncestors()) {
+				response = conceptDao.findByFullnameWithAncestors(getTermInfoType, project, this.getDbInfo());
+			} else {
+				response = conceptDao.findByFullname(getTermInfoType, project, this.getDbInfo());
+			}
 		} catch (I2B2DAOException e1) {
 			responseMessageType = MessageFactory.doBuildErrorResponse(getTermInfoMsg.getMessageHeaderType(), "Ontology database error");
 		} catch (I2B2Exception e1) {

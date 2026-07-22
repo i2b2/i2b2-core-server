@@ -28,6 +28,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *         &lt;element name="self" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *       &lt;attGroup ref="{http://www.i2b2.org/xsd/cell/ont/1.1/}return_attributeGroup"/>
+ *       &lt;attribute name="ancestors" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -53,6 +54,8 @@ public class GetTermInfoType {
     protected String type;
     @XmlAttribute(name = "blob")
     protected Boolean blob;
+    @XmlAttribute(name = "ancestors")
+    protected Boolean ancestors;
 
     /**
      * Gets the value of the self property.
@@ -212,6 +215,26 @@ public class GetTermInfoType {
      */
     public void setBlob(Boolean value) {
         this.blob = value;
+    }
+
+    /**
+     * Gets the value of the ancestors property.
+     *
+     */
+    public boolean isAncestors() {
+        if (ancestors == null) {
+            return false;
+        } else {
+            return ancestors;
+        }
+    }
+
+    /**
+     * Sets the value of the ancestors property.
+     *
+     */
+    public void setAncestors(Boolean value) {
+        this.ancestors = value;
     }
 
 }
