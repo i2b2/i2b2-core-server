@@ -109,10 +109,9 @@
     
     <xs:complexType name="get_termInfoType">
         <xs:sequence>
-            <xs:element name="self" type="xs:string" maxOccurs="unbounded"/>
+            <xs:element name="self" type="xs:string"/>
         </xs:sequence>
         <xs:attributeGroup ref="ont:return_attributeGroup"/>
-        <xs:attribute name="ancestors" type="xs:boolean" default="false"/>
     </xs:complexType>
     
     <xs:complexType name="vocab_requestType">
@@ -121,9 +120,10 @@
     		<xs:element name="self" type="xs:string" />
     	</xs:sequence>
     	<xs:attribute name="category" type="xs:string" />
-    	<xs:attributeGroup ref="ont:return_attributeGroup" />
-    	<xs:attribute name="reducedResults" type="xs:boolean"></xs:attribute>
-    	<xs:attribute name="keyname" type="xs:boolean"></xs:attribute>
+		<xs:attributeGroup ref="ont:return_attributeGroup" />
+		<xs:attribute name="reducedResults" type="xs:boolean"></xs:attribute>
+		<xs:attribute name="keyname" type="xs:boolean"></xs:attribute>
+		<xs:attribute name="ancestors" type="xs:boolean"></xs:attribute>
     </xs:complexType>
 
     <xs:attributeGroup name="return_attributeGroup">

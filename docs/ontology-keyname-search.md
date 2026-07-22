@@ -170,41 +170,45 @@ not by a separate `getTermInfo` parameter.
 
 ## Returning parent node details
 
-Clients that need full concept blocks for selected terms' parent nodes can
-request them in one `getTermInfo` call by setting `ancestors="true"`. The
-request may contain one or more `self` elements.
+Clients that need full concept blocks for search results and their parent
+nodes can request them directly from `getNameInfo` by setting
+`ancestors="true"`.
 
 ```xml
 <message_body>
-  <ont:get_term_info
+  <ont:get_name_info
       xmlns:ont="http://www.i2b2.org/xsd/cell/ont/1.1/"
+      category="ICD10_ICD9"
       type="core"
-      blob="true"
-      hiddens="true"
+      max="200"
+      hiddens="false"
       synonyms="false"
+      keyname="true"
       ancestors="true">
-    <self>\\ICD10_ICD9\ICD10\Diseases\Gout\Idiopathic gout\</self>
-    <self>\\ICD10_ICD9\ICD10\Diseases\Gout\Lead-induced gout\</self>
-    <self>\\ICD10_ICD9\ICD10\Diseases\Gout\Drug-induced gout\</self>
-  </ont:get_term_info>
+    <match_str strategy="contains">gout</match_str>
+    <self>\\ICD10_ICD9\</self>
+  </ont:get_name_info>
 </message_body>
 ```
 
 With `ancestors="true"`, the response is still the normal `concepts` payload.
-It contains each selected term plus its ancestor nodes. Shared ancestors are
-returned once per ontology table, so clients avoid repeatedly receiving the
-same parent rows when many search results have common parents. Each returned
-node is mapped through the same `ConceptType` mapper used by ordinary
-`getTermInfo`, so clients receive full `concept` XML blocks rather than
-display-only names.
+It contains matched search results plus their ancestor nodes. Matched search
+results include an optional marker:
 
-The server groups requested paths by ontology table, derives ancestor paths
-from each canonical `self` path, and uses one recursive database query per
-table to retrieve all rows. A client can associate ancestors with a selected
-term by comparing canonical `key` prefixes; for example, a returned parent key
-belongs to a selected term when the selected term's key starts with the parent
-key.
+```xml
+<search_result>true</search_result>
+```
 
-This replaces the slower client pattern of calling `get_name_info
-keyname="true"` and then issuing one `getTermInfo` request for each result or
-parent display path.
+Ancestor rows omit `search_result`; clients should treat a missing value as
+false. If a concept is both a matched result and an ancestor of another result,
+the matched result row wins and is returned with `search_result=true`.
+
+Shared ancestors are returned once per searched ontology table, so clients
+avoid repeatedly receiving the same parent rows when many search results have
+common parents. A client can associate ancestors with a marked search result by
+comparing canonical `key` prefixes; for example, a returned parent key belongs
+to a search result when the search result's key starts with the parent key.
+
+When `ancestors="true"`, `max` limits the number of marked search results.
+Ancestor rows are additional context and do not count against that search-hit
+limit.

@@ -8,9 +8,6 @@
 
 package edu.harvard.i2b2.ontology.datavo.vdo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -28,10 +25,9 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="self" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded"/>
+ *         &lt;element name="self" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *       &lt;attGroup ref="{http://www.i2b2.org/xsd/cell/ont/1.1/}return_attributeGroup"/>
- *       &lt;attribute name="ancestors" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -46,7 +42,7 @@ import jakarta.xml.bind.annotation.XmlType;
 public class GetTermInfoType {
 
     @XmlElement(required = true)
-    protected List<String> self;
+    protected String self;
     @XmlAttribute(name = "hiddens")
     protected Boolean hiddens;
     @XmlAttribute(name = "synonyms")
@@ -57,8 +53,6 @@ public class GetTermInfoType {
     protected String type;
     @XmlAttribute(name = "blob")
     protected Boolean blob;
-    @XmlAttribute(name = "ancestors")
-    protected Boolean ancestors;
 
     /**
      * Gets the value of the self property.
@@ -69,11 +63,7 @@ public class GetTermInfoType {
      *     
      */
     public String getSelf() {
-        if (self == null || self.size() == 0) {
-            return null;
-        } else {
-            return self.get(0);
-        }
+        return self;
     }
 
     /**
@@ -85,19 +75,7 @@ public class GetTermInfoType {
      *     
      */
     public void setSelf(String value) {
-        getSelfList().clear();
-        getSelfList().add(value);
-    }
-
-    /**
-     * Gets the value of the self list property.
-     *
-     */
-    public List<String> getSelfList() {
-        if (self == null) {
-            self = new ArrayList<String>();
-        }
-        return self;
+        this.self = value;
     }
 
     /**
@@ -234,26 +212,6 @@ public class GetTermInfoType {
      */
     public void setBlob(Boolean value) {
         this.blob = value;
-    }
-
-    /**
-     * Gets the value of the ancestors property.
-     *
-     */
-    public boolean isAncestors() {
-        if (ancestors == null) {
-            return false;
-        } else {
-            return ancestors;
-        }
-    }
-
-    /**
-     * Sets the value of the ancestors property.
-     *
-     */
-    public void setAncestors(Boolean value) {
-        this.ancestors = value;
     }
 
 }
