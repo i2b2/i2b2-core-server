@@ -32,6 +32,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *       &lt;attribute name="category" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="reducedResults" type="{http://www.w3.org/2001/XMLSchema}boolean" />
  *       &lt;attribute name="keyname" type="{http://www.w3.org/2001/XMLSchema}boolean" />
+ *       &lt;attribute name="ancestors" type="{http://www.w3.org/2001/XMLSchema}boolean" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -56,6 +57,8 @@ public class VocabRequestType {
     protected Boolean reducedResults;
     @XmlAttribute(name = "keyname")
     protected Boolean keyname;
+    @XmlAttribute(name = "ancestors")
+    protected Boolean ancestors;
     @XmlAttribute(name = "hiddens")
     protected Boolean hiddens;
     @XmlAttribute(name = "synonyms")
@@ -185,6 +188,30 @@ public class VocabRequestType {
      */
     public void setKeyname(Boolean value) {
         this.keyname = value;
+    }
+
+    /**
+     * Gets the value of the ancestors property.
+     *
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *
+     */
+    public Boolean isAncestors() {
+        return ancestors;
+    }
+
+    /**
+     * Sets the value of the ancestors property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *
+     */
+    public void setAncestors(Boolean value) {
+        this.ancestors = value;
     }
 
     /**

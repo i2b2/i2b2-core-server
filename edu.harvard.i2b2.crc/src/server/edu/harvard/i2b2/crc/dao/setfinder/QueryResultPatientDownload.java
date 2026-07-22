@@ -285,7 +285,20 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 			}
 
+			
+			int fetchSize = -1;
+			int maxFetchRows = -1;
 
+			String fetchSizeStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.resultfetchsize");
+			if (fetchSizeStr != null) {
+				fetchSize = Integer.parseInt(fetchSizeStr);
+			}	
+			String maxFetchRowsStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.maxfetchrows");
+			if (maxFetchRowsStr != null) {
+				maxFetchRows =  Integer.parseInt(maxFetchRowsStr);
+			}
+
+			
 			for (edu.harvard.i2b2.crc.dao.xml.File item: valueExport.getFile()) {
 
 				Path p = Paths.get(item.getFilename());
@@ -309,6 +322,12 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 						item.getQuery().startsWith("{ call")) {
 
 					callStmt = sfDAOFactory.getDataSource().getConnection().prepareCall(item.getQuery());
+
+					if (fetchSize > 0)
+						callStmt.setFetchSize(fetchSize);
+					if (maxFetchRows > 0)
+						callStmt.setMaxRows(maxFetchRows);
+					
 					callStmt.registerOutParameter(1, OracleTypes.CURSOR);
 					callStmt.execute();
 					resultSet = (ResultSet) callStmt.getObject(1);
@@ -325,6 +344,10 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 					callStmt = conn.prepareCall(item.getQuery());
 					callStmt.registerOutParameter(1, Types.OTHER); // refcursor out param
+					if (fetchSize > 0)
+						callStmt.setFetchSize(fetchSize);
+					if (maxFetchRows > 0)
+						callStmt.setMaxRows(maxFetchRows);
 
 					//log.info("Calling stored procedure" + item.getQuery());
 					callStmt.execute(); // Step 2: call procedure
@@ -336,6 +359,11 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				} else 	{
 					stmt = conn.prepareStatement(item.getQuery());
 					stmt.setQueryTimeout(transactionTimeout);
+					if (fetchSize > 0)
+						stmt.setFetchSize(fetchSize);
+					if (maxFetchRows > 0)
+						stmt.setMaxRows(maxFetchRows);
+
 					//logesapi.debug("Executing count sql [" + item.getQuery() + "]");
 
 					resultSet = stmt.executeQuery();
@@ -348,8 +376,6 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				String userName = "";
 				char quotechar = '"';
 				String fileName = "";
-				int fetchSize = 50000;
-				int maxFetchRows = -1;
 				String separatorStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.defaultseperator");
 				if (separatorStr != null) {
 					separator = getChar(separatorStr);
@@ -377,20 +403,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 				if (item.getFilename() != null)
 					fileName = item.getFilename();
 
-				String fetchSizeStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.resultfetchsize");
-				if (fetchSizeStr != null) {
-					fetchSize = Integer.parseInt(fetchSizeStr);
-				}	
-				String maxFetchRowsStr = qpUtil.getCRCPropertyValue("edu.harvard.i2b2.crc.exportcsv.maxfetchrows");
-				if (maxFetchRowsStr != null) {
-					maxFetchRows =  Integer.parseInt(maxFetchRowsStr);
-				}
 
 				fileName = qpUtil.processFilename(fileName, param);
 
-				if (fetchSize < 0)
-					fetchSize = 0;
-				resultSet.setFetchSize(fetchSize);
 
 				//Update XML Value
 

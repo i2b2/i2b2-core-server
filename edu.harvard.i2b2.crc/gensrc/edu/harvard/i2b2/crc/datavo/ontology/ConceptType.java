@@ -29,6 +29,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="level" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="key" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="key_name" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="search_result" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
  *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="synonym_cd" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="visualattributes" type="{http://www.w3.org/2001/XMLSchema}string"/>
@@ -66,6 +67,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "level",
     "key",
     "keyName",
+    "searchResult",
     "name",
     "synonymCd",
     "visualattributes",
@@ -98,6 +100,8 @@ public class ConceptType {
     protected String key;
     @XmlElement(name = "key_name", required = true)
     protected String keyName;
+    @XmlElement(name = "search_result")
+    protected Boolean searchResult;
     @XmlElement(required = true)
     protected String name;
     @XmlElement(name = "synonym_cd", required = true)
@@ -212,6 +216,30 @@ public class ConceptType {
      */
     public void setKeyName(String value) {
         this.keyName = value;
+    }
+
+    /**
+     * Gets the value of the searchResult property.
+     *
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *
+     */
+    public Boolean isSearchResult() {
+        return searchResult;
+    }
+
+    /**
+     * Sets the value of the searchResult property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *
+     */
+    public void setSearchResult(Boolean value) {
+        this.searchResult = value;
     }
 
     /**

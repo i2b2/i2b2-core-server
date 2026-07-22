@@ -170,30 +170,45 @@ not by a separate `getTermInfo` parameter.
 
 ## Returning parent node details
 
-Clients that need full concept blocks for a selected term's parent nodes can
-request them in one `getTermInfo` call by setting `ancestors="true"`:
+Clients that need full concept blocks for search results and their parent
+nodes can request them directly from `getNameInfo` by setting
+`ancestors="true"`.
 
 ```xml
 <message_body>
-  <ont:get_term_info
+  <ont:get_name_info
       xmlns:ont="http://www.i2b2.org/xsd/cell/ont/1.1/"
+      category="ICD10_ICD9"
       type="core"
-      blob="true"
-      hiddens="true"
+      max="200"
+      hiddens="false"
       synonyms="false"
+      keyname="true"
       ancestors="true">
-    <self>\\ICD10_ICD9\ICD10\Diseases\Gout\Idiopathic gout\</self>
-  </ont:get_term_info>
+    <match_str strategy="contains">gout</match_str>
+    <self>\\ICD10_ICD9\</self>
+  </ont:get_name_info>
 </message_body>
 ```
 
 With `ancestors="true"`, the response is still the normal `concepts` payload.
-It contains the selected term plus its ancestor nodes, ordered from the root
-ancestor down to the selected term. Each returned node is mapped through the
-same `ConceptType` mapper used by ordinary `getTermInfo`, so clients receive
-full `concept` XML blocks rather than display-only names.
+It contains matched search results plus their ancestor nodes. Matched search
+results include an optional marker:
 
-The server derives the ancestor paths from the canonical `self` path and uses
-a recursive database query to retrieve all rows in one round trip. This
-replaces the slower client pattern of calling `get_name_info keyname="true"`
-and then issuing one `getTermInfo` request for each parent display path.
+```xml
+<search_result>true</search_result>
+```
+
+Ancestor rows omit `search_result`; clients should treat a missing value as
+false. If a concept is both a matched result and an ancestor of another result,
+the matched result row wins and is returned with `search_result=true`.
+
+Shared ancestors are returned once per searched ontology table, so clients
+avoid repeatedly receiving the same parent rows when many search results have
+common parents. A client can associate ancestors with a marked search result by
+comparing canonical `key` prefixes; for example, a returned parent key belongs
+to a search result when the search result's key starts with the parent key.
+
+When `ancestors="true"`, `max` limits the number of marked search results.
+Ancestor rows are additional context and do not count against that search-hit
+limit.

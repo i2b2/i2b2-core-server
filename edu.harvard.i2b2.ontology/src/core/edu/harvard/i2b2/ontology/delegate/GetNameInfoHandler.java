@@ -146,7 +146,7 @@ public class GetNameInfoHandler extends RequestHandler {
 			}
 			// No errors, non-empty response received
 			// If max is specified, check that response is not > max
-			else if(vocabType.getMax() != null && vocabType.getMax() != 0) {
+			else if(vocabType.getMax() != null && vocabType.getMax() != 0 && !(vocabType.isAncestors()!=null && vocabType.isAncestors())) {
 				Iterator itr = response.iterator();
 				int i=0;
 				while (itr.hasNext() && i<vocabType.getMax() )
