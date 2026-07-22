@@ -45,6 +45,7 @@ import jakarta.xml.bind.annotation.XmlType;
     "name",
     "displayType",
     "visualAttributeType",
+    "visualType",
     "description",
     "userRoleCd",
     "classname"
@@ -58,6 +59,8 @@ public class QueryResultTypeType {
     protected String displayType;
     @XmlElement(name = "visual_attribute_type")
     protected String visualAttributeType;
+    @XmlElement(name = "visual_type")
+    protected String visualType;
     protected String description;
     @XmlElement(name = "user_role_cd")
     protected String userRoleCd;
@@ -159,6 +162,31 @@ public class QueryResultTypeType {
         this.visualAttributeType = value;
     }
 
+    /**
+     * Gets the value of the visualType property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getVisualType() {
+        return visualType;
+    }
+
+    /**
+     * Sets the value of the visualType property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setVisualType(String value) {
+        this.visualType = value;
+    }
+
+    
     /**
      * Gets the value of the description property.
      * 

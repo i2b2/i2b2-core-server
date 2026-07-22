@@ -27,6 +27,7 @@ public class QtQueryResultType implements java.io.Serializable {
 	private String visualAttributeType;
 	private String userRoleCd;
 	private String classname;
+	private String visualType;
 
 	public String getClassname() {
 		return classname;
@@ -102,6 +103,7 @@ public class QtQueryResultType implements java.io.Serializable {
 		this.displayType = displayType;
 	}
 
+	
 	public String getVisualAttributeType() {
 		return visualAttributeType;
 	}
@@ -110,6 +112,15 @@ public class QtQueryResultType implements java.io.Serializable {
 		this.visualAttributeType = visualAttributeType;
 	}
 
+	public String getVisualType() {
+		return visualType;
+	}
+
+	public void setVisualType(String visualType) {
+		this.visualType = visualType;
+	}
+
+	
 	public Set<QtQueryResultInstance> getQtQueryResultInstances() {
 		return this.qtQueryResultInstances;
 	}

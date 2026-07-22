@@ -189,6 +189,7 @@ IQueryResultTypeDao {
 					.getString("VISUAL_ATTRIBUTE_TYPE_ID"));
 			queryResultType.setUserRoleCd(rs.getString("USER_ROLE_CD"));
 			queryResultType.setClassname(rs.getString("CLASSNAME"));
+			queryResultType.setVisualType(rs.getString("VISUAL_TYPE"));
 			return queryResultType;
 		}
 	}

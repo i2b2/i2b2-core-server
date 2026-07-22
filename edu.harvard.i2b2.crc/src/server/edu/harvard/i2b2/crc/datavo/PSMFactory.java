@@ -168,6 +168,7 @@ public class PSMFactory {
 		queryResultType.setVisualAttributeType(queryResult
 				.getVisualAttributeType());
 		queryResultType.setUserRoleCd(queryResult.getUserRoleCd());
+		queryResultType.setVisualType(queryResult.getVisualType());
 		return queryResultType;
 	}
 
