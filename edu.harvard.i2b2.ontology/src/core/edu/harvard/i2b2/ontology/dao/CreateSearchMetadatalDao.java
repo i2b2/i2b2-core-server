@@ -9,15 +9,10 @@
 package edu.harvard.i2b2.ontology.dao;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,36 +21,25 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.sql.DataSource;
-import javax.xml.stream.XMLEventWriter;
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.store.FSDirectory;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import edu.harvard.i2b2.common.exception.I2B2Exception;
-import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.ontology.dao.lucene.parser.LuceneIndexer;
 import edu.harvard.i2b2.ontology.dao.lucene.parser.LuceneIndexer.SuggestionIndexInfo;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.ontology.datavo.pm.ParamType;
-import edu.harvard.i2b2.ontology.datavo.pm.ParamsType;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.ejb.DBInfoType;
 import edu.harvard.i2b2.ontology.ejb.TableAccessType;
-import edu.harvard.i2b2.ontology.util.ConceptXMLWriterUtil;
-import edu.harvard.i2b2.ontology.util.ModifierXMLWriterUtil;
-import edu.harvard.i2b2.ontology.util.ObserverXMLWriterUtil;
 import edu.harvard.i2b2.ontology.util.OntologyUtil;
-import edu.harvard.i2b2.ontology.util.PatientDataXMLWriterUtil;
-import edu.harvard.i2b2.ontology.util.StringUtil;
 import edu.harvard.i2b2.pm.ws.PMServiceDriver;
 
-public class CreateSearchMetadatalDao extends JdbcDaoSupport {
+public class CreateSearchMetadatalDao { // extends JdbcDaoSupport {
 
 	private static Log log = LogFactory.getLog(CreateSearchMetadatalDao.class);
 

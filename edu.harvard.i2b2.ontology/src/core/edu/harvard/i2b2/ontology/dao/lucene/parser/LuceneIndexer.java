@@ -262,7 +262,7 @@ public final class LuceneIndexer {
 
 				
 				// Iterator<OntologyRow> it = closeableCsvToBean.csvToBean.iterator();
-				String stageSql = " select distinct C_NAME, C_TOTALNUM, C_BASECODE, C_FULLNAME from "  
+				String stageSql = " select distinct C_NAME, C_TOTALNUM, C_BASECODE, C_FULLNAME, c_visualattributes from "  
 						+ dbInfo.getDb_fullSchema() + tableName.getTableName() + " where c_visualattributes not like '_H%' and c_fullname like '" + category + "%'";
 
 
@@ -282,8 +282,15 @@ public final class LuceneIndexer {
 					if (resultSet.getString("C_BASECODE") != null) {
 
 						sqlResult += resultSet.getString("C_BASECODE") ; //.toString());
-					}		
+					}		else {
+						sqlResult += "@";
+					}
+					sqlResult += "~|";
+					sqlResult +=  resultSet.getString("c_visualattributes");
 
+
+					
+					
 					suggestionIndexInfoOption.suggestionIndexer.generateSuggestionsFromConceptName(sqlResult,  resultSet.getInt("c_totalnum")) ; //.toString());
 
 					/*
