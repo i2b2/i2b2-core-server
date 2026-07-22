@@ -109,7 +109,7 @@
     
     <xs:complexType name="get_termInfoType">
         <xs:sequence>
-            <xs:element name="self" type="xs:string"/>
+            <xs:element name="self" type="xs:string" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attributeGroup ref="ont:return_attributeGroup"/>
         <xs:attribute name="ancestors" type="xs:boolean" default="false"/>

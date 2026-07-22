@@ -8,6 +8,9 @@
 
 package edu.harvard.i2b2.crc.datavo.ontology;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -25,7 +28,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="self" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="self" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *       &lt;attGroup ref="{http://www.i2b2.org/xsd/cell/ont/1.1/}return_attributeGroup"/>
  *       &lt;attribute name="ancestors" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
@@ -43,7 +46,7 @@ import jakarta.xml.bind.annotation.XmlType;
 public class GetTermInfoType {
 
     @XmlElement(required = true)
-    protected String self;
+    protected List<String> self;
     @XmlAttribute(name = "hiddens")
     protected Boolean hiddens;
     @XmlAttribute(name = "synonyms")
@@ -66,7 +69,11 @@ public class GetTermInfoType {
      *
      */
     public String getSelf() {
-        return self;
+        if (self == null || self.size() == 0) {
+            return null;
+        } else {
+            return self.get(0);
+        }
     }
 
     /**
@@ -78,7 +85,19 @@ public class GetTermInfoType {
      *
      */
     public void setSelf(String value) {
-        this.self = value;
+        getSelfList().clear();
+        getSelfList().add(value);
+    }
+
+    /**
+     * Gets the value of the self list property.
+     *
+     */
+    public List<String> getSelfList() {
+        if (self == null) {
+            self = new ArrayList<String>();
+        }
+        return self;
     }
 
     /**

@@ -170,8 +170,9 @@ not by a separate `getTermInfo` parameter.
 
 ## Returning parent node details
 
-Clients that need full concept blocks for a selected term's parent nodes can
-request them in one `getTermInfo` call by setting `ancestors="true"`:
+Clients that need full concept blocks for selected terms' parent nodes can
+request them in one `getTermInfo` call by setting `ancestors="true"`. The
+request may contain one or more `self` elements.
 
 ```xml
 <message_body>
@@ -183,17 +184,27 @@ request them in one `getTermInfo` call by setting `ancestors="true"`:
       synonyms="false"
       ancestors="true">
     <self>\\ICD10_ICD9\ICD10\Diseases\Gout\Idiopathic gout\</self>
+    <self>\\ICD10_ICD9\ICD10\Diseases\Gout\Lead-induced gout\</self>
+    <self>\\ICD10_ICD9\ICD10\Diseases\Gout\Drug-induced gout\</self>
   </ont:get_term_info>
 </message_body>
 ```
 
 With `ancestors="true"`, the response is still the normal `concepts` payload.
-It contains the selected term plus its ancestor nodes, ordered from the root
-ancestor down to the selected term. Each returned node is mapped through the
-same `ConceptType` mapper used by ordinary `getTermInfo`, so clients receive
-full `concept` XML blocks rather than display-only names.
+It contains each selected term plus its ancestor nodes. Shared ancestors are
+returned once per ontology table, so clients avoid repeatedly receiving the
+same parent rows when many search results have common parents. Each returned
+node is mapped through the same `ConceptType` mapper used by ordinary
+`getTermInfo`, so clients receive full `concept` XML blocks rather than
+display-only names.
 
-The server derives the ancestor paths from the canonical `self` path and uses
-a recursive database query to retrieve all rows in one round trip. This
-replaces the slower client pattern of calling `get_name_info keyname="true"`
-and then issuing one `getTermInfo` request for each parent display path.
+The server groups requested paths by ontology table, derives ancestor paths
+from each canonical `self` path, and uses one recursive database query per
+table to retrieve all rows. A client can associate ancestors with a selected
+term by comparing canonical `key` prefixes; for example, a returned parent key
+belongs to a selected term when the selected term's key starts with the parent
+key.
+
+This replaces the slower client pattern of calling `get_name_info
+keyname="true"` and then issuing one `getTermInfo` request for each result or
+parent display path.

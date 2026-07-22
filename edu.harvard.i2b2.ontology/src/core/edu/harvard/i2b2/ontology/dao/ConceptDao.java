@@ -530,108 +530,139 @@ public class ConceptDao extends JdbcDaoSupport {
 		if(termInfoType.isHiddens() == false)
 			hidden = " and c_visualattributes not like '_H%'";
 
-		String tableCd = StringUtil.getTableCd(termInfoType.getSelf());
-		String tableName=null;
-		String protectedAccess=null;
-		String ontologyProtection = null;
-		String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
-		try {
-			tableName = jt.queryForObject(tableSql, String.class, tableCd);
-		} catch (DataAccessException e) {
-			log.error("Get Term Info Ancestors " + e.getMessage());
-			throw new I2B2DAOException("Database Error");
-		}
-		tableSql = "select distinct(c_protected_access) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
-		try {
-			protectedAccess = jt.queryForObject(tableSql, String.class, tableCd);
-		} catch (DataAccessException e) {
-			log.error("Get Term Info Ancestors " + e.getMessage());
-			throw new I2B2DAOException("Database Error");
-		}
-		tableSql = "select c_ontology_protection from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
-		try {
-			ontologyProtection = jt.queryForObject(tableSql, String.class, tableCd);
-		} catch (DataAccessException e) {
-			log.error("Get Term Info Ancestors " + e.getMessage());
-			throw new I2B2DAOException("Database Error");
-		}
-
-		String searchPath = StringUtil.getPath(termInfoType.getSelf());
-
 		String synonym = "";
 		if(termInfoType.isSynonyms() == false)
 			synonym = " and c_synonym_cd = 'N'";
 
-		String table = metadataSchema + tableName;
-		String sql = "";
-		if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-			sql = "WITH pathnames (path_fullname, c_pathorder)";
-			sql += " AS";
-			sql += " (";
-			sql += "    select c_fullname as path_fullname, 1 as c_pathorder";
-			sql += "    from " + table + " where c_fullname = ?";
-			sql += "    UNION ALL";
-			sql += "    select m.c_fullname as path_fullname, p.c_pathorder + 1 as c_pathorder";
-			sql += "    from " + table + " m";
-			sql += "        inner join pathnames p on m.c_fullname = substring(p.path_fullname, 1, len(p.path_fullname) - charindex('\\', reverse(p.path_fullname), 2) + 1)";
-			sql += "    where m.c_synonym_cd='N'";
-			sql += " )";
-			sql += " select '" + protectedAccess + "' as c_protected_access, '" + ontologyProtection + "' as c_ontology_protection, " + parameters;
-			sql += " from " + table + " t inner join pathnames on t.c_fullname = pathnames.path_fullname";
-			sql += " where 1=1 " + hidden + synonym;
-			sql += " order by pathnames.c_pathorder desc, upper(c_name)";
-		}
-		else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-			sql = "WITH pathnames (path_fullname, c_pathorder) ";
-			sql += " AS ";
-			sql += " ( ";
-			sql += "   select c_fullname as path_fullname, 1 as c_pathorder";
-			sql += "   from " + table + " where c_fullname = ?";
-			sql += "   UNION ALL";
-			sql += "   select m.c_fullname as path_fullname, p.c_pathorder + 1 as c_pathorder";
-			sql += "   from " + table + " m";
-			sql += "       inner join pathnames p on m.c_fullname = substr(p.path_fullname, 1, length(p.path_fullname) - instr(reverse(p.path_fullname),'\\',  2) + 1)";
-			sql += "   where m.c_synonym_cd='N'";
-			sql += " )";
-			sql += " select '" + protectedAccess + "' as c_protected_access, '" + ontologyProtection + "' as c_ontology_protection, " + parameters;
-			sql += " from " + table + " t inner join pathnames on t.c_fullname = pathnames.path_fullname";
-			sql += " where 1=1 " + hidden + synonym;
-			sql += " order by pathnames.c_pathorder desc, upper(c_name)";
-		}
-		else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-			sql = "WITH RECURSIVE pathnames (path_fullname, c_pathorder)";
-			sql += " AS";
-			sql += " (";
-			sql += "    select c_fullname as path_fullname, 1 as c_pathorder";
-			sql += "    from " + table + " where c_fullname = ?";
-			sql += "    UNION ALL";
-			sql += "    select m.c_fullname as path_fullname, p.c_pathorder + 1 as c_pathorder";
-			sql += "    from " + table + " m";
-			sql += "        inner join pathnames p on m.c_fullname = substr(p.path_fullname, 1, length(p.path_fullname) - strpos(substr(reverse(p.path_fullname), 2), '\\') )";
-			sql += "    where m.c_synonym_cd='N'";
-			sql += " )";
-			sql += " select '" + protectedAccess + "' as c_protected_access, '" + ontologyProtection + "' as c_ontology_protection, " + parameters;
-			sql += " from " + table + " t inner join pathnames on t.c_fullname = pathnames.path_fullname";
-			sql += " where 1=1 " + hidden + synonym;
-			sql += " order by pathnames.c_pathorder desc, upper(c_name)";
-		}
-		else {
-			log.error("Unsupported database type for getTermInfo ancestors: " + dbInfo.getDb_serverType());
-			throw new I2B2DAOException("Database Error");
+		if (termInfoType.getSelfList().size() == 0) {
+			return new ArrayList();
 		}
 
-		List queryResult = null;
-		try {
-			queryResult = jt.query(sql, getConceptNodeMapper(new NodeType(termInfoType), ofuscatedUserFlag, dbInfo.getDb_serverType()), searchPath );
-		} catch (DataAccessException e) {
-			log.error("Get Term Info Ancestors " + e.getMessage());
-			throw new I2B2DAOException("Database Error");
+		Map<String, List<String>> pathsByTableCd = new HashMap<String, List<String>>();
+		List<String> tableCds = new ArrayList<String>();
+		for (String self: termInfoType.getSelfList()) {
+			String tableCd = StringUtil.getTableCd(self);
+			if (!pathsByTableCd.containsKey(tableCd)) {
+				pathsByTableCd.put(tableCd, new ArrayList<String>());
+				tableCds.add(tableCd);
+			}
+			pathsByTableCd.get(tableCd).add(StringUtil.getPath(self));
+		}
+
+		List queryResult = new ArrayList();
+		for (String tableCd: tableCds) {
+			List<String> searchPaths = pathsByTableCd.get(tableCd);
+			GetTermInfoType tableTermInfoType = new GetTermInfoType();
+			tableTermInfoType.setSelf("\\\\" + tableCd + "\\");
+			tableTermInfoType.setType(termInfoType.getType());
+			tableTermInfoType.setBlob(termInfoType.isBlob());
+			String placeholders = buildPlaceholders(searchPaths.size());
+			String tableName=null;
+			String protectedAccess=null;
+			String ontologyProtection = null;
+			String tableSql = "select distinct(c_table_name) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
+			try {
+				tableName = jt.queryForObject(tableSql, String.class, tableCd);
+			} catch (DataAccessException e) {
+				log.error("Get Term Info Ancestors " + e.getMessage());
+				throw new I2B2DAOException("Database Error");
+			}
+			tableSql = "select distinct(c_protected_access) from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
+			try {
+				protectedAccess = jt.queryForObject(tableSql, String.class, tableCd);
+			} catch (DataAccessException e) {
+				log.error("Get Term Info Ancestors " + e.getMessage());
+				throw new I2B2DAOException("Database Error");
+			}
+			tableSql = "select c_ontology_protection from " + metadataSchema + "table_access where c_table_cd = ?" + hidden;
+			try {
+				ontologyProtection = jt.queryForObject(tableSql, String.class, tableCd);
+			} catch (DataAccessException e) {
+				log.error("Get Term Info Ancestors " + e.getMessage());
+				throw new I2B2DAOException("Database Error");
+			}
+
+			String table = metadataSchema + tableName;
+			String sql = "";
+			if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+				sql = "WITH pathnames (path_fullname, c_pathorder)";
+				sql += " AS";
+				sql += " (";
+				sql += "    select c_fullname as path_fullname, 1 as c_pathorder";
+				sql += "    from " + table + " where c_fullname in (" + placeholders + ")";
+				sql += "    UNION ALL";
+				sql += "    select m.c_fullname as path_fullname, p.c_pathorder + 1 as c_pathorder";
+				sql += "    from " + table + " m";
+				sql += "        inner join pathnames p on m.c_fullname = substring(p.path_fullname, 1, len(p.path_fullname) - charindex('\\', reverse(p.path_fullname), 2) + 1)";
+				sql += "    where m.c_synonym_cd='N'";
+				sql += " )";
+				sql += " select '" + protectedAccess + "' as c_protected_access, '" + ontologyProtection + "' as c_ontology_protection, " + parameters;
+				sql += " from " + table + " t inner join (select path_fullname, max(c_pathorder) as c_pathorder from pathnames group by path_fullname) pathnames";
+				sql += "     on t.c_fullname = pathnames.path_fullname";
+				sql += " where 1=1 " + hidden + synonym;
+				sql += " order by pathnames.c_pathorder desc, upper(c_name)";
+			}
+			else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
+				sql = "WITH pathnames (path_fullname, c_pathorder) ";
+				sql += " AS ";
+				sql += " ( ";
+				sql += "   select c_fullname as path_fullname, 1 as c_pathorder";
+				sql += "   from " + table + " where c_fullname in (" + placeholders + ")";
+				sql += "   UNION ALL";
+				sql += "   select m.c_fullname as path_fullname, p.c_pathorder + 1 as c_pathorder";
+				sql += "   from " + table + " m";
+				sql += "       inner join pathnames p on m.c_fullname = substr(p.path_fullname, 1, length(p.path_fullname) - instr(reverse(p.path_fullname),'\\',  2) + 1)";
+				sql += "   where m.c_synonym_cd='N'";
+				sql += " )";
+				sql += " select '" + protectedAccess + "' as c_protected_access, '" + ontologyProtection + "' as c_ontology_protection, " + parameters;
+				sql += " from " + table + " t inner join (select path_fullname, max(c_pathorder) as c_pathorder from pathnames group by path_fullname) pathnames";
+				sql += "     on t.c_fullname = pathnames.path_fullname";
+				sql += " where 1=1 " + hidden + synonym;
+				sql += " order by pathnames.c_pathorder desc, upper(c_name)";
+			}
+			else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
+				sql = "WITH RECURSIVE pathnames (path_fullname, c_pathorder)";
+				sql += " AS";
+				sql += " (";
+				sql += "    select c_fullname as path_fullname, 1 as c_pathorder";
+				sql += "    from " + table + " where c_fullname in (" + placeholders + ")";
+				sql += "    UNION ALL";
+				sql += "    select m.c_fullname as path_fullname, p.c_pathorder + 1 as c_pathorder";
+				sql += "    from " + table + " m";
+				sql += "        inner join pathnames p on m.c_fullname = substr(p.path_fullname, 1, length(p.path_fullname) - strpos(substr(reverse(p.path_fullname), 2), '\\') )";
+				sql += "    where m.c_synonym_cd='N'";
+				sql += " )";
+				sql += " select '" + protectedAccess + "' as c_protected_access, '" + ontologyProtection + "' as c_ontology_protection, " + parameters;
+				sql += " from " + table + " t inner join (select path_fullname, max(c_pathorder) as c_pathorder from pathnames group by path_fullname) pathnames";
+				sql += "     on t.c_fullname = pathnames.path_fullname";
+				sql += " where 1=1 " + hidden + synonym;
+				sql += " order by pathnames.c_pathorder desc, upper(c_name)";
+			}
+			else {
+				log.error("Unsupported database type for getTermInfo ancestors: " + dbInfo.getDb_serverType());
+				throw new I2B2DAOException("Database Error");
+			}
+
+			try {
+				queryResult.addAll(jt.query(sql, getConceptNodeMapper(new NodeType(tableTermInfoType), ofuscatedUserFlag, dbInfo.getDb_serverType()), searchPaths.toArray(new Object[searchPaths.size()])));
+			} catch (DataAccessException e) {
+				log.error("Get Term Info Ancestors " + e.getMessage());
+				throw new I2B2DAOException("Database Error");
+			}
 		}
 
 		log.debug("Term Info ancestors result size = " + queryResult.size());
 
 		return queryResult;
 
+	}
+
+	private String buildPlaceholders(int count) {
+		String placeholders = "?";
+		for (int i=1; i<count; i++) {
+			placeholders += ", ?";
+		}
+		return placeholders;
 	}
 
 
