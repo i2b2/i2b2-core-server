@@ -726,10 +726,15 @@ public class ConceptDao extends JdbcDaoSupport {
 			if(vocabType.isSynonyms() == false)
 				synonym = " and c_synonym_cd = 'N'";
 
-			if (tableCd.equals("@"))
-				nameInfoSql = nameInfoSql + hidden + synonym;  
-			else			
-				nameInfoSql = nameInfoSql + hidden + synonym + " order by c_hlevel, c_totalnum, upper(c_name) asc ";  
+			nameInfoSql = nameInfoSql + hidden + synonym + " order by c_hlevel, c_totalnum, upper(c_name) asc ";
+
+			// Bound each ontology query by the remaining request budget so category="@"
+			// does not fetch every match before the handler applies max.
+			int queryMax = getRemainingNameInfoQueryMax(queryResult, vocabType);
+			if (queryMax == 0) {
+				break;
+			}
+			nameInfoSql = applyRowLimit(nameInfoSql, dbInfo.getDb_serverType(), queryMax);
 
 			log.info("nameInfoSql:" + nameInfoSql + " " +compareName);
 
@@ -767,7 +772,7 @@ public class ConceptDao extends JdbcDaoSupport {
 					//jgk
 					// This does a linear search through fullnames for each previous fullname, O(n^2) :(
 					// BUT it assumes its sorted by hlevel so it only has to search through whats already seen - n(n+1)/2 operations 
-					if (list.size()>0 && vocabType.isReducedResults()!=null && vocabType.isReducedResults()) {
+					if (list.size()>0 && ((vocabType.isReducedResults()!=null && vocabType.isReducedResults()) || (vocabType.isAncestors()!=null && vocabType.isAncestors()))) {
 						ArrayList<String> seen = new ArrayList<String>(); 
 						ArrayList<ConceptType> keep = new ArrayList<ConceptType>();
 						Iterator<ConceptType> it = list.iterator();
@@ -782,7 +787,7 @@ public class ConceptDao extends JdbcDaoSupport {
 									break;
 								}
 							}
-							if (vocabType.getMax() == 0) {
+							if (vocabType.getMax() != null && vocabType.getMax() == 0) {
 								if (node.getTotalnum() != null && node.getTotalnum() > 0) {
 									keep.add(node);
 								}
@@ -803,6 +808,7 @@ public class ConceptDao extends JdbcDaoSupport {
 						// Only do keyname lookups if we haven't exceeded the max
 						HashMap<String,String> KeynameCache = new HashMap<String,String>();
 						int skipCount = 0; // for debug, number of cache hits
+						int keynameLimit = getRemainingNameInfoResultMax(queryResult, vocabType);
 						//int skipPathCount = category.split("\\\\").length -2; // preamble elements in path, not to be output in key name (everything but final element in category path)
 
 						// A little code to ignore a path in the category name, if there is more than one element.
@@ -820,7 +826,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 							// Only do keyname lookups up to the max return result size
 							keynameCount++;
-							if (keynameCount>vocabType.getMax()) break;
+							if (keynameLimit != -1 && keynameCount > keynameLimit) break;
 
 							if (KeynameCache.containsKey(parentPath)) {
 								cType.setKeyName(KeynameCache.get(parentPath));
@@ -956,6 +962,12 @@ public class ConceptDao extends JdbcDaoSupport {
 					else
 						queryResult.addAll(list);
 
+					// Once the global budget is met, stop scanning later ontologies in
+					// the category="@" loop; the handler will still trim/report max.
+					if (isNameInfoBudgetSatisfied(queryResult, vocabType)) {
+						break;
+					}
+
 				} catch (DataAccessException e) {
 					log.error("Search by Name " + e.getMessage());
 					e.printStackTrace();
@@ -1068,20 +1080,32 @@ public class ConceptDao extends JdbcDaoSupport {
 	private List<ConceptType> mergeAncestorsAndSearchResults(List<ConceptType> ancestors, List<ConceptType> searchResults) {
 		List<ConceptType> merged = new ArrayList<ConceptType>();
 		Map<String, Integer> indexByKey = new HashMap<String, Integer>();
-		for (ConceptType ancestor: ancestors) {
-			indexByKey.put(ancestor.getKey(), merged.size());
-			merged.add(ancestor);
-		}
 		for (ConceptType searchResult: searchResults) {
-			Integer index = indexByKey.get(searchResult.getKey());
-			if (index == null) {
-				indexByKey.put(searchResult.getKey(), merged.size());
-				merged.add(searchResult);
-			} else {
-				merged.set(index, searchResult);
+			for (ConceptType ancestor: ancestors) {
+				if (isAncestorOfSearchResult(ancestor, searchResult)) {
+					addOrReplaceConcept(merged, indexByKey, ancestor);
+				}
 			}
+			addOrReplaceConcept(merged, indexByKey, searchResult);
 		}
 		return merged;
+	}
+
+	private boolean isAncestorOfSearchResult(ConceptType ancestor, ConceptType searchResult) {
+		if (ancestor.getKey() == null || searchResult.getKey() == null) {
+			return false;
+		}
+		return searchResult.getKey().startsWith(ancestor.getKey()) && !searchResult.getKey().equals(ancestor.getKey());
+	}
+
+	private void addOrReplaceConcept(List<ConceptType> concepts, Map<String, Integer> indexByKey, ConceptType concept) {
+		Integer index = indexByKey.get(concept.getKey());
+		if (index == null) {
+			indexByKey.put(concept.getKey(), concepts.size());
+			concepts.add(concept);
+		} else if (concept.isSearchResult() != null && concept.isSearchResult()) {
+			concepts.set(index, concept);
+		}
 	}
 
 	private int countSearchResults(List<ConceptType> concepts) {
@@ -1103,6 +1127,63 @@ public class ConceptDao extends JdbcDaoSupport {
 			placeholders += ", ?";
 		}
 		return placeholders;
+	}
+
+	private int getRemainingNameInfoQueryMax(List<ConceptType> queryResult, VocabRequestType vocabType) {
+		if (vocabType.getMax() == null || vocabType.getMax() == 0) {
+			return -1;
+		}
+		// Non-ancestor searches keep one extra row so the handler can preserve
+		// the existing MAX_EXCEEDED response without fetching all matches.
+		int target = (vocabType.isAncestors() != null && vocabType.isAncestors()) ? vocabType.getMax() : vocabType.getMax() + 1;
+		int used = countNameInfoBudgetRows(queryResult, vocabType);
+		return Math.max(0, target - used);
+	}
+
+	private int getRemainingNameInfoResultMax(List<ConceptType> queryResult, VocabRequestType vocabType) {
+		if (vocabType.getMax() == null || vocabType.getMax() == 0) {
+			return -1;
+		}
+		// Expensive keyname and ancestor work should only run for rows that can
+		// be returned as real search hits, not the overflow row used for max.
+		int used = countNameInfoBudgetRows(queryResult, vocabType);
+		return Math.max(0, vocabType.getMax() - used);
+	}
+
+	private boolean isNameInfoBudgetSatisfied(List<ConceptType> queryResult, VocabRequestType vocabType) {
+		return getRemainingNameInfoQueryMax(queryResult, vocabType) == 0;
+	}
+
+	private int countNameInfoBudgetRows(List<ConceptType> queryResult, VocabRequestType vocabType) {
+		if (vocabType.isAncestors() != null && vocabType.isAncestors()) {
+			return countSearchResults(queryResult);
+		}
+		return countConcepts(queryResult);
+	}
+
+	private int countConcepts(List<ConceptType> concepts) {
+		if (concepts == null) {
+			return 0;
+		}
+		return concepts.size();
+	}
+
+	private String applyRowLimit(String sql, String dbType, int maxRows) {
+		if (maxRows < 1) {
+			return sql;
+		}
+		// Keep the limit SQL local to this query so other ontology operations
+		// using the shared JdbcTemplate are not affected.
+		if(dbType.toUpperCase().equals("SQLSERVER")){
+			return sql.replaceFirst("(?i)^select\\s+", "select top " + maxRows + " ");
+		}
+		else if(dbType.toUpperCase().equals("ORACLE")){
+			return "select * from (" + sql + ") where ROWNUM <= " + maxRows;
+		}
+		else if(dbType.toUpperCase().equals("POSTGRESQL")){
+			return sql + " limit " + maxRows;
+		}
+		return sql;
 	}
 
 	public List findCodeInfo(final VocabRequestType vocabType, ProjectType projectInfo, DBInfoType dbInfo) throws I2B2DAOException, I2B2Exception{

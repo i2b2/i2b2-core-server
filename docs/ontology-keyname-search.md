@@ -205,9 +205,13 @@ the matched result row wins and is returned with `search_result=true`.
 
 Shared ancestors are returned once per searched ontology table, so clients
 avoid repeatedly receiving the same parent rows when many search results have
-common parents. A client can associate ancestors with a marked search result by
-comparing canonical `key` prefixes; for example, a returned parent key belongs
-to a search result when the search result's key starts with the parent key.
+common parents. The search hits are reduced before ancestor lookup, using the
+same descendant-suppression rule as `reducedResults=true`: when a matching
+active parent term is returned, matching descendant terms under that parent are
+not also marked as search results. A client can associate ancestors with a
+marked search result by comparing canonical `key` prefixes; for example, a
+returned parent key belongs to a search result when the search result's key
+starts with the parent key.
 
 When `ancestors="true"`, `max` limits the number of marked search results.
 Ancestor rows are additional context and do not count against that search-hit
