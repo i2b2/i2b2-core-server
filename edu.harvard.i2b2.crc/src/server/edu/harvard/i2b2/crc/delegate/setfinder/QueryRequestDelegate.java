@@ -168,8 +168,9 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 				LogTimingUtil.clearPocessTiming(projectId, securityType.getUsername(), securityType.getDomain());
 				ParamUtil paramUtil = new ParamUtil();
 				paramUtil.clearParam(projectId, securityType.getUsername(), securityType.getDomain(), ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
+				paramUtil.clearParam(projectId, securityType.getUsername(), securityType.getDomain(), ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD);
 				if (projectType.getParam() != null) {
-					for (ParamType param : projectType.getParam()) { 
+					for (ParamType param : projectType.getParam()) {
 						if (param.getName() != null && param.getName().trim().equalsIgnoreCase(LogTimingUtil.PM_ENABLE_PROCESS_TIMING)) {
 							//this.putPocessTiming(projectId, securityType.getUsername(), securityType.getDomain(), param);
 							LogTimingUtil.putPocessTiming(projectId, securityType.getUsername(), securityType.getDomain(), param);
@@ -180,6 +181,10 @@ public class QueryRequestDelegate extends RequestHandlerDelegate {
 							paramUtil.putParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION,param);
 							String unitCdCache = paramUtil.getParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
 							//logesapi.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_UNITCD_CONVERSION  + "[" + unitCdCache + "]" );
+						} else if (param.getName() != null && param.getName().trim().equalsIgnoreCase(ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD))  {
+							paramUtil.putParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD,param);
+							String numericConceptCdCache = paramUtil.getParam(projectId, securityType.getUsername(), securityType.getDomain(),ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD);
+							log.debug("CRC param stored in the cache Project Id [" + projectId + "] user [" + securityType.getUsername() + "] domain [" + securityType.getDomain() + "] " + ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD  + "[" + numericConceptCdCache + "]" );
 						}
 					}
 				}

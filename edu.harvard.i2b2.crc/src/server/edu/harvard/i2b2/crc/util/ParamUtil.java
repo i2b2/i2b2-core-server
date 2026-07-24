@@ -19,6 +19,7 @@ public class ParamUtil {
 
 	public static final String PM_ENABLE_PROCESS_TIMING = "PM_ENABLE_PROCESS_TIMING";
 	public static final String CRC_ENABLE_UNITCD_CONVERSION = "CRC_ENABLE_UNITCD_CONVERSION";
+	public static final String CRC_ENABLE_NUMERIC_CONCEPT_CD = "CRC_ENABLE_NUMERIC_CONCEPT_CD";
 	
 	public  void putParam(String projectId, String userId, String domainId,String paramName,
 			ParamType paramType) {

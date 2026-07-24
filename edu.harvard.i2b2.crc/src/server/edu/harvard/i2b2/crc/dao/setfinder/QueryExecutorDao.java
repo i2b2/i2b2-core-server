@@ -171,11 +171,16 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 			}
 
 			projectParamMap.put(ParamUtil.PM_ENABLE_PROCESS_TIMING, processTimingFlag);
-			ParamUtil projectParamUtil = new ParamUtil(); 
-			String unitConversionFlag = projectParamUtil.getParam(originalDataSourceLookup.getProjectPath(), originalDataSourceLookup.getOwnerId(), 
+			ParamUtil projectParamUtil = new ParamUtil();
+			String unitConversionFlag = projectParamUtil.getParam(originalDataSourceLookup.getProjectPath(), originalDataSourceLookup.getOwnerId(),
 					originalDataSourceLookup.getDomainId(), ParamUtil.CRC_ENABLE_UNITCD_CONVERSION);
-			if (unitConversionFlag != null) { 
+			if (unitConversionFlag != null) {
 				projectParamMap.put(ParamUtil.CRC_ENABLE_UNITCD_CONVERSION, unitConversionFlag.trim());
+			}
+			String numericConceptCdFlag = projectParamUtil.getParam(originalDataSourceLookup.getProjectPath(), originalDataSourceLookup.getOwnerId(),
+					originalDataSourceLookup.getDomainId(), ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD);
+			if (numericConceptCdFlag != null) {
+				projectParamMap.put(ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD, numericConceptCdFlag.trim());
 			}
 
 
