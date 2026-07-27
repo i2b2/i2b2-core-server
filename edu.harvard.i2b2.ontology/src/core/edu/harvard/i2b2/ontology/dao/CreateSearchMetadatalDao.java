@@ -77,14 +77,14 @@ public class CreateSearchMetadatalDao { // extends JdbcDaoSupport {
 		}
 		try {
 			param = PMServiceDriver.getProjectParam(
-					"AUTOSUGGEST_INDEX",  securityType, projectInfo.getId(),
+					"AUTOSUGGEST_INDEX_STATUS",  securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
 			if (param == null)
 			{
 				PMServiceDriver.setProjectParam("A",
-						"AUTOSUGGEST_INDEX", "RUNNING", securityType, projectInfo.getId(),
+						"AUTOSUGGEST_INDEX_STATUS", "RUNNING", securityType, projectInfo.getId(),
 						OntologyUtil.getInstance()
 						.getPmEndpointReference());
 			}
@@ -98,13 +98,13 @@ public class CreateSearchMetadatalDao { // extends JdbcDaoSupport {
 				else 
 				{
 					PMServiceDriver.setProjectParam(param.getId() ,"A",
-							"AUTOSUGGEST_INDEX", "RUNNING", securityType, projectInfo.getId(),
+							"AUTOSUGGEST_INDEX_STATUS", "RUNNING", securityType, projectInfo.getId(),
 							OntologyUtil.getInstance()
 							.getPmEndpointReference());
 				}
 			}
 			param = PMServiceDriver.getProjectParam(
-					"AUTOSUGGEST_INDEX",  securityType, projectInfo.getId(),
+					"AUTOSUGGEST_INDEX_STATUS",  securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
@@ -213,13 +213,13 @@ public class CreateSearchMetadatalDao { // extends JdbcDaoSupport {
 			log.debug("Finished creating the ontology auto-suggest indices");
 			suggestIndexDirectory.close();
 			PMServiceDriver.setProjectParam(param.getId() ,"A",
-					"AUTOSUGGEST_INDEX", "FINISHED", securityType, projectInfo.getId(),
+					"AUTOSUGGEST_INDEX_STATUS", "FINISHED", securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
 		} catch (SQLException sqlEx) {
 			PMServiceDriver.setProjectParam(param.getId() ,"A",
-					"AUTOSUGGEST_INDEX", "ERROR", securityType, projectInfo.getId(),
+					"AUTOSUGGEST_INDEX_STATUS", "ERROR", securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 			PMServiceDriver.setProjectParam("S",
@@ -231,7 +231,7 @@ public class CreateSearchMetadatalDao { // extends JdbcDaoSupport {
 		} catch (Exception e) {
 			if (isAlreadyRunning == false) {
 			PMServiceDriver.setProjectParam(param.getId() ,"A",
-					"AUTOSUGGEST_INDEX", "ERROR", securityType, projectInfo.getId(),
+					"AUTOSUGGEST_INDEX_STATUS", "ERROR", securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 			PMServiceDriver.setProjectParam("S",
