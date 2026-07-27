@@ -13,16 +13,22 @@
  * 		Christopher Herrick
  */
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
- 
+	 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.sql.DataSource;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.axis2.AxisFault;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
@@ -30,6 +36,7 @@ import org.w3c.dom.Element;
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.common.exception.StackTraceUtil;
+import edu.harvard.i2b2.common.util.ServiceLocator;
 import edu.harvard.i2b2.common.util.jaxb.JAXBUtilException;
 import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.dao.setfinder.querybuilder.ConceptNotFoundException;
@@ -93,6 +100,7 @@ public abstract class TemporalPanelItem {
 	protected String factTable = "observation_fact";
 	protected boolean isProtected = false;
 	protected String ontologyProtection = null;
+	private static Map<String, String> numericConceptCdTypeCache = Collections.synchronizedMap(new HashMap<String, String>());
 	
 	/**
 	 * Constructor
@@ -370,8 +378,9 @@ public abstract class TemporalPanelItem {
 			this.dimCode = this.dimCode.replaceAll("\\\\", "\\\\\\\\");
 
 		}
+		String dimensionSelectColumn = getDimensionSelectColumn();
 		dimensionSql = tableAlias + this.factTableColumn + " IN (select "
-				+ this.factTableColumn + " from " + noLockSqlServer
+				+ dimensionSelectColumn + " from " + noLockSqlServer
 				+ parent.getDatabaseSchema() + this.tableName
 				+ "  " + " where " + this.columnName + " "
 				+ this.operator + " " + this.dimCode;
@@ -385,6 +394,100 @@ public abstract class TemporalPanelItem {
 		}
 		dimensionSql += ")";
 		return dimensionSql;
+	}
+
+	private String getDimensionSelectColumn() {
+		String numericType = getNumericConceptCdType();
+		if (numericType == null) {
+			return this.factTableColumn;
+		}
+		log.info("Using TRY_CONVERT(" + numericType + ") for " + this.tableName + "." + this.factTableColumn
+				+ " because " + this.factTable + "." + this.factTableColumn + " is numeric");
+		return "TRY_CONVERT(" + numericType + ", " + this.factTableColumn + ") AS " + this.factTableColumn;
+	}
+
+	private String getNumericConceptCdType() {
+		if (!isNumericConceptCdEnabled() || !isSqlServer() || !"concept_cd".equalsIgnoreCase(this.factTableColumn)) {
+			return null;
+		}
+		if (this.factTable == null || this.factTable.trim().length() == 0) {
+			return null;
+		}
+
+		String cacheKey = parent.getDataSourceLookup().getDataSource() + "|" + parent.getDatabaseSchema()
+				+ this.factTable.toLowerCase() + "." + this.factTableColumn.toLowerCase();
+		if (numericConceptCdTypeCache.containsKey(cacheKey)) {
+			return numericConceptCdTypeCache.get(cacheKey);
+		}
+
+		String numericType = lookupNumericColumnType(this.factTable, this.factTableColumn);
+		numericConceptCdTypeCache.put(cacheKey, numericType);
+		if (numericType != null) {
+			log.info("Detected numeric fact column " + this.factTable + "." + this.factTableColumn
+					+ " with type " + numericType);
+		}
+		return numericType;
+	}
+
+	private boolean isNumericConceptCdEnabled() {
+		if (parent.getProjectParameterMap() == null
+				|| parent.getProjectParameterMap().get(ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD) == null) {
+			return false;
+		}
+		String numericConceptCdFlag = (String) parent.getProjectParameterMap().get(ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD);
+		return numericConceptCdFlag != null && numericConceptCdFlag.trim().equalsIgnoreCase("ON");
+	}
+
+	private boolean isSqlServer() {
+		return parent.getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER);
+	}
+
+	private String lookupNumericColumnType(String factTableName, String factColumnName) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet resultSet = null;
+		try {
+			DataSource dataSource = ServiceLocator.getInstance()
+					.getAppServerDataSource(parent.getDataSourceLookup().getDataSource());
+			conn = dataSource.getConnection();
+			String objectName = factTableName;
+			if (!objectName.contains(".")) {
+				objectName = parent.getDatabaseSchema() + objectName;
+			}
+			stmt = conn.prepareStatement("select TYPE_NAME(system_type_id) as data_type "
+					+ "from sys.columns where object_id = OBJECT_ID(?) and name = ?");
+			stmt.setString(1, objectName);
+			stmt.setString(2, factColumnName);
+			resultSet = stmt.executeQuery();
+			if (resultSet.next()) {
+				String dataType = resultSet.getString("data_type");
+				if ("int".equalsIgnoreCase(dataType) || "bigint".equalsIgnoreCase(dataType)) {
+					return dataType.toLowerCase();
+				}
+				log.info("Numeric concept_cd optimization is enabled, but " + objectName + "." + factColumnName
+						+ " has type " + dataType);
+			} else {
+				log.info("Numeric concept_cd optimization is enabled, but no metadata row was found for "
+						+ objectName + "." + factColumnName);
+			}
+		} catch (Exception e) {
+			log.info("Could not determine fact column type for " + factTableName + "." + factColumnName, e);
+		} finally {
+			try {
+				if (resultSet != null) {
+					resultSet.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				log.info("Error closing numeric concept_cd metadata lookup resources", e);
+			}
+		}
+		return null;
 	}
 
 	/**

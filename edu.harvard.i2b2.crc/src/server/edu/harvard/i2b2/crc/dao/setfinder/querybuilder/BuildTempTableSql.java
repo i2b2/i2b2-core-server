@@ -8,12 +8,7 @@
  ******************************************************************************/
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -22,7 +17,6 @@ import java.util.TreeMap;
 import org.w3c.dom.Element;
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
-import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
 import edu.harvard.i2b2.crc.datavo.ontology.ModifierType;
@@ -49,7 +43,6 @@ public class BuildTempTableSql extends CRCDAO {
 	ProcessTimingReportUtil processTimingUtil = null;
 	String processTimingStr = "";
 	Map projectParamMap = null;
-	private Map<String, String> numericConceptCdTypeCache = new HashMap<String, String>();
 	boolean allowLargeTextValueConstrainFlag = true;
 
 	public BuildTempTableSql(DataSourceLookup dataSourceLookup, String queryXML) {
@@ -216,9 +209,8 @@ public class BuildTempTableSql extends CRCDAO {
 		String dimensionSql = "";
 		// if patient list
 
-		String dimensionSelectColumn = getDimensionSelectColumn(conceptType);
 		dimensionSql = conceptType.getFacttablecolumn() + " IN (select "
-				+ dimensionSelectColumn + " from "
+				+ conceptType.getFacttablecolumn() + " from "
 				+ getDbSchemaName() + conceptType.getTablename() + "  "
 				+ noLockSqlServer + " where " + conceptType.getColumnname()
 				+ " " + conceptType.getOperator() + " "
@@ -231,115 +223,6 @@ public class BuildTempTableSql extends CRCDAO {
 		dimensionSql += ")";
 
 		return dimensionSql;
-	}
-
-	private String getDimensionSelectColumn(ConceptType conceptType) {
-		String factTableColumn = conceptType.getFacttablecolumn();
-		String columnName = getColumnName(factTableColumn);
-		// Keep standard i2b2 string concept_cd behavior unless the target fact column is actually numeric.
-		String numericType = getNumericConceptCdType(conceptType, columnName);
-		if (numericType == null) {
-			return columnName;
-		}
-		log.debug("Using TRY_CONVERT(" + numericType + ") for concept_dimension." + columnName
-				+ " because " + factTableColumn + " is numeric");
-		return "TRY_CONVERT(" + numericType + ", " + columnName + ") AS " + columnName;
-	}
-
-	private String getNumericConceptCdType(ConceptType conceptType, String columnName) {
-		if (!isNumericConceptCdEnabled() || !isSqlServer() || !"concept_cd".equalsIgnoreCase(columnName)) {
-			return null;
-		}
-
-		String factTableName = getFactTableName(conceptType.getFacttablecolumn());
-		if (factTableName == null) {
-			return null;
-		}
-
-		String cacheKey = factTableName.toLowerCase() + "." + columnName.toLowerCase();
-		if (numericConceptCdTypeCache.containsKey(cacheKey)) {
-			return numericConceptCdTypeCache.get(cacheKey);
-		}
-
-		String numericType = lookupNumericColumnType(factTableName, columnName);
-		numericConceptCdTypeCache.put(cacheKey, numericType);
-		if (numericType != null) {
-			log.debug("Detected numeric fact column " + factTableName + "." + columnName
-					+ " with type " + numericType);
-		}
-		return numericType;
-	}
-
-	private boolean isNumericConceptCdEnabled() {
-		if (projectParamMap == null || projectParamMap.get(ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD) == null) {
-			return false;
-		}
-		String numericConceptCdFlag = (String) projectParamMap.get(ParamUtil.CRC_ENABLE_NUMERIC_CONCEPT_CD);
-		return numericConceptCdFlag != null && numericConceptCdFlag.trim().equalsIgnoreCase("ON");
-	}
-
-	private boolean isSqlServer() {
-		return dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SQLSERVER);
-	}
-
-	private String getFactTableName(String factTableColumn) {
-		if (factTableColumn == null || !factTableColumn.contains(".")) {
-			return null;
-		}
-		return factTableColumn.substring(0, factTableColumn.lastIndexOf(".")).trim();
-	}
-
-	private String getColumnName(String factTableColumn) {
-		if (factTableColumn == null) {
-			return "";
-		}
-		String columnName = factTableColumn.trim();
-		if (columnName.contains(".")) {
-			columnName = columnName.substring(columnName.lastIndexOf(".") + 1);
-		}
-		return columnName;
-	}
-
-	private String lookupNumericColumnType(String tableName, String columnName) {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet resultSet = null;
-		try {
-			conn = getApplicationDataSource(dataSourceLookup.getDataSource()).getConnection();
-			String objectName = tableName;
-			if (!objectName.contains(".")) {
-				objectName = getDbSchemaName() + objectName;
-			}
-			stmt = conn.prepareStatement("select TYPE_NAME(system_type_id) as data_type "
-					+ "from sys.columns where object_id = OBJECT_ID(?) and name = ?");
-			stmt.setString(1, objectName);
-			stmt.setString(2, columnName);
-			resultSet = stmt.executeQuery();
-			if (resultSet.next()) {
-				String dataType = resultSet.getString("data_type");
-				if ("int".equalsIgnoreCase(dataType) || "bigint".equalsIgnoreCase(dataType)) {
-					return dataType.toLowerCase();
-				}
-			}
-		} catch (Exception e) {
-			// Metadata lookup is advisory; keep the legacy SQL if detection fails.
-			log.debug("Could not determine fact column type for " + tableName + "." + columnName, e);
-		} finally {
-			try {
-				if (resultSet != null) {
-					resultSet.close();
-				}
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				log.debug("Error closing numeric concept_cd metadata lookup resources", e);
-			}
-		}
-		return null;
 	}
 
 	// function to build
