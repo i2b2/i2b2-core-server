@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import org.w3c.dom.Element;
 import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
+import edu.harvard.i2b2.crc.dao.DAOFactoryHelper;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.ontology.ConceptType;
 import edu.harvard.i2b2.crc.datavo.ontology.ModifierType;
@@ -209,6 +210,7 @@ public class BuildTempTableSql extends CRCDAO {
 		String dimensionSql = "";
 		// if patient list
 
+	
 		dimensionSql = conceptType.getFacttablecolumn() + " IN (select "
 				+ conceptType.getFacttablecolumn() + " from "
 				+ getDbSchemaName() + conceptType.getTablename() + "  "
