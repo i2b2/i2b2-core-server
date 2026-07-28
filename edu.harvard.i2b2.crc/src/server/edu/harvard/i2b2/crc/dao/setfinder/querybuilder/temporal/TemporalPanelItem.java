@@ -15,7 +15,7 @@
 package edu.harvard.i2b2.crc.dao.setfinder.querybuilder.temporal;
 	 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -444,7 +444,6 @@ public abstract class TemporalPanelItem {
 
 	private String lookupNumericColumnType(String factTableName, String factColumnName) {
 		Connection conn = null;
-		PreparedStatement stmt = null;
 		ResultSet resultSet = null;
 		try {
 			DataSource dataSource = ServiceLocator.getInstance()
@@ -454,38 +453,30 @@ public abstract class TemporalPanelItem {
 			if (!objectName.contains(".")) {
 				objectName = parent.getDatabaseSchema() + objectName;
 			}
-			String[] objectNames = getObjectNameCandidates(objectName);
-			for (int i = 0; i < objectNames.length; i++) {
-				stmt = conn.prepareStatement("select TYPE_NAME(system_type_id) as data_type "
-						+ "from sys.columns where object_id = OBJECT_ID(?) and name = ?");
-				stmt.setString(1, objectNames[i]);
-				stmt.setString(2, factColumnName);
-				resultSet = stmt.executeQuery();
-				if (resultSet.next()) {
-					String dataType = resultSet.getString("data_type");
+			String[] objectNameParts = parseObjectName(objectName);
+			DatabaseMetaData metaData = conn.getMetaData();
+			resultSet = metaData.getColumns(objectNameParts[0], objectNameParts[1], objectNameParts[2], null);
+			while (resultSet.next()) {
+				String columnName = resultSet.getString("COLUMN_NAME");
+				if (factColumnName.equalsIgnoreCase(columnName)) {
+					String dataType = resultSet.getString("TYPE_NAME");
 					if ("int".equalsIgnoreCase(dataType) || "bigint".equalsIgnoreCase(dataType)) {
 						return dataType.toLowerCase();
 					}
-					log.info("Numeric concept_cd optimization is enabled, but " + objectNames[i] + "." + factColumnName
+					log.info("Numeric concept_cd optimization is enabled, but " + formatObjectName(objectNameParts)
+							+ "." + factColumnName
 							+ " has type " + dataType);
 					return null;
 				}
-				resultSet.close();
-				resultSet = null;
-				stmt.close();
-				stmt = null;
 			}
 			log.info("Numeric concept_cd optimization is enabled, but no metadata row was found for "
-					+ objectName + "." + factColumnName);
+					+ formatObjectName(objectNameParts) + "." + factColumnName);
 		} catch (Exception e) {
 			log.info("Could not determine fact column type for " + factTableName + "." + factColumnName, e);
 		} finally {
 			try {
 				if (resultSet != null) {
 					resultSet.close();
-				}
-				if (stmt != null) {
-					stmt.close();
 				}
 				if (conn != null) {
 					conn.close();
@@ -497,14 +488,42 @@ public abstract class TemporalPanelItem {
 		return null;
 	}
 
-	private String[] getObjectNameCandidates(String objectName) {
-		String trimmedObjectName = objectName.trim();
-		int firstDot = trimmedObjectName.indexOf(".");
-		int lastDot = trimmedObjectName.lastIndexOf(".");
-		if (firstDot > -1 && firstDot != lastDot) {
-			return new String[] { trimmedObjectName, trimmedObjectName.substring(firstDot + 1) };
+	private String[] parseObjectName(String objectName) {
+		String[] objectNameParts = objectName.trim().split("\\.");
+		if (objectNameParts.length >= 4) {
+			return new String[] { cleanSqlName(objectNameParts[1]), cleanSqlName(objectNameParts[2]),
+					cleanSqlName(objectNameParts[3]) };
 		}
-		return new String[] { trimmedObjectName };
+		if (objectNameParts.length == 3) {
+			return new String[] { cleanSqlName(objectNameParts[0]), cleanSqlName(objectNameParts[1]),
+					cleanSqlName(objectNameParts[2]) };
+		}
+		if (objectNameParts.length == 2) {
+			return new String[] { null, cleanSqlName(objectNameParts[0]), cleanSqlName(objectNameParts[1]) };
+		}
+		return new String[] { null, null, cleanSqlName(objectNameParts[0]) };
+	}
+
+	private String cleanSqlName(String sqlName) {
+		String cleanName = sqlName.trim();
+		if ((cleanName.startsWith("[") && cleanName.endsWith("]"))
+				|| (cleanName.startsWith("\"") && cleanName.endsWith("\""))) {
+			cleanName = cleanName.substring(1, cleanName.length() - 1);
+		}
+		return cleanName;
+	}
+
+	private String formatObjectName(String[] objectNameParts) {
+		String formattedObjectName = "";
+		for (int i = 0; i < objectNameParts.length; i++) {
+			if (objectNameParts[i] != null && objectNameParts[i].trim().length() > 0) {
+				if (formattedObjectName.length() > 0) {
+					formattedObjectName += ".";
+				}
+				formattedObjectName += objectNameParts[i];
+			}
+		}
+		return formattedObjectName;
 	}
 
 	/**
