@@ -454,22 +454,29 @@ public abstract class TemporalPanelItem {
 			if (!objectName.contains(".")) {
 				objectName = parent.getDatabaseSchema() + objectName;
 			}
-			stmt = conn.prepareStatement("select TYPE_NAME(system_type_id) as data_type "
-					+ "from sys.columns where object_id = OBJECT_ID(?) and name = ?");
-			stmt.setString(1, objectName);
-			stmt.setString(2, factColumnName);
-			resultSet = stmt.executeQuery();
-			if (resultSet.next()) {
-				String dataType = resultSet.getString("data_type");
-				if ("int".equalsIgnoreCase(dataType) || "bigint".equalsIgnoreCase(dataType)) {
-					return dataType.toLowerCase();
+			String[] objectNames = getObjectNameCandidates(objectName);
+			for (int i = 0; i < objectNames.length; i++) {
+				stmt = conn.prepareStatement("select TYPE_NAME(system_type_id) as data_type "
+						+ "from sys.columns where object_id = OBJECT_ID(?) and name = ?");
+				stmt.setString(1, objectNames[i]);
+				stmt.setString(2, factColumnName);
+				resultSet = stmt.executeQuery();
+				if (resultSet.next()) {
+					String dataType = resultSet.getString("data_type");
+					if ("int".equalsIgnoreCase(dataType) || "bigint".equalsIgnoreCase(dataType)) {
+						return dataType.toLowerCase();
+					}
+					log.info("Numeric concept_cd optimization is enabled, but " + objectNames[i] + "." + factColumnName
+							+ " has type " + dataType);
+					return null;
 				}
-				log.info("Numeric concept_cd optimization is enabled, but " + objectName + "." + factColumnName
-						+ " has type " + dataType);
-			} else {
-				log.info("Numeric concept_cd optimization is enabled, but no metadata row was found for "
-						+ objectName + "." + factColumnName);
+				resultSet.close();
+				resultSet = null;
+				stmt.close();
+				stmt = null;
 			}
+			log.info("Numeric concept_cd optimization is enabled, but no metadata row was found for "
+					+ objectName + "." + factColumnName);
 		} catch (Exception e) {
 			log.info("Could not determine fact column type for " + factTableName + "." + factColumnName, e);
 		} finally {
@@ -488,6 +495,16 @@ public abstract class TemporalPanelItem {
 			}
 		}
 		return null;
+	}
+
+	private String[] getObjectNameCandidates(String objectName) {
+		String trimmedObjectName = objectName.trim();
+		int firstDot = trimmedObjectName.indexOf(".");
+		int lastDot = trimmedObjectName.lastIndexOf(".");
+		if (firstDot > -1 && firstDot != lastDot) {
+			return new String[] { trimmedObjectName, trimmedObjectName.substring(firstDot + 1) };
+		}
+		return new String[] { trimmedObjectName };
 	}
 
 	/**
