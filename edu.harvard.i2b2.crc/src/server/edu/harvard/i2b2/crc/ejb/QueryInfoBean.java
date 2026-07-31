@@ -77,6 +77,7 @@ import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryInstanceType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryMasterType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryResultInstanceType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryResultTypeType;
+import edu.harvard.i2b2.crc.datavo.setfinder.query.QueryStatusTypeType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.RequestXmlType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionListType;
 import edu.harvard.i2b2.crc.datavo.setfinder.query.ResultOutputOptionType;
@@ -706,9 +707,16 @@ public class QueryInfoBean { //implements SessionBean {
 				queryInstance.setStartDate(dtoFactory
 						.getXMLGregorianCalendar(a.getStartDate().getTime()));
 				queryInstance.setQueryInstanceId(a.getQueryInstanceId());
-
-
-
+				/*
+				if (a.getQtQueryStatusType() != null)
+				{
+					QueryStatusTypeType queryStatusType = new QueryStatusTypeType();
+					queryStatusType.setDescription(a.getQtQueryStatusType().getDescription());
+					queryStatusType.setName(a.getQtQueryStatusType().getName());
+					//queryStatusType.setStatusTypeId(a.getQtQueryStatusType().getStatusTypeId());
+					queryInstance.setQueryStatusType(queryStatusType);
+				}
+				*/
 				Iterator<QtQueryResultInstance> itResult = a.getQtQueryResultInstances().iterator();
 				while(itResult.hasNext()){
 					QueryResultInstanceType queryResultInstance  =new QueryResultInstanceType();
@@ -726,6 +734,15 @@ public class QueryInfoBean { //implements SessionBean {
 					queryResultType.setDescription(b.getQtQueryResultType().getDescription());
 					queryResultInstance.setQueryResultType(queryResultType);
 					queryResultInstance.setResultInstanceId(b.getResultInstanceId());
+					if (b.getQtQueryStatusType() != null)
+					{
+						QueryStatusTypeType queryStatusType = new QueryStatusTypeType();
+						queryStatusType.setDescription(b.getQtQueryStatusType().getDescription());
+						queryStatusType.setName(b.getQtQueryStatusType().getName());
+
+						queryResultInstance.setQueryStatusType(queryStatusType);
+					}
+					
 					queryInstance.getQueryResultInstanceType().add(queryResultInstance);
 
 				}
