@@ -90,8 +90,14 @@ public class SortPanel {
 							"Error while fetching metadata [" + itemKey
 									+ "] from ontology "
 									+ StackTraceUtil.getStackTrace(e));
+				} catch (Exception e) {
+					log.error("Error while fetching metadata [" + itemKey
+							+ "] from ontology ", e);
+					throw new OntologyException(
+							"Error while fetching metadata [" + itemKey
+									+ "] from ontology " + e.getMessage()
+									+ StackTraceUtil.getStackTrace(e));
 				}
-
 			}
 			
 			

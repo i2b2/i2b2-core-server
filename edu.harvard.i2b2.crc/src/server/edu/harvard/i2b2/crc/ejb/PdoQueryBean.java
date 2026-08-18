@@ -262,6 +262,11 @@ public class PdoQueryBean { //implements SessionBean {
 				throw new I2B2Exception(
 						"Error in getting item's metadata from the ontology : "
 								+ e.getMessage(), e);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new I2B2Exception(
+						"Error in getting item's metadata from the ontology : "
+								+ e.getMessage(), e);
 			}
 		}
 

@@ -816,7 +816,7 @@ public abstract class TemporalPanelItem {
 					+ itemKey + "] from ontology "
 					+ StackTraceUtil.getStackTrace(e));
 		} catch (I2B2Exception e) {
-			log.error("Error while fetching metadata from ontology ", e);
+			log.error("Error while fetching metadata from ontology from user " + parent.getSecurityType().getUsername(), e);
 			throw new OntologyException("Error while fetching metadata ["
 					+ itemKey + "] from ontology "
 					+ StackTraceUtil.getStackTrace(e));
@@ -830,8 +830,12 @@ public abstract class TemporalPanelItem {
 			throw new OntologyException("Error while fetching metadata ["
 					+ itemKey + "] from ontology "
 					+ StackTraceUtil.getStackTrace(e));
+		} catch (Exception e) {
+			log.error("Error while fetching metadata from ontology ", e);
+			throw new OntologyException("Error while fetching metadata ["
+					+ itemKey + "] from ontology " + e.getMessage()
+					+ StackTraceUtil.getStackTrace(e));
 		}
-
 		if (conceptType == null) {
 			throw new ConceptNotFoundException("[" + itemKey + "] ");
 

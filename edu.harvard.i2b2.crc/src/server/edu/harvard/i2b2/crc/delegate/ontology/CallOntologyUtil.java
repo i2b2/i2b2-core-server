@@ -78,20 +78,19 @@ public class CallOntologyUtil {
 	private static JAXBUtil jaxbUtil =   CRCJAXBUtil.getJAXBUtil();
 
 
-	public static ConceptType callOntology(String itemKey, SecurityType securityType,  String projectId, String ontologyUrl ) throws XMLStreamException,
-	JAXBUtilException, AxisFault, I2B2Exception {
+	public static ConceptType callOntology(String itemKey, SecurityType securityType,  String projectId, String ontologyUrl ) throws Exception {
 		RequestMessageType requestMessageType = getI2B2RequestMessage(itemKey, securityType, projectId.replaceAll("/", ""));
 		OMElement requestElement = buildOMElement(requestMessageType);
 		log.debug("CRC Ontology call's request xml from callOntology:  " + requestElement);
 		log.debug("URL: " + ontologyUrl);
 		ConceptType conceptType = null;
-		try {
+		//try {
 			String response = ServiceClient.sendREST(ontologyUrl, requestElement);
 			conceptType = getConceptFromResponse(response);
-		} catch (Exception e)
-		{
-
-		}
+		//} catch (Exception e)
+		//{
+// throw e;
+//		}
 		return conceptType;
 	}
 
