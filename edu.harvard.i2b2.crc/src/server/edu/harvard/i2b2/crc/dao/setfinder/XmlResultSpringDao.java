@@ -120,8 +120,9 @@ public class XmlResultSpringDao extends CRCDAO implements IXmlResultDao  {
 
 			try {
 
-				resultName = (String) jdbcTemplate.queryForObject(
-						sql, new Object[] { Integer.parseInt(resultInstanceId) }, String.class);
+				resultName = queryForSingle(jdbcTemplate,
+						"qt_query_result_instance joined to qt_query_result_type by result_instance_id",
+						sql, String.class, Integer.parseInt(resultInstanceId));
 			} catch (Exception e)
 			{
 

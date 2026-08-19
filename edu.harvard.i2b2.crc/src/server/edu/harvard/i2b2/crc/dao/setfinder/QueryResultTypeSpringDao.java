@@ -26,6 +26,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.common.util.db.JDBCUtil;
 import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
@@ -66,12 +67,14 @@ IQueryResultTypeDao {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public QtQueryResultType getQueryResultTypeById(int resultTypeId) {
+	public QtQueryResultType getQueryResultTypeById(int resultTypeId)
+			throws I2B2DAOException {
 
 		String sql = "select * from " + getDbSchemaName()
 		+ "qt_query_result_type where result_type_id = ?";
-		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
-				.queryForObject(sql, queryResultTypeMapper,  resultTypeId );
+		QtQueryResultType queryResultType = queryForSingle(jdbcTemplate,
+				"qt_query_result_type by result_type_id",
+				sql, queryResultTypeMapper, resultTypeId);
 		return queryResultType;
 	}
 
@@ -83,13 +86,14 @@ IQueryResultTypeDao {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public QtQueryResultType getQueryResultTypeByName(String resultName) {
+	public QtQueryResultType getQueryResultTypeByName(String resultName)
+			throws I2B2DAOException {
 
 		String sql = "select * from " + getDbSchemaName()
 		+ "qt_query_result_type where name = ?";
-		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
-				.queryForObject(sql, queryResultTypeMapper, resultName 
-						);
+		QtQueryResultType queryResultType = queryForSingle(jdbcTemplate,
+				"qt_query_result_type by name",
+				sql, queryResultTypeMapper, resultName);
 		return queryResultType;
 	}
 
@@ -102,13 +106,14 @@ IQueryResultTypeDao {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public String getQueryResultTypeClassname(String resultName) {
+	public String getQueryResultTypeClassname(String resultName)
+			throws I2B2DAOException {
 
 		String sql = "select * from " + getDbSchemaName()
 		+ "qt_query_result_type where name = ?";
-		QtQueryResultType queryResultType = (QtQueryResultType) jdbcTemplate
-				.queryForObject(sql, queryResultTypeMapper, resultName 
-						);
+		QtQueryResultType queryResultType = queryForSingle(jdbcTemplate,
+				"qt_query_result_type classname by name",
+				sql, queryResultTypeMapper, resultName);
 		return queryResultType.getClassname();
 	}
 

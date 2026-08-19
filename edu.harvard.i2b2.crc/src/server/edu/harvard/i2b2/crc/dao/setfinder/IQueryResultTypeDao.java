@@ -10,6 +10,7 @@ package edu.harvard.i2b2.crc.dao.setfinder;
 
 import java.util.List;
 
+import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryResultType;
 
 public interface IQueryResultTypeDao {
@@ -22,7 +23,8 @@ public interface IQueryResultTypeDao {
 	 * @return List<QtQueryMaster>
 	 */
 	@SuppressWarnings("unchecked")
-	public String getQueryResultTypeClassname(String resultName);
+	public String getQueryResultTypeClassname(String resultName)
+			throws I2B2DAOException;
 
 	/**
 	 * Returns list of query master by user id
@@ -31,7 +33,8 @@ public interface IQueryResultTypeDao {
 	 * @return List<QtQueryMaster>
 	 */
 	@SuppressWarnings("unchecked")
-	public QtQueryResultType getQueryResultTypeById(int resultTypeId);
+	public QtQueryResultType getQueryResultTypeById(int resultTypeId)
+			throws I2B2DAOException;
 
 	/**
 	 * Returns list of query master by user id
@@ -55,6 +58,7 @@ public interface IQueryResultTypeDao {
 	 * @param userId
 	 * @return List<QtQueryMaster>
 	 */
-	public QtQueryResultType getQueryResultTypeByName(String resultName);
+	public QtQueryResultType getQueryResultTypeByName(String resultName)
+			throws I2B2DAOException;
 
 }

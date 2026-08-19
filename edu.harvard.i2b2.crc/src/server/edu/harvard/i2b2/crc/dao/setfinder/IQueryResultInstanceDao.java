@@ -96,7 +96,7 @@ public interface IQueryResultInstanceDao {
 	 */
 	@SuppressWarnings("unchecked")
 	public QtQueryResultInstance getResultInstanceByQueryInstanceIdAndName(
-			String queryInstanceId, String resultName);
+			String queryInstanceId, String resultName) throws I2B2DAOException;
 
 	/**
 	 * Return a list of query result instance with waiting status

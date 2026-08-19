@@ -898,7 +898,7 @@ public class QueryExecutorHelperDao extends CRCDAO {
 	}
 
 	private String getQueryResultInstanceId(SetFinderDAOFactory sfDAOFactory,
-			String queryInstanceId, String resultName) {
+			String queryInstanceId, String resultName) throws I2B2DAOException {
 		IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
 				.getPatientSetResultDAO();
 		QtQueryResultInstance resultInstance = resultInstanceDao

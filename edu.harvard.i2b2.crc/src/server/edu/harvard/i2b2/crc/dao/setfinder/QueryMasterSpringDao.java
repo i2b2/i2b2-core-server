@@ -28,7 +28,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameter;
@@ -606,11 +605,12 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 				+ " where query_master_id = ? and delete_flag = ? ";
 		QtQueryMaster queryMaster = null;
 		try {
-			queryMaster = (QtQueryMaster) jdbcTemplate.queryForObject(sql,
-					new Object[] { Integer.parseInt(masterId), DELETE_NO_FLAG },
-					queryMasterMapper);
-		} catch (IncorrectResultSizeDataAccessException inResultEx) {
-			log.error("Query doesn't exists for masterId :[" + masterId + "]");
+			queryMaster = queryForSingle(jdbcTemplate,
+					"qt_query_master by query_master_id and delete_flag",
+					sql, queryMasterMapper, Integer.parseInt(masterId),
+					DELETE_NO_FLAG);
+		} catch (I2B2DAOException inResultEx) {
+			log.error(inResultEx.getMessage());
 		} catch (DataAccessException e) {
 			log.error("Could not execute query master for masterId :["
 					+ masterId + "]");

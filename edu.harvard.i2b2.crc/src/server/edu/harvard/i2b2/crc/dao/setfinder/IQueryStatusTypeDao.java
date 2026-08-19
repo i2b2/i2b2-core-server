@@ -8,6 +8,7 @@
  ******************************************************************************/
 package edu.harvard.i2b2.crc.dao.setfinder;
 
+import edu.harvard.i2b2.common.exception.I2B2DAOException;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
 
 public interface IQueryStatusTypeDao {
@@ -18,6 +19,7 @@ public interface IQueryStatusTypeDao {
 	 * @return List<QtQueryMaster>
 	 */
 	@SuppressWarnings("unchecked")
-	public QtQueryStatusType getQueryStatusTypeById(int statusTypeId);
+	public QtQueryStatusType getQueryStatusTypeById(int statusTypeId)
+			throws I2B2DAOException;
 
 }

@@ -18,6 +18,7 @@ import edu.harvard.i2b2.crc.dao.CRCDAO;
 import edu.harvard.i2b2.crc.datavo.db.DataSourceLookup;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryMaster;
 import edu.harvard.i2b2.crc.datavo.db.QtQueryStatusType;
+import edu.harvard.i2b2.common.exception.I2B2DAOException;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -60,10 +61,13 @@ public class QueryStatusTypeSpringDao extends CRCDAO implements IQueryStatusType
      */
     @Override
 	@SuppressWarnings("unchecked")
-    public QtQueryStatusType getQueryStatusTypeById(int statusTypeId) {
+    public QtQueryStatusType getQueryStatusTypeById(int statusTypeId)
+    		throws I2B2DAOException {
     	
         String sql = "select * from " + getDbSchemaName() + "qt_query_status_type where status_type_id = ?" ;
-        QtQueryStatusType queryStatusType = (QtQueryStatusType)jdbcTemplate.queryForObject(sql,queryStatusTypeMapper , statusTypeId );
+        QtQueryStatusType queryStatusType = queryForSingle(jdbcTemplate,
+        		"qt_query_status_type by status_type_id",
+        		sql, queryStatusTypeMapper, statusTypeId);
         return queryStatusType;
     }
    

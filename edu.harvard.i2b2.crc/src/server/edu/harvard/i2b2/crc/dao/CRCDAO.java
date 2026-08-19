@@ -23,8 +23,12 @@ import edu.harvard.i2b2.crc.util.QueryProcessorUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 
+import java.util.Arrays;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -89,6 +93,38 @@ public abstract class CRCDAO {
 		outputOptionType.setTechdata(statusFlag);
 
 		return outputOptionType;
+	}
+
+	protected <T> T queryForSingle(JdbcTemplate jdbcTemplate,
+			String queryContext, String sql, RowMapper rowMapper,
+			Object... args) throws I2B2DAOException {
+		try {
+			return (T) jdbcTemplate.queryForObject(sql, rowMapper, args);
+		} catch (IncorrectResultSizeDataAccessException resultSizeEx) {
+			throw buildQueryForSingleException(queryContext, sql, args,
+					resultSizeEx);
+		}
+	}
+
+	protected <T> T queryForSingle(JdbcTemplate jdbcTemplate,
+			String queryContext, String sql, Class<T> requiredType,
+			Object... args) throws I2B2DAOException {
+		try {
+			return jdbcTemplate.queryForObject(sql, requiredType, args);
+		} catch (IncorrectResultSizeDataAccessException resultSizeEx) {
+			throw buildQueryForSingleException(queryContext, sql, args,
+					resultSizeEx);
+		}
+	}
+
+	private I2B2DAOException buildQueryForSingleException(
+			String queryContext, String sql, Object[] args,
+			IncorrectResultSizeDataAccessException resultSizeEx) {
+		String message = "Expected one row while querying " + queryContext
+				+ ": " + resultSizeEx.getMessage();
+		log.error(message + " SQL [" + sql + "] args " + Arrays.toString(args),
+				resultSizeEx);
+		return new I2B2DAOException(message, resultSizeEx);
 	}
 
 	/**

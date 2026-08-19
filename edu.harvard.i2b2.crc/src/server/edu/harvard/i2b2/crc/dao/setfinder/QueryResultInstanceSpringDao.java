@@ -231,16 +231,17 @@ IQueryResultInstanceDao {
 	@Override
 	@SuppressWarnings("unchecked")
 	public QtQueryResultInstance getResultInstanceByQueryInstanceIdAndName(
-			String queryInstanceId, String resultName) {
+			String queryInstanceId, String resultName) throws I2B2DAOException {
 		String sql = "select *  from "
 				+ getDbSchemaName()
 				+ "qt_query_result_instance ri, "
 				+ getDbSchemaName()
 				+ "qt_query_result_type rt where ri.query_instance_id = ? and ri.result_type_id = rt.result_type_id and rt.name=?";
-		QtQueryResultInstance queryResultInstanceList = (QtQueryResultInstance) jdbcTemplate
-				.queryForObject(sql,
-						patientSetMapper,  Integer.parseInt(queryInstanceId), resultName 
-						);
+		QtQueryResultInstance queryResultInstanceList = queryForSingle(
+				jdbcTemplate,
+				"qt_query_result_instance joined to qt_query_result_type by query_instance_id and result name",
+				sql, patientSetMapper, Integer.parseInt(queryInstanceId),
+				resultName);
 		return queryResultInstanceList;
 	}
 

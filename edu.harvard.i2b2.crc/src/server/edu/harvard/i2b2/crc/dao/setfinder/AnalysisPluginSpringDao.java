@@ -153,9 +153,9 @@ public class AnalysisPluginSpringDao extends CRCDAO implements
 			throws I2B2DAOException {
 		String lookupSql = "select * from " + getDbSchemaName()
 				+ "qt_analysis_plugin where plugin_id = ?";
-		QtAnalysisPlugin analysisPlugin = (QtAnalysisPlugin) jdbcTemplate
-				.queryForObject(lookupSql, new Object[] { analysisId },
-						analysisPluginMapper);
+		QtAnalysisPlugin analysisPlugin = queryForSingle(jdbcTemplate,
+				"qt_analysis_plugin by plugin_id",
+				lookupSql, analysisPluginMapper, analysisId);
 		return analysisPlugin;
 	}
 
