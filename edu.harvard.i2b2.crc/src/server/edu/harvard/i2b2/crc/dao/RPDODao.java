@@ -601,7 +601,7 @@ public class RPDODao extends JdbcDaoSupport {
 			sql = "SELECT MAX(RESULT_TYPE_ID) from " + resultTypeTable;
 			int resultTypeId = jt.queryForObject(sql, Integer.class) + 1;
 
-			String VisualAttr = "LU";
+			String VisualAttr = "LH";
 			if (rpdoType.isShared())
 				VisualAttr = "LP";
 
