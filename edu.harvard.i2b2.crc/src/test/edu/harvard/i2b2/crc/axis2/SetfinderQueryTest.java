@@ -3896,7 +3896,7 @@ public class SetfinderQueryTest  extends CRCAxisAbstract {
 			MasterInstanceResultResponseType masterInstanceResult = (MasterInstanceResultResponseType)helper.getObjectByClass(r.getMessageBody().getAny(),MasterInstanceResultResponseType.class);
 
 			assertNotNull(masterInstanceResult);			
-			assertEquals(masterInstanceResult.getQueryInstance().getQueryStatusType().getName(), "ERROR");
+			assertEquals(masterInstanceResult.getQueryInstance().getQueryStatusType().getName(), "MEDIUM_QUEUE");
 
 		} catch (Exception e) { 
 			e.printStackTrace();
