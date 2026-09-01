@@ -45,8 +45,10 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -325,8 +327,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 					if (fetchSize > 0)
 						callStmt.setFetchSize(fetchSize);
-					if (maxFetchRows > 0)
-						callStmt.setMaxRows(maxFetchRows);
+					//if (maxFetchRows > 0)
+					//	callStmt.setMaxRows(maxFetchRows);
 					
 					callStmt.registerOutParameter(1, OracleTypes.CURSOR);
 					callStmt.execute();
@@ -346,23 +348,26 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 					callStmt.registerOutParameter(1, Types.OTHER); // refcursor out param
 					if (fetchSize > 0)
 						callStmt.setFetchSize(fetchSize);
-					if (maxFetchRows > 0)
-						callStmt.setMaxRows(maxFetchRows);
+					//if (maxFetchRows > 0)
+					//	callStmt.setMaxRows(maxFetchRows);
 
 					//log.info("Calling stored procedure" + item.getQuery());
 					callStmt.execute(); // Step 2: call procedure
 
 					// String cursorName = (String) callStmt.getObject(1); // Step 3: get cursor name
 					resultSet  = (ResultSet) callStmt.getObject(1); 
-					log.info("Cursor name returned: " );
+					log.info("fetchSize: " + fetchSize );
 
 				} else 	{
-					stmt = conn.prepareStatement(item.getQuery());
-					stmt.setQueryTimeout(transactionTimeout);
+					if (sfDAOFactory.getDataSourceLookup().getServerType().equalsIgnoreCase(DAOFactoryHelper.POSTGRESQL))
+						conn.setAutoCommit(false); 
+
+					stmt = conn.prepareStatement(item.getQuery(), ResultSet.TYPE_FORWARD_ONLY , ResultSet.CONCUR_READ_ONLY);
+					//stmt.setQueryTimeout(transactionTimeout);
 					if (fetchSize > 0)
 						stmt.setFetchSize(fetchSize);
-					if (maxFetchRows > 0)
-						stmt.setMaxRows(maxFetchRows);
+					//if (maxFetchRows > 0)
+					//	stmt.setMaxRows(maxFetchRows);
 
 					//logesapi.debug("Executing count sql [" + item.getQuery() + "]");
 
@@ -455,15 +460,53 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 
 					FileWriter fileWriter = new FileWriter(file, true); 
-					try (CSVWriter writer = new  CSVWriter(fileWriter, separator,  quotechar,  escapechar,  Character.toString(lineEnd))) { //, recordCount, true)) {
-						//CSVWriter(fileName)) {
-
+					CSVWriter writer = null;
+					try {
 
 						if (resultSet == null)
 							throw new Exception("Empty Resultset");
 
+						
+						 writer = new  CSVWriter(fileWriter, separator,  quotechar,  escapechar,  Character.toString(lineEnd)); //, recordCount, true)) {
+
+						 /*
+					       ResultSetMetaData metaData = resultSet.getMetaData();
+					        int columnCount = metaData.getColumnCount();
+					       // List<String[]> rowList = new ArrayList<>();
+
+					        int counter = 0;
+						 while (resultSet.next()) {
+					            String[] row = new String[columnCount];
+					            for (int i = 1; i <= columnCount; i++) {
+					                // Mapping everything safely to a String representation
+					                Object obj = resultSet.getObject(i);
+					                row[i - 1] = (obj != null) ? obj.toString() : "";
+					            }
+					            counter++;
+					            writer.writeNext(row);
+					            //rowList.add(row);
+					            
+					            if (counter > fetchSize)
+					            {
+					            	log.info("Counter is " + counter);
+					            	writer.flushQuietly();
+					            	counter = 0;
+					            }
+					        }
+						 */
 						rowCount = writer.writeAll(resultSet, true);
 
+
+
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+					} finally {
+						
+						if (writer != null)
+							writer.flush();
+
+						
 						//logFile += writer.getLog();
 						if (resultSet != null && !resultSet.isClosed())
 							resultSet.close();
@@ -477,19 +520,9 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 							conn.close();
 						conn = null;
 
+						writer = null;
 
 
-						if (writer != null)
-							writer.flush();
-
-						//if (writer != null)
-						//	writer.close();
-						//if (fileWriter != null)
-						//	fileWriter.close();
-
-					} catch (Exception e)
-					{
-						e.printStackTrace();
 					}
 
 					// if RPDO than save the RPDO table
@@ -537,11 +570,20 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 
 							fileWriter = new FileWriter(p.getParent().toString()  + File.separator +  resultInstanceId + "_Definition_For_" + param.get("ResultNameDescription") + ".csv", true); 
 
-							try (CSVWriter writer = new  CSVWriter(fileWriter, separator,  quotechar,  escapechar,  Character.toString(lineEnd))) { //, recordCount, false)) {
+							 writer = null;
+							try {
+								writer = new  CSVWriter(fileWriter, separator,  quotechar,  escapechar,  Character.toString(lineEnd)); //, recordCount, false)) {
 								//CSVWriter(fileName)) {
 
 								rowCount = writer.writeAll(resultSet, true);
 
+							}	 catch (Exception e)
+							{
+								e.printStackTrace();
+							}
+							finally {
+								writer.flush();
+									}
 								//logFile += writer.getLog();
 								if (resultSet != null  && !resultSet.isClosed())
 									resultSet.close();
@@ -555,11 +597,8 @@ public class QueryResultPatientDownload extends CRCDAO implements IResultGenerat
 								//if (fileWriter != null)
 								//	fileWriter.close();
 								//sfDAOFactory.getDataSource().getConnection().commit(); // Close the transaction (needed for Oracle and Postgres)
-							} catch (Exception e)
-							{
-								e.printStackTrace();
 							}
-						}
+						
 					}
 
 				}
