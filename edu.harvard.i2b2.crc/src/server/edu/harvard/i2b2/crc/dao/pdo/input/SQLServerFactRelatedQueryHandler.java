@@ -201,6 +201,12 @@ public class SQLServerFactRelatedQueryHandler extends CRCDAO implements
 			 TEMP_FACT_PARAM_TABLE = "TEMP_FACT_PARAM_TABLE";
 
 		}
+
+		if (dataSourceLookup.getServerType().equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE)) {
+			TEMP_PDO_INPUTLIST_TABLE = "TEMP_PDO_INPUTLIST";
+			TEMP_FACT_PARAM_TABLE = "TEMP_FACT_PARAM_TABLE";
+
+		}
 		// check if concept filter present
 		if ((filterList != null) && (filterList.getPanel() != null)
 				&& (filterList.getPanel().size() > 0)) {

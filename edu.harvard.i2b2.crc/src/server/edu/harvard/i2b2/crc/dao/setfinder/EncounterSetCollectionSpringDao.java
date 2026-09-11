@@ -78,7 +78,8 @@ public class EncounterSetCollectionSpringDao extends CRCDAO implements
 					+ getDbSchemaName() + "QT_SQ_QPER_PECID.nextval,?,?,?,?)";
 		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 				DAOFactoryHelper.SQLSERVER) || dataSourceLookup.getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.POSTGRESQL)) {
+				DAOFactoryHelper.POSTGRESQL) || dataSourceLookup.getServerType().equalsIgnoreCase(
+				DAOFactoryHelper.SNOWFLAKE)) {
 			insert_sql = "insert into "
 					+ getDbSchemaName()
 					+ "qt_patient_enc_collection(result_instance_id,set_index,patient_num,encounter_num) values (?,?,?,?)";
