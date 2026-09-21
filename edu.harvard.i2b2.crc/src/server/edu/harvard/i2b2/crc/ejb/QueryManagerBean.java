@@ -541,7 +541,9 @@ public class QueryManagerBean{ // implements SessionBean {
 
 						// Call QueryResultPatientDownload
 						QueryDefinitionType queryDef =  new QueryDefinitionType();
-						queryDef.setQueryName("name");
+						QtQueryMaster queryMaster = sfDAOFactory.getQueryMasterDAO()
+								.getQueryDefinition(queryInstance.getQtQueryMaster().getQueryMasterId());
+						queryDef.setQueryName(queryMaster.getName());
 
 						String TEMP_DX_TABLE = "#DX";
 						if (daoFactoryHelper.getDataSourceLookup().getServerType().equalsIgnoreCase(
