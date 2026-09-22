@@ -379,6 +379,9 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			String value = "";
 			String serverType = dbInfo.getDb_serverType();
 			String dataSchema = dbInfo.getDb_fullSchema();
+			String dataSchemaNoDot = dataSchema;
+			if (dataSchemaNoDot.endsWith("."))
+				dataSchemaNoDot.subSequence(0, dataSchemaNoDot.length()-1 )cdm;
 			DblookupDao dsLookupDao = new DblookupDao();
 			List<DblookupType> dsLookup = dsLookupDao.getDblookup("project_path",projectInfo, securityType,  "crc_db_lookup");
 
@@ -401,7 +404,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			if (serverType.equalsIgnoreCase(SQLSERVER))
 			{
 
-				value = "exec " + dataSchema +  spName + dataSchema + ",'@','" + cdm + "'";				
+				value = "exec " + dataSchema +  spName + " '" + dataSchemaNoDot + "','@','" + cdm + "'";				
 				stmt = conn.prepareStatement(value);
 
 				resultSet = stmt.executeQuery();
@@ -413,7 +416,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 
 
 				value =  "{ call  " + //dataSchema +
-						  spName + "  ('observation_fact','" + dataSchema.replaceAll(".", "") +"','@','" + cdm + "')"
+						  spName + "  ('observation_fact','" + dataSchemaNoDot +"','@','" + cdm + "')"
 						+ "  }";
 				callStmt = dataSource.getConnection().prepareCall(value);
 				callStmt.execute();
@@ -423,7 +426,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			{
 
 
-				value = "SELECT  " + spName + " ('observation_fact','" + dataSchema +"','@','N','" + cdm + "')";
+				value = "SELECT  " + spName + " ('observation_fact','" + dataSchemaNoDot +"','@','N','" + cdm + "')";
 
 				// Step 1: start transaction
 				callStmt = conn.prepareCall(value);
