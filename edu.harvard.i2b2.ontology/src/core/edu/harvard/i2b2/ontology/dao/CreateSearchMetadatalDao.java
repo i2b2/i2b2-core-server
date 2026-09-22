@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -335,7 +336,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 
 		} catch (Exception e)
 		{
-			
+
 		}
 
 		try {
@@ -404,11 +405,29 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			if (serverType.equalsIgnoreCase(SQLSERVER))
 			{
 
-				value = "exec " + dataSchema +  spName + " '" + dataSchemaNoDot + "','@','" + cdm + "'";				
-				stmt = conn.prepareStatement(value);
+				value = "{call " + dataSchema +  spName + " (?,?,?) }";
 
-				resultSet = stmt.executeQuery();
-				//}
+				callStmt.setString("schemaname", dataSchemaNoDot);
+				callStmt.setString("tablename", "@");
+				callStmt.setString("source_mode", cdm);
+
+				// 2. Register the Output parameter type
+				//callStmt.registerOutParameter("log", Types.VARCHAR);
+				callStmt = dataSource.getConnection().prepareCall(value);
+				callStmt.execute();
+				
+				SQLWarning warning = callStmt.getWarnings();
+
+				while (warning != null)
+				{
+					PMServiceDriver.setProjectParam(true,"S",
+							"TOTALNUM_WORKING_ON", warning.getMessage(), securityType, projectInfo,
+							OntologyUtil.getInstance()
+							.getPmEndpointReference());
+				   //System.out.println(warning.getMessage());
+				   warning = warning.getNextWarning();
+				}
+
 
 
 			} else if (serverType.equalsIgnoreCase(ORACLE))
@@ -416,7 +435,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 
 
 				value =  "{ call  " + //dataSchema +
-						  spName + "  ('observation_fact','" + dataSchemaNoDot +"','@','" + cdm + "')"
+						spName + "  ('observation_fact','" + dataSchemaNoDot +"','@','" + cdm + "')"
 						+ "  }";
 				callStmt = dataSource.getConnection().prepareCall(value);
 				callStmt.execute();
