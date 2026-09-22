@@ -269,7 +269,7 @@ public class PMServiceDriver {
 		
 		if (param == null)
 		{
-			PMServiceDriver.setProjectParam(true, status,
+			PMServiceDriver.setProjectParam( status,
 					paramName, new Date(System.currentTimeMillis()).toString(), securityType, id,
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());

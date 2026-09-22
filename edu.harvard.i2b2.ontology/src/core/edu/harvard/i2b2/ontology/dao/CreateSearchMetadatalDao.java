@@ -50,7 +50,7 @@ import edu.harvard.i2b2.ontology.ejb.TableAccessType;
 import edu.harvard.i2b2.ontology.util.OntologyUtil;
 import edu.harvard.i2b2.pm.ws.PMServiceDriver;
 
-import oracle.jdbc.OracleTypes;
+//import oracle.jdbc.OracleTypes;
 
 
 public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcDaoSupport {
@@ -382,7 +382,6 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			DblookupDao dsLookupDao = new DblookupDao();
 			List<DblookupType> dsLookup = dsLookupDao.getDblookup("project_path",projectInfo, securityType,  "crc_db_lookup");
 
-			log.error("A");
 			conn = dataSource.getConnection();
 			if (dataSchema.equals(""))
 				try {
@@ -394,14 +393,6 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 				} catch (SQLException e1) {
 					log.error(e1.getMessage());
 				} 
-			log.error("B");
-
-			log.error( spName + " for " + projectInfo  + " in database " + serverType);
-			log.error(securityType);
-			log.error(projectInfo);
-			log.error(OntologyUtil.getInstance()
-					.getPmEndpointReference());
-
 			//if (operationType.equals("synchronize_all")) {
 			PMServiceDriver.setProjectParam(true,"S",
 					"TOTALNUM_WORKING_ON", spName + " for " + projectInfo  + " in database " + serverType, securityType, projectInfo,
@@ -410,15 +401,11 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			if (serverType.equalsIgnoreCase(SQLSERVER))
 			{
 
-				log.error("D");
-
-				value = "exec " + dataSchema + "." + spName + " 'observation_fact','" + dataSchema +"','@','N','" + cdm + "'";				
+				value = "exec " + dataSchema +  spName + dataSchema + ",'@','" + cdm + "'";				
 				stmt = conn.prepareStatement(value);
-				log.error("E");
 
 				resultSet = stmt.executeQuery();
 				//}
-				log.error("F");
 
 
 			} else if (serverType.equalsIgnoreCase(ORACLE))
