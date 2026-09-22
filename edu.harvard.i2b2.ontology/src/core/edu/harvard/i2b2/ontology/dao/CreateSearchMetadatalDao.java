@@ -381,7 +381,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			String dataSchema = dbInfo.getDb_fullSchema();
 			String dataSchemaNoDot = dataSchema;
 			if (dataSchemaNoDot.endsWith("."))
-				dataSchemaNoDot.subSequence(0, dataSchemaNoDot.length()-1 )cdm;
+				dataSchemaNoDot = dataSchemaNoDot.substring(0, dataSchemaNoDot.length()-1 );
 			DblookupDao dsLookupDao = new DblookupDao();
 			List<DblookupType> dsLookup = dsLookupDao.getDblookup("project_path",projectInfo, securityType,  "crc_db_lookup");
 
