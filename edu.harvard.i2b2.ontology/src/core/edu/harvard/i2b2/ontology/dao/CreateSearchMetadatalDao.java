@@ -405,21 +405,20 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			if (serverType.equalsIgnoreCase(SQLSERVER))
 			{
 
-				value = "{call " + dataSchema +  spName + " (?,?,?) }";
+				value = "{call " + dataSchema +  spName + " ('" + dataSchemaNoDot +"','@','" + cdm + "') }";
 
-				callStmt.setString("schemaname", dataSchemaNoDot);
-				callStmt.setString("tablename", "@");
-				callStmt.setString("source_mode", cdm);
-
-				// 2. Register the Output parameter type
-				//callStmt.registerOutParameter("log", Types.VARCHAR);
 				callStmt = dataSource.getConnection().prepareCall(value);
+				//callStmt.setString("schemaname", dataSchemaNoDot);
+				//callStmt.setString("tablename", "@");
+				//callStmt.setString("source_mode", cdm);
+
 				callStmt.execute();
 				
 				SQLWarning warning = callStmt.getWarnings();
 
-				while (warning != null)
+				while (warning.getMessage() != "Finished")
 				{
+					if (warning != null)
 					PMServiceDriver.setProjectParam(true,"S",
 							"TOTALNUM_WORKING_ON", warning.getMessage(), securityType, projectInfo,
 							OntologyUtil.getInstance()
