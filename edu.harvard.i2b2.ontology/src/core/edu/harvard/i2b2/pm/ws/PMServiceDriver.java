@@ -258,7 +258,7 @@ public class PMServiceDriver {
 
 	}
 
-	public static void setProjectParam(boolean findID, String status, String paramName, String string,
+	public static void setProjectParam(boolean findID, String status, String paramName, String value,
 			SecurityType securityType, String id, String pmEndpointReference) throws I2B2Exception {
 		
 		ParamType param = getProjectParam(
@@ -270,13 +270,13 @@ public class PMServiceDriver {
 		if (param == null)
 		{
 			PMServiceDriver.setProjectParam( status,
-					paramName, new Date(System.currentTimeMillis()).toString(), securityType, id,
+					paramName, value, securityType, id,
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 		}
 		else {
 			PMServiceDriver.setProjectParam(param.getId(), status,
-					paramName, new Date(System.currentTimeMillis()).toString(), securityType, id,
+					paramName, value, securityType, id,
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());				
 		}

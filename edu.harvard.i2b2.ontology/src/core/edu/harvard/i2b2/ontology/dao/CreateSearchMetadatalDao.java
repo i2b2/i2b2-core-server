@@ -405,18 +405,43 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			if (serverType.equalsIgnoreCase(SQLSERVER))
 			{
 
-				value = "{call " + dataSchema +  spName + " ('" + dataSchemaNoDot +"','@','" + cdm + "') }";
+				value = "exec " + dataSchema +  spName + " '" + dataSchemaNoDot +"','@','" + cdm + "'";
 
 				callStmt = dataSource.getConnection().prepareCall(value);
 				//callStmt.setString("schemaname", dataSchemaNoDot);
 				//callStmt.setString("tablename", "@");
 				//callStmt.setString("source_mode", cdm);
 
-				callStmt.execute();
-				
+				 boolean hasResults = callStmt.execute();
+				 
+				 
+				 
+				 // 2. Process all result sets and update counts to flush the TDS buffer
+		            while (hasResults || callStmt.getUpdateCount() != -1) {
+		                if (hasResults) {
+		                    try (ResultSet rs = callStmt.getResultSet()) {
+		                        // Must process the rows or just advance past them 
+		                        while (rs.next()) { /* process row data */ }
+		                    }
+		                }
+		                // Advance to the next result/update count
+		                hasResults = callStmt.getMoreResults();
+		            }
+
+		            // 3. Retrieve and print the T-SQL PRINT/informational messages
+		            SQLWarning warning = callStmt.getWarnings();
+		            while (warning != null) {
+		                PMServiceDriver.setProjectParam(true,"S",
+								"TOTALNUM_WORKING_ON", warning.getMessage(), securityType, projectInfo,
+								OntologyUtil.getInstance()
+								.getPmEndpointReference());
+		                warning = warning.getNextWarning();
+		            }
+
+				/*
 				SQLWarning warning = callStmt.getWarnings();
 
-				while (warning.getMessage() != "Finished")
+				while (callStmt.isClosed())//warning.getMessage() != "Finished")
 				{
 					if (warning != null)
 					PMServiceDriver.setProjectParam(true,"S",
@@ -426,7 +451,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 				   //System.out.println(warning.getMessage());
 				   warning = warning.getNextWarning();
 				}
-
+				*/
 
 
 			} else if (serverType.equalsIgnoreCase(ORACLE))
