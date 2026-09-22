@@ -22,6 +22,7 @@ import edu.harvard.i2b2.ontology.datavo.vdo.DeleteDblookupType;
 import edu.harvard.i2b2.ontology.datavo.vdo.SetDblookupType;
 import edu.harvard.i2b2.ontology.util.OntologyUtil;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.MessageHeaderType;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.SecurityType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -87,6 +88,18 @@ public class DblookupDao extends JdbcDaoSupport {
 	}
 	
 
+	public String slashSandwich(String s) {
+		StringBuffer sb = new StringBuffer();
+		if (!s.startsWith("/")) {
+			sb.append('/');
+		}
+		sb.append(s);
+		if (!s.endsWith("/")) {
+			sb.append('/');
+		}
+		log.info(sb.toString());
+		return sb.toString();
+	}
 
 	public List<DblookupType> findDblookups() throws DataAccessException, I2B2DAOException{	
 		String sql = "SELECT * FROM " +  dbluTable + " WHERE" + keyOrder;		
@@ -101,6 +114,35 @@ public class DblookupDao extends JdbcDaoSupport {
 		return queryResult;
 	}
 
+
+	public List<DblookupType> getDblookup(String column, String value, SecurityType security, String dblutable) throws DataAccessException, I2B2Exception {
+		String sql = "SELECT * FROM " +  OntologyUtil.getInstance().getMetaDataSchemaName()  + dblutable + " WHERE ";		
+		String v = value, s = column.toLowerCase();
+		List<DblookupType> queryResult = null;
+		try {
+			if (s.equalsIgnoreCase("domain_id")) {
+				sql += keyOrder;
+				queryResult = jt.query(sql, new getMapper(), value, security.getUsername());
+			} else if (s.equalsIgnoreCase("owner_id")) {
+				sql += keyOrder;
+				queryResult = jt.query(sql, new getMapper(), security.getDomain(), value);
+			} else {
+				sql += "c_" + column + "=? AND " + keyOrder;
+				if (s.equalsIgnoreCase("project_path") && dblutable.equalsIgnoreCase("crc_db_lookup")) {
+					v = slashSandwich(value);
+				} else if (s.equalsIgnoreCase("project_path")) {
+					v = slashEnd(value);
+				}
+				queryResult = jt.query(sql, new getMapper(), v, security.getDomain(), security.getUsername());
+			}
+		} catch (DataAccessException e) {
+			log.error(e.getMessage());
+			e.printStackTrace();
+			throw new I2B2DAOException("Database error");
+		}
+		return queryResult;	
+	}
+	
 	public List<DblookupType> getDblookup(final SetDblookupType dblookupType) throws DataAccessException, I2B2Exception {
 		String sql = "SELECT * FROM " +  dbluTable + " WHERE c_project_path=? AND " + keyOrder;		
 		List<DblookupType> queryResult = null;

@@ -3,17 +3,23 @@ package edu.harvard.i2b2.ontology.dao.lucene;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.search.suggest.Lookup;
 import org.apache.lucene.search.suggest.analyzing.AnalyzingInfixSuggester;
+import org.apache.lucene.search.suggest.analyzing.AnalyzingSuggester;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 
+import edu.harvard.i2b2.common.exception.I2B2Exception;
+import edu.harvard.i2b2.ontology.dao.ConceptDao;
 import edu.harvard.i2b2.ontology.dao.lucene.LuceneService.SuggestQuery;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptsType;
 import edu.harvard.i2b2.ontology.datavo.vdo.VocabRequestType;
+import edu.harvard.i2b2.ontology.util.OntologyUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,19 +41,25 @@ public final class LuceneSuggester {
 	private static  File suggestIndexDirectory;
 	private static  FSDirectory luceneDirectory;
 	private static  StandardAnalyzer analyzer;
-	private static  AnalyzingInfixSuggester suggester;
+	private static  AnalyzingInfixSuggester analyzingInfixSuggester;
+	private static  AnalyzingSuggester analyzingSuggester;
 
+	private static Log log = LogFactory.getLog(LuceneSuggester.class);
 	public LuceneSuggester (String projectInfo ){
 
 		try {
 			suggestIndexDirectoryName = System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "autosuggest_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 
+			if (OntologyUtil.getInstance().getAutosuggestIndexDirectory() != null && OntologyUtil.getInstance().getAutosuggestIndexDirectory() != "")
+				suggestIndexDirectoryName = OntologyUtil.getInstance().getAutosuggestIndexDirectory();
 			suggestionsReturnedCount = -1; 
 			suggestIndexDirectory = new File(suggestIndexDirectoryName);
 			luceneDirectory = FSDirectory.open(suggestIndexDirectory.toPath());
 			analyzer = new StandardAnalyzer();
-			suggester = new AnalyzingInfixSuggester(luceneDirectory, analyzer, analyzer, 3, true);
-		} catch (RuntimeException | IOException e) {
+			analyzingInfixSuggester = new AnalyzingInfixSuggester(luceneDirectory, analyzer, analyzer, 3, true);
+			//analyzingSuggester = new AnalyzingSuggester(luceneDirectory,"temp_prefix" , analyzer); //, analyzer, 3, true);
+		} catch (RuntimeException | IOException | I2B2Exception e) {
+			log.error("Suggestor not loaded for : " + suggestIndexDirectoryName);
 			throw new ExceptionInInitializerError(e);
 		}
 
@@ -66,7 +78,7 @@ public final class LuceneSuggester {
 	 * because double quotes are not indexed.
 	 * @param vocabType 
 	 */
-	public static ConceptsType getSuggestions(final SuggestQuery suggestQuery, String projectId, VocabRequestType vocabType ) {
+	public static ConceptsType getSuggestions(final SuggestQuery suggestQuery, String projectId, VocabRequestType vocabType, boolean isoOfuscated ) {
 		if (suggestQuery == null) return null;
 
 		if (suggestIndexDirectoryName == null)
@@ -78,6 +90,7 @@ public final class LuceneSuggester {
 			suggestString = suggestQuery.getSuggestString(); //(String) suggestQuery.getClass().getMethod("suggestString").invoke(suggestQuery);
 		} catch (Exception e) {
 			// Fallback: try a field access (less likely)
+			log.error("Error: " + e.getMessage() + " for folder " + suggestIndexDirectoryName);
 			try {
 				Object val = suggestQuery.getClass().getField("suggestString").get(suggestQuery);
 				suggestString = val == null ? "" : val.toString();
@@ -99,8 +112,10 @@ public final class LuceneSuggester {
 			//if (vocabType.isReducedResults())
 			//	suggestString += "~|~|~|";
 			//results = suggester.lookup(suggestString, contexts, vocabType.getMax(), true, true);
-			results = suggester.lookup(suggestString, vocabType.getMax(), true, true);
-		} catch (IOException e) {
+			results = analyzingInfixSuggester.lookup(suggestString,  10000, true, true);
+			//results = analyzingSuggester.lookup(suggestString, false, 10000);
+		} catch (Exception e) {
+			log.error("Error: " + e.getMessage() + " for folder " + suggestIndexDirectoryName);
 			throw new RuntimeException(e);
 		}
 
@@ -109,6 +124,8 @@ public final class LuceneSuggester {
 		//final int limit = Math.min(results.size(), suggestionsReturnedCount);
 		// List<AutoSuggestResult> suggestions = new ArrayList<>(limit);
 		ConceptsType suggestions = new  ConceptsType();
+		int patientCount = vocabType.getMax();
+		int conceptCount = vocabType.getMax();
 		for (int i = 0; i < results.size(); i++) {
 
 			AutoSuggestResult a = AutoSuggestResult.fromLookup(results.get(i));
@@ -121,6 +138,7 @@ public final class LuceneSuggester {
 
 			if (vocabType.getCategory() == null || vocabType.getCategory().equals("@") ||
 					(suggestion.length > 1 && vocabType.getCategory().equalsIgnoreCase(suggestion[1])) ){
+			//if (suggestion.length > 1) {
 				b.setName(suggestion[0]);
 				if (suggestion.length > 1)
 					b.setTablename(suggestion[1]);
@@ -136,7 +154,17 @@ public final class LuceneSuggester {
 
 				b.setLevel((int) a.occurrences);
 
-				suggestions.getConcept().add(b);
+				 if ( suggestion.length < 2 && conceptCount > 0)
+				{
+					suggestions.getConcept().add(b);
+					conceptCount--;
+
+				} else if ( suggestion.length > 3 && patientCount > 0 ) {
+					if (isoOfuscated)
+						b.setTotalnum(-1);
+					suggestions.getConcept().add(b);
+					patientCount--;
+				} 
 			}
 			//suggestions.add(AutoSuggestResult.fromLookup(results.get(i)));
 		}

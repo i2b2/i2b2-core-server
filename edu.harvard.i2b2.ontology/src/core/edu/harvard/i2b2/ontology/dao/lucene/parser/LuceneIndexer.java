@@ -52,7 +52,7 @@ public final class LuceneIndexer {
 
 	public LuceneIndexer() {}
 
-	private static IndexWriter createSearchIndexWriter(FSDirectory searchIndexDirectory) throws IOException {
+	public static IndexWriter createSearchIndexWriter(FSDirectory searchIndexDirectory) throws IOException {
 		IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
 		config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 		config.setRAMBufferSizeMB(1024.0);
@@ -232,7 +232,7 @@ public final class LuceneIndexer {
 
 
 	public static void indexFromDB(//Optional<SearchIndexInfo> searchIndexInfoOption,
-			SuggestionIndexInfo suggestionIndexInfoOption,
+			SuggestionIndexInfo suggestionIndexInfoOption, SearchIndexInfo searchIndexInfoOption,
 			 TableAccessType tableName, DataSource dataSource, DBInfoType dbInfo) throws Exception {
 
 		long startTime = System.currentTimeMillis();

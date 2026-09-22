@@ -322,7 +322,7 @@ public class SearchIndexer {
 				}
 			} catch (IOException e) {
 				logesapi.error("An error occurred trying to read file: " + filename, e);
-				throw e;
+				//throw e;
 			}
 
 			return codeCategories;

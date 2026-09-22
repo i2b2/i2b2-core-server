@@ -59,7 +59,7 @@ public class SearchMetadataHandler extends RequestHandler {
 			// test case for bad user
 			//		nameInfoMsg.getMessageHeaderType().getSecurity().setUsername("aaaaaaa");
 			projectId = requestMsg.getMessageHeaderType().getProjectId();
-			//MM project = getRoleInfo(requestMsg.getMessageHeaderType());
+			project = getRoleInfo(requestMsg.getMessageHeaderType());
 
 		} catch (JAXBUtilException e) {
 			log.error("error setting up getNameInfoHandler");
@@ -90,7 +90,7 @@ public class SearchMetadataHandler extends RequestHandler {
 		//String response = null;
 		 String responseVdo = null;
 		try {
-			concepts = conceptDao.searchOntology(vocabType, projectId);
+			concepts = conceptDao.searchOntology(vocabType, project);
 		} catch (Exception e1) {
 			log.error(e1.getMessage());
 			responseMessageType = MessageFactory.doBuildErrorResponse(nameInfoMsg.getMessageHeaderType(), "Database error");

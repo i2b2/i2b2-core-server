@@ -18,6 +18,7 @@ package edu.harvard.i2b2.pm.ws;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Date;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -255,6 +256,31 @@ public class PMServiceDriver {
 
 		return requestMessageType;
 
+	}
+
+	public static void setProjectParam(boolean findID, String status, String paramName, String string,
+			SecurityType securityType, String id, String pmEndpointReference) throws I2B2Exception {
+		
+		ParamType param = getProjectParam(
+				paramName,  securityType, id,
+				OntologyUtil.getInstance()
+				.getPmEndpointReference());
+		
+		
+		if (param == null)
+		{
+			PMServiceDriver.setProjectParam(true, status,
+					paramName, new Date(System.currentTimeMillis()).toString(), securityType, id,
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+		}
+		else {
+			PMServiceDriver.setProjectParam(param.getId(), status,
+					paramName, new Date(System.currentTimeMillis()).toString(), securityType, id,
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());				
+		}
+		
 	}
 
 

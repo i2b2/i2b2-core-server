@@ -46,7 +46,29 @@ public class UpdateConceptTotalNumType {
     @XmlAttribute(name = "operation_type")
     protected String operationType;
 
-    /**
+    @XmlAttribute(name = "cdm")
+    protected String cdm;
+
+    @XmlAttribute(name = "project_id")
+    protected String projectId;
+
+    public String getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getCdm() {
+		return cdm;
+	}
+
+	public void setCdm(String cdm) {
+		this.cdm = cdm;
+	}
+
+	/**
      * Gets the value of the operationType property.
      * 
      * @return

@@ -498,7 +498,7 @@ public class ConceptDao extends JdbcDaoSupport {
 
 	}
 
-	public ConceptsType searchOntology(final VocabRequestType vocabType, String projectInfo) throws I2B2DAOException, I2B2Exception{
+	public ConceptsType searchOntology(final VocabRequestType vocabType, ProjectType projectInfo) throws I2B2DAOException, I2B2Exception{
 
 		SuggestQuery q = new SuggestQuery();
 		q.setSuggestString(vocabType.getMatchStr().getValue());
@@ -507,8 +507,9 @@ public class ConceptDao extends JdbcDaoSupport {
 		// LuceneService luceneService = new LuceneService(projectInfo);
 
 		OntologyUtil a = OntologyUtil.getInstance();
-		LuceneSuggester b = a.getLuceneSuggester(projectInfo);
-		ConceptsType c = b.getSuggestions(q, projectInfo, vocabType);
+		LuceneSuggester b = a.getLuceneSuggester(projectInfo.getId());
+		//boolean obfusc =  Roles.getInstance().isRoleOfuscated(projectInfo);
+		ConceptsType c = b.getSuggestions(q, projectInfo.getId(), vocabType,  Roles.getInstance().isRoleOfuscated(projectInfo));
 
 		return c;
 		//return OntologyUtil.getInstance().getLuceneSuggester(projectInfo.getId()).getSuggestions(q, projectInfo.getId()); //search(query);

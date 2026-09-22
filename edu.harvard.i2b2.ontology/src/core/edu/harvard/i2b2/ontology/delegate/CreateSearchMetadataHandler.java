@@ -20,7 +20,7 @@ import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.ontology.util.OntologyUtil;
 import edu.harvard.i2b2.ontology.util.Roles;
 import edu.harvard.i2b2.ontology.ws.AddChildDataMessage;
-import edu.harvard.i2b2.ontology.ws.LoadDataMessage;
+import edu.harvard.i2b2.ontology.ws.UpdateTotalNumMessage;
 import edu.harvard.i2b2.ontology.ws.MessageFactory;
 import edu.harvard.i2b2.ontology.datavo.vdo.*;
 import edu.harvard.i2b2.ontology.ejb.DBInfoType;
@@ -31,16 +31,16 @@ import edu.harvard.i2b2.ontology.datavo.pm.*;
 import edu.harvard.i2b2.ontology.dao.*;
 
 public class CreateSearchMetadataHandler extends RequestHandler {
-	private LoadDataMessage  loadMsg = null;
-	private MetadataLoadType conceptsType = null;
+	private UpdateTotalNumMessage  loadMsg = null;
+	private UpdateConceptTotalNumType conceptsType = null;
 	private ProjectType projectInfo = null;
 	private DBInfoType dbInfo = null;
 	private SecurityType securityType = null;
 	
-	public CreateSearchMetadataHandler(LoadDataMessage requestMsg) throws I2B2Exception{
+	public CreateSearchMetadataHandler(UpdateTotalNumMessage requestMsg) throws I2B2Exception{
 
 		loadMsg = requestMsg;
-		conceptsType = requestMsg.getMetadataLoad();	
+		conceptsType = requestMsg.getChild();	
 		projectInfo = getRoleInfo(requestMsg.getMessageHeaderType());	
 		setDbInfo(requestMsg.getMessageHeaderType());
 		securityType = requestMsg.getMessageHeaderType().getSecurity();
@@ -82,7 +82,13 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 					@Override
 					public void run() {
 						try {
-							query.buildCreateSearchMetadata( projectInfo, dbInfo, securityType);
+							if (conceptsType != null && (conceptsType.getOperationType().equalsIgnoreCase("synchronize_all") ||
+									conceptsType.getOperationType().equalsIgnoreCase("restart_only")))
+							{
+								query.buildUpdateTotalNum(conceptsType.getProjectId(), dbInfo, securityType, conceptsType.getOperationType(), conceptsType.getCdm());
+							}
+							
+							query.buildCreateSearchMetadata(projectInfo, conceptsType.getProjectId(), dbInfo, securityType);
 						} catch (Exception e) {
 							log.error("i2b2 exception", e);
 						} catch (Throwable e) {

@@ -68,8 +68,8 @@ public final class LuceneService {
     	return new LuceneSuggester(projectInfo);
     	
     }
-    public ConceptsType suggest(SuggestQuery q, String projectInfo) {
-        return  LuceneSuggester.getSuggestions(q, projectInfo, null);
+    public ConceptsType suggest(SuggestQuery q, String projectInfo, boolean isoOfuscated) {
+        return  LuceneSuggester.getSuggestions(q, projectInfo, null, isoOfuscated);
         //return suggestions;
        // return toJsonResponse(suggestions);
     }
