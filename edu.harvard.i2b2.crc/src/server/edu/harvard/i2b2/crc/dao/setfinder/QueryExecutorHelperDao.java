@@ -332,6 +332,12 @@ public class QueryExecutorHelperDao extends CRCDAO {
 							stmt.executeUpdate("UPDATE STATISTICS "
 									+ getDbSchemaName() 
 									+ "#global_temp_table ");
+						} else if (this.dataSourceLookup.getServerType().equalsIgnoreCase(
+								DAOFactoryHelper.POSTGRESQL)) {
+							// Autovacuum does not analyze PostgreSQL temp tables.
+							// Refresh statistics before the next query step uses them.
+							stmt.executeUpdate("ANALYZE " + TEMP_TABLE);
+							stmt.executeUpdate("ANALYZE " + TEMP_MASTER_TABLE);
 						}
 					} else { 
 						resultSet = stmt.executeQuery(singleSql);
