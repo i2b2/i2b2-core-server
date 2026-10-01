@@ -128,6 +128,7 @@ public class ExecRunnable implements Runnable{
 
 				QtQueryInstance queryInstance = null;
 				IQueryInstanceDao queryInstanceDao = null;
+				SetFinderDAOFactory sfDAOFactory = null;
 				try {
 
 				
@@ -140,7 +141,7 @@ public class ExecRunnable implements Runnable{
 
 					IDAOFactory daoFactory = daoFactoryHelper.getDAOFactory();
 
-					SetFinderDAOFactory sfDAOFactory = daoFactory
+					sfDAOFactory = daoFactory
 							.getSetFinderDAOFactory();
 					DataSourceLookup dsLookup = sfDAOFactory.getDataSourceLookup();
 					//logesapi.debug("ORIG domain id"
@@ -268,6 +269,15 @@ public class ExecRunnable implements Runnable{
 					}
 					setJobException(e);
 					setJobErrorFlag(true);
+
+					if (sfDAOFactory != null) {
+						try {
+							sfDAOFactory.getPatientSetResultDAO().markPendingResultsError(
+									queryInstanceId, "Not completed because query execution failed.");
+						} catch (Exception statusEx) {
+							log.error("Problem updating pending query results to ERROR", statusEx);
+						}
+					}
 					
 					if (queryInstance != null)
 					{

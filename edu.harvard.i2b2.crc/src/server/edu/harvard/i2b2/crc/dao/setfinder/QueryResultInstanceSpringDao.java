@@ -68,6 +68,18 @@ IQueryResultInstanceDao {
 	}
 	
 
+	@Override
+	public void markPendingResultsError(String queryInstanceId, String message) {
+		String sql = "update " + getDbSchemaName()
+				+ "qt_query_result_instance set status_type_id = ?, end_date = ?, message = ?"
+				+ " where query_instance_id = ? and status_type_id in (?, ?)";
+		jdbcTemplate.update(sql, new Object[] { QueryStatusTypeId.STATUSTYPE_ID_ERROR,
+				new Date(System.currentTimeMillis()), message, queryInstanceId,
+				QueryStatusTypeId.STATUSTYPE_ID_QUEUED, QueryStatusTypeId.STATUSTYPE_ID_PROCESSING },
+				new int[] { Types.INTEGER, Types.TIMESTAMP, Types.VARCHAR, Types.INTEGER,
+						Types.INTEGER, Types.INTEGER });
+	}
+
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
 	}

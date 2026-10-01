@@ -18,6 +18,9 @@ public interface IQueryResultInstanceDao {
 	public final String OBTOTAL = "OBTOTAL";
 	public final String OBSUBTOTAL = "OBSUBTOTAL";
 
+	/** Mark only queued or processing results as failed, preserving completed results. */
+	public void markPendingResultsError(String queryInstanceId, String message);
+
 	/**
 	 * Function to create result instance for given query instance id. The
 	 * result instance status is set to running. Use updatePatientSet function
