@@ -27,14 +27,20 @@ public class PendingResultsErrorTest {
         jdbc.execute("create table results.qt_query_result_instance ("
                 + "result_instance_id integer primary key, query_instance_id integer,"
                 + "status_type_id integer, end_date timestamp, message varchar(255),"
-                + "set_size integer, real_set_size integer, obfusc_method varchar(20))");
+                + "set_size integer, real_set_size integer, obfusc_method varchar(20), result_type_id integer, description varchar(255))");
+        jdbc.execute("create table results.qt_query_result_type (result_type_id integer, description varchar(255))");
+        jdbc.execute("create table results.qt_query_instance (query_instance_id integer, query_master_id integer)");
+        jdbc.execute("create table results.qt_query_master (query_master_id integer, name varchar(255))");
+        jdbc.execute("insert into results.qt_query_result_type values (1, 'Age breakdown')");
+        jdbc.execute("insert into results.qt_query_instance values (10, 100)");
+        jdbc.execute("insert into results.qt_query_master values (100, 'Test query')");
         DataSourceLookup lookup = new DataSourceLookup();
         lookup.setFullSchema("results.");
         dao = new QueryResultInstanceSpringDao(source, lookup);
     }
 
     private void result(int id, int query, int status) {
-        jdbc.update("insert into results.qt_query_result_instance values (?, ?, ?, null, ?, 42, 45, 'OBTOTAL')",
+        jdbc.update("insert into results.qt_query_result_instance values (?, ?, ?, null, ?, 42, 45, 'OBTOTAL', 1, null)",
                 id, query, status, "original " + id);
     }
 
@@ -54,9 +60,10 @@ public class PendingResultsErrorTest {
         assertEquals(4, row(3).get("STATUS_TYPE_ID"));
         assertNotNull(row(3).get("END_DATE"));
         assertEquals("Execution failed", row(3).get("MESSAGE"));
-        assertEquals(42, row(3).get("SET_SIZE"));
-        assertEquals(45, row(3).get("REAL_SET_SIZE"));
-        assertEquals("OBTOTAL", row(3).get("OBFUSC_METHOD"));
+        assertEquals(-1, row(3).get("SET_SIZE"));
+        assertEquals(-1, row(3).get("REAL_SET_SIZE"));
+        assertEquals("", row(3).get("OBFUSC_METHOD"));
+        assertEquals("Age breakdown for \"Test query\"", row(3).get("DESCRIPTION"));
     }
 
     @Test
@@ -82,12 +89,53 @@ public class PendingResultsErrorTest {
     }
 
     @Test
+    public void preservesExistingDescriptionAndFillsEmptyDescription() {
+        result(1, 10, 2);
+        result(2, 10, 1);
+        jdbc.update("update results.qt_query_result_instance set description = 'Custom description' where result_instance_id = 1");
+        jdbc.update("update results.qt_query_result_instance set description = '' where result_instance_id = 2");
+        dao.markPendingResultsError("10", "Execution failed");
+        assertEquals("Custom description", row(1).get("DESCRIPTION"));
+        assertEquals("Age breakdown for \"Test query\"", row(2).get("DESCRIPTION"));
+    }
+
+    @Test
+    public void missingMetadataStillMarksResultAsError() {
+        result(1, 11, 1);
+        jdbc.execute("delete from results.qt_query_result_type");
+        dao.markPendingResultsError("11", "Execution failed");
+        assertEquals(4, row(1).get("STATUS_TYPE_ID"));
+        assertEquals(-1, row(1).get("SET_SIZE"));
+        assertEquals("Execution failed", row(1).get("DESCRIPTION"));
+    }
+
+    @Test
     public void repeatedCleanupDoesNotOverwriteErrorDetails() {
         result(1, 10, 2);
         dao.markPendingResultsError("10", "Original failure");
         Map<String, Object> failed = row(1);
         dao.markPendingResultsError("10", "Later failure");
         assertEquals(failed, row(1));
+    }
+
+    @Test
+    public void resultThatFinishesBetweenReadAndUpdateIsPreserved() {
+        result(1, 10, 2);
+        dao.jdbcTemplate = new JdbcTemplate(jdbc.getDataSource()) {
+            @Override
+            public int update(String sql, Object[] args, int[] types) {
+                jdbc.update("update results.qt_query_result_instance set status_type_id = 3,"
+                        + " description = 'Finished result' where result_instance_id = 1");
+                return super.update(sql, args, types);
+            }
+        };
+        dao.markPendingResultsError("10", "Execution failed");
+        assertEquals(3, row(1).get("STATUS_TYPE_ID"));
+        assertEquals(42, row(1).get("SET_SIZE"));
+        assertEquals(45, row(1).get("REAL_SET_SIZE"));
+        assertEquals("Finished result", row(1).get("DESCRIPTION"));
+        assertEquals("original 1", row(1).get("MESSAGE"));
+        assertNull(row(1).get("END_DATE"));
     }
 
     @Test

@@ -70,14 +70,34 @@ IQueryResultInstanceDao {
 
 	@Override
 	public void markPendingResultsError(String queryInstanceId, String message) {
-		String sql = "update " + getDbSchemaName()
-				+ "qt_query_result_instance set status_type_id = ?, end_date = ?, message = ?"
-				+ " where query_instance_id = ? and status_type_id in (?, ?)";
-		jdbcTemplate.update(sql, new Object[] { QueryStatusTypeId.STATUSTYPE_ID_ERROR,
-				new Date(System.currentTimeMillis()), message, queryInstanceId,
-				QueryStatusTypeId.STATUSTYPE_ID_QUEUED, QueryStatusTypeId.STATUSTYPE_ID_PROCESSING },
-				new int[] { Types.INTEGER, Types.TIMESTAMP, Types.VARCHAR, Types.INTEGER,
-						Types.INTEGER, Types.INTEGER });
+		String schema = getDbSchemaName();
+		String metadataSql = "select ri.result_instance_id, rt.description, qm.name from "
+				+ schema + "qt_query_result_instance ri left join " + schema
+				+ "qt_query_result_type rt on rt.result_type_id = ri.result_type_id left join "
+				+ schema + "qt_query_instance qi on qi.query_instance_id = ri.query_instance_id left join "
+				+ schema + "qt_query_master qm on qm.query_master_id = qi.query_master_id"
+				+ " where ri.query_instance_id = ? and ri.status_type_id in (?, ?)";
+		List<String[]> results = jdbcTemplate.query(metadataSql,
+				(rs, rowNum) -> new String[] { rs.getString(1), rs.getString(2), rs.getString(3) },
+				Integer.parseInt(queryInstanceId), QueryStatusTypeId.STATUSTYPE_ID_QUEUED,
+				QueryStatusTypeId.STATUSTYPE_ID_PROCESSING);
+		String sql = "update " + schema
+				+ "qt_query_result_instance set status_type_id = ?, end_date = ?, message = ?,"
+				+ " set_size = -1, real_set_size = -1, obfusc_method = '',"
+				+ " description = coalesce(nullif(description, ''), ?)"
+				+ " where result_instance_id = ? and status_type_id in (?, ?)";
+		for (String[] result : results) {
+			String description = result[1] == null ? message : result[1];
+			if (result[2] != null) {
+				description += " for \"" + result[2] + "\"";
+			}
+			// Recheck status in the update: a result may have finished since the read.
+			jdbcTemplate.update(sql, new Object[] { QueryStatusTypeId.STATUSTYPE_ID_ERROR,
+					new Date(System.currentTimeMillis()), message, description, result[0],
+					QueryStatusTypeId.STATUSTYPE_ID_QUEUED, QueryStatusTypeId.STATUSTYPE_ID_PROCESSING },
+					new int[] { Types.INTEGER, Types.TIMESTAMP, Types.VARCHAR, Types.VARCHAR,
+							Types.INTEGER, Types.INTEGER, Types.INTEGER });
+		}
 	}
 
 	public void setRoles(List<String> roles) {
