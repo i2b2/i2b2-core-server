@@ -305,15 +305,9 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 
 			//conn
 			//		.createStatement()
-			if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					DAOFactoryHelper.SNOWFLAKE))
-				deleteStmt.executeUpdate(
-							"drop table "
-									+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE);
-			else
-				deleteStmt.executeUpdate(
-						"drop table "
-								+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE);
+			deleteStmt.executeUpdate(
+					"drop table "
+							+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE);
 		} catch (SQLException sqle) {
 			;
 		} finally {
@@ -335,15 +329,9 @@ public class PageTotalDao extends CRCDAO implements IPageDao {
 			deleteStmt = conn.createStatement();
 		//	conn
 		//			.createStatement()
-			if (dataSourceLookup.getServerType().equalsIgnoreCase(
-					DAOFactoryHelper.SNOWFLAKE))
-				deleteStmt.executeUpdate(
-							"drop table "
-									+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE);
-			else
-				deleteStmt.executeUpdate(
-						"drop table "
-								+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE);
+			deleteStmt.executeUpdate(
+					"drop table "
+							+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE);
 		} catch (SQLException sqle) {
 			;
 		} finally {

@@ -144,13 +144,7 @@ public class PdoQueryPatientDao extends CRCDAO implements IPdoQueryPatientDao {
 			try {
 				if (!dataSourceLookup.getServerType().equalsIgnoreCase(
 						DAOFactoryHelper.ORACLE)) {
-					if (dataSourceLookup.getServerType().equalsIgnoreCase(
-							DAOFactoryHelper.SNOWFLAKE)) {
-						tempStmt.executeUpdate("drop table " + tempTableName);
-					} else {
-						tempStmt.executeUpdate("drop table " + tempTableName);
-					}
-
+					tempStmt.executeUpdate("drop table " + tempTableName);
 				}
 
 			} catch (SQLException sqlex) {

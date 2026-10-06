@@ -3,7 +3,7 @@ cd customization/
 
 export jdbc_mssql_driver_version=${jdbc_mssql_driver_version:-8.2.2}
 export jdbc_pg_driver_version=${jdbc_pg_driver_version:-42.7.8}
-export jdbc_snowflake_driver_version=${jdbc_snowflake_driver_version:-3.27.0}
+export jdbc_snowflake_driver_version=${jdbc_snowflake_driver_version:-4.1.0}
 
 echo "Downloading MSSQL - mssql-jdbc-${jdbc_mssql_driver_version}.jre8.jar Version"
 echo "Downloading PGSQL - postgresql-${jdbc_pg_driver_version}.jar Version "

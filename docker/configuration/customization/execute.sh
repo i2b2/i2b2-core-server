@@ -131,7 +131,7 @@ function create_snowflake_ds() {
   $JBOSS_CLI -c << EOF
     # batch
     # Add Snowflake module
-    module add --name=net.snowflake --resources=/opt/jboss/wildfly/customization/snowflake-jdbc-3.27.0.jar --dependencies=javax.api,javax.transaction.api
+    module add --name=net.snowflake --resources=/opt/jboss/wildfly/customization/snowflake-jdbc-4.1.0.jar --dependencies=javax.api,javax.transaction.api
 
     # Add Snowflake driver
     /subsystem=datasources/jdbc-driver=snowflake:add(driver-name="snowflake",driver-module-name="net.snowflake",driver-class-name=net.snowflake.client.jdbc.SnowflakeDriver)

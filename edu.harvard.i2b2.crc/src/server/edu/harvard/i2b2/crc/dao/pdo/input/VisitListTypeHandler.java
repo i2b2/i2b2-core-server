@@ -359,13 +359,8 @@ public class VisitListTypeHandler extends CRCDAO implements
 					DAOFactoryHelper.SNOWFLAKE)) {
 			//	conn.createStatement().executeUpdate(
 			//			"drop table " + getTempTableName());
-				if (dataSourceLookup.getServerType().equalsIgnoreCase(
-						DAOFactoryHelper.SNOWFLAKE))
-					deleteStmt.executeUpdate(
-							"drop table " + getTempTableName());
-				else
-					deleteStmt.executeUpdate(
-							"drop table " + getTempTableName());
+				deleteStmt.executeUpdate(
+						"drop table " + getTempTableName());
 			} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
 					DAOFactoryHelper.ORACLE)) {
 			///	System.out.println("delete table " + getTempTableName());
@@ -394,10 +389,6 @@ public class VisitListTypeHandler extends CRCDAO implements
 				DAOFactoryHelper.ORACLE)) {
 			tempTableName = this.getDbSchemaName()
 					+ FactRelatedQueryHandler.TEMP_PARAM_TABLE;
-		} else if (dataSourceLookup.getServerType().equalsIgnoreCase(
-				DAOFactoryHelper.SNOWFLAKE)){
-			tempTableName = this.getDbSchemaName()
-					+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 		} else {
 			tempTableName = this.getDbSchemaName()
 					+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;

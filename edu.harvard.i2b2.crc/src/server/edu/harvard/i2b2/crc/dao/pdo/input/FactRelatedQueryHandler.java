@@ -733,11 +733,6 @@ IFactRelatedQueryHandler {
 						obsFactSelectClause, tableLookupJoinClause,
 						fullWhereClause);
 					mainQuerySql += factWithoutFilterSql ;
-				} else if (dataSourceLookup.getServerType().equals("SNOWFLAKE")) {
-					factWithoutFilterSql = postgresFactQueryWithoutFilter(
-							obsFactSelectClause, tableLookupJoinClause,
-							fullWhereClause);
-					mainQuerySql += factWithoutFilterSql + ") b \n";
 				} else {
 					factWithoutFilterSql = postgresFactQueryWithoutFilter(
 							obsFactSelectClause, tableLookupJoinClause,

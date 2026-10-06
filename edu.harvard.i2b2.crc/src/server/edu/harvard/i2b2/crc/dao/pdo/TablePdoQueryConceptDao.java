@@ -87,10 +87,7 @@ public class TablePdoQueryConceptDao extends CRCDAO implements
 				factTempTable = this.getDbSchemaName()
 						+ SQLServerFactRelatedQueryHandler.TEMP_FACT_PARAM_TABLE;
 				try {
-					if (serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
-						tempStmt.executeUpdate("drop table " + factTempTable);
-					else
-						tempStmt.executeUpdate("drop table " + factTempTable);
+					tempStmt.executeUpdate("drop table " + factTempTable);
 				} catch (SQLException sqlex) {
 					;
 				}
@@ -245,10 +242,7 @@ public class TablePdoQueryConceptDao extends CRCDAO implements
 				tempTableName = this.getDbSchemaName()
 						+ SQLServerFactRelatedQueryHandler.TEMP_PDO_INPUTLIST_TABLE;
 				try {
-					if (serverType.equalsIgnoreCase(DAOFactoryHelper.SNOWFLAKE))
-						tempStmt.executeUpdate("drop table " + tempTableName);
-					else
-						tempStmt.executeUpdate("drop table " + tempTableName);
+					tempStmt.executeUpdate("drop table " + tempTableName);
 				} catch (SQLException sqlex) {
 					;
 				}

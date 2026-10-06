@@ -604,10 +604,11 @@ public class FolderDao extends JdbcDaoSupport {
 						parameters = maxString + parameters; // appended maxstring infront of parameters
 						maxString = "";
 					}
-					// PostgreSQL and Snowflake both support LIMIT
-					else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")
-							|| dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE"))
+					// Snowflake supports LIMIT
+					else if(dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE"))
 						maxString = " limit " + fetchSize;
+					//else 	if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL"))
+					//	maxString = " limit " + fetchSize;
 
 				}
 			}
@@ -1884,14 +1885,13 @@ class GetFolderMapper implements RowMapper<FolderType> {
 
 			try {
 				String xml_schema_string = null;
-				//column definition clob is in only oracle
-				if (dbType.equals("ORACLE")) {
+				//on snowflake the column is varchar, not a clob
+				if (dbType.equals("SNOWFLAKE")) {
+					xml_schema_string = rs.getString("c_work_xml_schema");
+				} else {
 					Clob xml_schema_clob = rs.getClob("c_work_xml_schema");
 					if (xml_schema_clob != null)
 						xml_schema_string = JDBCUtil.getClobString(xml_schema_clob);
-
-				} else {
-					xml_schema_string = rs.getString("c_work_xml_schema");
 				}
 				if (xml_schema_string != null){
 					c_xml = xml_schema_string;

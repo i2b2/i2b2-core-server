@@ -80,7 +80,7 @@ public class ConceptDao extends JdbcDaoSupport {
 	final static String MOD_LIMITED = " c_hlevel, c_fullname, c_name, c_synonym_cd, c_visualattributes, c_totalnum, c_basecode, c_tooltip, m_applied_path ";
 
 
-	final static String DEFAULT = " c_hlevel, c_fullname, c_name, c_synonym_cd, c_visualattributes, c_totalnum, c_basecode, c_facttablecolumn, c_tablename, c_columnname, c_columndatatype, c_operator, c_dimcode, c_tooltip, valuetype_cd, m_applied_path ";
+	final static String DEFAULT = " c_hlevel, c_fullname, c_name, c_synonym_cd, c_visualattributes, c_totalnum, c_basecode, c_facttablecolumn, c_tablename, c_columnname, c_columndatatype, c_operator, c_dimcode, c_tooltip, valuetype_cd ";
 	final static String CORE = DEFAULT;
 	final static String LIMITED = " c_hlevel, c_fullname, c_name, c_synonym_cd, c_visualattributes, c_totalnum, c_basecode, c_tooltip, valuetype_cd ";
 
@@ -312,16 +312,28 @@ public class ConceptDao extends JdbcDaoSupport {
 
 		// get all children if the numLevel is less then zero
 		int numLevel = childrenType.getNumLevel();
-		String sql = "select " + parameters + " from " + metadataSchema + tableName + " where c_fullname like '"+ searchPath + "' " + (!(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") || dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE")) ? "{ESCAPE '?'}" : "");
+		String sql;
+		if(dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE")){
+			parameters = parameters + ", m_applied_path ";
+			sql = "select " + parameters + " from " + metadataSchema + tableName + " where c_fullname like '"+ searchPath + "' ";
+		} else {
+			sql = "select " + parameters + " from " + metadataSchema + tableName + " where c_fullname like ? " + (!dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL") ? "{ESCAPE '?'}" : "");
+		}
 		sql += (numLevel >= 0) ? " and c_hlevel > ? and c_hlevel <= ? " : " and c_hlevel > ? ";
 		sql = sql + hidden + synonym + " order by c_hlevel,upper(c_name) ";
 
 
 		List<ConceptType> queryResult = null;
 		try {
-			queryResult = (numLevel >= 0)
-					? jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), level, (level + numLevel))
-					: jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), level);
+			if(dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE")){
+				queryResult = (numLevel >= 0)
+						? jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), level, (level + numLevel))
+						: jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), level);
+			} else {
+				queryResult = (numLevel >= 0)
+						? jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath, level, (level + numLevel))
+						: jt.query(sql, getConceptNodeMapper(new NodeType(childrenType), obfuscatedUserFlag, dbInfo.getDb_serverType()), searchPath, level);
+			}
 		} catch (Exception e) {
 			log.error("Get Children " + e.getMessage());
 			throw new I2B2DAOException("Database Error");
@@ -335,7 +347,8 @@ public class ConceptDao extends JdbcDaoSupport {
 			while (it2.hasNext()){
 				ConceptType concept = it2.next();
 				// if a leaf has modifiers report it with visAttrib == F
-				if(concept.getVisualattributes().startsWith("L") && !concept.getMAppliedPath().equals("@")){
+				if(concept.getVisualattributes().startsWith("L") &&
+						(!dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE") || !"@".equals(concept.getMAppliedPath()))){
 					String modPath = StringUtil.getPath(concept.getKey());
 					// I have to do this the hard way because there are a dynamic number of applied paths to check
 					//   prevent SQL injection
@@ -923,12 +936,12 @@ public class ConceptDao extends JdbcDaoSupport {
 									sql += " AS";
 									sql += " (";
 									sql += "    select c_name, c_fullname,";
-									sql += "      substr(c_fullname, 1, length(c_fullname) - strpos(substr(reverse(c_fullname), 2), '\\') ) as c_path,";
+									sql += "      substr(c_fullname, 1, length(c_fullname) - position('\\\\', substr(reverse(c_fullname), 2)) ) as c_path,";
 									sql += "      1 as c_pathorder";
 									sql += "    from " + metadataSchema+tableName  + "  where c_fullname =  ? and c_synonym_cd='N'";
 									sql += "    UNION ALL";
 									sql += "    select m.c_name, m.c_fullname,  ";
-									sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - strpos(substr(reverse(m.c_fullname), 2), '\\') ) as c_path,   c_pathorder + 1 as c_pathorder";
+									sql += "      substr(m.c_fullname, 1, length(m.c_fullname) - position('\\\\', substr(reverse(m.c_fullname), 2)) ) as c_path,   c_pathorder + 1 as c_pathorder";
 
 									sql += "    from " + metadataSchema+tableName  + "  m";
 									sql += "        inner join pathnames p on m.c_fullname = p.c_path where c_synonym_cd='N'";
@@ -1102,6 +1115,24 @@ public class ConceptDao extends JdbcDaoSupport {
 			sql += "    select m.c_fullname as path_fullname, p.c_pathorder + 1 as c_pathorder";
 			sql += "    from " + table + " m";
 			sql += "        inner join pathnames p on m.c_fullname = substr(p.path_fullname, 1, length(p.path_fullname) - strpos(substr(reverse(p.path_fullname), 2), '\\') )";
+			sql += "    where m.c_synonym_cd='N'";
+			sql += " )";
+			sql += " select " + parameters;
+			sql += " from " + table + " t inner join (select path_fullname, max(c_pathorder) as c_pathorder from pathnames group by path_fullname) pathnames";
+			sql += "     on t.c_fullname = pathnames.path_fullname";
+			sql += " where 1=1 " + hidden + synonym;
+			sql += " order by pathnames.c_pathorder desc, upper(c_name)";
+		}
+		else if(dbInfo.getDb_serverType().toUpperCase().equals("SNOWFLAKE")){
+			sql = "WITH RECURSIVE pathnames (path_fullname, c_pathorder)";
+			sql += " AS";
+			sql += " (";
+			sql += "    select c_fullname as path_fullname, 1 as c_pathorder";
+			sql += "    from " + table + " where c_fullname in (" + placeholders + ")";
+			sql += "    UNION ALL";
+			sql += "    select m.c_fullname as path_fullname, p.c_pathorder + 1 as c_pathorder";
+			sql += "    from " + table + " m";
+			sql += "        inner join pathnames p on m.c_fullname = substr(p.path_fullname, 1, length(p.path_fullname) - position('\\\\', substr(reverse(p.path_fullname), 2)) )";
 			sql += "    where m.c_synonym_cd='N'";
 			sql += " )";
 			sql += " select " + parameters;
@@ -2564,11 +2595,15 @@ class GetConceptNodeMapper implements RowMapper<ConceptType> {
 
 		}
 
-		// retrieving m_applied_path
-		if(rs.getString("m_applied_path") == null)
-			child.setMAppliedPath("@");
-		else
-			child.setMAppliedPath(rs.getString("m_applied_path"));
+		// m_applied_path is only selected on SNOWFLAKE; left unset when the column is absent
+		try {
+			if(rs.getString("m_applied_path") == null)
+				child.setMAppliedPath("@");
+			else
+				child.setMAppliedPath(rs.getString("m_applied_path"));
+		} catch (SQLException sqle) {
+			;
+		}
 		return child;
 	}
 
