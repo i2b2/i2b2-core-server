@@ -1152,7 +1152,10 @@ public class OntologyService {
 		}
 		String requestElementString = loadElement.toString();
 
-		LoadDataMessage loadDataMsg = new LoadDataMessage(
+	//	LoadDataMessage loadDataMsg = new LoadDataMessage(
+	//			requestElementString);
+		
+		UpdateTotalNumMessage loadDataMsg = new UpdateTotalNumMessage(
 				requestElementString);
 
 		long waitTime = 0;

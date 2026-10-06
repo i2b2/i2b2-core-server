@@ -64,6 +64,15 @@ import edu.harvard.i2b2.ontology.datavo.pm.ParamType;
 public class OntologyUtil {
 
 
+	private  boolean isAutoSuggectStarted = false;
+	public  boolean isAutoSuggectStarted() {
+		return isAutoSuggectStarted;
+	}
+
+	public  void setAutoSuggectStarted(boolean isAutoSuggectStarted) {
+		this.isAutoSuggectStarted = isAutoSuggectStarted;
+	}
+
 	private static List<ParamType> appProperties = null;
 
 	private static HashMap<String, LuceneSuggester> suggesters = new HashMap<>();
@@ -93,6 +102,9 @@ public class OntologyUtil {
 
 	private static final String SERVICE_ACCOUNT_USER = "edu.harvard.i2b2.ontology.pm.serviceaccount.user";
 	private static final String SERVICE_ACCOUNT_PASSWORD =  "edu.harvard.i2b2.ontology.pm.serviceaccount.password";
+	
+	private static final String AUTOSUGGEST_INDEX_DIRECTRY = "ontology.autosuggest.index.directory";
+	private static final String AUTOSUGGEST_INDEX_STOREDPROCEDURE = "ontology.autosuggest.index.storedprocedure";
 
 	/** class instance field **/
 	private static OntologyUtil thisInstance = null;
@@ -218,8 +230,14 @@ public class OntologyUtil {
 	public String getServiceAccountPassword() throws I2B2Exception {
 		return getPropertyValue(SERVICE_ACCOUNT_PASSWORD);
 	}
+	
+	public String getAutosuggestIndexDirectory() throws I2B2Exception {
+		return getPropertyValue(AUTOSUGGEST_INDEX_DIRECTRY);
+	}
 
-
+	public String getAutosuggestIndexStoredProcedure() throws I2B2Exception {
+		return getPropertyValue(AUTOSUGGEST_INDEX_STOREDPROCEDURE);
+	}
 	/**
 	 * Return app server datasource
 	 * 
@@ -319,6 +337,8 @@ public class OntologyUtil {
 			//LuceneService luceneService = new LuceneService();
 			sugg = new LuceneSuggester(projectId);
 			//sugg = luceneService.getSuggester(projectId);
+			suggesters.put(projectId, sugg);
+		} else if (!suggesters.containsKey(projectId)){
 			suggesters.put(projectId, sugg);
 		}
 		

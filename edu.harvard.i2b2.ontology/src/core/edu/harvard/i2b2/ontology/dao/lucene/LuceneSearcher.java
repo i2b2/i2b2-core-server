@@ -56,19 +56,25 @@ import java.util.stream.Collectors;
  */
 public final class LuceneSearcher { // implements Loggable {
 
-	private static final String indexFileLocation = "/Users/mmendis/Downloads/lucene_i2b2/lucene_index"; //ConfigSource.config.getString("shrine.lucene.directory");
-	private static final File indexDir = new File(indexFileLocation);
-	private static final FSDirectory directory;
-	public static final IndexSearcher searcher;
-	private static final StandardAnalyzer analyzer = new StandardAnalyzer();
+	private static  String indexFileLocation; //"/Users/mmendis/Downloads/lucene_i2b2/lucene_index"; //ConfigSource.config.getString("shrine.lucene.directory");
+	private static  File indexDir; // = new File(indexFileLocation);
+	private static  FSDirectory directory;
+	public static  IndexSearcher searcher;
+	private static  StandardAnalyzer analyzer = new StandardAnalyzer();
 	//private static final ObjectMapper mapper = new ObjectMapper();
 
 
 	protected final static Log logesapi = LogFactory.getLog("LuceneSearcher");
 
 
-	static {
+	public LuceneSearcher (String projectInfo ){
+
+
 		try {
+			indexFileLocation = "/opt/wildfly-37.0.1.Final/bin/standalone/autosuggest_index/" + projectInfo;
+					//System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "autosuggest_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
+			indexDir = new File(indexFileLocation);
+
 			directory = FSDirectory.open(indexDir.toPath());
 			searcher = new IndexSearcher(DirectoryReader.open(directory));
 		} catch (IOException e) {
@@ -77,29 +83,35 @@ public final class LuceneSearcher { // implements Loggable {
 	}
 	
 	
-	/*
+	
     public static void main(String[] args) throws Exception {
-    	
+
+		indexFileLocation = "/opt/wildfly-37.0.1.Final/bin/standalone/autosuggest_index/OracleDemo";
+				//System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "autosuggest_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
+		indexDir = new File(indexFileLocation);
+
+		directory = FSDirectory.open(indexDir.toPath());
+		searcher = new IndexSearcher(DirectoryReader.open(directory));
     	
     	OntologyService o = new OntologyService();
     	//OMElement tt = o.findDocuments("diag");
     	
     	SuggestQuery a = new SuggestQuery();
     	a.suggestString = "diag";
-    	List<AutoSuggestResult> mylu = LuceneSuggester.getSuggestions(a);
+    	//List<AutoSuggestResult> mylu = LuceneSuggester.getSuggestions(a);
     	List<CodeCategoryTerm> myroot = getRootTerms();
     	 SearchQuery mysearch = new SearchQuery();
     	 mysearch.searchString = "diag";
     	 mysearch.filterData = new FilterData(new NO_FILTER(), "All Concepts");
 		 SearchResults mylist = searchIO(mysearch);
-//    	Optional<OntologyTerm> mylist = getSingleTermByPathAndDisplayName("\\i2b2\\Diagnoses\\|Diagnoses", "Asthma");
+    	Optional<OntologyTerm> mylist2 = getSingleTermByPathAndDisplayName("\\Diagnoses\\(S00-T88) Inju~yy6i\\", "Injury");
     	
         long startTime = System.currentTimeMillis();
 
 
         
     }
-    */
+    
 
 	public static List<CodeCategoryTerm> getRootTerms() throws IOException, ParseException {
 		TopFieldDocs foundDocs = getRootFieldDocs();
