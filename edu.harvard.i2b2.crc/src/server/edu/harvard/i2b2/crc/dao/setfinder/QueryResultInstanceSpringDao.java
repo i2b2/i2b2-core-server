@@ -69,6 +69,57 @@ IQueryResultInstanceDao {
 	
 	@Override
 	public void markPendingResultsError(String queryInstanceId, String message) {
+		 // ===== DESCRIPTION UPDATE CODE STARTS HERE =====
+
+    String schema = getDbSchemaName();
+
+    // Step 1: Find breakdowns with missing descriptions
+    String selectSql =
+            "SELECT qri.result_instance_id, rt.description, qm.name " +
+            "FROM " + schema + "qt_query_result_instance qri " +
+            "JOIN " + schema + "qt_query_result_type rt " +
+            "ON rt.result_type_id = qri.result_type_id " +
+            "JOIN " + schema + "qt_query_instance qi " +
+            "ON qi.query_instance_id = qri.query_instance_id " +
+            "JOIN " + schema + "qt_query_master qm " +
+            "ON qm.query_master_id = qi.query_master_id " +
+            "WHERE qri.query_instance_id = ? " +
+            "AND qri.description IS NULL";
+
+    List<Object[]> rows = jdbcTemplate.query(
+            selectSql,
+            new Object[] { Integer.parseInt(queryInstanceId) },
+            (rs, rowNum) -> new Object[] {
+                    rs.getLong(1),
+                    rs.getString(2),
+                    rs.getString(3)
+            }
+    );
+
+    // Step 2: Update missing descriptions
+    String updateDescriptionSql =
+            "UPDATE " + schema + "qt_query_result_instance " +
+            "SET description = ? " +
+            "WHERE result_instance_id = ? " +
+            "AND description IS NULL";
+
+    for (Object[] row : rows) {
+        String breakdownDescription = (String) row[1];
+        String queryName = (String) row[2];
+
+        if (breakdownDescription != null && queryName != null) {
+            String description =
+                    breakdownDescription + " for \"" + queryName + "\"";
+
+            jdbcTemplate.update(
+                    updateDescriptionSql,
+                    new Object[] { description, row[0] },
+                    new int[] { Types.VARCHAR, Types.INTEGER }
+            );
+        }
+    }
+
+    // =====DESCRIPTION UPDATE CODE ENDS HERE =====
 		String sql = "update " + getDbSchemaName()
 				+ "qt_query_result_instance set status_type_id = ?, end_date = ?, message = ?"
 				+ " where query_instance_id = ? and status_type_id in (?, ?)";
