@@ -24,9 +24,9 @@ import org.apache.lucene.queryparser.classic.ParseException;
  * ServiceResponse (status + JSON body). Integrate with your HTTP framework by delegating
  * to these methods.
  */
-public final class LuceneService {
+public  class LuceneService {
 
-   private final ObjectMapper mapper = new ObjectMapper();
+   private  ObjectMapper mapper = new ObjectMapper();
 
     public LuceneService() {}
 
@@ -68,12 +68,13 @@ public final class LuceneService {
     	return new LuceneSuggester(projectInfo);
     	
     }
+    /*
     public ConceptsType suggest(SuggestQuery q, String projectInfo, boolean isoOfuscated) {
-        return  LuceneSuggester.getSuggestions(q, projectInfo, null, isoOfuscated);
+        return  LuceneSuggester.getSuggestions(q, projectInfo, null, isoOfuscated, false);
         //return suggestions;
        // return toJsonResponse(suggestions);
     }
-
+	*/
     public ServiceResponse getLabDetails(OntologyPath path) throws IOException {
         Optional<LabDetail> ld = LuceneSearcher.getLabDetailsIO(path);
         if (ld == null || !ld.isPresent()) return ServiceResponse.noContent();

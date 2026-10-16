@@ -2067,8 +2067,8 @@ public class PMDbDao extends JdbcDaoSupport {
 								((ProjectType) utype).getParam().get(0).getDatatype(),
 								((ProjectType) utype).getParam().get(0).getName(),
 								((ProjectType) utype).getParam().get(0).getValue(),
-								Calendar.getInstance().getTime(),
-								Calendar.getInstance().getTime(),	
+								new java.sql.Timestamp(Calendar.getInstance().getTimeInMillis()),
+								new java.sql.Timestamp(Calendar.getInstance().getTimeInMillis()),	
 								caller,
 								(((ProjectType) utype).getParam().get(0).getStatus() != null? ((ProjectType) utype).getParam().get(0).getStatus() : "A"));
 					} else 
@@ -2925,8 +2925,26 @@ class getParam implements RowMapper<ParamType> {
 		eData.setStatus(rs.getString("status_cd"));
 		eData.setId(rs.getInt("id"));
 		eData.setDatatype(rs.getString("datatype_cd"));
+		
+		if (rs.getDate("entry_date") != null)
+			eData.setCreateDate(long2Gregorian(rs.getTimestamp("entry_date").getTime())); 
+
+		if (rs.getDate("change_date") != null)
+			eData.setUpdateDate(long2Gregorian(rs.getTimestamp("change_date").getTime())); 
+		 
 		return eData;
 	} 
+	public static String long2Gregorian(long date) {
+		DatatypeFactory dataTypeFactory;
+		try {
+			dataTypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTimeInMillis(date);
+		return dataTypeFactory.newXMLGregorianCalendar(gc).toXMLFormat();
+	}
 }
 
 /*

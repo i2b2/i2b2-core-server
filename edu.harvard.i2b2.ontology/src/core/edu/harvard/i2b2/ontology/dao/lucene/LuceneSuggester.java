@@ -15,11 +15,14 @@ import org.apache.lucene.util.BytesRef;
 import edu.harvard.i2b2.common.exception.I2B2Exception;
 import edu.harvard.i2b2.ontology.dao.ConceptDao;
 import edu.harvard.i2b2.ontology.dao.lucene.LuceneService.SuggestQuery;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.SecurityType;
+import edu.harvard.i2b2.ontology.datavo.pm.ParamType;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptsType;
 import edu.harvard.i2b2.ontology.datavo.vdo.VocabRequestType;
 import edu.harvard.i2b2.ontology.util.OntologyUtil;
+import edu.harvard.i2b2.pm.ws.PMServiceDriver;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,31 +37,36 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Java translation of LuceneSuggester.scala
  */
-public final class LuceneSuggester {
+public  class LuceneSuggester {
 
-	private static  String suggestIndexDirectoryName;
-	private static  int suggestionsReturnedCount;
-	private static  File suggestIndexDirectory;
-	private static  FSDirectory luceneDirectory;
-	private static  StandardAnalyzer analyzer;
-	private static  AnalyzingInfixSuggester analyzingInfixSuggester;
-	private static  AnalyzingSuggester analyzingSuggester;
+	private   String suggestIndexDirectoryName;
+	private   int suggestionsReturnedCount;
+	private   File suggestIndexDirectory;
+	private   FSDirectory luceneDirectory;
+	private   StandardAnalyzer analyzer;
+	private   AnalyzingInfixSuggester analyzingInfixSuggester;
+	private   AnalyzingSuggester analyzingSuggester;
 
-	private static Log log = LogFactory.getLog(LuceneSuggester.class);
+	private  Log log = LogFactory.getLog(LuceneSuggester.class);
+	private AutoSuggestResult autoSuggestResult;
 	public LuceneSuggester (String projectInfo ){
 
+		suggestIndexDirectoryName = System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "autosuggest_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 		try {
-			suggestIndexDirectoryName = System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "autosuggest_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 
 			if (OntologyUtil.getInstance().getAutosuggestIndexDirectory() != null && OntologyUtil.getInstance().getAutosuggestIndexDirectory() != "")
-				suggestIndexDirectoryName = OntologyUtil.getInstance().getAutosuggestIndexDirectory();
+				suggestIndexDirectoryName = OntologyUtil.getInstance().getAutosuggestIndexDirectory() + File.separatorChar + projectInfo;
+						
+		} catch (Exception e) {}
+		try {
 			suggestionsReturnedCount = -1; 
 			suggestIndexDirectory = new File(suggestIndexDirectoryName);
 			luceneDirectory = FSDirectory.open(suggestIndexDirectory.toPath());
 			analyzer = new StandardAnalyzer();
 			analyzingInfixSuggester = new AnalyzingInfixSuggester(luceneDirectory, analyzer, analyzer, 3, true);
+			autoSuggestResult = new AutoSuggestResult();
 			//analyzingSuggester = new AnalyzingSuggester(luceneDirectory,"temp_prefix" , analyzer); //, analyzer, 3, true);
-		} catch (RuntimeException | IOException | I2B2Exception e) {
+		} catch (RuntimeException | IOException e) {
 			log.error("Suggestor not loaded for : " + suggestIndexDirectoryName);
 			throw new ExceptionInInitializerError(e);
 		}
@@ -78,14 +86,24 @@ public final class LuceneSuggester {
 	 * because double quotes are not indexed.
 	 * @param vocabType 
 	 */
-	public static ConceptsType getSuggestions(final SuggestQuery suggestQuery, String projectId, VocabRequestType vocabType, boolean isoOfuscated ) {
+	public  ConceptsType getSuggestions(final SuggestQuery suggestQuery, String projectId, SecurityType security, VocabRequestType vocabType, boolean isoOfuscated, boolean onlyWithBaseCode ) {
 		if (suggestQuery == null) return null;
 
 		if (suggestIndexDirectoryName == null)
 			return null;
+	
 
 		String suggestString;
 		try {
+			ParamType paramIndexStatus = PMServiceDriver.getProjectParam(
+					"AUTOSUGGEST_INDEX_STATUS",  security, projectId,
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+			
+			
+			if (paramIndexStatus == null || !paramIndexStatus.getValue().equals("FINISHED"))
+				return null;
+
 			// Scala case class provides a suggestString() accessor
 			suggestString = suggestQuery.getSuggestString(); //(String) suggestQuery.getClass().getMethod("suggestString").invoke(suggestQuery);
 		} catch (Exception e) {
@@ -126,9 +144,11 @@ public final class LuceneSuggester {
 		ConceptsType suggestions = new  ConceptsType();
 		int patientCount = vocabType.getMax();
 		int conceptCount = vocabType.getMax();
+		if (onlyWithBaseCode)
+			conceptCount = 0;
 		for (int i = 0; i < results.size(); i++) {
 
-			AutoSuggestResult a = AutoSuggestResult.fromLookup(results.get(i));
+			AutoSuggestResult a =  autoSuggestResult.fromLookup(results.get(i));
 
 
 			ConceptType b = new ConceptType();
@@ -143,14 +163,23 @@ public final class LuceneSuggester {
 				if (suggestion.length > 1)
 					b.setTablename(suggestion[1]);
 
-				if (suggestion.length > 2 && StringUtils.isNumeric(suggestion[2]))
-					b.setTotalnum(Integer.valueOf(suggestion[2]));
+				//if (suggestion.length > 2 && StringUtils.isNumeric(suggestion[2]))
+				//	b.setTotalnum(Integer.valueOf(suggestion[2]));
+				//else 
+					if (suggestion.length > 2)
+					b.setDimcode(suggestion[2]);
 
 				if (suggestion.length > 3)
 					b.setBasecode(suggestion[3]);
 
 				if (suggestion.length > 4)
-					b.setVisualattributes(suggestion[4]);
+					b.setKeyName(suggestion[4]);
+
+				if (suggestion.length > 5)
+					b.setVisualattributes(suggestion[5]);
+
+				if (suggestion.length > 6)
+					b.setTooltip(suggestion[6]);
 
 				b.setLevel((int) a.occurrences);
 
@@ -172,18 +201,22 @@ public final class LuceneSuggester {
 	}
 
 	// AutoSuggestResult equivalent
-	public static class AutoSuggestResult {
-		public final String suggestion;
-		public final long occurrences;
-		public final long weight;
+	public   class AutoSuggestResult {
+		public  String suggestion;
+		public  long occurrences;
+		public  long weight;
 
-		public AutoSuggestResult(String suggestion, long occurrences, long weight) {
+		public  AutoSuggestResult()
+		{
+			
+		}
+		public  AutoSuggestResult(String suggestion, long occurrences, long weight) {
 			this.suggestion = suggestion;
 			this.occurrences = occurrences;
 			this.weight = weight;
 		}
 
-		public static AutoSuggestResult fromLookup(Lookup.LookupResult result) {
+		public   AutoSuggestResult fromLookup(Lookup.LookupResult result) {
 			if (result == null) return new AutoSuggestResult("", 0L, 0L);
 			long occurrences = 0L;
 			if (result.payload != null && result.payload.bytes != null) {

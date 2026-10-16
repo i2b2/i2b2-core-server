@@ -91,6 +91,8 @@ public abstract class RequestHandler {
 						}
 			*/			
 						ProjectType project = (ProjectType)it.next();
+						if (pmConfigure.getUser().isIsAdmin())
+							project.getRole().add("ADMIN");
 						log.debug("Matching PM response's project  [" + project.getId() + "] with the request  project [" + header.getProjectId() + "]");
 						if (project.getId().equals(header.getProjectId())) { 
 							projectType = project;

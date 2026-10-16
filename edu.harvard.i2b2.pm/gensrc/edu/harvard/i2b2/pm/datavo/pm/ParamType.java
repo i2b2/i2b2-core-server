@@ -8,9 +8,13 @@
 
 package edu.harvard.i2b2.pm.datavo.pm;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.XmlValue;
 
@@ -37,10 +41,14 @@ import jakarta.xml.bind.annotation.XmlValue;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "paramType", propOrder = {
     "value"
+//    "createDate",
+  //  "updateDate"
 })
 public class ParamType {
 
-    @XmlValue
+   // @XmlValue
+	//@XmlAttribute(name = "value")
+	@XmlValue
     protected String value;
     @XmlAttribute(name = "name")
     protected String name;
@@ -52,6 +60,63 @@ public class ParamType {
     protected String status;
     @XmlAttribute(name = "hidden")
     protected Boolean hidden;
+    
+    @XmlAttribute(name = "create_date")
+    //@XmlSchemaType(name = "dateTime")
+    protected String createDate;
+    @XmlAttribute(name = "update_date")
+    //@XmlSchemaType(name = "dateTime")
+    protected String updateDate;
+    
+    
+    /**
+     * Gets the value of the activationDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    /**
+     * Sets the value of the activationDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setCreateDate(String value) {
+        this.createDate = value;
+    }
+
+    /**
+     * Gets the value of the expirationDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public String getUpdateDate() {
+        return updateDate;
+    }
+
+    /**
+     * Sets the value of the expirationDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setUpdateDate(String value) {
+        this.updateDate = value;
+    }
+
     public Boolean getHidden() {
 		return hidden;
 	}

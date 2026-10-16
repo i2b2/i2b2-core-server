@@ -62,15 +62,15 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 			log.debug("USER_INVALID or PM_SERVICE_PROBLEM");
 			return response;	
 		}
-		/*
-		if(!Roles.getInstance().isRoleValid(projectInfo)){
+		
+		if(!Roles.getInstance().isRoleAdmin(projectInfo) || securityType.getUsername().equalsIgnoreCase("AGG_SERVICE_ACCOUNT")){
 			String response = null;
 			responseMessageType = MessageFactory.doBuildErrorResponse(loadMsg.getMessageHeaderType(), "User does not have correct privileges");
 			response = MessageFactory.convertToXMLString(responseMessageType);
 			log.debug("INVALID_USER_PRIV");
 			return response;	
 		}
-	*/
+	
 		else {	
 			try {
 			//	String userId = loadMsg.getMessageHeaderType().getSecurity().getUsername();
@@ -82,8 +82,7 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 					@Override
 					public void run() {
 						try {
-							if (conceptsType != null && (conceptsType.getOperationType().equalsIgnoreCase("synchronize_all") ||
-									conceptsType.getOperationType().equalsIgnoreCase("restart_only")))
+							if (conceptsType != null && conceptsType.getOperationType() != null && (conceptsType.getOperationType().equalsIgnoreCase("synchronize_all")))
 							{
 								query.buildUpdateTotalNum(conceptsType.getProjectId(), dbInfo, securityType, conceptsType.getOperationType(), conceptsType.getCdm());
 							}

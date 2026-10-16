@@ -233,7 +233,7 @@ public final class LuceneIndexer {
 
 	public static void indexFromDB(//Optional<SearchIndexInfo> searchIndexInfoOption,
 			SuggestionIndexInfo suggestionIndexInfoOption, SearchIndexInfo searchIndexInfoOption,
-			 TableAccessType tableName, DataSource dataSource, DBInfoType dbInfo) throws Exception {
+			TableAccessType tableName, DataSource dataSource, DBInfoType dbInfo) throws Exception {
 
 		long startTime = System.currentTimeMillis();
 		int numDataRead = 0;
@@ -247,53 +247,102 @@ public final class LuceneIndexer {
 
 		try {
 			//for (TableAccessType tableName : tableAccessType) {
-				logesapi.debug("Parsing ontology file: " + tableName.getFullName());
+			logesapi.debug("Parsing ontology file: " + tableName.getFullName());
 
-				String category = "";
-				if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
-					category = StringUtil.escapeSQLSERVER(tableName.getFullName());
-				}
-				else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
-					category = StringUtil.escapeORACLE(tableName.getFullName());
-				}
-				else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
-					category = StringUtil.escapePOSTGRESQL(tableName.getFullName()); 
-				}		
+			String category = "";
+			if(dbInfo.getDb_serverType().toUpperCase().equals("SQLSERVER")){
+				category = StringUtil.escapeSQLSERVER(tableName.getFullName());
+			}
+			else if(dbInfo.getDb_serverType().toUpperCase().equals("ORACLE")){
+				category = StringUtil.escapeORACLE(tableName.getFullName());
+			}
+			else if(dbInfo.getDb_serverType().toUpperCase().equals("POSTGRESQL")){
+				category = StringUtil.escapePOSTGRESQL(tableName.getFullName()); 
+			}		
+
+
+			// Iterator<OntologyRow> it = closeableCsvToBean.csvToBean.iterator();
+			String stageSql = " select distinct C_NAME, C_TOTALNUM, C_BASECODE, C_FULLNAME, c_visualattributes, c_tooltip, c_hlevel from "  
+					+ dbInfo.getDb_fullSchema() + tableName.getTableName() + " where c_visualattributes not like '_H%' and c_fullname like '" + category + "%' order by c_hlevel";
+
+
+			query = conn.prepareStatement(stageSql);
+			resultSet = query.executeQuery();
+
+			HashMap<String, String> c_keyname = new HashMap<>();
+
+			while (resultSet.next()) {
+
 
 				
-				// Iterator<OntologyRow> it = closeableCsvToBean.csvToBean.iterator();
-				String stageSql = " select distinct C_NAME, C_TOTALNUM, C_BASECODE, C_FULLNAME, c_visualattributes from "  
-						+ dbInfo.getDb_fullSchema() + tableName.getTableName() + " where c_visualattributes not like '_H%' and c_fullname like '" + category + "%'";
+				String sqlResult = resultSet.getString("C_NAME") + "~|" + tableName.getTableCd()  + "~|" ;
+				//if (resultSet.getString("C_TOTALNUM") != null)
+				sqlResult +=  resultSet.getString("C_FULLNAME");
 
+				sqlResult += "~|";
+				if (resultSet.getString("C_BASECODE") != null) {
 
-				query = conn.prepareStatement(stageSql);
-				resultSet = query.executeQuery();
+					sqlResult += resultSet.getString("C_BASECODE") ; //.toString());
+				}		else {
+					sqlResult += "@";
+				}
 
-				while (resultSet.next()) {
+				String genString = tableName.getFullName();
+				if (resultSet.getString("C_FULLNAME") != null) {
+					c_keyname.put(resultSet.getString("C_FULLNAME"), resultSet.getString("C_NAME"));
 
-
-
-
-					String sqlResult = resultSet.getString("C_NAME") + "~|" + tableName.getTableCd()  + "~|" ;
-					//if (resultSet.getString("C_TOTALNUM") != null)
-						sqlResult +=  resultSet.getString("C_FULLNAME");
-
-					sqlResult += "~|";
-					if (resultSet.getString("C_BASECODE") != null) {
-
-						sqlResult += resultSet.getString("C_BASECODE") ; //.toString());
-					}		else {
-						sqlResult += "@";
+					
+					//String[] split = resultSet.getString("C_FULLNAME").split("\\\\");
+					
+					String c_fullname = resultSet.getString("C_FULLNAME");
+					//c_fullname = c_fullname.substring(0, c_fullname.length()-1);
+					
+					
+					String[] s_keyname = new String[c_fullname.length() - c_fullname.replace("\\", "").length()];
+					
+					for (int i=0; i < s_keyname.length; i++)
+					{
+						s_keyname[i] = c_keyname.get(c_fullname);
+						c_fullname = c_fullname.substring(0, c_fullname.length()-1);
+						c_fullname = c_fullname.substring(0, c_fullname.lastIndexOf('\\')+1);
 					}
-					sqlResult += "~|";
-					sqlResult +=  resultSet.getString("c_visualattributes");
-
-
 					
-					
-					suggestionIndexInfoOption.suggestionIndexer.generateSuggestionsFromConceptName(sqlResult,  resultSet.getInt("c_totalnum")) ; //.toString());
-
+					for (int i=s_keyname.length-1; i > 0; i--)
+					{
+						genString += s_keyname[i-1] + "\\";
+					}
 					/*
+					while (c_fullname.length() > 0)
+					{
+						genString += c_keyname.get(c_fullname) + "\\";
+						c_fullname = c_fullname.substring(0, c_fullname.length()-1);
+						c_fullname = c_fullname.substring(0, c_fullname.lastIndexOf('\\')+1);
+						if (c_fullname.contains("\\") == false || c_fullname.equals("\\"))
+							break;
+					}
+					
+					for (String name: split)
+					{
+						String found = c_keyname.get(name.trim());
+						if (found != null && found.trim().length() != 0)
+							genString += 
+							"\\" + found;
+					}
+					*/
+				}
+
+				sqlResult += "~|";
+				sqlResult += genString;
+				sqlResult += "~|";
+				sqlResult +=  resultSet.getString("c_visualattributes");
+				sqlResult += "~|";
+				sqlResult +=  resultSet.getString("c_tooltip");
+
+
+
+				suggestionIndexInfoOption.suggestionIndexer.generateSuggestionsFromConceptName(sqlResult,  resultSet.getInt("c_totalnum")) ; //.toString());
+
+				/*
                 	OntologyRow ontologyRow = new ontologyRow();
                 	numDataRead++;
                     if (suggestionIndexInfoOption.isPresent()) {
@@ -306,17 +355,17 @@ public final class LuceneIndexer {
                             searchIndexInfoOption.get().searchIndexer.commit();
                         }
                     }
-					 */
-					numDataRead++;
-					if (numDataRead % 200000 == 0) {
-						logesapi.debug("Finished: " + numDataRead + " - " + sqlResult);
-						logesapi.debug("Read " + numDataRead + " docs");
-						long endTime = System.currentTimeMillis();
-						long elapsedSeconds = (endTime - startTime) / 1000;
-						logesapi.debug("Total elapsed time so far: " + elapsedSeconds + " seconds");
-						break;
-					}
-				}			
+				 */
+				numDataRead++;
+				if (numDataRead % 200000 == 0) {
+					logesapi.debug("Finished: " + numDataRead + " - " + sqlResult);
+					logesapi.debug("Read " + numDataRead + " docs");
+					long endTime = System.currentTimeMillis();
+					long elapsedSeconds = (endTime - startTime) / 1000;
+					logesapi.debug("Total elapsed time so far: " + elapsedSeconds + " seconds");
+					break;
+				}
+			}			
 		} catch (Exception e)
 		{
 			e.printStackTrace();

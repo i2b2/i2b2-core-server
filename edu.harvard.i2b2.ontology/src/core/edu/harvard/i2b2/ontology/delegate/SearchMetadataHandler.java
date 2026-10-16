@@ -36,6 +36,7 @@ import edu.harvard.i2b2.ontology.datavo.i2b2message.BodyType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.MessageHeaderType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseHeaderType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.ResponseMessageType;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptType;
 import edu.harvard.i2b2.ontology.datavo.vdo.ConceptsType;
@@ -50,7 +51,7 @@ public class SearchMetadataHandler extends RequestHandler {
 	private VocabRequestType vocabType = null;
 	private ProjectType project = null; 
 	private String projectId = null;
-	
+	private SecurityType security = null;
 	public SearchMetadataHandler(GetNameInfoDataMessage requestMsg) throws I2B2Exception  {
 		try {
 			nameInfoMsg = requestMsg;
@@ -60,7 +61,7 @@ public class SearchMetadataHandler extends RequestHandler {
 			//		nameInfoMsg.getMessageHeaderType().getSecurity().setUsername("aaaaaaa");
 			projectId = requestMsg.getMessageHeaderType().getProjectId();
 			project = getRoleInfo(requestMsg.getMessageHeaderType());
-
+			security = requestMsg.getMessageHeaderType().getSecurity();
 		} catch (JAXBUtilException e) {
 			log.error("error setting up getNameInfoHandler");
 			throw new I2B2Exception("GetNameInfoHandler not configured");
@@ -90,7 +91,7 @@ public class SearchMetadataHandler extends RequestHandler {
 		//String response = null;
 		 String responseVdo = null;
 		try {
-			concepts = conceptDao.searchOntology(vocabType, project);
+			concepts = conceptDao.searchOntology(vocabType, security, project);
 		} catch (Exception e1) {
 			log.error(e1.getMessage());
 			responseMessageType = MessageFactory.doBuildErrorResponse(nameInfoMsg.getMessageHeaderType(), "Database error");
