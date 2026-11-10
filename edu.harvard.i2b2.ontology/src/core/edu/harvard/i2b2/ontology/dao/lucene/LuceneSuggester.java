@@ -153,7 +153,7 @@ public  class LuceneSuggester {
 
 			ConceptType b = new ConceptType();
 			String[] suggestion = a.suggestion.split("~\\|");
-			if (!vocabType.isReducedResults() && suggestion.length < 3)
+			if (!Boolean.TRUE.equals(vocabType.isReducedResults()) && suggestion.length < 3)
 				continue;
 
 			if (vocabType.getCategory() == null || vocabType.getCategory().equals("@") ||
