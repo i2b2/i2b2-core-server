@@ -177,7 +177,7 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 					+ "qt_query_master where ";
 			if (roles != null && !roles.contains("MANAGER"))
 				sql += "  user_id = ? and ";
-			sql += "  LOWER(name) like ? and delete_flag = ? "; //and master_type_cd is NULL";
+			sql += "  LOWER(name) like ? and delete_flag = ? and group_id = ? "; //and master_type_cd is NULL";
 			if (findChildType.getCreateDate() != null)
 			{
 				InclusiveType inclusive = InclusiveType.NO;
@@ -227,10 +227,10 @@ public class QueryMasterSpringDao extends CRCDAO implements IQueryMasterDao {
 
 			if (roles != null && roles.contains("MANAGER"))
 				queryMasterList = jdbcTemplate.query(sql,
-						new Object[] { str.toLowerCase(), DELETE_NO_FLAG }, queryMasterMapper);
+						new Object[] { str.toLowerCase(), DELETE_NO_FLAG, dataSourceLookup.getProjectPath() } , queryMasterMapper);
 			else
 				queryMasterList = jdbcTemplate.query(sql,
-						new Object[] { userRequestType.getUsername(),  str.toLowerCase(), DELETE_NO_FLAG }, queryMasterMapper);
+						new Object[] { userRequestType.getUsername(),  str.toLowerCase(), DELETE_NO_FLAG , dataSourceLookup.getProjectPath() }, queryMasterMapper);
 
 
 
