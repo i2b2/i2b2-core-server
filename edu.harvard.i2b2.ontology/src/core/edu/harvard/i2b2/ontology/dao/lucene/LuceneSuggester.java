@@ -181,7 +181,8 @@ public  class LuceneSuggester {
 				if (suggestion.length > 6)
 					b.setTooltip(suggestion[6]);
 
-				b.setLevel((int) a.occurrences);
+				b.setLevel(0);
+				b.setTotalnum((int) a.occurrences);
 
 				 if ( suggestion.length < 2 && conceptCount > 0)
 				{

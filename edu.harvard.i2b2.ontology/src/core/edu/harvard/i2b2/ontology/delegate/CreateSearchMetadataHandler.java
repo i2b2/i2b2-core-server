@@ -36,14 +36,18 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 	private ProjectType projectInfo = null;
 	private DBInfoType dbInfo = null;
 	private SecurityType securityType = null;
-	
+
 	public CreateSearchMetadataHandler(UpdateTotalNumMessage requestMsg) throws I2B2Exception{
 
 		loadMsg = requestMsg;
 		conceptsType = requestMsg.getChild();	
 		projectInfo = getRoleInfo(requestMsg.getMessageHeaderType());	
+
+		// Set dbinfo to be the project set in the  <ns4:update_concept_totalnum cdm="i2b2" operation_type="synchronize_all" project_id="NODE4">
+		requestMsg.getMessageHeaderType().setProjectId(requestMsg.getChild().getProjectId());
 		setDbInfo(requestMsg.getMessageHeaderType());
 		securityType = requestMsg.getMessageHeaderType().getSecurity();
+
 		dbInfo = this.getDbInfo();
 	}
 
@@ -62,7 +66,7 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 			log.debug("USER_INVALID or PM_SERVICE_PROBLEM");
 			return response;	
 		}
-		
+
 		if(!Roles.getInstance().isRoleAdmin(projectInfo) || securityType.getUsername().equalsIgnoreCase("AGG_SERVICE_ACCOUNT")){
 			String response = null;
 			responseMessageType = MessageFactory.doBuildErrorResponse(loadMsg.getMessageHeaderType(), "User does not have correct privileges");
@@ -70,11 +74,11 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 			log.debug("INVALID_USER_PRIV");
 			return response;	
 		}
-	
+
 		else {	
 			try {
-			//	String userId = loadMsg.getMessageHeaderType().getSecurity().getUsername();
-			//	DBInfoType ss = this.getDbInfo();
+				//	String userId = loadMsg.getMessageHeaderType().getSecurity().getUsername();
+				//	DBInfoType ss = this.getDbInfo();
 
 				CreateSearchMetadatalDao query = new CreateSearchMetadatalDao();
 
@@ -84,10 +88,11 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 						try {
 							if (conceptsType != null && conceptsType.getOperationType() != null && (conceptsType.getOperationType().equalsIgnoreCase("synchronize_all")))
 							{
-								query.buildUpdateTotalNum(conceptsType.getProjectId(), dbInfo, securityType, conceptsType.getOperationType(), conceptsType.getCdm());
+								query.buildMetadata(projectInfo, conceptsType.getProjectId(), dbInfo, securityType, conceptsType.getOperationType(), conceptsType.getCdm(), conceptsType.getOntology(), true);
 							}
-							
-							query.buildCreateSearchMetadata(projectInfo, conceptsType.getProjectId(), dbInfo, securityType);
+							else {
+								query.buildMetadata(projectInfo, conceptsType.getProjectId(), dbInfo, securityType, conceptsType.getOperationType(), conceptsType.getCdm(), conceptsType.getOntology(), false);
+							}
 						} catch (Exception e) {
 							log.error("i2b2 exception", e);
 						} catch (Throwable e) {

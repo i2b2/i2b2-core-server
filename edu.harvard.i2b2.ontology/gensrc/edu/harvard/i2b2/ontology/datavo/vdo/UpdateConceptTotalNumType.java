@@ -49,7 +49,19 @@ public class UpdateConceptTotalNumType {
     @XmlAttribute(name = "cdm")
     protected String cdm;
 
-    @XmlAttribute(name = "project_id")
+    @XmlAttribute(name = "ontology")
+    protected String ontology;
+
+    
+    public String getOntology() {
+		return ontology;
+	}
+
+	public void setOntology(String ontology) {
+		this.ontology = ontology;
+	}
+
+	@XmlAttribute(name = "project_id")
     protected String projectId;
 
     public String getProjectId() {
