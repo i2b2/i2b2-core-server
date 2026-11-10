@@ -546,14 +546,14 @@ public class ConceptDao extends JdbcDaoSupport {
 
 
 		try {
-			// only run if param is set to finished
-			ParamType paramIndexStatus = PMServiceDriver.getProjectParam(
+			// Ancestor requests need the SQL path to assemble the full hierarchy.
+			ParamType paramIndexStatus = Boolean.TRUE.equals(vocabType.isAncestors()) ? null : PMServiceDriver.getProjectParam(
 					"AUTOSUGGEST_INDEX_STATUS",  securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
 
-			if (paramIndexStatus != null && paramIndexStatus.getValue().equals("FINISHED") )
+			if (paramIndexStatus != null && paramIndexStatus.getValue().equals("FINISHED") && tableCd.equals("@"))
 			{
 
 				log.error("Begin autosuggest search");
