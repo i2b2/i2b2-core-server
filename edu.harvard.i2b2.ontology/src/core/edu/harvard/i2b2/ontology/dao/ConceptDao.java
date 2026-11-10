@@ -543,7 +543,9 @@ public class ConceptDao extends JdbcDaoSupport {
 		}
 
 		List<ConceptType> queryResult = null;
-
+		//extract table code
+		List<ConceptType> categoryResult;
+		String tableCd = vocabType.getCategory();
 
 		try {
 			// Ancestor requests need the SQL path to assemble the full hierarchy.
@@ -551,7 +553,6 @@ public class ConceptDao extends JdbcDaoSupport {
 					"AUTOSUGGEST_INDEX_STATUS",  securityType, projectInfo.getId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
-
 
 			if (paramIndexStatus != null && paramIndexStatus.getValue().equals("FINISHED") && tableCd.equals("@"))
 			{
@@ -593,9 +594,6 @@ public class ConceptDao extends JdbcDaoSupport {
 			}
 		} catch (Exception e) {}
 
-		//extract table code
-		String tableCd = vocabType.getCategory();
-		List<ConceptType> categoryResult;
 
 		if (tableCd.equals("@"))
 		{
