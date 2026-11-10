@@ -553,7 +553,7 @@ public class ConceptDao extends JdbcDaoSupport {
 					.getPmEndpointReference());
 
 
-			if (paramIndexStatus != null && paramIndexStatus.getValue().equals("FINISHED") )
+			if (paramIndexStatus != null && paramIndexStatus.getValue().equals("FINISHED") && tableCd.equals("@"))
 			{
 
 				log.error("Begin autosuggest search");
