@@ -101,6 +101,9 @@ public class SuggestionIndexer {
 			if (verbose) logesapi.info("----------------- updated <word-combinations> -> <occurrences> based on the concept name tokens " + wordsInConceptName + ":");
 
 			//if (!conceptName.contains("~|") ) {
+			
+			//MM TODO in future work on split
+			/*
 				String[] wordsInNameArr = wordsInConceptName.toArray(new String[0]);
 				int l = wordsInNameArr.length;
 				for (int i1 = 0; i1 < l; i1++) {
@@ -120,7 +123,7 @@ public class SuggestionIndexer {
 					}
 				}
 			//}
-
+			*/
 
 			suggestTokenStream.end();
 			suggestTokenStream.close();

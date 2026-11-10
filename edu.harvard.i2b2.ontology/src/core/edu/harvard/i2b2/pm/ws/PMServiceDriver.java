@@ -137,6 +137,7 @@ public class PMServiceDriver {
 		ObjectFactory of = new ObjectFactory();
 		BodyType bodyType = new BodyType();
 
+		
 		bodyType.getAny().add(of.createGetAllProjectParam(projectId));
 		RequestMessageType requestMessageType = getI2B2RequestMessage(bodyType, securityType, projectId);
 		OMElement requestElement = null;
@@ -144,8 +145,13 @@ public class PMServiceDriver {
 		try {
 			requestElement = buildOMElement(requestMessageType);
 			log.debug("CRC PM call's request xml " + requestElement);
+			String currentText = requestElement.toString();
+	        String newText = currentText.replace("<ns9:get_all_project_param", "<ns9:get_all_project_param hidden=\"true\""); // or currentText.replaceAll(...)
+	        
+	        // Update the OMElement with the new text
+	        //requestElement..setText(newText);
 			//OMElement response = getServiceClient().sendReceive(requestElement);
-			String response = ServiceClient.sendREST(ontologyUrl, requestElement);
+			String response = ServiceClient.sendREST(ontologyUrl, newText);
 			// :TODO check the status in the response
 
 			// projectType = getUserProjectFromResponse(response.toString());
