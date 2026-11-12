@@ -43,10 +43,12 @@ import edu.harvard.i2b2.ontology.dao.lucene.parser.LuceneIndexer;
 import edu.harvard.i2b2.ontology.dao.lucene.parser.LuceneIndexer.SearchIndexInfo;
 import edu.harvard.i2b2.ontology.dao.lucene.parser.LuceneIndexer.SuggestionIndexInfo;
 import edu.harvard.i2b2.ontology.dao.lucene.parser.SearchIndexer;
+import edu.harvard.i2b2.ontology.datavo.i2b2message.PasswordType;
 import edu.harvard.i2b2.ontology.datavo.i2b2message.SecurityType;
 import edu.harvard.i2b2.ontology.datavo.pm.ParamType;
 import edu.harvard.i2b2.ontology.datavo.pm.ProjectType;
 import edu.harvard.i2b2.ontology.datavo.vdo.DblookupType;
+import edu.harvard.i2b2.ontology.datavo.vdo.UpdateConceptTotalNumType;
 import edu.harvard.i2b2.ontology.ejb.DBInfoType;
 import edu.harvard.i2b2.ontology.ejb.TableAccessType;
 import edu.harvard.i2b2.ontology.util.OntologyUtil;
@@ -70,7 +72,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 	PreparedStatement stmt = null;
 	ResultSet resultSet = null;
 
-	Connection conn = null;
+	//Connection conn = null;
 
 	public void setDataSourceObject(DataSource dataSource) {
 		this.dataSource = dataSource;
@@ -87,42 +89,55 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 		dataSource = ds;
 	}
 
-	public void buildMetadata(ProjectType projetcType, String projectInfo,
-			DBInfoType dbInfo, SecurityType securityType, String operationType, String cdm, String ontology, boolean includeTotalNum)
+	public void buildMetadata(ProjectType projectType, UpdateConceptTotalNumType conceptType,
+			DBInfoType dbInfo, boolean includeTotalNum)
 					throws I2B2Exception {
 		//Connection conn = null;
 		//ResultSet resultSet = null;
 		//PreparedStatement query = null;
+		
+		SecurityType securityType = new SecurityType();
+		securityType.setUsername(OntologyUtil.getInstance().getServiceAccountUser());
+		PasswordType pType = new PasswordType();
+		pType.setValue(OntologyUtil.getInstance().getServiceAccountPassword());
+		securityType.setPassword(pType);
+		securityType.setDomain(dbInfo.getHive());
 		boolean isAlreadyRunning = false;
 
 		TableAccessDao tableAccessDao = new TableAccessDao();
 		ParamType paramIndexStatus  = null;
-		ParamType param  = null;
+		//ParamType param  = null;
 		if (this.dataSource == null) {
 			setDataSource(dbInfo.getDb_dataSource());
 		} else {
 			tableAccessDao.setDataSourceObject(this.dataSource);
 		}
 		try {
+			
+			
 			paramIndexStatus = PMServiceDriver.getProjectParam(
-					"AUTOSUGGEST_INDEX_STATUS",  securityType, projectInfo,
+					"AUTOSUGGEST_INDEX_STATUS",  securityType, conceptType.getProjectId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
-
-
+			
 			if (paramIndexStatus == null)
 			{
 				PMServiceDriver.setProjectParam("A",
-						"AUTOSUGGEST_INDEX_STATUS", "RUNNING_AUTOSUGGEST", securityType, projectInfo,
+						"AUTOSUGGEST_INDEX_STATUS", "RUNNING", securityType, conceptType.getProjectId(),
+						OntologyUtil.getInstance()
+						.getPmEndpointReference());
+				
+				paramIndexStatus = PMServiceDriver.getProjectParam(
+						"AUTOSUGGEST_INDEX_STATUS",  securityType, conceptType.getProjectId(),
 						OntologyUtil.getInstance()
 						.getPmEndpointReference());
 			}
 			else				 
 			{
 
-				if (!paramIndexStatus.getValue().equals("SCHEDULED") && securityType.getUsername().equalsIgnoreCase("AGG_SERVICE_ACCOUNT"))
-					throw new I2B2Exception ("AGG Service Account can only run if AUTOSUGGEST_INDEX_STATUS is set to scheduled");
+				//if (!paramIndexStatus.getValue().equals("SCHEDULED") && securityType.getUsername().equalsIgnoreCase("AGG_SERVICE_ACCOUNT"))
+				//	throw new I2B2Exception ("AGG Service Account can only run if AUTOSUGGEST_INDEX_STATUS is set to scheduled");
 
 
 				if ((paramIndexStatus.getValue().equals("RUNNING_AUTOSUGGEST") || paramIndexStatus.getValue().equals("RUNNING_TOTALNUM")) && OntologyUtil.getInstance().isAutoSuggectStarted() )
@@ -134,38 +149,50 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 				{
 					OntologyUtil.getInstance().setAutoSuggectStarted(true);
 					PMServiceDriver.setProjectParam(paramIndexStatus.getId() ,"A",
-							"AUTOSUGGEST_INDEX_STATUS", "RUNNING_AUTOSUGGEST", securityType, projectInfo,
-							OntologyUtil.getInstance()
-							.getPmEndpointReference());
-
-					//Clear out finished time
-					PMServiceDriver.setProjectParam(true, "D",
-							"AUTOSUGGEST_FINISHED_INDEX", "", securityType, projectInfo,
+							"AUTOSUGGEST_INDEX_STATUS", "RUNNING", securityType, conceptType.getProjectId(),
 							OntologyUtil.getInstance()
 							.getPmEndpointReference());
 
 				}
 			}
-			paramIndexStatus = PMServiceDriver.getProjectParam(
-					"AUTOSUGGEST_INDEX_STATUS",  securityType, projectInfo,
-					OntologyUtil.getInstance()
-					.getPmEndpointReference());
-
-
 
 			PMServiceDriver.setProjectParam(true, "S",
-					"AUTOSUGGEST_STARTED_INDEX", new DTOFactory().getXMLGregorianCalendar( System.currentTimeMillis()).toXMLFormat(), securityType, projectInfo,
+					"AUTOSUGGEST_STARTED_INDEX", new DTOFactory().getXMLGregorianCalendar( System.currentTimeMillis()).toXMLFormat(), securityType, conceptType.getProjectId(),
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 			
+			//Clear out finished time
+			PMServiceDriver.setProjectParam(true, "D",
+					"AUTOSUGGEST_FINISHED_INDEX", "", securityType, conceptType.getProjectId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+			
+			
+			
 			if (includeTotalNum)
-				buildUpdateTotalNum(projectInfo,
-						 dbInfo,  securityType,  operationType,  cdm,  ontology);
-						
+			{
+				PMServiceDriver.setProjectParam(paramIndexStatus.getId() ,"A",
+						"AUTOSUGGEST_INDEX_STATUS", "RUNNING_TOTALNUM", securityType, conceptType.getProjectId(),
+						OntologyUtil.getInstance()
+						.getPmEndpointReference());
+				
+				buildUpdateTotalNum(conceptType.getProjectId(),
+						 dbInfo,  securityType,  conceptType.getOperationType(),  conceptType.getCdm(),  conceptType.getOntology(), paramIndexStatus);
+
+			}
 						//conceptsType.getProjectId(), dbInfo, securityType, conceptsType.getOperationType(), conceptsType.getCdm(), conceptsType.getOntology());
 		
-			buildCreateSearchMetadata(projetcType, projectInfo,  dbInfo, securityType);
+			PMServiceDriver.setProjectParam(paramIndexStatus.getId() ,"A",
+					"AUTOSUGGEST_INDEX_STATUS", "RUNNING_AUTOSUGGEST", securityType, conceptType.getProjectId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
+			
+			buildCreateSearchMetadata(projectType, conceptType.getProjectId(),  dbInfo, securityType, paramIndexStatus);
 
+			PMServiceDriver.setProjectParam(paramIndexStatus.getId() ,"A",
+					"AUTOSUGGEST_INDEX_STATUS", "FINISHED", securityType, conceptType.getProjectId(),
+					OntologyUtil.getInstance()
+					.getPmEndpointReference());
 			
 		} catch (Exception e)
 		{
@@ -174,100 +201,26 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 	}
 	
 	private void buildCreateSearchMetadata(ProjectType projetcType, String projectInfo,
-			DBInfoType dbInfo, SecurityType securityType)
+			DBInfoType dbInfo, SecurityType securityType, ParamType paramIndexStatus)
 					throws I2B2Exception {
 
 		
 		TableAccessDao tableAccessDao = new TableAccessDao();
-		ParamType paramIndexStatus  = null;
-		ParamType param  = null;
+		//ParamType paramIndexStatus  = null;
+		//ParamType param  = null;
 		if (this.dataSource == null) {
 			setDataSource(dbInfo.getDb_dataSource());
 		} else {
 			tableAccessDao.setDataSourceObject(this.dataSource);
 		}
-		//Connection conn = null;
-		//ResultSet resultSet = null;
-		//PreparedStatement query = null;
-		/*
-		boolean isAlreadyRunning = false;
-
-		TableAccessDao tableAccessDao = new TableAccessDao();
-		ParamType paramIndexStatus  = null;
-		ParamType param  = null;
-		if (this.dataSource == null) {
-			setDataSource(dbInfo.getDb_dataSource());
-		} else {
-			tableAccessDao.setDataSourceObject(this.dataSource);
-		}
-		try {
-			paramIndexStatus = PMServiceDriver.getProjectParam(
-					"AUTOSUGGEST_INDEX_STATUS",  securityType, projectInfo,
-					OntologyUtil.getInstance()
-					.getPmEndpointReference());
-
-
-
-			if (paramIndexStatus == null)
-			{
-				PMServiceDriver.setProjectParam("A",
-						"AUTOSUGGEST_INDEX_STATUS", "RUNNING_AUTOSUGGEST", securityType, projectInfo,
-						OntologyUtil.getInstance()
-						.getPmEndpointReference());
-			}
-			else				 
-			{
-
-				if (!paramIndexStatus.getValue().equals("SCHEDULED") && securityType.getUsername().equalsIgnoreCase("AGG_SERVICE_ACCOUNT"))
-					throw new I2B2Exception ("AGG Service Account can only run if AUTOSUGGEST_INDEX_STATUS is set to scheduled");
-
-
-				if ((paramIndexStatus.getValue().equals("RUNNING_AUTOSUGGEST") || paramIndexStatus.getValue().equals("RUNNING_TOTALNUM")) && OntologyUtil.getInstance().isAutoSuggectStarted() )
-				{
-					isAlreadyRunning = true;
-					throw new Exception("Auto Correct is already running");
-				}
-				else 
-				{
-					OntologyUtil.getInstance().setAutoSuggectStarted(true);
-					PMServiceDriver.setProjectParam(paramIndexStatus.getId() ,"A",
-							"AUTOSUGGEST_INDEX_STATUS", "RUNNING_AUTOSUGGEST", securityType, projectInfo,
-							OntologyUtil.getInstance()
-							.getPmEndpointReference());
-
-					//Clear out finished time
-					PMServiceDriver.setProjectParam(true, "D",
-							"AUTOSUGGEST_FINISHED_INDEX", "", securityType, projectInfo,
-							OntologyUtil.getInstance()
-							.getPmEndpointReference());
-
-				}
-			}
-			paramIndexStatus = PMServiceDriver.getProjectParam(
-					"AUTOSUGGEST_INDEX_STATUS",  securityType, projectInfo,
-					OntologyUtil.getInstance()
-					.getPmEndpointReference());
-
-
-
-			PMServiceDriver.setProjectParam(true, "S",
-					"AUTOSUGGEST_STARTED_INDEX", new DTOFactory().getXMLGregorianCalendar( System.currentTimeMillis()).toXMLFormat(), securityType, projectInfo,
-					OntologyUtil.getInstance()
-					.getPmEndpointReference());
-
-*/
+	
 		try {
 			LuceneIndexer lucene = new LuceneIndexer();
-			//MM
-			//String suggestIndexDirName =  System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "autosuggest_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
-			//String searchIndexDirName =  System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "search_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 			String suggestIndexDirName =  System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "autosuggest_index" + File.separatorChar + projectInfo ; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
-			//String searchIndexDirName =  System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "search_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
 
 			try {
 				if (OntologyUtil.getInstance().getAutosuggestIndexDirectory() != null && OntologyUtil.getInstance().getAutosuggestIndexDirectory() != "")
 					suggestIndexDirName =  OntologyUtil.getInstance().getAutosuggestIndexDirectory()  + File.separatorChar + projectInfo ;
-				//searchIndexDirName =  OntologyUtil.getInstance().getAutosuggestIndexDirectory()  + File.separatorChar + "search_index" ;
 			} catch (Exception e) {}
 
 
@@ -347,24 +300,6 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			SuggestionIndexInfo suggestIndexInfo = new SuggestionIndexInfo(suggestionIndexer, suggestIndexDirName, null);
 
 
-			//MM todo FSDirectory searchIndexDirectory = FSDirectory.open(searchIndexDir.toPath());
-			//IndexWriter searchIndexWriter = createSearchIndexWriter(searchIndexDirectory); 
-			/*
-			SearchIndexer searchIndexer = new SearchIndexer(
-					lucene.createSearchIndexWriter(searchIndexDirectory), //lucene.createSearchIndexWriter(searchIndexDirectory), // searchIndexWriter,
-					"", //, //codeCategoryFilename,
-					"", //filename,
-					',', //fileDelimiter,
-					',', //categoryFileDelimiter,
-					true //includeTooltips
-					);
-
-			SearchIndexInfo searchIndexInfo = new SearchIndexInfo(searchIndexer, searchIndexDirName, null ); //searchIndexZipFileName);
-			 */
-
-			//	List<String> tableNameList = tableAccessDao.getEditorTableName(
-			//			projectInfo, dbInfo, true);
-
 			List<TableAccessType> tableAccessType = tableAccessDao.getAllTableAccess(projetcType, dbInfo);
 
 			int laststep = 0;
@@ -382,13 +317,6 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 
 				laststep = i;
 			}
-			/*
-			PMServiceDriver.setProjectParam("S",
-					"AUTOSUGGEST_BUILD_SUGGESION_INDEX", new Date(System.currentTimeMillis()).toString(), securityType, projectInfo,
-					OntologyUtil.getInstance()
-					.getPmEndpointReference());		
-			 */
-
 
 			//check last step
 			PMServiceDriver.setProjectParam(true, "S",
@@ -407,10 +335,6 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			// Close the directory
 			log.debug("Finished creating the ontology auto-suggest indices");
 			suggestIndexDirectory.close();
-			PMServiceDriver.setProjectParam(paramIndexStatus.getId() ,"A",
-					"AUTOSUGGEST_INDEX_STATUS", "FINISHED", securityType, projectInfo,
-					OntologyUtil.getInstance()
-					.getPmEndpointReference());
 
 		} catch (SQLException sqlEx) {
 			PMServiceDriver.setProjectParam(paramIndexStatus.getId() ,"A",
@@ -444,18 +368,19 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 
 
 	private void buildUpdateTotalNum(String projectInfo,
-			DBInfoType dbInfo, SecurityType securityType, String operationType, String cdm, String ontology)
+			DBInfoType dbInfo, SecurityType securityType, String operationType, String cdm, String ontology, ParamType param)
 					throws I2B2Exception, SQLException {
 		boolean isAlreadyRunning = false;
 
 		TableAccessDao tableAccessDao = new TableAccessDao();
-		ParamType param  = null;
+		//ParamType param  = null;
 		if (this.dataSource == null) {
 			setDataSource(dbInfo.getDb_dataSource());
 		} else {
 			tableAccessDao.setDataSourceObject(this.dataSource);
 		}
 
+		Connection conn = null;
 		jt = new JdbcTemplate(dataSource);
 
 		String spName = "RunTotalNum";
@@ -470,6 +395,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 		try {
 			//if (OntologyUtil.getInstance().getAutosuggestIndexStoredProcedure() != null && OntologyUtil.getInstance().getAutosuggestIndexStoredProcedure() != "")
 
+			/*
 			param = PMServiceDriver.getProjectParam(
 					"AUTOSUGGEST_INDEX_STATUS",  securityType, projectInfo,
 					OntologyUtil.getInstance()
@@ -484,8 +410,8 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			}
 			else 				 
 			{
-				if (!param.getValue().equals("SCHEDULED") && securityType.getUsername().equalsIgnoreCase("AGG_SERVICE_ACCOUNT"))
-					throw new I2B2Exception ("AGG Service Account can only run if AUTOSUGGEST_INDEX_STATUS is set to scheduled");
+				//if (!param.getValue().equals("SCHEDULED") && securityType.getUsername().equalsIgnoreCase("AGG_SERVICE_ACCOUNT"))
+				//	throw new I2B2Exception ("AGG Service Account can only run if AUTOSUGGEST_INDEX_STATUS is set to scheduled");
 
 				if ((param.getValue().equals("RUNNING_AUTOSUGGEST") || param.getValue().equals("RUNNING_TOTALNUM")) && OntologyUtil.getInstance().isAutoSuggectStarted() )
 				{
@@ -501,6 +427,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 							.getPmEndpointReference());
 				}
 			}
+			*/
 
 			PMServiceDriver.setProjectParam(true, "S",
 					"AUTOSUGGEST_CALCULATE_TOTALNUM", cdm, securityType, projectInfo,
@@ -512,11 +439,12 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
 
+			/*
 			param = PMServiceDriver.getProjectParam(
 					"AUTOSUGGEST_INDEX_STATUS",  securityType, projectInfo,
 					OntologyUtil.getInstance()
 					.getPmEndpointReference());
-
+			*/
 
 			// Run the stored procedure
 			String value = "";
@@ -526,10 +454,11 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 			String dataSchemaNoDot = dataSchema;
 			if (dataSchemaNoDot.endsWith("."))
 				dataSchemaNoDot = dataSchemaNoDot.substring(0, dataSchemaNoDot.length()-1 );
-			DblookupDao dsLookupDao = new DblookupDao();
-			List<DblookupType> dsLookup = dsLookupDao.getDblookup("project_path",projectInfo, securityType,  "crc_db_lookup");
+			//DblookupDao dsLookupDao = new DblookupDao();
+			//List<DblookupType> dsLookup = dsLookupDao.getDblookup("project_path",projectInfo, securityType,  "crc_db_lookup");
 
 			conn = dataSource.getConnection();
+			/*
 			if (dataSchema.equals(""))
 				try {
 
@@ -540,6 +469,7 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 				} catch (SQLException e1) {
 					log.error(e1.getMessage());
 				} 
+			*/
 			//if (operationType.equals("synchronize_all")) {
 			PMServiceDriver.setProjectParam(true,"S",
 					"AUTOSUGGEST_WORKING_ON", spName + " for " + projectInfo  + " in database " + serverType, securityType, projectInfo,
@@ -547,40 +477,22 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 					.getPmEndpointReference());
 			if (serverType.equalsIgnoreCase(SQLSERVER))
 			{
-
 				value = "exec " + dataSchema +  spName + " 'observation_fact', '" + dataSchemaNoDot +"','@','N','" + cdm + "','" + ontology + "','1'";
-
-				log.error("SQL: " + value);
-				callStmt = dataSource.getConnection().prepareCall(value);
-				//callStmt.setString("schemaname", dataSchemaNoDot);
-				//callStmt.setString("tablename", "@");
-				//callStmt.setString("source_mode", cdm);
-
-				hasResults = callStmt.execute();
 			} else if (serverType.equalsIgnoreCase(ORACLE))
 			{
-
-
-				value =  "{ call  " + dataSchema +
-						spName + "  ('observation_fact','" + dataSchemaNoDot +"','@','N','" + cdm + "','" + ontology + "','1')"
-						+ "  }";
-				callStmt = dataSource.getConnection().prepareCall(value);
-				hasResults = callStmt.execute();
-
-
+				value = "{ call  " + dataSchema + spName + " ('observation_fact','" + dataSchemaNoDot +"','@','N','" + cdm + "','" + ontology + "','1') }";
 			} else if (serverType.equalsIgnoreCase(POSTGRESQL))
 			{
-
-
-				value = "SELECT  " +  dataSchema + spName + " ('observation_fact','" + dataSchemaNoDot +"','@','N','" + cdm + "','" + ontology + "','1')";
-
-				// Step 1: start transaction
-				callStmt = conn.prepareCall(value);
-				hasResults = callStmt.execute(); // Step 2: call procedure
+				value = "call  " +  dataSchema + spName + " ('observation_fact','" + dataSchemaNoDot +"','@','N','" + cdm + "','" + ontology + "','1')";
+				conn.setAutoCommit(false);
 			}
 
-
 			log.error("SQL to run: " + value);
+			callStmt = conn.prepareCall(value);
+			hasResults = callStmt.execute();
+
+			log.error("SQL to run Executed");
+
 			// 2. Process all result sets and update counts to flush the TDS buffer
 			while (hasResults || callStmt.getUpdateCount() != -1) {
 				String onStep = "";
@@ -611,22 +523,14 @@ public class CreateSearchMetadatalDao extends JdbcDaoSupport  { // extends JdbcD
 							OntologyUtil.getInstance()
 							.getPmEndpointReference());
 					 */
+					System.out.println("RunTotalnum: " + warning.getMessage());
 					if (warning.getMessage().startsWith("Step"))
 						onStep = warning.getMessage() + " - ";
 					warning = warning.getNextWarning();
+					//System.out.println("RunTotalnum: " + onStep);
 				}
 			}
-/*
-			PMServiceDriver.setProjectParam(true, "S",
-					"AUTOSUGGEST_FINISHED_INDEX", new DTOFactory().getXMLGregorianCalendar( System.currentTimeMillis()).toXMLFormat(), securityType, projectInfo,
-					OntologyUtil.getInstance()
-					.getPmEndpointReference());
 
-			PMServiceDriver.setProjectParam(param.getId() ,"A",
-					"AUTOSUGGEST_INDEX_STATUS", "FINISHED", securityType, projectInfo,
-					OntologyUtil.getInstance()
-					.getPmEndpointReference());
-*/
 		} catch (SQLException sqlEx) {
 			PMServiceDriver.setProjectParam(param.getId() ,"A",
 					"AUTOSUGGEST_INDEX_STATUS", "ERROR", securityType, projectInfo,

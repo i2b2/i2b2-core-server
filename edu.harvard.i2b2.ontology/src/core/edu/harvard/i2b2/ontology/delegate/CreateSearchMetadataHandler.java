@@ -88,10 +88,10 @@ public class CreateSearchMetadataHandler extends RequestHandler {
 						try {
 							if (conceptsType != null && conceptsType.getOperationType() != null && (conceptsType.getOperationType().equalsIgnoreCase("synchronize_all")))
 							{
-								query.buildMetadata(projectInfo, conceptsType.getProjectId(), dbInfo, securityType, conceptsType.getOperationType(), conceptsType.getCdm(), conceptsType.getOntology(), true);
+								query.buildMetadata(projectInfo,  conceptsType, dbInfo, true);
 							}
 							else {
-								query.buildMetadata(projectInfo, conceptsType.getProjectId(), dbInfo, securityType, conceptsType.getOperationType(), conceptsType.getCdm(), conceptsType.getOntology(), false);
+								query.buildMetadata(projectInfo, conceptsType, dbInfo, false);
 							}
 						} catch (Exception e) {
 							log.error("i2b2 exception", e);

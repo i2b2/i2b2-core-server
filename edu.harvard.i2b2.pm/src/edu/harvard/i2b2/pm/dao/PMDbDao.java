@@ -1984,7 +1984,7 @@ public class PMDbDao extends JdbcDaoSupport {
 					throw new I2B2DAOException("Record does not exist or access denied.");
 			}
 
-		}	else if (validateRole(caller, "admin", null) || validateRole(caller, "manager", project))
+		}	else if (validateRole(caller, "admin", null) || validateRole(caller, "manager", project) || caller.equalsIgnoreCase("AGG_SERVICE_ACCOUNT"))
 		{
 			if (utype instanceof ParamsType)
 			{
