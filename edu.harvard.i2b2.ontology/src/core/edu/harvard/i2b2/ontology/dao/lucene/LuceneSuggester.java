@@ -26,7 +26,6 @@ import edu.harvard.i2b2.pm.ws.PMServiceDriver;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -123,7 +122,7 @@ public  class LuceneSuggester {
 
 		final String contextStr = "all";
 		final Set<BytesRef> contexts = new HashSet<>();
-		contexts.add(new BytesRef(contextStr.getBytes(StandardCharsets.UTF_8)));
+		contexts.add(new BytesRef(contextStr));
 
 		List<Lookup.LookupResult> results;
 		try {
@@ -220,15 +219,22 @@ public  class LuceneSuggester {
 		public   AutoSuggestResult fromLookup(Lookup.LookupResult result) {
 			if (result == null) return new AutoSuggestResult("", 0L, 0L);
 			long occurrences = 0L;
-			if (result.payload != null && result.payload.bytes != null) {
-				String payload = new String(result.payload.bytes, StandardCharsets.UTF_8);
+			String suggestion = result.key.toString();
+			if (result.payload != null) {
+				String payload = result.payload.utf8ToString();
+				int metadataStart = payload.indexOf("~|");
+				// Older indexes store only the count in the payload and metadata in the key.
+				if (metadataStart >= 0) {
+					suggestion += payload.substring(metadataStart);
+					payload = payload.substring(0, metadataStart);
+				}
 				try {
 					occurrences = Long.parseLong(payload);
 				} catch (NumberFormatException e) {
 					occurrences = 0L;
 				}
 			}
-			return new AutoSuggestResult(result.key.toString(), occurrences, result.value);
+			return new AutoSuggestResult(suggestion, occurrences, result.value);
 		}
 	}
 }

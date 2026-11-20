@@ -224,7 +224,10 @@ public class SuggestionIndexer {
 				Set<BytesRef> contexts = new HashSet<>();
 				try {
 					contexts.add(new BytesRef("all".getBytes("UTF8")));
-					suggester.add(new BytesRef(s.getBytes("UTF8")), contexts, w, new BytesRef(String.valueOf(occurrences).getBytes("UTF8")));
+					int metadataStart = s.indexOf("~|");
+					String name = metadataStart < 0 ? s : s.substring(0, metadataStart);
+					String payload = metadataStart < 0 ? String.valueOf(occurrences) : occurrences + s.substring(metadataStart);
+					suggester.add(new BytesRef(name), contexts, w, new BytesRef(payload));
 					if (verbose) {
 						logesapi.info(w + " (" + occurrences + ") : " + s);
 					}
