@@ -25,6 +25,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 
 import edu.harvard.i2b2.ontology.dao.SuggestionIndexer;
+import edu.harvard.i2b2.ontology.dao.lucene.SuggestionPayload;
 import edu.harvard.i2b2.ontology.dao.TermInfo;
 import edu.harvard.i2b2.ontology.dao.lucene.parser.OntologyFileParser.CloseableCsvToBean;
 import edu.harvard.i2b2.ontology.ejb.DBInfoType;
@@ -275,21 +276,12 @@ public final class LuceneIndexer {
 
 
 				
-				String sqlResult = resultSet.getString("C_NAME") + "~|" + tableName.getTableCd()  + "~|" ;
-				//if (resultSet.getString("C_TOTALNUM") != null)
-				sqlResult +=  resultSet.getString("C_FULLNAME");
-
-				sqlResult += "~|";
-				if (resultSet.getString("C_BASECODE") != null) {
-
-					sqlResult += resultSet.getString("C_BASECODE") ; //.toString());
-				}		else {
-					sqlResult += "@";
-				}
+				String conceptName = resultSet.getString("C_NAME");
+				String baseCode = resultSet.getString("C_BASECODE");
 
 				String genString = tableName.getFullName();
 				if (resultSet.getString("C_FULLNAME") != null) {
-					c_keyname.put(resultSet.getString("C_FULLNAME"), resultSet.getString("C_NAME"));
+					c_keyname.put(resultSet.getString("C_FULLNAME"), conceptName);
 
 					
 					//String[] split = resultSet.getString("C_FULLNAME").split("\\\\");
@@ -331,16 +323,12 @@ public final class LuceneIndexer {
 					*/
 				}
 
-				sqlResult += "~|";
-				sqlResult += genString;
-				sqlResult += "~|";
-				sqlResult +=  resultSet.getString("c_visualattributes");
-				sqlResult += "~|";
-				sqlResult +=  resultSet.getString("c_tooltip");
-
-
-
-				suggestionIndexInfoOption.suggestionIndexer.generateSuggestionsFromConceptName(sqlResult,  resultSet.getInt("c_totalnum")) ; //.toString());
+				SuggestionPayload.Metadata metadata = new SuggestionPayload.Metadata(
+						tableName.getTableCd(), resultSet.getString("C_FULLNAME"),
+						baseCode == null ? "@" : baseCode, genString,
+						resultSet.getString("C_VISUALATTRIBUTES"), resultSet.getString("C_TOOLTIP"));
+				suggestionIndexInfoOption.suggestionIndexer.generateSuggestionsFromConceptName(
+						conceptName, new SuggestionPayload(metadata, resultSet.getInt("C_TOTALNUM")));
 
 				/*
                 	OntologyRow ontologyRow = new ontologyRow();
@@ -358,7 +346,7 @@ public final class LuceneIndexer {
 				 */
 				numDataRead++;
 				if (numDataRead % 200000 == 0) {
-					logesapi.debug("Finished: " + numDataRead + " - " + sqlResult);
+					logesapi.debug("Finished: " + numDataRead + " - " + conceptName);
 					logesapi.debug("Read " + numDataRead + " docs");
 					long endTime = System.currentTimeMillis();
 					long elapsedSeconds = (endTime - startTime) / 1000;

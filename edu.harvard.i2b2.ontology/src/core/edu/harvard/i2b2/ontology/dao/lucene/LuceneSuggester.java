@@ -1,6 +1,8 @@
 package edu.harvard.i2b2.ontology.dao.lucene;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
@@ -28,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -48,7 +51,7 @@ public  class LuceneSuggester {
 	private   AnalyzingSuggester analyzingSuggester;
 
 	private  Log log = LogFactory.getLog(LuceneSuggester.class);
-	private AutoSuggestResult autoSuggestResult;
+	private static final ObjectMapper PAYLOAD_MAPPER = new ObjectMapper();
 	public LuceneSuggester (String projectInfo ){
 
 		suggestIndexDirectoryName = System.getProperty("user.dir") + File.separatorChar + "standalone" + File.separatorChar + "autosuggest_index" + File.separatorChar + projectInfo; //orElseThrow(() -> new IllegalArgumentException("suggest index dir required"));
@@ -64,7 +67,6 @@ public  class LuceneSuggester {
 			luceneDirectory = FSDirectory.open(suggestIndexDirectory.toPath());
 			analyzer = new StandardAnalyzer();
 			analyzingInfixSuggester = new AnalyzingInfixSuggester(luceneDirectory, analyzer, analyzer, 3, true);
-			autoSuggestResult = new AutoSuggestResult();
 			//analyzingSuggester = new AnalyzingSuggester(luceneDirectory,"temp_prefix" , analyzer); //, analyzer, 3, true);
 		} catch (RuntimeException | IOException e) {
 			log.error("Suggestor not loaded for : " + suggestIndexDirectoryName);
@@ -148,88 +150,78 @@ public  class LuceneSuggester {
 			conceptCount = 0;
 		for (int i = 0; i < results.size(); i++) {
 
-			AutoSuggestResult a =  autoSuggestResult.fromLookup(results.get(i));
+			AutoSuggestResult result;
+			try {
+				result = decodeSuggestion(results.get(i));
+			} catch (IOException e) {
+				log.warn("Unable to read autosuggest payload for " + suggestIndexDirectoryName, e);
+				continue;
+			}
 
-
-			ConceptType b = new ConceptType();
-			String[] suggestion = a.suggestion.split("~\\|");
-			if (!Boolean.TRUE.equals(vocabType.isReducedResults()) && suggestion.length < 3)
+			SuggestionPayload payload = result.payload();
+			SuggestionPayload.Metadata metadata = payload.metadata();
+			if (!Boolean.TRUE.equals(vocabType.isReducedResults()) && (metadata == null || metadata.dimCode() == null))
 				continue;
 
-			if (vocabType.getCategory() == null || vocabType.getCategory().equals("@") ||
-					(suggestion.length > 1 && vocabType.getCategory().equalsIgnoreCase(suggestion[1])) ){
-			//if (suggestion.length > 1) {
-				b.setName(suggestion[0]);
-				if (suggestion.length > 1)
-					b.setTablename(suggestion[1]);
+			String category = vocabType.getCategory();
+			if (category != null && !category.equals("@")
+					&& (metadata == null || !category.equalsIgnoreCase(metadata.tableName())))
+				continue;
 
-				//if (suggestion.length > 2 && StringUtils.isNumeric(suggestion[2]))
-				//	b.setTotalnum(Integer.valueOf(suggestion[2]));
-				//else 
-					if (suggestion.length > 2)
-					b.setDimcode(suggestion[2]);
-
-				if (suggestion.length > 3)
-					b.setBasecode(suggestion[3]);
-
-				if (suggestion.length > 4)
-					b.setKeyName(suggestion[4]);
-
-				if (suggestion.length > 5)
-					b.setVisualattributes(suggestion[5]);
-
-				if (suggestion.length > 6)
-					b.setTooltip(suggestion[6]);
-
-				b.setLevel(0);
-				b.setTotalnum((int) a.occurrences);
-
-				 if ( suggestion.length < 2 && conceptCount > 0)
-				{
-					suggestions.getConcept().add(b);
-					conceptCount--;
-
-				} else if ( suggestion.length > 3 && patientCount > 0 ) {
-					if (isoOfuscated)
-						b.setTotalnum(-1);
-					suggestions.getConcept().add(b);
-					patientCount--;
-				} 
+			ConceptType concept = new ConceptType();
+			concept.setName(result.name());
+			concept.setLevel(0);
+			concept.setTotalnum(payload.totalNum());
+			if (metadata != null) {
+				concept.setTablename(metadata.tableName());
+				concept.setDimcode(metadata.dimCode());
+				concept.setBasecode(metadata.baseCode());
+				concept.setKeyName(metadata.keyName());
+				concept.setVisualattributes(metadata.visualAttributes());
+				concept.setTooltip(metadata.tooltip());
 			}
-			//suggestions.add(AutoSuggestResult.fromLookup(results.get(i)));
+
+			if (metadata == null && conceptCount > 0) {
+				suggestions.getConcept().add(concept);
+				conceptCount--;
+			} else if (metadata != null && metadata.baseCode() != null && patientCount > 0) {
+				if (isoOfuscated)
+					concept.setTotalnum(-1);
+				suggestions.getConcept().add(concept);
+				patientCount--;
+			}
 		}
 		return suggestions;
 	}
 
-	// AutoSuggestResult equivalent
-	public   class AutoSuggestResult {
-		public  String suggestion;
-		public  long occurrences;
-		public  long weight;
+	public record AutoSuggestResult(String name, SuggestionPayload payload) {
+	}
 
-		public  AutoSuggestResult()
-		{
-			
-		}
-		public  AutoSuggestResult(String suggestion, long occurrences, long weight) {
-			this.suggestion = suggestion;
-			this.occurrences = occurrences;
-			this.weight = weight;
+	private static AutoSuggestResult decodeSuggestion(Lookup.LookupResult result) throws IOException {
+		String name = result.key.toString();
+		BytesRef bytes = result.payload;
+		if (bytes != null && bytes.length > 0 && bytes.bytes[bytes.offset] == '{') {
+			SuggestionPayload payload = PAYLOAD_MAPPER.readValue(
+					bytes.bytes, bytes.offset, bytes.length, SuggestionPayload.class);
+			return new AutoSuggestResult(name, payload);
 		}
 
-		public   AutoSuggestResult fromLookup(Lookup.LookupResult result) {
-			if (result == null) return new AutoSuggestResult("", 0L, 0L);
-			long occurrences = 0L;
-			if (result.payload != null && result.payload.bytes != null) {
-				String payload = new String(result.payload.bytes, StandardCharsets.UTF_8);
-				try {
-					occurrences = Long.parseLong(payload);
-				} catch (NumberFormatException e) {
-					occurrences = 0L;
-				}
-			}
-			return new AutoSuggestResult(result.key.toString(), occurrences, result.value);
+		// Older indexes store metadata in the key or after the count in the payload.
+		String count = bytes == null ? "" : bytes.utf8ToString();
+		int metadataStart = count.indexOf("~|");
+		if (metadataStart >= 0) {
+			name += count.substring(metadataStart);
+			count = count.substring(0, metadataStart);
 		}
+		int totalNum = NumberUtils.toInt(count);
+		String[] fields = name.split("~\\|");
+		SuggestionPayload.Metadata metadata = null;
+		if (fields.length > 1) {
+			String[] metadataFields = Arrays.copyOf(fields, 7);
+			metadata = new SuggestionPayload.Metadata(metadataFields[1], metadataFields[2], metadataFields[3],
+					metadataFields[4], metadataFields[5], metadataFields[6]);
+		}
+		String legacyName = fields.length == 0 ? "" : fields[0];
+		return new AutoSuggestResult(legacyName, new SuggestionPayload(metadata, totalNum));
 	}
 }
-
