@@ -69,7 +69,12 @@ public class JDBCUtil {
 	 */
 
 	 public static String escapeSingleQuote(String x) {
-		 return escapeSingleQuote(x, false);
+		 return escapeSingleQuote(x, false)
+				 // In some cases it still got unescaped single quote.
+				 // e.g. during node drag and drop operation when the node name contains a single quote.
+				 // Therefore, we handle it explicitly to make sure there is no unescaped single quote.
+				 .replace("'", "''") // replace all, regardless.
+				 .replace("''''", "''");  // change back for those that were escaped twice.
 	 }
 	
 
