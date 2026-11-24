@@ -199,11 +199,25 @@ IQueryResultInstanceDao {
 	@Override
 	public void updatePatientSet(String resultInstanceId, int statusTypeId,
 			String message, int setSize, int realSetSize, String obsMethod) {
+		updatePatientSet(resultInstanceId, statusTypeId, message, setSize, realSetSize, obsMethod, false);
+	}
 
+	@Override
+	public void updateUnfinishedPatientSet(String resultInstanceId, int statusTypeId,
+			String message, int setSize, int realSetSize, String obsMethod) {
+		updatePatientSet(resultInstanceId, statusTypeId, message, setSize, realSetSize, obsMethod, true);
+	}
+
+	private void updatePatientSet(String resultInstanceId, int statusTypeId,
+			String message, int setSize, int realSetSize, String obsMethod, boolean unfinishedOnly) {
 		Date endDate = new Date(System.currentTimeMillis());
 		String sql = "update "
 				+ getDbSchemaName()
 				+ "qt_query_result_instance set set_size = ?, real_set_size = ? , obfusc_method = ?, status_type_id =?, end_date = ?, message = ?  where result_instance_id = ?";
+		if (unfinishedOnly) {
+			sql += " and status_type_id not in (" + QueryStatusTypeId.STATUSTYPE_ID_FINISHED
+					+ ", " + QueryStatusTypeId.STATUSTYPE_ID_COMPLETED + ")";
+		}
 		jdbcTemplate.update(sql, new Object[] { setSize, realSetSize,
 				obsMethod, statusTypeId, endDate, message, resultInstanceId },
 				new int[] { Types.INTEGER, Types.INTEGER, Types.VARCHAR,

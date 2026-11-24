@@ -182,7 +182,10 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 			// change status of result instance to running
 			IQueryResultInstanceDao psResultDao = sfDAOFactory
 					.getPatientSetResultDAO();
-			psResultDao.updatePatientSet(patientSetId, 2, 0);
+			if (patientSetId != null) {
+				psResultDao.updateUnfinishedPatientSet(patientSetId,
+						QueryStatusTypeId.STATUSTYPE_ID_PROCESSING, "", 0, 0, "");
+			}
 
 
 			// check if the sql is stored, else generate and store
@@ -645,7 +648,7 @@ public class QueryExecutorDao extends CRCDAO implements IQueryExecutorDao {
 		List<QtQueryResultInstance> resultInstanceList = queryResultInstanceDao
 				.getResultInstanceList(queryInstanceId);
 		for (QtQueryResultInstance queryResultInstance : resultInstanceList) {
-			queryResultInstanceDao.updatePatientSet(queryResultInstance
+			queryResultInstanceDao.updateUnfinishedPatientSet(queryResultInstance
 					.getResultInstanceId(), statusTypeId, message, -1, -1, "");
 		}
 

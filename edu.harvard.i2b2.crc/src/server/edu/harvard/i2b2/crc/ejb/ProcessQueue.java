@@ -301,7 +301,7 @@ public class ProcessQueue implements Runnable{
 									log.debug("Delta queue time: " + deltaTime);
 
 
-									if (exec.isJobCompleteFlag() == false) {
+									if (shouldAdvanceQueue(exec, deltaTime, waitTime)) {
 										String timeOuterror = "Result waittime millisecond <result_waittime_ms> :" +
 												waitTime +
 												" elapsed, setting to next queue after " + queue;
@@ -318,7 +318,9 @@ public class ProcessQueue implements Runnable{
 									if (e.getMessage().startsWith("javax.naming.NameNotFoundException"))
 										break;
 
-									setToNextQueue( dslookup,  projectId,  ownerId, queryInstanceId);
+									if (!exec.isJobErrorFlag()) {
+										setToNextQueue(dslookup, projectId, ownerId, queryInstanceId);
+									}
 
 									//e.printStackTrace();
 
@@ -401,6 +403,10 @@ public class ProcessQueue implements Runnable{
 		} 
 	}
 
+	static boolean shouldAdvanceQueue(ExecRunnable exec, long elapsedMillis, long waitMillis) {
+		return elapsedMillis >= waitMillis && !exec.isJobCompleteFlag() && !exec.isJobErrorFlag();
+	}
+
 	private void setToNextQueue(DataSourceLookup dslookup, String projectId, String ownerId, int queryInstanceId) throws I2B2DAOException
 	{
 	//	log.info("In set to next queue");
@@ -447,7 +453,7 @@ public class ProcessQueue implements Runnable{
 			int statusTypeId = 0;
 			for (QtQueryResultInstance resultInstance : resultInstanceList) {
 				resultInstanceId = resultInstance.getResultInstanceId();
-				queryResultInstanceDao.updatePatientSet(resultInstanceId, 10, 
+				queryResultInstanceDao.updateUnfinishedPatientSet(resultInstanceId, 10,
 						 resultInstance.getMessage(), 0, 0, resultInstance.getObfuscateMethod());
 						
 			}

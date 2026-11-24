@@ -764,9 +764,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 				for (ResultOutputOptionType resultOutputOption : resultOptionList) {
 					String resultName = resultOutputOption.getName()
 							.toUpperCase();
-					String resultInstanceId = getQueryResultInstanceId(
-							sfDAOFactory, queryInstanceId, resultName);
-					param.put("ResultInstanceId", resultInstanceId);
+					QtQueryResultInstance result = getQueryResultInstance(sfDAOFactory, queryInstanceId, resultName);
+					String resultInstanceId = result.getResultInstanceId();
 					param.put("ResultOptionName", resultName);
 					if (resultOutputOption.getFullName() == null)
 						param.put("ResultFullName", null);
@@ -777,13 +776,9 @@ public class QueryExecutorHelperDao extends CRCDAO {
 					if (resultOutputOption.getPaths() != null)
 						param.put("ResultPath", resultOutputOption.getPaths().getPath());
 
-					IQueryBreakdownTypeDao queryBreakdownTypeDao = sfDAOFactory
-							.getQueryBreakdownTypeDao();
-					QtQueryBreakdownType queryBreakdownType = queryBreakdownTypeDao
-							.getBreakdownTypeByName(resultName);
-					// ::TODO check if the result state is completed, before
-					// running the result
-					runGenerator(resultName, param, queryBreakdownType.getClassname());
+					if (!runUnfinishedResultGenerator(sfDAOFactory, resultName, result, param)) {
+						continue;
+					}
 					// check if the user need to be locked
 					// if the lockoutQueryCount = -1 skip lockout check
 					log.debug("check if the user need to be locked");
@@ -817,18 +812,11 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		} else {
 			String resultType = defaultResultType;
 			// perform patient set
-			String resultInstanceId = getQueryResultInstanceId(sfDAOFactory,
-					queryInstanceId, defaultResultType);
-			param.put("ResultInstanceId", resultInstanceId);
-
-
-			IQueryBreakdownTypeDao queryBreakdownTypeDao = sfDAOFactory
-					.getQueryBreakdownTypeDao();
-			QtQueryBreakdownType queryBreakdownType = queryBreakdownTypeDao
-					.getBreakdownTypeByName(resultType);
-			// ::TODO check if the result state is completed, before
-			// running the result
-			runGenerator(resultType, param, queryBreakdownType.getClassname());
+			QtQueryResultInstance result = getQueryResultInstance(sfDAOFactory, queryInstanceId, resultType);
+			if (!runUnfinishedResultGenerator(sfDAOFactory, resultType, result, param)) {
+				return;
+			}
+			String resultInstanceId = result.getResultInstanceId();
 
 			// check if the user need to be locked
 			// if the lockoutQueryCount = -1 skip lockout check
@@ -887,6 +875,8 @@ public class QueryExecutorHelperDao extends CRCDAO {
 			throw new I2B2DAOException(
 					"Illegal Access Exception for generator class["
 							+ generatorClassName + "] ", e);
+		} catch (CRCTimeOutException timeoutEx) {
+			throw timeoutEx;
 		} catch (I2B2DAOException e) {
 			log.error(e.getMessage());
 			
@@ -903,14 +893,24 @@ public class QueryExecutorHelperDao extends CRCDAO {
 		}
 	}
 
-	private String getQueryResultInstanceId(SetFinderDAOFactory sfDAOFactory,
+	boolean runUnfinishedResultGenerator(SetFinderDAOFactory sfDAOFactory, String resultName,
+			QtQueryResultInstance result, Map param) throws I2B2DAOException, CRCTimeOutException {
+		int status = result.getQtQueryStatusType().getStatusTypeId();
+		if (status == QueryStatusTypeId.STATUSTYPE_ID_FINISHED
+				|| status == QueryStatusTypeId.STATUSTYPE_ID_COMPLETED) {
+			return false;
+		}
+		QtQueryBreakdownType breakdown = sfDAOFactory.getQueryBreakdownTypeDao().getBreakdownTypeByName(resultName);
+		param.put("ResultInstanceId", result.getResultInstanceId());
+		runGenerator(resultName, param, breakdown.getClassname());
+		return true;
+	}
+
+	private QtQueryResultInstance getQueryResultInstance(SetFinderDAOFactory sfDAOFactory,
 			String queryInstanceId, String resultName) {
 		IQueryResultInstanceDao resultInstanceDao = sfDAOFactory
 				.getPatientSetResultDAO();
-		QtQueryResultInstance resultInstance = resultInstanceDao
-				.getResultInstanceByQueryInstanceIdAndName(queryInstanceId,
-						resultName);
-		return resultInstance.getResultInstanceId();
+		return resultInstanceDao.getResultInstanceByQueryInstanceIdAndName(queryInstanceId, resultName);
 	}
 
 	private String processUserLock(SetFinderDAOFactory sfDAOFactory,

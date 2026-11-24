@@ -403,6 +403,9 @@ public class QueryResultGenerator extends CRCDAO implements IResultGenerator {
 			errorFlag = true;
 			log.error("Error while executing sql", sqlEx);
 			throw new I2B2DAOException("Error while executing sql", sqlEx);
+		} catch (CRCTimeOutException timeoutEx) {
+			timeoutFlag = true;
+			throw timeoutEx;
 		} catch (Exception sqlEx) {
 
 			errorFlag = true;

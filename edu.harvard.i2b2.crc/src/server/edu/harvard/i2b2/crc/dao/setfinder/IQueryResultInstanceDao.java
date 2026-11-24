@@ -20,6 +20,10 @@ public interface IQueryResultInstanceDao {
 
 	/** Mark only queued or processing results as failed, preserving completed results. */
 	public void markPendingResultsError(String queryInstanceId, String message);
+
+	/** Update status and sizes only if the result has not finished. */
+	public void updateUnfinishedPatientSet(String resultInstanceId, int statusTypeId,
+			String message, int setSize, int realSetSize, String obsMethod);
 	
 	/**
 	 * Function to create result instance for given query instance id. The

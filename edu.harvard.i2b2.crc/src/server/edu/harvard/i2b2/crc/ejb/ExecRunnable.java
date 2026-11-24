@@ -85,8 +85,8 @@ public class ExecRunnable implements Runnable{
 //	}
 
 	MapMessage message = null;
-	private boolean jobCompleteFlag = false;
-	private boolean jobErrorFlag = false;
+	private volatile boolean jobCompleteFlag = false;
+	private volatile boolean jobErrorFlag = false;
 
 
 	public boolean isJobErrorFlag() {
