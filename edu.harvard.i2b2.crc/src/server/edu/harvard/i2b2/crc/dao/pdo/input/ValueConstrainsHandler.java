@@ -231,8 +231,17 @@ public class ValueConstrainsHandler {
 				} else if (operatorType.value().equalsIgnoreCase(
 						ConstrainOperatorType.BETWEEN.value())) {
 					value = SqlClauseUtil.buildBetweenClause(value);
-					constrainSql = unitsCdInClause + "  obs.valtype_cd = 'N' AND " + nvalNum + " BETWEEN  "
-							+ value + " AND obs.tval_char ='E' ";
+					// buildBetweenClause returns "low and high"; extract the boundary
+					// values so facts stored with inequality operators (G/GE at the
+					// low bound, L/LE at the high bound) are included too (fixes #156)
+					String[] betweenValues = value.split("(?i)\\s+and\\s+");
+					String lowValue = betweenValues[0].trim();
+					String highValue = betweenValues[1].trim();
+					constrainSql = unitsCdInClause
+							+ "  ((obs.valtype_cd = 'N' AND " + nvalNum + " BETWEEN "
+							+ value + " AND obs.tval_char = 'E') OR (obs.valtype_cd = 'N' AND "
+							+ nvalNum + " = " + lowValue + " AND obs.tval_char IN ('G','GE')) OR (obs.valtype_cd = 'N' AND "
+							+ nvalNum + " = " + highValue + " AND obs.tval_char IN ('L','LE'))) ";
 				} else if (operatorType.value().equalsIgnoreCase(
 						ConstrainOperatorType.NE.value())) {
 					constrainSql = unitsCdInClause + "  ((obs.valtype_cd = 'N' AND " + nvalNum + " <> "
